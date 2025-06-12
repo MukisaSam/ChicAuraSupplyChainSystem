@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ManufacturerDashboardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,6 +16,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::middleware('auth')->group(function () {
+    // Route for the Manufacturer Dashboard
+    Route::get('/manufacturer/dashboard', [ManufacturerDashboardController::class, 'index'])->name('manufacturer.dashboard');
 });
 
 Route::get('/wholesaler/dashboard', function () {
