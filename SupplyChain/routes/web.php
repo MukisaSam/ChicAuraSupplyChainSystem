@@ -16,3 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/wholesaler/dashboard', function () {
+    return view('wholesaler.dashboard');
+})->name('wholesaler.dashboard');
