@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('content')
+@section('wholesaler_dashboard')
 <style>
     body { font-family: 'Nunito', sans-serif; background: #f3f4f6; }
-    .header { background: #f88b8b; padding: 0 24px; display: flex; align-items: center; height: 56px; }
+    .header { background: #f88b8b; padding: 0 24px; display: flex; align-items: center; height: 56px; flex-wrap: wrap; }
     .header-title { font-size: 2rem; font-weight: bold; color: #222; margin-right: 12px; }
-    .search-bar { flex: 1; margin: 0 24px; display: flex; align-items: center; }
-    .search-bar input { width: 250px; padding: 6px 12px; border: 1px solid #ddd; border-radius: 4px; }
+    .search-bar { flex: 1; margin: 0 24px; display: flex; align-items: center; min-width: 120px; }
+    .search-bar input { width: 100%; min-width: 80px; padding: 6px 12px; border: 1px solid #ddd; border-radius: 4px; }
     .profile { width: 32px; height: 32px; border-radius: 50%; background: #eee; margin-left: 12px; }
     .main-content { display: flex; min-height: calc(100vh - 56px); }
     .sidebar { width: 180px; background: #fff; border-right: 1px solid #e5e7eb; padding-top: 24px; }
@@ -26,9 +26,21 @@
     .notif-user { font-size: 0.95em; color: #555; margin-bottom: 2px; }
     .notif-time { font-size: 0.8em; color: #888; }
     .chart { min-height: 160px; }
-    @media (max-width: 900px) {
-        .dashboard-grid { grid-template-columns: 1fr; }
+    /* Responsive styles */
+    @media (max-width: 1100px) {
         .dashboard-area { padding: 16px; }
+        .dashboard-grid { grid-template-columns: 1fr; }
+        .main-content { flex-direction: column; }
+        .sidebar { width: 100%; border-right: none; border-bottom: 1px solid #e5e7eb; display: flex; flex-direction: row; overflow-x: auto; padding: 0; }
+        .sidebar a { flex: 1; justify-content: center; padding: 12px 0; border-left: none; border-bottom: 4px solid transparent; }
+        .sidebar a.active, .sidebar a:hover { border-left: none; border-bottom: 4px solid #f88b8b; background: #f3f4f6; }
+    }
+    @media (max-width: 700px) {
+        .header { flex-direction: column; height: auto; padding: 12px; }
+        .dashboard-area { padding: 8px; }
+        .card { padding: 12px 8px; }
+        .order-summary { flex-direction: column; gap: 8px; }
+        .profile { margin-left: 0; margin-top: 8px; }
     }
 </style>
 <div class="header">

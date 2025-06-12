@@ -8,7 +8,7 @@
     @yield('head')
 </head>
 <body>
-    @yield('content')
+    @yield('wholesaler_dashboard')
 </body>
 
 </html>
