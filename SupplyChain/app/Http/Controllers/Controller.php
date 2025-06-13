@@ -2,25 +2,17 @@
 
 namespace App\Http\Controllers;
 
-<<<<<<< Updated upstream
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-=======
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Bus\DispatchesJobs;
->>>>>>> Stashed changes
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class Controller extends BaseController
 {
-<<<<<<< Updated upstream
-    use AuthorizesRequests, ValidatesRequests;
-=======
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     public function login(Request $request)
@@ -52,5 +44,4 @@ class Controller extends BaseController
 
         return redirect('/');
     }
->>>>>>> Stashed changes
 }
