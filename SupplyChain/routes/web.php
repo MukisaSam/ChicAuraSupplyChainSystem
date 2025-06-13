@@ -1,28 +1,25 @@
 <?php
 
-use App\Http\Controllers\ManufacturerDashboardController;
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
-Route::get('/', function () {
-    return view('welcome');
-});
+use App\Http\Controllers\ManufacturerDashboardController;
+use App\Http\Controllers\SupplierDashboardController;
+use App\Http\Controllers\WholesalerDashboardController;
+use App\Http\Controllers\AdminDashboardController;
 
 Route::middleware('auth')->group(function () {
-    // Route for the Manufacturer Dashboard
-    Route::get('/manufacturer/dashboard', [ManufacturerDashboardController::class, 'index'])->name('manufacturer.dashboard');
+    // ... (manufacturer, supplier, wholesaler routes)
+
+    // Administrator Dashboard Route
+    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+
+    // ... (profile routes)
 });
 
-Route::get('/wholesaler/dashboard', function () {
-    return view('wholesaler.dashboard');
-})->name('wholesaler.dashboard');
+// Route for the Manufacturer Dashboard
+Route::get('/manufacturer/dashboard', [ManufacturerDashboardController::class, 'index'])->name('manufacturer.dashboard');
+
+ // Supplier Dashboard Route
+ Route::get('/supplier/dashboard', [SupplierDashboardController::class, 'index'])->name('supplier.dashboard');
+
+  // Wholesaler Dashboard Route
+  Route::get('/wholesaler/dashboard', [WholesalerDashboardController::class, 'index'])->name('wholesaler.dashboard');

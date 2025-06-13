@@ -1,148 +1,77 @@
-@extends('layouts.app')
+{{-- resources/views/wholesaler/dashboard.blade.php --}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wholesaler Dashboard - ChicAura SCM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background-color: #f8fafc; }
+        .sidebar { transition: transform 0.3s ease-in-out; }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body class="font-sans antialiased">
+    <div class="flex h-screen bg-gray-100">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 bg-white border-r md:block">
+            <div class="flex flex-col h-full">
+                <div class="flex items-center justify-center h-20 border-b"><h1 class="text-2xl font-bold text-gray-800">ChicAura</h1></div>
+                <nav class="flex-1 px-4 py-4 space-y-2">
+                    <a href="#" class="flex items-center px-4 py-2 text-white bg-indigo-600 rounded-md"><i class="fas fa-home w-6"></i><span class="ml-3">Home</span></a>
+                    <a href="#" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md"><i class="fas fa-shopping-cart w-6"></i><span class="ml-3">Orders</span></a>
+                    <a href="#" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md"><i class="fas fa-chart-line w-6"></i><span class="ml-3">Analytics</span></a>
+                    <a href="#" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md"><i class="fas fa-comments w-6"></i><span class="ml-3">Chat</span></a>
+                    <a href="#" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md"><i class="fas fa-file-invoice-dollar w-6"></i><span class="ml-3">Reports</span></a>
+                </nav>
+            </div>
+        </aside>
 
-@section('wholesaler_dashboard')
-<style>
-    body { font-family: 'Nunito', sans-serif; background: #f3f4f6; }
-    .header { background: #f88b8b; padding: 0 24px; display: flex; align-items: center; height: 56px; flex-wrap: wrap; }
-    .header-title { font-size: 2rem; font-weight: bold; color: #222; margin-right: 12px; }
-    .search-bar { flex: 1; margin: 0 24px; display: flex; align-items: center; min-width: 120px; }
-    .search-bar input { width: 100%; min-width: 80px; padding: 6px 12px; border: 1px solid #ddd; border-radius: 4px; }
-    .profile { width: 32px; height: 32px; border-radius: 50%; background: #eee; margin-left: 12px; }
-    .main-content { display: flex; min-height: calc(100vh - 56px); }
-    .sidebar { width: 180px; background: #fff; border-right: 1px solid #e5e7eb; padding-top: 24px; }
-    .sidebar a { display: flex; align-items: center; padding: 14px 24px; color: #222; text-decoration: none; font-weight: 600; font-size: 1.1em; }
-    .sidebar a:hover, .sidebar a.active { background: #f3f4f6; border-left: 4px solid #f88b8b; }
-    .sidebar span { margin-right: 12px; font-size: 1.3em; }
-    .dashboard-area { flex: 1; padding: 32px 40px; }
-    .dashboard-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; }
-    .left-col, .right-col { display: flex; flex-direction: column; gap: 24px; }
-    .card { background: #fff; border-radius: 10px; box-shadow: 0 2px 8px #0001; padding: 22px 28px; }
-    .card h3 { margin: 0 0 10px 0; font-size: 1.1em; font-weight: 700; }
-    .big-number { font-size: 2.2rem; font-weight: bold; margin: 10px 0; }
-    .order-summary { display: flex; justify-content: space-between; margin-top: 10px; }
-    .order-summary div { text-align: center; }
-    .notifications { min-height: 120px; }
-    .notif-msg { background: #e0e7ff; border-radius: 4px; padding: 4px 8px; margin: 4px 0; display: inline-block; }
-    .notif-user { font-size: 0.95em; color: #555; margin-bottom: 2px; }
-    .notif-time { font-size: 0.8em; color: #888; }
-    .chart { min-height: 160px; }
-    /* Responsive styles */
-    @media (max-width: 1100px) {
-        .dashboard-area { padding: 16px; }
-        .dashboard-grid { grid-template-columns: 1fr; }
-        .main-content { flex-direction: column; }
-        .sidebar { width: 100%; border-right: none; border-bottom: 1px solid #e5e7eb; display: flex; flex-direction: row; overflow-x: auto; padding: 0; }
-        .sidebar a { flex: 1; justify-content: center; padding: 12px 0; border-left: none; border-bottom: 4px solid transparent; }
-        .sidebar a.active, .sidebar a:hover { border-left: none; border-bottom: 4px solid #f88b8b; background: #f3f4f6; }
-    }
-    @media (max-width: 700px) {
-        .header { flex-direction: column; height: auto; padding: 12px; }
-        .dashboard-area { padding: 8px; }
-        .card { padding: 12px 8px; }
-        .order-summary { flex-direction: column; gap: 8px; }
-        .profile { margin-left: 0; margin-top: 8px; }
-    }
-</style>
-<div class="header">
-    <span class="header-title">ChicAura</span>
-    <span style="font-weight:600; font-size:1.2em; margin-right:24px;">Supply Chain System</span>
-    <div class="search-bar">
-        <input type="text" placeholder="Search">
-        <span style="margin-left:8px;"><i class="fa fa-search"></i></span>
-    </div>
-    <span style="font-size:1.1em; margin-right:18px;">Wholesaler Dashboard</span>
-    <div class="profile"></div>
-    <div class="profile"></div>
-    <span style="margin-left:10px; font-size:1.5em;">&#9776;</span>
-</div>
-<div class="main-content">
-    <div class="sidebar">
-        <a href="#" class="active"><span>🏠</span>HOME</a>
-        <a href="#"><span>📦</span>ORDERS</a>
-        <a href="#"><span>📊</span>ANALYTICS</a>
-        <a href="#"><span>💬</span>CHAT</a>
-        <a href="#"><span>📄</span>REPORTS</a>
-    </div>
-    <div class="dashboard-area">
-        <div class="dashboard-grid">
-            <div class="left-col">
-                <div class="card">
-                    <h3>Current approved Unit prices</h3>
-                    <ol style="margin:0 0 0 18px;">
-                        <li>Trousers shs4000</li>
-                        <li>Shirts shs5000</li>
-                    </ol>
+        <div class="flex flex-col flex-1 w-full">
+             <!-- Top Navigation Bar -->
+            <header class="relative z-10 flex items-center justify-between h-20 bg-white border-b">
+                <div class="flex items-center">
+                    <button id="menu-toggle" class="md:hidden p-4 text-gray-500 hover:text-gray-700"><i class="fas fa-bars text-xl"></i></button>
+                    <div class="relative ml-4 hidden md:block"><span class="absolute inset-y-0 left-0 flex items-center pl-3"><i class="fas fa-search text-gray-400"></i></span><input type="text" class="w-full py-2 pl-10 pr-4 border rounded-md" placeholder="Search products..."></div>
                 </div>
-                <div class="card">
-                    <h3>Total Products Recieved</h3>
-                    <div class="big-number">100 Units</div>
-                    <div style="margin-top:10px;">Last Supply Date<br><b>04/5/2025</b></div>
+                <div class="flex items-center pr-4">
+                    <button class="p-2 text-gray-500 hover:text-gray-700"><i class="fas fa-bell text-xl"></i></button>
+                    <div class="relative ml-3"><button class="flex items-center focus:outline-none"><span class="mr-2">{{ $user->name ?? 'Wholesaler User' }}</span><img class="w-8 h-8 rounded-full" src="https://via.placeholder.com/32" alt="User Avatar"></button></div>
                 </div>
-                <div class="card">
-                    <h3>Order Summary</h3>
-                    <div class="order-summary">
-                        <div>
-                            <div style="font-size:1.3em; font-weight:700;">10</div>
-                            <div>Orders</div>
-                        </div>
-                        <div>
-                            <div style="font-size:1.3em; font-weight:700;">6</div>
-                            <div>Pending</div>
-                        </div>
-                        <div>
-                            <div style="font-size:1.3em; font-weight:700;">4</div>
-                            <div>Received</div>
-                        </div>
-                    </div>
+            </header>
+
+            <!-- Main Content -->
+            <main class="flex-1 p-6 md:p-8">
+                <h2 class="text-3xl font-semibold text-gray-800">Wholesaler Dashboard</h2>
+                <div class="grid grid-cols-1 gap-6 mt-6 sm:grid-cols-2 lg:grid-cols-4">
+                    <div class="p-6 bg-white rounded-lg shadow-md"><div class="flex items-center"><div class="p-3 bg-indigo-100 rounded-full"><i class="fas fa-receipt text-indigo-600 text-xl"></i></div><div class="ml-4"><p class="text-sm font-medium text-gray-500">Total Orders</p><p class="text-2xl font-bold text-gray-800">{{ $stats['total_orders'] ?? '0' }}</p></div></div></div>
+                    <div class="p-6 bg-white rounded-lg shadow-md"><div class="flex items-center"><div class="p-3 bg-green-100 rounded-full"><i class="fas fa-dollar-sign text-green-600 text-xl"></i></div><div class="ml-4"><p class="text-sm font-medium text-gray-500">Total Spent</p><p class="text-2xl font-bold text-gray-800">{{ $stats['total_spent'] ?? '$0' }}</p></div></div></div>
+                    <div class="p-6 bg-white rounded-lg shadow-md"><div class="flex items-center"><div class="p-3 bg-yellow-100 rounded-full"><i class="fas fa-shipping-fast text-yellow-600 text-xl"></i></div><div class="ml-4"><p class="text-sm font-medium text-gray-500">Pending Shipments</p><p class="text-2xl font-bold text-gray-800">{{ $stats['pending_shipments'] ?? '0' }}</p></div></div></div>
+                    <div class="p-6 bg-white rounded-lg shadow-md"><div class="flex items-center"><div class="p-3 bg-gray-100 rounded-full"><i class="fas fa-calendar-alt text-gray-600 text-xl"></i></div><div class="ml-4"><p class="text-sm font-medium text-gray-500">Last Order</p><p class="text-2xl font-bold text-gray-800">{{ $stats['last_order'] ?? 'N/A' }}</p></div></div></div>
                 </div>
-            </div>
-            <div class="right-col">
-                <div class="card notifications">
-                    <h3>Recent Notifications</h3>
-                    <div style="margin-top:10px;">
-                        <div class="notif-user">Jay (Engineering):</div>
-                        <div class="notif-msg">I wish to negotiate the new prices. Can we talk?</div>
-                        <div class="notif-time">11:30 AM</div>
-                    </div>
+                <div class="grid grid-cols-1 gap-6 mt-8 lg:grid-cols-3">
+                    <div class="p-6 bg-white rounded-lg shadow-md lg:col-span-2"><h3 class="text-lg font-semibold text-gray-800">Purchase History ($)</h3><canvas id="purchaseChart"></canvas></div>
+                    <div class="p-6 bg-white rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-800">Recent Orders</h3><div class="mt-4 space-y-4">
+                        @forelse ($recentOrders as $order)
+                            <div class="flex items-center"><div class="flex-shrink-0"><div class="w-10 h-10 flex items-center justify-center rounded-full {{ $order['status_color'] }}"><i class="fas {{ $order['icon'] }} text-white"></i></div></div><div class="ml-4 flex-1"><p class="text-sm font-medium text-gray-900">{{ $order['item_summary'] }}</p><p class="text-sm text-gray-500">Order #{{ $order['id'] }}</p></div><div class="text-right"><p class="text-sm font-semibold text-gray-900">${{ number_format($order['amount'], 2) }}</p><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $order['status_color'] }} text-white">{{ $order['status'] }}</span></div></div>
+                        @empty <p class="text-gray-500">No recent orders.</p> @endforelse
+                    </div></div>
                 </div>
-                <div class="card chart">
-                    <h3>Unit Price Variation</h3>
-                    <canvas id="priceChart" width="350" height="110"></canvas>
-                </div>
-            </div>
+            </main>
         </div>
     </div>
-</div>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    const ctx = document.getElementById('priceChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jan', 'Feb'],
-            datasets: [
-                {
-                    label: 'Shirts',
-                    data: [2000, 3000, 2500, 4000, 3500, 5000, 5250],
-                    borderColor: 'blue',
-                    backgroundColor: 'rgba(59,130,246,0.1)',
-                    fill: true,
-                    tension: 0.4
-                },
-                {
-                    label: 'Trousers',
-                    data: [4000, 6000, 3500, 7000, 5250, 3500, 6000],
-                    borderColor: 'red',
-                    backgroundColor: 'rgba(239,68,68,0.1)',
-                    fill: true,
-                    tension: 0.4
-                }
-            ]
-        },
-        options: {
-            plugins: { legend: { display: true } },
-            scales: { y: { beginAtZero: true } }
-        }
-    });
-</script>
-@endsection
+    <script>
+        const menuToggle = document.getElementById('menu-toggle');
+        const sidebar = document.getElementById('sidebar');
+        menuToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
+        const ctx = document.getElementById('purchaseChart').getContext('2d');
+        new Chart(ctx, { type: 'line', data: { labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], datasets: [{ label: 'Total Purchases ($)', data: [50000, 75000, 60000, 85000, 95000, 110000], borderColor: 'rgba(16, 185, 129, 1)', backgroundColor: 'rgba(16, 185, 129, 0.1)', tension: 0.4, fill: true }] }, options: { responsive: true, scales: { y: { beginAtZero: true } } } });
+    </script>
+</body>
+</html>
