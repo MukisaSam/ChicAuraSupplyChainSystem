@@ -2,11 +2,55 @@
 
 namespace App\Http\Controllers;
 
+<<<<<<< Updated upstream
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+=======
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+>>>>>>> Stashed changes
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class Controller extends BaseController
 {
+<<<<<<< Updated upstream
     use AuthorizesRequests, ValidatesRequests;
+=======
+    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    public function login(Request $request)
+    {
+        $incomingFields = $request->validate([
+            'loginname' => 'required',
+            'loginpassword' => 'required'
+        ]);
+
+        if (Auth::attempt(['name' => $incomingFields['loginname'], 'password' => $incomingFields['loginpassword']])) {
+            $request->session()->regenerate();
+            return redirect('/');
+        }
+
+        return back()->withErrors(['loginname' => 'Invalid credentials.']);
+    }
+
+    public function register(Request $request)
+    {
+        $incomingFields = $request->validate([
+            'name' => ['required', Rule::unique('users', 'name')],
+            'email' => ['required', 'email', Rule::unique('users', 'email')],
+            'password' => ['required', 'min:3', 'max:20']
+        ]);
+
+        $incomingFields['password'] = bcrypt($incomingFields['password']);
+        $user = User::create($incomingFields);
+        Auth::login($user);
+
+        return redirect('/');
+    }
+>>>>>>> Stashed changes
 }
