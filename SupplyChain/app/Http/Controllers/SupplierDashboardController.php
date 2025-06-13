@@ -8,7 +8,7 @@ class SupplierDashboardController extends Controller
 {
     public function index()
     {
-        $user = Auth::user(supplier);
+        $user = Auth::user();
 
         $stats = [
             'total_supplied' => '1.2M Units',

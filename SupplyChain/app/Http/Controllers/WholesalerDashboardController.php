@@ -8,7 +8,7 @@ class WholesalerDashboardController extends Controller
 {
     public function index()
     {
-        $user = Auth::user(wholesaler);
+        $user = Auth::user();
 
         $stats = [
             'total_orders' => 124,

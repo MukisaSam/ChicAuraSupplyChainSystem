@@ -9,7 +9,7 @@ class ManufacturerDashboardController extends Controller
 {
     public function index()
     {
-        $user = Auth::user(manufacturer);
+        $user = Auth::user();
 
         $stats = [
             'raw_materials' => 152,

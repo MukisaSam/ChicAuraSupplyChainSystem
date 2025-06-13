@@ -10,7 +10,7 @@ class AdminDashboardController extends Controller
 {
     public function index()
     {
-        $user = Auth::user(admin);
+        $user = Auth::user();
 
         // Stats focused on system administration
         $stats = [
