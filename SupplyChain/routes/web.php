@@ -1,25 +1,42 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ManufacturerDashboardController;
-use App\Http\Controllers\SupplierDashboardController;
-use App\Http\Controllers\WholesalerDashboardController;
-use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\TypeController;
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
+Route::post('/register', [UserController::class, 'register']);
+Route::post('/logout', [UserController::class, 'logout']);
+Route::post('/login', [UserController::class, 'login']);
+
+Route::get('/', function () {
+    return view('welcome');
+});
+Route::get('/register', [])->name('show.register');
+Route::get('/login', [])->name('show.login');
+
+Route::get('/dashboard', function () {
+    return view('dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    // ... (manufacturer, supplier, wholesaler routes)
-
-    // Administrator Dashboard Route
-    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-
-    // ... (profile routes)
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// Route for the Manufacturer Dashboard
-Route::get('/manufacturer/dashboard', [ManufacturerDashboardController::class, 'index'])->name('manufacturer.dashboard');
+require __DIR__.'/auth.php';
 
- // Supplier Dashboard Route
- Route::get('/supplier/dashboard', [SupplierDashboardController::class, 'index'])->name('supplier.dashboard');
+Auth::routes();
 
-  // Wholesaler Dashboard Route
-  Route::get('/wholesaler/dashboard', [WholesalerDashboardController::class, 'index'])->name('wholesaler.dashboard');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
