@@ -12,7 +12,18 @@ use App\Providers\RouteServiceProvider;
 
 class RegisterController extends Controller
 {
-    protected $redirectTo = '/home';
+    protected function redirectTo()
+{
+    $role = Auth::user()->role;
+
+    return match ($role) {
+        'admin' => '/admin/dashboard',
+        'supplier' => '/supplier/dashboard',
+        'wholesaler' => '/wholesaler/dashboard',
+        'manufacturer' => '/manufacturer/dashboard',
+        default => '/home',
+    };
+}
 
     public function __construct()
     {
