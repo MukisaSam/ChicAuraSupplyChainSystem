@@ -40,3 +40,24 @@ require __DIR__.'/auth.php';
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Customer routes
+Route::middleware(['auth', 'role:customer'])->group(function () {
+    Route::get('/customer/dashboard', function () {
+        return view('customer.dashboard');
+    });
+});
+
+// Vendor routes
+Route::middleware(['auth', 'role:vendor'])->group(function () {
+    Route::get('/vendor/dashboard', function () {
+        return view('vendor.dashboard');
+    });
+});
+
+// Admin routes
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('/admin/dashboard', function () {
+        return view('admin.dashboard');
+    });
+});
+

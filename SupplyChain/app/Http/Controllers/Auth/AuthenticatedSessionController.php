@@ -32,6 +32,18 @@ class AuthenticatedSessionController extends Controller
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 
+    protected function authenticated(Request $request, $user)
+{
+    if ($user->role === 'admin') {
+        return redirect('/admin/dashboard');
+    } elseif ($user->role === 'vendor') {
+        return redirect('/vendor/dashboard');
+    }
+
+    return redirect('/customer/dashboard');
+}
+
+
     /**
      * Destroy an authenticated session.
      */
