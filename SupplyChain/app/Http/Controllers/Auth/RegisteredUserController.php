@@ -34,18 +34,29 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => ['required', 'string', 'in:admin,supplier,wholesaler,manufacturer'],
         ]);
 
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => $request->role,
         ]);
 
         event(new Registered($user));
 
         Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+        $role = $user->role;
+        $route = match ($role) {
+            'admin' => '/admin/dashboard',
+            'supplier' => '/supplier/dashboard',
+            'wholesaler' => '/wholesaler/dashboard',
+            'manufacturer' => '/manufacturer/dashboard',
+            default => '/home',
+        };
+
+        return redirect($route);
     }
 }
