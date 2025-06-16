@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\TypeController;
 /*
 |--------------------------------------------------------------------------
@@ -61,3 +62,14 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     });
 });
 
+Route::get('/register/admin', [RegisteredUserController::class, 'createAdmin'])->name('register.admin');
+Route::post('/register/admin', [RegisteredUserController::class, 'storeAdmin']);
+
+Route::get('/register/supplier', [RegisteredUserController::class, 'createSupplier'])->name('register.supplier');
+Route::post('/register/supplier', [RegisteredUserController::class, 'storeSupplier']);
+
+Route::get('/register/manufacturer', [RegisteredUserController::class, 'createManufacturer'])->name('register.manufacturer');
+Route::post('/register/manufacturer', [RegisteredUserController::class, 'storeManufacturer']);
+
+Route::get('/register/wholesaler', [RegisteredUserController::class, 'createWholesaler'])->name('register.wholesaler');
+Route::post('/register/wholesaler', [RegisteredUserController::class, 'storeWholesaler']);

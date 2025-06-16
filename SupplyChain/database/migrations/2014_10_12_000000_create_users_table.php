@@ -35,3 +35,7 @@ return new class extends Migration
         Schema::dropIfExists('users');
     }
 };
+Schema::table('users', function (Blueprint $table) {
+    $table->string('role')->default('supplier');
+});
+// This line adds a 'role' column to the 'users' table with a default value of 'supplier'.
