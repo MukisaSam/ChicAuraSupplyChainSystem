@@ -12,10 +12,33 @@ use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
+    // Role selection page
     Route::get('register', [RegisteredUserController::class, 'create'])
                 ->name('register');
 
-    Route::post('register', [RegisteredUserController::class, 'store']);
+    // Admin registration
+    Route::get('register/admin', [RegisteredUserController::class, 'createAdmin'])
+                ->name('register.admin');
+    Route::post('register/admin', [RegisteredUserController::class, 'storeAdmin'])
+                ->name('register.admin.store');
+
+    // Supplier registration
+    Route::get('register/supplier', [RegisteredUserController::class, 'createSupplier'])
+                ->name('register.supplier');
+    Route::post('register/supplier', [RegisteredUserController::class, 'storeSupplier'])
+                ->name('register.supplier.store');
+
+    // Manufacturer registration
+    Route::get('register/manufacturer', [RegisteredUserController::class, 'createManufacturer'])
+                ->name('register.manufacturer');
+    Route::post('register/manufacturer', [RegisteredUserController::class, 'storeManufacturer'])
+                ->name('register.manufacturer.store');
+
+    // Wholesaler registration
+    Route::get('register/wholesaler', [RegisteredUserController::class, 'createWholesaler'])
+                ->name('register.wholesaler');
+    Route::post('register/wholesaler', [RegisteredUserController::class, 'storeWholesaler'])
+                ->name('register.wholesaler.store');
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
                 ->name('login');
