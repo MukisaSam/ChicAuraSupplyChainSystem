@@ -6,8 +6,10 @@
     <title>ChicAura - Supplier Registration</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+<body class="font-sans antialiased bg-cover bg-center"
+      style="background-image: linear-gradient(145deg, rgba(255,255,255,0.8), rgba(0,0,0,0.8)), url('{{ asset('images/manequin.jpeg') }}');">
+
+    <div class="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div class="sm:mx-auto sm:w-full sm:max-w-md">
             <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
                 Supplier Registration
@@ -109,4 +111,4 @@
         </div>
     </div>
 </body>
-</html> 
+</html>

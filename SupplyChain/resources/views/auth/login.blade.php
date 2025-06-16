@@ -14,8 +14,8 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+<body class="bg-cover bg-center" style="background-image: linear-gradient(145deg, rgba(255,255,255,0.8), rgba(0,0,0,0.8)), url('{{ asset('images/manequin.jpeg') }}');">
+      <div class="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div class="sm:mx-auto sm:w-full sm:max-w-md">
             <div class="flex justify-center mb-6">
                 <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="h-20 w-auto">

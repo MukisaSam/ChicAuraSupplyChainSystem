@@ -34,7 +34,10 @@
     }
 
     .container {
-      background-color: beige;
+      background-image: linear-gradient(145deg, rgba(255,255,255,0.8), rgba(0,0,0,0.8)), url('/images/manequin.jpeg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
       max-width: 650px;
       padding: 25px;
       border-radius: 15px;
