@@ -23,8 +23,6 @@ Route::post('/login', [UserController::class, 'login']);
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/register', [])->name('show.register');
-Route::get('/login', [])->name('show.login');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
