@@ -6,6 +6,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\TypeController;
+use App\Http\Controllers\ManufacturerDashboardController;
+use App\Http\Controllers\WholesalerDashboardController;
+use App\Http\Controllers\AdminDashboardController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -55,9 +58,7 @@ Route::middleware(['auth', 'role:vendor'])->group(function () {
 
 // Admin routes
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard');
-    });
+    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
 });
 
 // Supplier routes
@@ -71,14 +72,24 @@ Route::middleware(['auth', 'role:supplier'])->prefix('supplier')->name('supplier
     Route::put('/supplied-items/{suppliedItem}', [App\Http\Controllers\SupplierController::class, 'updateSuppliedItem'])->name('supplied-items.update');
 });
 
+// Manufacturer routes
+Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('manufacturer.')->group(function () {
+    Route::get('/dashboard', [ManufacturerDashboardController::class, 'index'])->name('dashboard');
+});
+
+// Wholesaler routes
+Route::middleware(['auth', 'role:wholesaler'])->prefix('wholesaler')->name('wholesaler.')->group(function () {
+    Route::get('/dashboard', [WholesalerDashboardController::class, 'index'])->name('dashboard');
+});
+
 Route::get('/register/admin', [RegisteredUserController::class, 'createAdmin'])->name('register.admin');
-Route::post('/register/admin', [RegisteredUserController::class, 'storeAdmin']);
+Route::post('/register/admin', [RegisteredUserController::class, 'storeAdmin'])->name('register.admin.store');
 
 Route::get('/register/supplier', [RegisteredUserController::class, 'createSupplier'])->name('register.supplier');
-Route::post('/register/supplier', [RegisteredUserController::class, 'storeSupplier']);
+Route::post('/register/supplier', [RegisteredUserController::class, 'storeSupplier'])->name('register.supplier.store');
 
 Route::get('/register/manufacturer', [RegisteredUserController::class, 'createManufacturer'])->name('register.manufacturer');
-Route::post('/register/manufacturer', [RegisteredUserController::class, 'storeManufacturer']);
+Route::post('/register/manufacturer', [RegisteredUserController::class, 'storeManufacturer'])->name('register.manufacturer.store');
 
 Route::get('/register/wholesaler', [RegisteredUserController::class, 'createWholesaler'])->name('register.wholesaler');
-Route::post('/register/wholesaler', [RegisteredUserController::class, 'storeWholesaler']);
+Route::post('/register/wholesaler', [RegisteredUserController::class, 'storeWholesaler'])->name('register.wholesaler.store');

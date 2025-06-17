@@ -12,6 +12,9 @@
             <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
                 Wholesaler Registration
             </h2>
+            <p class="mt-2 text-center text-sm text-gray-600">
+                Join our network of premium wholesalers and access quality fashion products from trusted manufacturers
+            </p>
         </div>
 
         <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">

@@ -207,54 +207,5 @@ class RegisteredUserController extends Controller
 
         return redirect('/wholesaler/dashboard');
     }
-    public function createAdmin() {
-    return view('auth.register-admin');
-}
-
-public function createSupplier() {
-    return view('auth.register-supplier');
-}
-
-public function createManufacturer() {
-    return view('auth.register-manufacturer');
-}
-
-public function createWholesaler() {
-    return view('auth.register-wholesaler');
-}
-
-public function storeAdmin(Request $request) {
-    return $this->storeWithRole($request, 'admin');
-}
-public function storeSupplier(Request $request) {
-    return $this->storeWithRole($request, 'supplier');
-}
-public function storeManufacturer(Request $request) {
-    return $this->storeWithRole($request, 'manufacturer');
-}
-public function storeWholesaler(Request $request) {
-    return $this->storeWithRole($request, 'wholesaler');
-}
-
-// Reusable method
-protected function storeWithRole(Request $request, $role) {
-    $request->validate([
-        'name' => ['required', 'string', 'max:255'],
-        'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-        'password' => ['required', 'confirmed', Rules\Password::defaults()],
-    ]);
-
-    $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-        'role' => $role,
-    ]);
-
-    auth()->login($user);
-
-    return redirect('/dashboard'); // or redirect based on role
-}
-
 }
 
