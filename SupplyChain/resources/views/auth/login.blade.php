@@ -21,7 +21,7 @@
         }
 
         body {
-            background-image: url('/images/showroom.png');
+            background-image: url('/images/store.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;

@@ -13,7 +13,7 @@
         }
 
         body {
-            background-image: url('/images/showroom.png');
+            background-image: url('/images/supplier.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
@@ -76,7 +76,7 @@
         }
     </style>
 </head>
-<body class="bg-cover bg-center bg-fixed" style="background-image: linear-gradient(135deg, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 100%), url('{{ asset('images/supplier.jpg') }}');">
+<body class="bg-cover bg-center bg-fixed" style="background-image: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.4) 100%), url('{{ asset('images/supplier.jpg') }}');">
 
     <div class="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div class="sm:mx-auto sm:w-full sm:max-w-md">
