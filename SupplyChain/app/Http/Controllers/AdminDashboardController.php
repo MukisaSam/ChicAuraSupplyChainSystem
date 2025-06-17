@@ -12,6 +12,10 @@ class AdminDashboardController extends Controller
     {
         $user = Auth::user();
 
+        if ($user->role !== 'admin') {
+            abort(403, 'Access denied. Admin privileges required.');
+        }
+
         // Stats focused on system administration
         $stats = [
             'total_users' => 68, // Manufacturers, Suppliers, Wholesalers

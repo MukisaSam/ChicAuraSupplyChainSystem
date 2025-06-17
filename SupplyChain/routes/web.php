@@ -18,7 +18,6 @@ use App\Http\Controllers\TypeController;
 */
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/logout', [UserController::class, 'logout']);
-Route::post('/login', [UserController::class, 'login']);
 
 Route::get('/', function () {
     return view('welcome');
@@ -36,28 +35,11 @@ Route::middleware('auth')->group(function () {
 
 require __DIR__.'/auth.php';
 
-Auth::routes();
-
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-// Customer routes
-Route::middleware(['auth', 'role:customer'])->group(function () {
-    Route::get('/customer/dashboard', function () {
-        return view('customer.dashboard');
-    });
-});
-
-// Vendor routes
-Route::middleware(['auth', 'role:vendor'])->group(function () {
-    Route::get('/vendor/dashboard', function () {
-        return view('vendor.dashboard');
-    });
-});
 
 // Admin routes
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', function () {
-        return view('admin.dashboard');
-    });
+    Route::get('/admin/dashboard', [App\Http\Controllers\AdminDashboardController::class, 'index'])->name('admin.dashboard');
 });
 
 // Supplier routes
@@ -71,17 +53,17 @@ Route::middleware(['auth', 'role:supplier'])->prefix('supplier')->name('supplier
     Route::put('/supplied-items/{suppliedItem}', [App\Http\Controllers\SupplierController::class, 'updateSuppliedItem'])->name('supplied-items.update');
 });
 
-// Admin registration routes
 // Manufacturer routes
 Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('manufacturer.')->group(function () {
-    Route::get('/dashboard', [ManufacturerDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [App\Http\Controllers\ManufacturerDashboardController::class, 'index'])->name('dashboard');
 });
 
 // Wholesaler routes
 Route::middleware(['auth', 'role:wholesaler'])->prefix('wholesaler')->name('wholesaler.')->group(function () {
-    Route::get('/dashboard', [WholesalerDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [App\Http\Controllers\WholesalerDashboardController::class, 'index'])->name('dashboard');
 });
 
+// Registration routes
 Route::get('/register/admin', [RegisteredUserController::class, 'createAdmin'])->name('register.admin');
 Route::post('/register/admin', [RegisteredUserController::class, 'storeAdmin']);
 

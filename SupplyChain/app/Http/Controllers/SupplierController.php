@@ -29,6 +29,11 @@ class SupplierController extends Controller
     public function dashboard()
     {
         $supplier = Auth::user()->supplier;
+
+        if (!$supplier) {
+            abort(403, 'You are not a supplier.');
+        }
+
         $supplyRequests = $supplier->supplyRequests()->with('item')->latest()->get();
         $suppliedItems = $supplier->suppliedItems()->with('item')->latest()->get();
 

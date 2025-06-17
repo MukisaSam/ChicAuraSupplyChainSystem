@@ -29,31 +29,19 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        $role = Auth::user()->role;
+        $user = Auth::user();
+        $role = $user->role;
 
-$route = match ($role) {
-    'admin' => '/admin/dashboard',
-    'supplier' => '/supplier/dashboard',
-    'wholesaler' => '/wholesaler/dashboard',
-    'manufacturer' => '/manufacturer/dashboard',
-    default => '/home',
-};
+        $route = match ($role) {
+            'admin' => '/admin/dashboard',
+            'supplier' => '/supplier/dashboard',
+            'wholesaler' => '/wholesaler/dashboard',
+            'manufacturer' => '/manufacturer/dashboard',
+            default => '/dashboard',
+        };
 
-return redirect()->intended($route);
-
+        return redirect()->intended($route);
     }
-
-    protected function authenticated(Request $request, $user)
-{
-    if ($user->role === 'admin') {
-        return redirect('/admin/dashboard');
-    } elseif ($user->role === 'vendor') {
-        return redirect('/vendor/dashboard');
-    }
-
-    return redirect('/customer/dashboard');
-}
-
 
     /**
      * Destroy an authenticated session.

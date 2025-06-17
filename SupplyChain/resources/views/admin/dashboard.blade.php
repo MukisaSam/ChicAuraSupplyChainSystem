@@ -9,8 +9,53 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { background-color: #f8fafc; }
-        .sidebar { transition: transform 0.3s ease-in-out; }
+        body { 
+            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 100%), url('{{ asset('images/black.jpeg') }}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        .sidebar { 
+            transition: transform 0.3s ease-in-out;
+            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+        }
+        .logo-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .card-gradient {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            margin: 4px 0;
+        }
+        .nav-link:hover {
+            transform: translateX(5px);
+        }
+        .header-gradient {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
@@ -18,82 +63,188 @@
     </style>
 </head>
 <body class="font-sans antialiased">
-    <div class="flex h-screen bg-gray-100">
+    <div class="flex h-screen">
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 bg-white border-r md:block">
+        <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
             <div class="flex flex-col h-full">
-                <div class="flex items-center justify-center h-20 border-b">
-                    <h1 class="text-2xl font-bold text-gray-800">ChicAura</h1>
+                <div class="flex items-center justify-center h-16 border-b border-gray-600">
+                    <div class="logo-container">
+                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="h-12 w-auto">
+                    </div>
                 </div>
-                <nav class="flex-1 px-4 py-4 space-y-2">
-                    <a href="#" class="flex items-center px-4 py-2 text-white bg-indigo-600 rounded-md"><i class="fas fa-tachometer-alt w-6"></i><span class="ml-3">Dashboard</span></a>
-                    <a href="#" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md"><i class="fas fa-users-cog w-6"></i><span class="ml-3">User Management</span></a>
-                    <a href="#" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md"><i class="fas fa-shield-alt w-6"></i><span class="ml-3">Roles & Permissions</span></a>
-                    <a href="#" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md"><i class="fas fa-cogs w-6"></i><span class="ml-3">System Settings</span></a>
-                    <a href="#" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md"><i class="fas fa-chart-pie w-6"></i><span class="ml-3">Analytics</span></a>
-                    <a href="#" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md"><i class="fas fa-history w-6"></i><span class="ml-3">Audit Logs</span></a>
-                    <a href="#" class="flex items-center px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-md"><i class="fas fa-bell w-6"></i><span class="ml-3">Notifications</span></a>
+                <div class="px-4 py-4">
+                    <h3 class="text-white text-sm font-semibold mb-3 px-3">ADMINISTRATION</h3>
+                </div>
+                <nav class="flex-1 px-4 py-2 space-y-1">
+                    <a href="#" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl shadow-lg"><i class="fas fa-tachometer-alt w-5"></i><span class="ml-2 font-medium text-sm">Dashboard</span></a>
+                    <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-users-cog w-5"></i><span class="ml-2 text-sm">User Management</span></a>
+                    <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-shield-alt w-5"></i><span class="ml-2 text-sm">Roles & Permissions</span></a>
+                    <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-cogs w-5"></i><span class="ml-2 text-sm">System Settings</span></a>
+                    <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-chart-pie w-5"></i><span class="ml-2 text-sm">Analytics</span></a>
+                    <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-history w-5"></i><span class="ml-2 text-sm">Audit Logs</span></a>
+                    <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-bell w-5"></i><span class="ml-2 text-sm">Notifications</span></a>
                 </nav>
+                <div class="p-3 border-t border-gray-600">
+                    <div class="text-center text-gray-400 text-xs">
+                        <p>ChicAura SCM</p>
+                        <p class="text-xs mt-1">v2.1.0</p>
+                    </div>
+                </div>
             </div>
         </aside>
 
         <div class="flex flex-col flex-1 w-full">
              <!-- Top Navigation Bar -->
-            <header class="relative z-10 flex items-center justify-between h-20 bg-white border-b">
+            <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b">
                 <div class="flex items-center">
-                    <button id="menu-toggle" class="md:hidden p-4 text-gray-500 hover:text-gray-700"><i class="fas fa-bars text-xl"></i></button>
-                    <div class="relative ml-4 hidden md:block"><span class="absolute inset-y-0 left-0 flex items-center pl-3"><i class="fas fa-search text-gray-400"></i></span><input type="text" class="w-full py-2 pl-10 pr-4 border rounded-md" placeholder="Search users or logs..."></div>
+                    <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700"><i class="fas fa-bars text-lg"></i></button>
+                    <div class="relative ml-3 hidden md:block">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3"><i class="fas fa-search text-gray-400"></i></span>
+                        <input type="text" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" placeholder="Search users, logs, or settings...">
+                    </div>
                 </div>
-                <div class="flex items-center pr-4">
-                    <button class="p-2 text-gray-500 hover:text-gray-700"><i class="fas fa-bell text-xl"></i></button>
-                    <div class="relative ml-3"><button class="flex items-center focus:outline-none"><span class="mr-2">{{ $user->name ?? 'System Admin' }}</span><img class="w-8 h-8 rounded-full" src="https://via.placeholder.com/32" alt="User Avatar"></button></div>
+                <div class="flex items-center pr-4 space-x-3">
+                    <button class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"><i class="fas fa-bell text-lg"></i></button>
+                    <div class="relative">
+                        <button class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
+                            <span class="mr-2 text-gray-700 font-medium text-sm">{{ $user->name ?? 'System Admin' }}</span>
+                            <img class="w-7 h-7 rounded-full border-2 border-blue-200" src="https://via.placeholder.com/28" alt="User Avatar">
+                        </button>
+                    </div>
                 </div>
             </header>
 
             <!-- Main Content -->
-            <main class="flex-1 p-6 md:p-8">
-                <h2 class="text-3xl font-semibold text-gray-800">Administrator Dashboard</h2>
-                <div class="grid grid-cols-1 gap-6 mt-6 sm:grid-cols-2 lg:grid-cols-4">
-                    <div class="p-6 bg-white rounded-lg shadow-md"><div class="flex items-center"><div class="p-3 bg-blue-100 rounded-full"><i class="fas fa-users text-blue-600 text-xl"></i></div><div class="ml-4"><p class="text-sm font-medium text-gray-500">Total Users</p><p class="text-2xl font-bold text-gray-800">{{ $stats['total_users'] ?? '0' }}</p></div></div></div>
-                    <div class="p-6 bg-white rounded-lg shadow-md"><div class="flex items-center"><div class="p-3 bg-indigo-100 rounded-full"><i class="fas fa-globe-americas text-indigo-600 text-xl"></i></div><div class="ml-4"><p class="text-sm font-medium text-gray-500">Active Sessions</p><p class="text-2xl font-bold text-gray-800">{{ $stats['active_sessions'] ?? '0' }}</p></div></div></div>
-                    <div class="p-6 bg-white rounded-lg shadow-md"><div class="flex items-center"><div class="p-3 bg-green-100 rounded-full"><i class="fas fa-server text-green-600 text-xl"></i></div><div class="ml-4"><p class="text-sm font-medium text-gray-500">System Status</p><p class="text-2xl font-bold text-green-600">{{ $stats['system_status'] ?? 'N/A' }}</p></div></div></div>
-                    <div class="p-6 bg-white rounded-lg shadow-md"><div class="flex items-center"><div class="p-3 bg-red-100 rounded-full"><i class="fas fa-ticket-alt text-red-600 text-xl"></i></div><div class="ml-4"><p class="text-sm font-medium text-gray-500">Pending Issues</p><p class="text-2xl font-bold text-gray-800">{{ $stats['pending_issues'] ?? '0' }}</p></div></div></div>
+            <main class="flex-1 p-4 overflow-hidden">
+                <div class="mb-4">
+                    <h2 class="text-2xl font-bold text-white mb-1">Administrator Dashboard</h2>
+                    <p class="text-gray-200 text-sm">Welcome back! Here's your system overview.</p>
                 </div>
-                <div class="grid grid-cols-1 gap-6 mt-8 lg:grid-cols-3">
-                    <div class="p-6 bg-white rounded-lg shadow-md lg:col-span-2"><h3 class="text-lg font-semibold text-gray-800">Recent System Activity</h3><div class="mt-4 space-y-4">
-                        @forelse ($recentActivities as $activity)
-                            <div class="flex items-start"><div class="flex-shrink-0 w-10 text-center"><i class="fas {{ $activity['icon'] }} {{ $activity['color'] }} text-lg"></i></div><div class="ml-4 flex-1"><p class="text-sm text-gray-800">{{ $activity['description'] }}</p><p class="text-xs text-gray-500">{{ $activity['time'] }}</p></div></div>
-                        @empty <p class="text-gray-500">No recent activities found.</p> @endforelse
-                    </div></div>
-                    <div class="p-6 bg-white rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-800">User Roles</h3><canvas id="userRolesChart"></canvas></div>
+                
+                <div class="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <div class="stat-card p-4 rounded-xl">
+                        <div class="flex items-center">
+                            <div class="p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg">
+                                <i class="fas fa-users text-white text-xl"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-xs font-medium text-gray-600">Total Users</p>
+                                <p class="text-2xl font-bold text-gray-800">{{ $stats['total_users'] ?? '0' }}</p>
+                                <p class="text-xs text-green-600 mt-1">↗ +12% this month</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card p-4 rounded-xl">
+                        <div class="flex items-center">
+                            <div class="p-3 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl shadow-lg">
+                                <i class="fas fa-globe-americas text-white text-xl"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-xs font-medium text-gray-600">Active Sessions</p>
+                                <p class="text-2xl font-bold text-gray-800">{{ $stats['active_sessions'] ?? '0' }}</p>
+                                <p class="text-xs text-blue-600 mt-1">↗ +8% this week</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card p-4 rounded-xl">
+                        <div class="flex items-center">
+                            <div class="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg">
+                                <i class="fas fa-server text-white text-xl"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-xs font-medium text-gray-600">System Status</p>
+                                <p class="text-2xl font-bold text-green-600">{{ $stats['system_status'] ?? 'N/A' }}</p>
+                                <p class="text-xs text-green-600 mt-1">✓ All systems operational</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card p-4 rounded-xl">
+                        <div class="flex items-center">
+                            <div class="p-3 bg-gradient-to-br from-red-500 to-red-600 rounded-xl shadow-lg">
+                                <i class="fas fa-ticket-alt text-white text-xl"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-xs font-medium text-gray-600">Pending Issues</p>
+                                <p class="text-2xl font-bold text-gray-800">{{ $stats['pending_issues'] ?? '0' }}</p>
+                                <p class="text-xs text-red-600 mt-1">↘ -5% this week</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-3 h-64">
+                    <div class="card-gradient p-4 rounded-xl lg:col-span-2 overflow-hidden">
+                        <h3 class="text-lg font-bold text-gray-800 mb-3">Recent System Activity</h3>
+                        <div class="space-y-2 h-48 overflow-y-auto">
+                            @forelse ($recentActivities as $activity)
+                                <div class="flex items-start p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                                    <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full {{ $activity['color'] }} bg-opacity-10">
+                                        <i class="fas {{ $activity['icon'] }} {{ $activity['color'] }} text-sm"></i>
+                                    </div>
+                                    <div class="ml-3 flex-1">
+                                        <p class="text-xs font-medium text-gray-800">{{ $activity['description'] }}</p>
+                                        <p class="text-xs text-gray-500 mt-1">{{ $activity['time'] }}</p>
+                                    </div>
+                                </div>
+                            @empty 
+                                <div class="text-center py-6">
+                                    <i class="fas fa-inbox text-gray-400 text-2xl mb-2"></i>
+                                    <p class="text-gray-500 text-sm">No recent activities found.</p>
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                    <div class="card-gradient p-4 rounded-xl overflow-hidden">
+                        <h3 class="text-lg font-bold text-gray-800 mb-3">User Roles Distribution</h3>
+                        <canvas id="userRolesChart" class="w-full h-48"></canvas>
+                    </div>
                 </div>
             </main>
         </div>
     </div>
-    <script>
-        const menuToggle = document.getElementById('menu-toggle');
-        const sidebar = document.getElementById('sidebar');
-        menuToggle.addEventListener('click', () => sidebar.classList.toggle('open'));
 
-        const ctx = document.getElementById('userRolesChart').getContext('2d');
-        new Chart(ctx, {
+    <script>
+        // Mobile menu toggle
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+
+        // User Roles Chart
+        const userRolesCtx = document.getElementById('userRolesChart').getContext('2d');
+        new Chart(userRolesCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Manufacturers', 'Suppliers', 'Wholesalers', 'Admins'],
+                labels: ['Admins', 'Suppliers', 'Manufacturers', 'Wholesalers'],
                 datasets: [{
-                    data: [1, 25, 42, 2], // Corresponds to total users
-                    backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#6b7280'],
+                    data: [{{ $stats['admin_count'] ?? 5 }}, {{ $stats['supplier_count'] ?? 25 }}, {{ $stats['manufacturer_count'] ?? 15 }}, {{ $stats['wholesaler_count'] ?? 20 }}],
+                    backgroundColor: [
+                        '#3B82F6',
+                        '#10B981', 
+                        '#F59E0B',
+                        '#8B5CF6'
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
                 }]
             },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        position: 'top',
+                        position: 'bottom',
+                        labels: {
+                            padding: 10,
+                            usePointStyle: true,
+                            font: {
+                                size: 10
+                            }
+                        }
                     }
-                }
+                },
+                cutout: '60%'
             }
         });
     </script>
 </body>
-</html>
+</html> 
