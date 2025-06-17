@@ -62,7 +62,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 // Supplier routes
 Route::middleware(['auth', 'role:supplier'])->prefix('supplier')->name('supplier.')->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\SupplierController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [App\Http\Controllers\SupplierController::class, 'dashboard'])->name('dashboard');
     Route::get('/analytics', [App\Http\Controllers\SupplierController::class, 'analytics'])->name('analytics');
     Route::get('/supply-requests/{supplyRequest}', [App\Http\Controllers\SupplierController::class, 'showSupplyRequest'])->name('supply-requests.show');
     Route::put('/supply-requests/{supplyRequest}', [App\Http\Controllers\SupplierController::class, 'updateSupplyRequest'])->name('supply-requests.update');
