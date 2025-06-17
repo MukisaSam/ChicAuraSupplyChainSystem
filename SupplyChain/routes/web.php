@@ -72,6 +72,7 @@ Route::middleware(['auth', 'role:supplier'])->prefix('supplier')->name('supplier
     Route::put('/supplied-items/{suppliedItem}', [App\Http\Controllers\SupplierController::class, 'updateSuppliedItem'])->name('supplied-items.update');
 });
 
+// Admin registration routes
 // Manufacturer routes
 Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('manufacturer.')->group(function () {
     Route::get('/dashboard', [ManufacturerDashboardController::class, 'index'])->name('dashboard');
@@ -85,11 +86,14 @@ Route::middleware(['auth', 'role:wholesaler'])->prefix('wholesaler')->name('whol
 Route::get('/register/admin', [RegisteredUserController::class, 'createAdmin'])->name('register.admin');
 Route::post('/register/admin', [RegisteredUserController::class, 'storeAdmin'])->name('register.admin.store');
 
+// Supplier registration routes
 Route::get('/register/supplier', [RegisteredUserController::class, 'createSupplier'])->name('register.supplier');
 Route::post('/register/supplier', [RegisteredUserController::class, 'storeSupplier'])->name('register.supplier.store');
 
+// Manufacturer registration routes
 Route::get('/register/manufacturer', [RegisteredUserController::class, 'createManufacturer'])->name('register.manufacturer');
 Route::post('/register/manufacturer', [RegisteredUserController::class, 'storeManufacturer'])->name('register.manufacturer.store');
 
+// Wholesaler registration routes
 Route::get('/register/wholesaler', [RegisteredUserController::class, 'createWholesaler'])->name('register.wholesaler');
 Route::post('/register/wholesaler', [RegisteredUserController::class, 'storeWholesaler'])->name('register.wholesaler.store');

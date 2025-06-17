@@ -8,12 +8,18 @@ use App\Models\SuppliedItem;
 use App\Models\PriceNegotiation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class SupplierController extends Controller
 {
     public function index()
     {
+
         $supplier = Auth::user()->supplier;
+
+        if (!$supplier) {
+        abort(403, 'You are not a supplier.');
+    }
         $supplyRequests = $supplier->supplyRequests()->with('item')->latest()->get();
         $suppliedItems = $supplier->suppliedItems()->with('item')->latest()->get();
         
@@ -38,7 +44,7 @@ class SupplierController extends Controller
     public function updateSupplyRequest(Request $request, SupplyRequest $supplyRequest)
     {
         $this->authorize('update', $supplyRequest);
-        
+
         $validated = $request->validate([
             'status' => 'required|in:accepted,declined',
             'notes' => 'nullable|string',
@@ -62,7 +68,7 @@ class SupplierController extends Controller
     public function submitPriceNegotiation(Request $request, SupplyRequest $supplyRequest)
     {
         $this->authorize('update', $supplyRequest);
-        
+
         $validated = $request->validate([
             'counter_price' => 'required|numeric|min:0',
             'notes' => 'nullable|string',
@@ -82,7 +88,7 @@ class SupplierController extends Controller
     public function updateSuppliedItem(Request $request, SuppliedItem $suppliedItem)
     {
         $this->authorize('update', $suppliedItem);
-        
+
         $validated = $request->validate([
             'delivered_quantity' => 'required|numeric|min:0',
             'delivery_date' => 'required|date',
@@ -104,12 +110,12 @@ class SupplierController extends Controller
     public function analytics()
     {
         $supplier = Auth::user()->supplier;
-        
+
         $stats = [
             'total_supplied' => $supplier->suppliedItems()->sum('delivered_quantity'),
             'average_rating' => $supplier->suppliedItems()->avg('quality_rating'),
             'active_requests' => $supplier->supplyRequests()->where('status', 'pending')->count(),
-            'total_revenue' => $supplier->suppliedItems()->sum(\DB::raw('price * delivered_quantity')),
+            'total_revenue' => $supplier->suppliedItems()->sum(DB::raw('price * delivered_quantity')),
         ];
 
         $supplyTrends = $supplier->suppliedItems()
@@ -119,4 +125,4 @@ class SupplierController extends Controller
 
         return view('supplier.analytics', compact('stats', 'supplyTrends'));
     }
-} 
+}
