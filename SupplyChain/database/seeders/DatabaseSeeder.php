@@ -227,8 +227,8 @@ class DatabaseSeeder extends Seeder
             PriceNegotiation::create($negotiationData);
         }
 
-        $this->call([
-            TestUsersSeeder::class,
-        ]);
+        // $this->call([
+        //     TestUsersSeeder::class,
+        // ]);
     }
 }
