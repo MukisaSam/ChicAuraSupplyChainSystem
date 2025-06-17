@@ -8,13 +8,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary-color: #4983ff;
-      --primary-dark: #4edaf3;
-      --text-color: #061c5a;
+      --primary-color: #2563eb;
+      --primary-dark: #1d4ed8;
+      --text-color: #1f2937;
+      --text-light: #ffffff;
       --bg-overlay-color: rgba(158, 216, 243, 0.7);
-      --container-bg-start: rgba(186, 218, 240, 0.98);
-      --container-bg-end: rgba(172, 222, 245, 0.98);
-      --shadow-color: rgba(0, 0, 0, 0.2);
+      --container-bg-start: rgba(255, 255, 255, 0.95);
+      --container-bg-end: rgba(255, 255, 255, 0.95);
+      --shadow-color: rgba(0, 0, 0, 0.15);
     }
 
     body {
@@ -23,8 +24,9 @@
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
+      background-attachment: fixed;
       margin: 0;
-      padding: 0;
+      padding: 20px;
       color: var(--text-color);
       display: flex;
       justify-content: center;
@@ -34,134 +36,277 @@
     }
 
     .container {
-      background-image: linear-gradient(145deg, rgba(255,255,255,0.8), rgba(0,0,0,0.8)), url('/images/manequin.jpeg');
+      background: rgba(255, 255, 255, 0.1);
+      max-width: 90vw;
+      max-height: 90vh;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px var(--shadow-color);
+      text-align: center;
+      border: 2px solid rgba(37, 99, 235, 0.2);
+      backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .logo-container {
+      margin-bottom: 20px;
+      opacity: 1;
+      transform: scale(1);
+      animation: logoAppear 1.5s ease-out forwards;
+      display: inline-block;
+      background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.8)), url('/images/showroom.png');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      max-width: 650px;
-      padding: 25px;
+      padding: 12px 20px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(37, 99, 235, 0.1);
+    }
+
+    .logo {
+      max-width: 80px;
+      height: auto;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
       border-radius: 15px;
-      box-shadow: 0 15px 35px var(--shadow-color);
-      text-align: center;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeInContainer 1s ease-out forwards;
-      animation-delay: 0.2s;
-      border: 1px solid rgba(220, 220, 220, 0.7);
     }
 
     h1 {
       font-family: 'Montserrat', sans-serif;
-      font-size: 3.5em;
-      color: var(--primary-color);
-      margin-bottom: 25px;
+      font-size: 2.5em;
+      color: var(--text-light);
+      margin-bottom: 10px;
       line-height: 1.1;
-      opacity: 0;
-      animation: fadeInContent 1s ease-out forwards;
-      animation-delay: 0.8s;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      /* Static - no animation */
     }
 
-    .remark-text {
-      font-size: 1.3em;
-      line-height: 1.5;
-      opacity: 0;
-      transition: opacity 1s ease-in-out;
-      position: absolute;
-      left: 0;
-      right: 0;
+    .subtitle {
+      font-size: 1.1em;
+      color: var(--text-light);
+      margin-bottom: 25px;
+      font-weight: 500;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+      /* Static - no animation */
     }
 
-    .remark-text.active {
-      opacity: 1;
-      position: relative;
-    }
-
-    .remarks {
-      position: relative;
-      height: 60px;
-      margin-bottom: 35px;
+    .buttons-container {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
     }
 
     .btn {
       display: inline-block;
-      background-color: var(--primary-color);
-      color: white;
-      padding: 15px 30px;
-      margin: 0 15px;
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      color: var(--text-light);
+      padding: 12px 25px;
       text-decoration: none;
-      border-radius: 30px;
-      font-size: 1.1em;
+      border-radius: 50px;
+      font-size: 0.95em;
       font-weight: 600;
-      transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
-      box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.2);
       opacity: 0;
-      animation: fadeInContent 1s ease-out forwards;
-      animation-delay: 1.3s;
+      transform: translateY(30px);
+      animation: slideInButton 0.8s ease-out forwards;
+    }
+
+    .btn.login {
+      animation-delay: 0.5s;
+    }
+
+    .btn.register {
+      animation-delay: 0.8s;
     }
 
     .btn:hover {
-      background-color: var(--primary-dark);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 15px rgba(0, 123, 255, 0.3);
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+      transform: translateY(-5px);
+      box-shadow: 0 12px 25px rgba(37, 99, 235, 0.4);
+      border-color: rgba(255, 255, 255, 0.4);
     }
 
-    @keyframes fadeInContainer {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-top: 20px;
+      opacity: 0;
+      animation: fadeInFeatures 1s ease-out forwards;
+      animation-delay: 1.2s;
+      width: 100%;
+      max-width: 600px;
     }
 
-    @keyframes fadeInContent {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+    .feature {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(5px);
+    }
+
+    .feature h3 {
+      color: var(--text-light);
+      margin-bottom: 8px;
+      font-size: 0.95em;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    .feature p {
+      color: var(--text-light);
+      font-size: 0.8em;
+      margin: 0;
+      line-height: 1.3;
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    }
+
+    @keyframes logoAppear {
+      0% {
+        opacity: 0;
+        transform: scale(0.8) rotate(-5deg);
+      }
+      50% {
+        opacity: 0.8;
+        transform: scale(1.1) rotate(2deg);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) rotate(0deg);
+      }
+    }
+
+    @keyframes slideInButton {
+      0% {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInFeatures {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
       .container {
-        margin: 50px 20px;
-        padding: 30px;
+        margin: 0;
+        padding: 20px;
+        max-width: 95vw;
+        max-height: 95vh;
+      }
+
+      .logo {
+        max-width: 60px;
+      }
+
+      .logo-container {
+        padding: 8px 15px;
+        margin-bottom: 15px;
       }
 
       h1 {
-        font-size: 2.5em;
+        font-size: 2em;
+        margin-bottom: 8px;
       }
 
-      .remark-text {
+      .subtitle {
         font-size: 1em;
+        margin-bottom: 20px;
+      }
+
+      .buttons-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
       }
 
       .btn {
-        display: block;
-        margin: 15px auto;
-        width: 80%;
+        width: 100%;
         max-width: 250px;
+        margin: 0;
+        padding: 10px 20px;
+        font-size: 0.9em;
+      }
+
+      .features {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-top: 15px;
+        max-width: 100%;
+      }
+
+      .feature {
+        padding: 12px;
+      }
+
+      .feature h3 {
+        font-size: 0.9em;
+        margin-bottom: 6px;
+      }
+
+      .feature p {
+        font-size: 0.75em;
+        line-height: 1.2;
       }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Welcome to Chicaura SCM System</h1>
-    <a href="{{ route('login') }}" class="btn">Login to Your Account</a>
-    <a href="{{ route('register') }}" class="btn">Start Your Journey</a>
-    <div class="remarks">
-      <p class="remark-text active">Your one-stop solution for efficient supply chain management.</p>
-      <p class="remark-text">Manage your supply chain with ease, from procurement to delivery.</p>
-      <p class="remark-text">Join us today and streamline your operations!</p>
+    <div class="logo-container">
+      <img src="/images/logo.png" alt="ChicAura Logo" class="logo">
+    </div>
+    
+    <h1>Welcome to ChicAura</h1>
+    <p class="subtitle">Your Premier Supply Chain Management System</p>
+    
+    <div class="buttons-container">
+      <a href="{{ route('login') }}" class="btn login">Login to Your Account</a>
+      <a href="{{ route('register') }}" class="btn register">Start Your Journey</a>
+    </div>
+
+    <div class="features">
+      <div class="feature">
+        <h3>🔄 Streamlined Operations</h3>
+        <p>Manage your entire supply chain from procurement to delivery with ease</p>
+      </div>
+      <div class="feature">
+        <h3>📊 Real-time Analytics</h3>
+        <p>Get insights into your supply chain performance with detailed analytics</p>
+      </div>
+      <div class="feature">
+        <h3>🤝 Collaborative Platform</h3>
+        <p>Connect suppliers, manufacturers, and wholesalers in one unified system</p>
+      </div>
+      <div class="feature">
+        <h3>👗 Fashion-Focused</h3>
+        <p>Specialized tools for clothing industry with material tracking and style management</p>
+      </div>
     </div>
   </div>
-
-
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const remarks = document.querySelectorAll('.remark-text');
-      let index = 0;
-
-      setInterval(() => {
-        remarks[index].classList.remove('active');
-        index = (index + 1) % remarks.length;
-        remarks[index].classList.add('active');
-      }, 3000);
-    });
-  </script>
 </body>
 </html>

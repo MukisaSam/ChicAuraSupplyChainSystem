@@ -45,4 +45,66 @@
 
 .auth-link {
     @apply font-medium text-indigo-600 hover:text-indigo-500;
+}
+
+/* Transparent form styles for all forms */
+:root {
+    --primary-color: #2563eb;
+    --primary-dark: #1d4ed8;
+    --text-light: #ffffff;
+}
+
+.form-container {
+    background: rgba(255, 255, 255, 0.1) !important;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.form-input {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    color: var(--text-light) !important;
+    backdrop-filter: blur(5px);
+}
+
+.form-input::placeholder {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.form-input:focus {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border-color: var(--primary-color) !important;
+    color: var(--text-light) !important;
+}
+
+.form-label {
+    color: var(--text-light) !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.form-header {
+    color: var(--text-light) !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.form-description {
+    color: rgba(255, 255, 255, 0.8) !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.divider-text {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: var(--text-light) !important;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.login-btn {
+    background: transparent !important;
+    color: var(--text-light) !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+.login-btn:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    border-color: var(--primary-color) !important;
 } 
