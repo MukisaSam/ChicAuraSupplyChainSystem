@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Supplier;
+use App\Models\Manufacturer;
+use App\Models\Wholesaler;
 
 class User extends Authenticatable
 {
@@ -51,5 +54,20 @@ class User extends Authenticatable
     public function hasRole($role)
     {
         return $this->role === $role;
+    }
+
+    public function supplier()
+    {
+        return $this->hasOne(Supplier::class);
+    }
+
+    public function manufacturer()
+    {
+        return $this->hasOne(Manufacturer::class);
+    }
+
+    public function wholesaler()
+    {
+        return $this->hasOne(Wholesaler::class);
     }
 }
