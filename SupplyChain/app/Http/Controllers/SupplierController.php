@@ -17,7 +17,16 @@ class SupplierController extends Controller
         $supplyRequests = $supplier->supplyRequests()->with('item')->latest()->get();
         $suppliedItems = $supplier->suppliedItems()->with('item')->latest()->get();
         
-        return view('supplier.index', compact('supplier', 'supplyRequests', 'suppliedItems'));
+        return view('supplier.dashboard', compact('supplier', 'supplyRequests', 'suppliedItems'));
+    }
+
+    public function dashboard()
+    {
+        $supplier = Auth::user()->supplier;
+        $supplyRequests = $supplier->supplyRequests()->with('item')->latest()->get();
+        $suppliedItems = $supplier->suppliedItems()->with('item')->latest()->get();
+        
+        return view('supplier.dashboard', compact('supplier', 'supplyRequests', 'suppliedItems'));
     }
 
     public function showSupplyRequest(SupplyRequest $supplyRequest)

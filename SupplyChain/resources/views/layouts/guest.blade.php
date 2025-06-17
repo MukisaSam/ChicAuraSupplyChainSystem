@@ -21,7 +21,7 @@
             </div>
 
             <div class="form-container w-full sm:max-w-md mt-6 px-6 py-4 shadow-2xl overflow-hidden sm:rounded-xl">
-                {{ $slot }}
+                {{ $slot ?? '' }}
             </div>
         </div>
     </body>
