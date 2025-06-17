@@ -59,7 +59,7 @@
                     <div class="p-6 bg-white rounded-lg shadow-md lg:col-span-2"><h3 class="text-lg font-semibold text-gray-800">Supply Volume (Units)</h3><canvas id="supplyChart"></canvas></div>
                     <div class="p-6 bg-white rounded-lg shadow-md"><h3 class="text-lg font-semibold text-gray-800">Active Supply Requests</h3><div class="mt-4 space-y-4">
                         @forelse ($supplyRequests as $request)
-                            <div class="flex items-center"><div class="flex-shrink-0"><div class="w-10 h-10 flex items-center justify-center rounded-full {{ $request['status_color'] }}"><i class="fas {{ $request['icon'] }} text-white"></i></div></div><div class="ml-4 flex-1"><p class="text-sm font-medium text-gray-900">{{ $request['item'] }}</p><p class="text-sm text-gray-500">Request #{{ $request['id'] }}</p></div><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $request['status_color'] }} text-white">{{ $request['status'] }}</span></div>
+                            <div class="flex items-center"><div class="flex-shrink-0"><div class="w-10 h-10 flex items-center justify-center rounded-full {{ $request['status_color'] }}"><i class="fas {{ $request['icon'] }} text-white"></i></div></div><div class="ml-4 flex-1"><p class="text-sm font-medium text-gray-900">{{ $request->item->name }}</p><p class="text-sm text-gray-500">Request #{{ $request['id'] }}</p></div><span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ $request['status_color'] }} text-white">{{ $request['status'] }}</span></div>
                         @empty <p class="text-gray-500">No active requests.</p> @endforelse
                     </div></div>
                 </div>
