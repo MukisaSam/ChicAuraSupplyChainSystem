@@ -121,17 +121,17 @@
                     <div class="mb-6">
                         <div class="flex items-center justify-between">
                             <div>
-                                <h2 class="text-2xl font-bold text-gray-900">Order Details</h2>
-                                <p class="text-gray-600">Order #{{ $order->order_number }}</p>
+                                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Order Details</h2>
+                                <p class="text-gray-600 dark:text-gray-400">Order #{{ $order->order_number }}</p>
                             </div>
                             <div class="flex space-x-3">
-                                <a href="{{ route('wholesaler.orders.index') }}" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700">
+                                <a href="{{ route('wholesaler.orders.index') }}" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600">
                                     Back to Orders
                                 </a>
                                 @if(in_array($order->status, ['pending', 'confirmed']))
                                     <form method="POST" action="{{ route('wholesaler.orders.cancel', $order) }}" class="inline">
                                         @csrf
-                                        <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">
+                                        <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600">
                                             Cancel Order
                                         </button>
                                     </form>
@@ -142,19 +142,19 @@
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="lg:col-span-2">
-                            <div class="bg-white rounded-lg shadow p-6 mb-6">
-                                <h3 class="text-lg font-semibold mb-4">Order Items</h3>
+                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
+                                <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Order Items</h3>
                                 @foreach($order->orderItems as $orderItem)
-                                    <div class="border-b border-gray-200 py-4 last:border-b-0">
+                                    <div class="border-b border-gray-200 dark:border-gray-700 py-4 last:border-b-0">
                                         <div class="flex justify-between items-center">
                                             <div>
-                                                <h4 class="font-medium">{{ $orderItem->item->name }}</h4>
-                                                <p class="text-sm text-gray-600">{{ $orderItem->item->description }}</p>
+                                                <h4 class="font-medium text-gray-900 dark:text-gray-100">{{ $orderItem->item->name }}</h4>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">{{ $orderItem->item->description }}</p>
                                             </div>
                                             <div class="text-right">
-                                                <p class="font-medium">Qty: {{ $orderItem->quantity }}</p>
-                                                <p class="text-sm text-gray-600">${{ number_format($orderItem->unit_price, 2) }} each</p>
-                                                <p class="font-bold">${{ number_format($orderItem->total_price, 2) }}</p>
+                                                <p class="font-medium text-gray-900 dark:text-gray-100">Qty: {{ $orderItem->quantity }}</p>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">${{ number_format($orderItem->unit_price, 2) }} each</p>
+                                                <p class="font-bold text-gray-900 dark:text-gray-100">${{ number_format($orderItem->total_price, 2) }}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -163,31 +163,43 @@
                         </div>
 
                         <div class="lg:col-span-1">
-                            <div class="bg-white rounded-lg shadow p-6">
-                                <h3 class="text-lg font-semibold mb-4">Order Information</h3>
+                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                                <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Order Information</h3>
                                 <div class="space-y-3">
                                     <div>
-                                        <span class="text-sm font-medium text-gray-500">Status:</span>
+                                        <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Status:</span>
                                         <span class="ml-2 px-2 py-1 text-xs font-semibold rounded-full {{ $order->status_color }} text-white">
                                             {{ ucfirst(str_replace('_', ' ', $order->status)) }}
                                         </span>
                                     </div>
                                     <div>
-                                        <span class="text-sm font-medium text-gray-500">Total Amount:</span>
-                                        <span class="ml-2 font-bold">${{ number_format($order->total_amount, 2) }}</span>
+                                        <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Amount:</span>
+                                        <span class="ml-2 font-bold text-gray-900 dark:text-gray-100">${{ number_format($order->total_amount, 2) }}</span>
                                     </div>
                                     <div>
-                                        <span class="text-sm font-medium text-gray-500">Payment Method:</span>
-                                        <span class="ml-2">{{ ucfirst($order->payment_method) }}</span>
+                                        <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Payment Method:</span>
+                                        <span class="ml-2 text-gray-900 dark:text-gray-100">{{ ucfirst($order->payment_method) }}</span>
                                     </div>
                                     <div>
-                                        <span class="text-sm font-medium text-gray-500">Order Date:</span>
-                                        <span class="ml-2">{{ $order->order_date->format('M d, Y') }}</span>
+                                        <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Order Date:</span>
+                                        <span class="ml-2 text-gray-900 dark:text-gray-100">{{ $order->order_date->format('M d, Y') }}</span>
                                     </div>
                                     <div>
-                                        <span class="text-sm font-medium text-gray-500">Estimated Delivery:</span>
-                                        <span class="ml-2">{{ $order->estimated_delivery ? $order->estimated_delivery->format('M d, Y') : 'TBD' }}</span>
+                                        <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Estimated Delivery:</span>
+                                        <span class="ml-2 text-gray-900 dark:text-gray-100">{{ $order->estimated_delivery ? $order->estimated_delivery->format('M d, Y') : 'TBD' }}</span>
                                     </div>
+                                    @if($order->shipping_address)
+                                        <div>
+                                            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Shipping Address:</span>
+                                            <p class="ml-2 text-sm text-gray-900 dark:text-gray-100 mt-1">{{ $order->shipping_address }}</p>
+                                        </div>
+                                    @endif
+                                    @if($order->notes)
+                                        <div>
+                                            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Notes:</span>
+                                            <p class="ml-2 text-sm text-gray-900 dark:text-gray-100 mt-1">{{ $order->notes }}</p>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>

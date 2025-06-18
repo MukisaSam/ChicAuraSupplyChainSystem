@@ -87,6 +87,9 @@ Route::middleware(['auth', 'role:wholesaler'])->prefix('wholesaler')->name('whol
     Route::post('/orders', [App\Http\Controllers\WholesalerOrderController::class, 'store'])->name('orders.store');
     Route::get('/orders/{order}', [App\Http\Controllers\WholesalerOrderController::class, 'show'])->name('orders.show');
     Route::post('/orders/{order}/cancel', [App\Http\Controllers\WholesalerOrderController::class, 'cancel'])->name('orders.cancel');
+    
+    // Analytics routes
+    Route::get('/analytics', [App\Http\Controllers\WholesalerAnalyticsController::class, 'index'])->name('analytics.index');
 });
 
 // Registration routes
