@@ -10,6 +10,7 @@ use Laravel\Sanctum\HasApiTokens;
 use App\Models\Supplier;
 use App\Models\Manufacturer;
 use App\Models\Wholesaler;
+use App\Models\ChatMessage;
 
 class User extends Authenticatable
 {
@@ -70,5 +71,29 @@ class User extends Authenticatable
     public function wholesaler()
     {
         return $this->hasOne(Wholesaler::class);
+    }
+
+    /**
+     * Get messages sent by this user.
+     */
+    public function sentMessages()
+    {
+        return $this->hasMany(ChatMessage::class, 'sender_id');
+    }
+
+    /**
+     * Get messages received by this user.
+     */
+    public function receivedMessages()
+    {
+        return $this->hasMany(ChatMessage::class, 'receiver_id');
+    }
+
+    /**
+     * Get unread messages for this user.
+     */
+    public function unreadMessages()
+    {
+        return $this->receivedMessages()->where('is_read', false);
     }
 }

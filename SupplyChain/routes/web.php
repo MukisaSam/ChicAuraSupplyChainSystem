@@ -65,6 +65,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::middleware(['auth', 'role:supplier'])->prefix('supplier')->name('supplier.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\SupplierController::class, 'dashboard'])->name('dashboard');
     Route::get('/analytics', [App\Http\Controllers\SupplierController::class, 'analytics'])->name('analytics');
+    Route::get('/chat', [App\Http\Controllers\SupplierController::class, 'chat'])->name('chat');
+    Route::get('/reports', [App\Http\Controllers\SupplierController::class, 'reports'])->name('reports');
     Route::get('/supply-requests/{supplyRequest}', [App\Http\Controllers\SupplierController::class, 'showSupplyRequest'])->name('supply-requests.show');
     Route::put('/supply-requests/{supplyRequest}', [App\Http\Controllers\SupplierController::class, 'updateSupplyRequest'])->name('supply-requests.update');
     Route::post('/supply-requests/{supplyRequest}/negotiate', [App\Http\Controllers\SupplierController::class, 'submitPriceNegotiation'])->name('supply-requests.negotiate');
@@ -90,6 +92,14 @@ Route::middleware(['auth', 'role:wholesaler'])->prefix('wholesaler')->name('whol
     
     // Analytics routes
     Route::get('/analytics', [App\Http\Controllers\WholesalerAnalyticsController::class, 'index'])->name('analytics.index');
+    
+    // Chat routes
+    Route::get('/chat', [App\Http\Controllers\WholesalerChatController::class, 'index'])->name('chat.index');
+    Route::get('/chat/{contactId}', [App\Http\Controllers\WholesalerChatController::class, 'show'])->name('chat.show');
+    Route::post('/chat/send', [App\Http\Controllers\WholesalerChatController::class, 'sendMessage'])->name('chat.send');
+    Route::post('/chat/mark-read', [App\Http\Controllers\WholesalerChatController::class, 'markAsRead'])->name('chat.mark-read');
+    Route::get('/chat/unread-count', [App\Http\Controllers\WholesalerChatController::class, 'getUnreadCount'])->name('chat.unread-count');
+    Route::get('/chat/{contactId}/messages', [App\Http\Controllers\WholesalerChatController::class, 'getRecentMessages'])->name('chat.messages');
 });
 
 // Registration routes

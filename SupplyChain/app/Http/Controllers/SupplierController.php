@@ -130,4 +130,26 @@ class SupplierController extends Controller
 
         return view('supplier.analytics', compact('stats', 'supplyTrends'));
     }
+
+    public function chat()
+    {
+        $supplier = Auth::user()->supplier;
+
+        if (!$supplier) {
+            abort(403, 'You are not a supplier.');
+        }
+
+        return view('supplier.chat');
+    }
+
+    public function reports()
+    {
+        $supplier = Auth::user()->supplier;
+
+        if (!$supplier) {
+            abort(403, 'You are not a supplier.');
+        }
+
+        return view('supplier.reports');
+    }
 }
