@@ -13,14 +13,41 @@
 
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="{{ asset('js/theme-switcher.js') }}"></script>
+    <style>
+        /* Dark mode styles for main layout */
+        .dark .bg-gray-100 {
+            background-color: #1f2937;
+        }
+        
+        .dark .bg-white {
+            background-color: #374151;
+        }
+        
+        .dark .text-gray-800 {
+            color: #f3f4f6;
+        }
+        
+        .dark .text-gray-600 {
+            color: #d1d5db;
+        }
+        
+        .dark .border-gray-200 {
+            border-color: #4b5563;
+        }
+        
+        .dark .shadow {
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+        }
+    </style>
 </head>
 <body class="font-sans antialiased">
-    <div class="min-h-screen bg-gray-100">
+    <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
         @include('layouts.navigation')
 
         <!-- Page Heading -->
         @if (isset($header))
-            <header class="bg-white shadow">
+            <header class="bg-white dark:bg-gray-800 shadow">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     {{ $header }}
                 </div>

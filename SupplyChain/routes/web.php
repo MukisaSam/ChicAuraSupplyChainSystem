@@ -24,13 +24,32 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    $user = Auth::user();
+    
+    switch ($user->role) {
+        case 'admin':
+            return redirect()->route('admin.dashboard');
+        case 'supplier':
+            return redirect()->route('supplier.dashboard');
+        case 'manufacturer':
+            return redirect()->route('manufacturer.dashboard');
+        case 'wholesaler':
+            return redirect()->route('wholesaler.dashboard');
+        default:
+            return view('dashboard');
+    }
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    
+    // User profile routes
+    Route::get('/user-profile', [App\Http\Controllers\UserProfileController::class, 'edit'])->name('user.profile.edit');
+    Route::post('/user-profile', [App\Http\Controllers\UserProfileController::class, 'update'])->name('user.profile.update');
+    Route::post('/user-profile/password', [App\Http\Controllers\UserProfileController::class, 'updatePassword'])->name('user.profile.password');
+    Route::get('/user-profile/picture', [App\Http\Controllers\UserProfileController::class, 'getProfilePicture'])->name('user.profile.picture');
 });
 
 require __DIR__.'/auth.php';

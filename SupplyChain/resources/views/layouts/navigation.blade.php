@@ -20,6 +20,11 @@
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 @auth
+                    <!-- Theme Toggle -->
+                    <button data-theme-toggle class="mr-4 p-2 text-gray-500 hover:text-gray-700 rounded-full transition-colors" title="Switch Theme">
+                        <i class="fas fa-moon text-lg"></i>
+                    </button>
+                    
                     <!-- Logout Button -->
                     <form method="POST" action="{{ route('logout') }}" class="mr-4">
                         @csrf
@@ -34,6 +39,9 @@
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
                             <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                                <img class="w-6 h-6 rounded-full mr-2 object-cover" 
+                                     src="{{ Auth::user()->profile_picture ? Storage::disk('public')->url(Auth::user()->profile_picture) : asset('images/default-avatar.svg') }}" 
+                                     alt="Profile Picture">
                                 <div>{{ Auth::user()->name }}</div>
 
                                 <div class="ml-1">
@@ -45,7 +53,7 @@
                         </x-slot>
 
                         <x-slot name="content">
-                            <x-dropdown-link :href="route('profile.edit')">
+                            <x-dropdown-link :href="route('user.profile.edit')">
                                 {{ __('Profile') }}
                             </x-dropdown-link>
 

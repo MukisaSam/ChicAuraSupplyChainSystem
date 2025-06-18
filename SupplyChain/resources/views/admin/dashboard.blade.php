@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
         body { 
             background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 100%), url('{{ asset('images/black.jpeg') }}');
@@ -17,33 +18,76 @@
             min-height: 100vh;
             overflow: hidden;
         }
+        
+        /* Dark mode styles */
+        .dark body {
+            background: linear-gradient(135deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.8) 100%), url('{{ asset('images/black.jpeg') }}');
+        }
+        
         .sidebar { 
             transition: transform 0.3s ease-in-out;
             background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
             box-shadow: 4px 0 15px rgba(0,0,0,0.1);
         }
+        
+        .dark .sidebar {
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+        }
+        
         .logo-container {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 12px;
             padding: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
+        
+        .dark .logo-container {
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
         .card-gradient {
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
             border: 1px solid rgba(255,255,255,0.2);
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             backdrop-filter: blur(10px);
         }
+        
+        .dark .card-gradient {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #f1f5f9;
+        }
+        
         .stat-card {
             background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
             border: 1px solid rgba(255,255,255,0.3);
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+        
+        .dark .stat-card {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #f1f5f9;
+        }
+        
+        .dark .stat-card p {
+            color: #f1f5f9;
+        }
+        
+        .dark .stat-card .text-gray-600 {
+            color: #cbd5e1;
+        }
+        
+        .dark .stat-card .text-gray-800 {
+            color: #f1f5f9;
+        }
+        
         .stat-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
+        
         .nav-link {
             transition: all 0.3s ease;
             border-radius: 12px;
@@ -56,6 +100,20 @@
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
             box-shadow: 0 2px 20px rgba(0,0,0,0.1);
         }
+        
+        .dark .header-gradient {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-color: #475569;
+        }
+        
+        .dark .text-white {
+            color: #f1f5f9;
+        }
+        
+        .dark .text-gray-200 {
+            color: #cbd5e1;
+        }
+        
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
@@ -105,11 +163,27 @@
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
                     <button class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"><i class="fas fa-bell text-lg"></i></button>
+                    <button data-theme-toggle class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors" title="Switch Theme">
+                        <i class="fas fa-moon text-lg"></i>
+                    </button>
                     <div class="relative">
                         <button class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
-                            <span class="mr-2 text-gray-700 font-medium text-sm">{{ $user->name ?? 'System Admin' }}</span>
-                            <img class="w-7 h-7 rounded-full border-2 border-blue-200" src="https://via.placeholder.com/28" alt="User Avatar">
+                            <span class="mr-2 text-gray-700 font-medium text-sm">{{ Auth::user()->name ?? 'System Admin' }}</span>
+                            <img class="w-7 h-7 rounded-full border-2 border-blue-200 object-cover" 
+                                 src="{{ Auth::user()->profile_picture ? Storage::disk('public')->url(Auth::user()->profile_picture) : asset('images/default-avatar.svg') }}" 
+                                 alt="User Avatar">
                         </button>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <a href="{{ route('user.profile.edit') }}" class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors" title="Edit Profile">
+                            <i class="fas fa-user-edit text-lg"></i>
+                        </a>
+                        <form method="POST" action="{{ route('logout') }}" class="inline">
+                            @csrf
+                            <button type="submit" class="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors" title="Logout">
+                                <i class="fas fa-sign-out-alt text-lg"></i>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </header>
