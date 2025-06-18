@@ -80,7 +80,15 @@ Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('
 // Wholesaler routes
 Route::middleware(['auth', 'role:wholesaler'])->prefix('wholesaler')->name('wholesaler.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\WholesalerDashboardController::class, 'index'])->name('dashboard');
+    
+    // Order routes
+    Route::get('/orders', [App\Http\Controllers\WholesalerOrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/create', [App\Http\Controllers\WholesalerOrderController::class, 'create'])->name('orders.create');
+    Route::post('/orders', [App\Http\Controllers\WholesalerOrderController::class, 'store'])->name('orders.store');
+    Route::get('/orders/{order}', [App\Http\Controllers\WholesalerOrderController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{order}/cancel', [App\Http\Controllers\WholesalerOrderController::class, 'cancel'])->name('orders.cancel');
 });
+
 // Registration routes
 Route::get('/register/admin', [RegisteredUserController::class, 'createAdmin'])->name('register.admin');
 Route::post('/register/admin', [RegisteredUserController::class, 'storeAdmin'])->name('register.admin.store');
