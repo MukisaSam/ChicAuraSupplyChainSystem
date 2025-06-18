@@ -129,8 +129,8 @@
                     <a href="{{ route('wholesaler.dashboard') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-home w-5"></i><span class="ml-2 text-sm">Home</span></a>
                     <a href="{{ route('wholesaler.orders.index') }}" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-purple-600 to-purple-700 rounded-xl shadow-lg"><i class="fas fa-shopping-cart w-5"></i><span class="ml-2 font-medium text-sm">Orders</span></a>
                     <a href="{{ route('wholesaler.analytics.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-chart-line w-5"></i><span class="ml-2 text-sm">Analytics</span></a>
-                    <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-comments w-5"></i><span class="ml-2 text-sm">Chat</span></a>
-                    <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-file-invoice-dollar w-5"></i><span class="ml-2 text-sm">Reports</span></a>
+                    <a href="{{ route('wholesaler.chat.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-comments w-5"></i><span class="ml-2 text-sm">Chat</span></a>
+                    <a href="{{ route('wholesaler.reports.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-file-invoice-dollar w-5"></i><span class="ml-2 text-sm">Reports</span></a>
                 </nav>
                 <div class="p-3 border-t border-gray-600">
                     <div class="text-center text-gray-400 text-xs">
@@ -223,62 +223,64 @@
                     </div>
 
                     @if($orders->count() > 0)
-                        <div class="space-y-4">
-                            @foreach($orders as $order)
-                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
-                                    <div class="flex items-center justify-between mb-4">
-                                        <div class="flex items-center space-x-4">
-                                            <div class="w-12 h-12 flex items-center justify-center rounded-full {{ $order->status_color }} bg-opacity-10">
-                                                <i class="fas {{ $order->status_icon }} {{ $order->status_color }} text-lg"></i>
+                        <div class="container mx-auto px-2 sm:px-4 md:px-8 py-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                                @foreach($orders as $order)
+                                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
+                                        <div class="flex items-center justify-between mb-4">
+                                            <div class="flex items-center space-x-4">
+                                                <div class="w-12 h-12 flex items-center justify-center rounded-full {{ $order->status_color }} bg-opacity-10">
+                                                    <i class="fas {{ $order->status_icon }} {{ $order->status_color }} text-lg"></i>
+                                                </div>
+                                                <div>
+                                                    <h4 class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ $order->order_number }}</h4>
+                                                    <p class="text-sm text-gray-500 dark:text-gray-400">Placed on {{ $order->order_date->format('M d, Y') }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="text-right">
+                                                <p class="text-2xl font-bold text-gray-900 dark:text-gray-100">${{ number_format($order->total_amount, 2) }}</p>
+                                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {{ $order->status_color }} text-white">
+                                                    {{ ucfirst(str_replace('_', ' ', $order->status)) }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Items</p>
+                                                <p class="text-sm text-gray-900 dark:text-gray-100">{{ $order->orderItems->count() }} items</p>
                                             </div>
                                             <div>
-                                                <h4 class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ $order->order_number }}</h4>
-                                                <p class="text-sm text-gray-500 dark:text-gray-400">Placed on {{ $order->order_date->format('M d, Y') }}</p>
+                                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Payment</p>
+                                                <p class="text-sm text-gray-900 dark:text-gray-100">{{ ucfirst($order->payment_method) }}</p>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Estimated Delivery</p>
+                                                <p class="text-sm text-gray-900 dark:text-gray-100">{{ $order->estimated_delivery ? $order->estimated_delivery->format('M d, Y') : 'TBD' }}</p>
                                             </div>
                                         </div>
-                                        <div class="text-right">
-                                            <p class="text-2xl font-bold text-gray-900 dark:text-gray-100">${{ number_format($order->total_amount, 2) }}</p>
-                                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {{ $order->status_color }} text-white">
-                                                {{ ucfirst(str_replace('_', ' ', $order->status)) }}
-                                            </span>
+                                        
+                                        <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
+                                            <div class="flex space-x-2">
+                                                <a href="{{ route('wholesaler.orders.show', $order) }}" class="bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-200 dark:hover:bg-blue-900/40 transition-colors">
+                                                    <i class="fas fa-eye mr-1"></i> View Details
+                                                </a>
+                                                @if(in_array($order->status, ['pending', 'confirmed']))
+                                                    <form method="POST" action="{{ route('wholesaler.orders.cancel', $order) }}" class="inline" onsubmit="return confirm('Are you sure you want to cancel this order?')">
+                                                        @csrf
+                                                        <button type="submit" class="bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-200 dark:hover:bg-red-900/40 transition-colors">
+                                                            <i class="fas fa-times mr-1"></i> Cancel Order
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            </div>
+                                            <div class="text-sm text-gray-500 dark:text-gray-400">
+                                                Order ID: {{ $order->id }}
+                                            </div>
                                         </div>
                                     </div>
-                                    
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                                        <div>
-                                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Items</p>
-                                            <p class="text-sm text-gray-900 dark:text-gray-100">{{ $order->orderItems->count() }} items</p>
-                                        </div>
-                                        <div>
-                                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Payment</p>
-                                            <p class="text-sm text-gray-900 dark:text-gray-100">{{ ucfirst($order->payment_method) }}</p>
-                                        </div>
-                                        <div>
-                                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Estimated Delivery</p>
-                                            <p class="text-sm text-gray-900 dark:text-gray-100">{{ $order->estimated_delivery ? $order->estimated_delivery->format('M d, Y') : 'TBD' }}</p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
-                                        <div class="flex space-x-2">
-                                            <a href="{{ route('wholesaler.orders.show', $order) }}" class="bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-200 dark:hover:bg-blue-900/40 transition-colors">
-                                                <i class="fas fa-eye mr-1"></i> View Details
-                                            </a>
-                                            @if(in_array($order->status, ['pending', 'confirmed']))
-                                                <form method="POST" action="{{ route('wholesaler.orders.cancel', $order) }}" class="inline" onsubmit="return confirm('Are you sure you want to cancel this order?')">
-                                                    @csrf
-                                                    <button type="submit" class="bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-200 dark:hover:bg-red-900/40 transition-colors">
-                                                        <i class="fas fa-times mr-1"></i> Cancel Order
-                                                    </button>
-                                                </form>
-                                            @endif
-                                        </div>
-                                        <div class="text-sm text-gray-500 dark:text-gray-400">
-                                            Order ID: {{ $order->id }}
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
+                                @endforeach
+                            </div>
                         </div>
                         
                         <!-- Pagination -->

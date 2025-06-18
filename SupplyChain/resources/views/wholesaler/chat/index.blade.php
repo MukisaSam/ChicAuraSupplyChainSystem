@@ -272,7 +272,7 @@
                         <span class="ml-2 font-medium text-sm">Chat</span>
                         <span id="unread-count" class="unread-badge ml-auto" style="display: none;"></span>
                     </a>
-                    <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                    <a href="{{ route('wholesaler.reports.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-file-invoice-dollar w-5"></i>
                         <span class="ml-2 text-sm">Reports</span>
                     </a>

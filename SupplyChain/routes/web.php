@@ -100,6 +100,12 @@ Route::middleware(['auth', 'role:wholesaler'])->prefix('wholesaler')->name('whol
     Route::post('/chat/mark-read', [App\Http\Controllers\WholesalerChatController::class, 'markAsRead'])->name('chat.mark-read');
     Route::get('/chat/unread-count', [App\Http\Controllers\WholesalerChatController::class, 'getUnreadCount'])->name('chat.unread-count');
     Route::get('/chat/{contactId}/messages', [App\Http\Controllers\WholesalerChatController::class, 'getRecentMessages'])->name('chat.messages');
+
+    // Reports routes
+    Route::get('/reports', [App\Http\Controllers\WholesalerReportsController::class, 'index'])->name('reports.index');
+    Route::get('/reports/sales', [App\Http\Controllers\WholesalerReportsController::class, 'salesReport'])->name('reports.sales');
+    Route::get('/reports/orders', [App\Http\Controllers\WholesalerReportsController::class, 'orderReport'])->name('reports.orders');
+    Route::get('/reports/export', [App\Http\Controllers\WholesalerReportsController::class, 'export'])->name('reports.export');
 });
 
 // Registration routes

@@ -1,10 +1,10 @@
-{{-- resources/views/wholesaler/analytics/index.blade.php --}}
+{{-- resources/views/wholesaler/reports/sales.blade.php --}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analytics - ChicAura SCM</title>
+    <title>Sales Report - ChicAura SCM</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
@@ -17,7 +17,6 @@
             min-height: 100vh;
         }
         
-        /* Dark mode styles */
         .dark body {
             background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 100%), url('{{ asset('images/wholesaler.jpg') }}');
         }
@@ -110,18 +109,6 @@
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
         }
-        
-        /* Chart container styles */
-        .chart-container {
-            position: relative;
-            height: 300px;
-            width: 100%;
-        }
-        
-        /* Dark mode chart adjustments */
-        .dark .chart-container canvas {
-            filter: brightness(0.9) contrast(1.1);
-        }
     </style>
 </head>
 <body class="font-sans antialiased">
@@ -140,9 +127,9 @@
                 <nav class="flex-1 px-4 py-2 space-y-1">
                     <a href="{{ route('wholesaler.dashboard') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-home w-5"></i><span class="ml-2 text-sm">Home</span></a>
                     <a href="{{ route('wholesaler.orders.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-shopping-cart w-5"></i><span class="ml-2 text-sm">Orders</span></a>
-                    <a href="{{ route('wholesaler.analytics.index') }}" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-purple-600 to-purple-700 rounded-xl shadow-lg"><i class="fas fa-chart-line w-5"></i><span class="ml-2 font-medium text-sm">Analytics</span></a>
+                    <a href="{{ route('wholesaler.analytics.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-chart-line w-5"></i><span class="ml-2 text-sm">Analytics</span></a>
                     <a href="{{ route('wholesaler.chat.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-comments w-5"></i><span class="ml-2 text-sm">Chat</span></a>
-                    <a href="{{ route('wholesaler.reports.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-file-invoice-dollar w-5"></i><span class="ml-2 text-sm">Reports</span></a>
+                    <a href="{{ route('wholesaler.reports.index') }}" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-purple-600 to-purple-700 rounded-xl shadow-lg"><i class="fas fa-file-invoice-dollar w-5"></i><span class="ml-2 font-medium text-sm">Reports</span></a>
                 </nav>
                 <div class="p-3 border-t border-gray-600">
                     <div class="text-center text-gray-400 text-xs">
@@ -160,7 +147,7 @@
                     <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"><i class="fas fa-bars text-lg"></i></button>
                     <div class="relative ml-3 hidden md:block">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3"><i class="fas fa-search text-gray-400"></i></span>
-                        <input type="text" class="w-80 py-2 pl-10 pr-4 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm dark:bg-gray-700 dark:text-white" placeholder="Search analytics...">
+                        <input type="text" class="w-80 py-2 pl-10 pr-4 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm dark:bg-gray-700 dark:text-white" placeholder="Search sales...">
                     </div>
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
@@ -194,13 +181,35 @@
             <main class="flex-1 p-4 overflow-auto">
                 <div class="container mx-auto px-2 sm:px-4 md:px-8 py-6">
                     <!-- Header -->
-                    <div class="mb-6">
-                        <h1 class="text-3xl font-bold text-white mb-2">Analytics Dashboard</h1>
-                        <p class="text-gray-200">Track your order performance and business insights</p>
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+                        <div>
+                            <h1 class="text-3xl font-bold text-white mb-2">Sales Report</h1>
+                            <p class="text-gray-200">Detailed sales analysis from {{ $startDate }} to {{ $endDate }}</p>
+                        </div>
+                        <div class="flex space-x-2 mt-4 md:mt-0">
+                            <a href="{{ route('wholesaler.reports.index') }}" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">
+                                <i class="fas fa-arrow-left mr-2"></i>Back to Reports
+                            </a>
+                            <a href="{{ route('wholesaler.reports.export', ['type' => 'sales', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
+                                <i class="fas fa-download mr-2"></i>Export
+                            </a>
+                        </div>
                     </div>
 
-                    <!-- Summary Cards -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <!-- Sales Summary -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <div class="card-gradient p-6 rounded-xl">
+                            <div class="flex items-center">
+                                <div class="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl">
+                                    <i class="fas fa-dollar-sign text-white text-xl"></i>
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">Total Sales</p>
+                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($salesData->sum('total_amount'), 2) }}</p>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="card-gradient p-6 rounded-xl">
                             <div class="flex items-center">
                                 <div class="p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl">
@@ -208,19 +217,7 @@
                                 </div>
                                 <div class="ml-4">
                                     <p class="text-sm text-gray-600 dark:text-gray-400">Total Orders</p>
-                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $totalOrders }}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card-gradient p-6 rounded-xl">
-                            <div class="flex items-center">
-                                <div class="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl">
-                                    <i class="fas fa-dollar-sign text-white text-xl"></i>
-                                </div>
-                                <div class="ml-4">
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Total Spent</p>
-                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($totalSpent, 2) }}</p>
+                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $salesData->count() }}</p>
                                 </div>
                             </div>
                         </div>
@@ -232,87 +229,40 @@
                                 </div>
                                 <div class="ml-4">
                                     <p class="text-sm text-gray-600 dark:text-gray-400">Avg Order Value</p>
-                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($averageOrderValue, 2) }}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card-gradient p-6 rounded-xl">
-                            <div class="flex items-center">
-                                <div class="p-3 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl">
-                                    <i class="fas fa-clock text-white text-xl"></i>
-                                </div>
-                                <div class="ml-4">
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Pending Orders</p>
-                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $pendingOrders }}</p>
+                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($salesData->avg('total_amount'), 2) }}</p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Charts Section -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                        <!-- Order Trends Chart -->
-                        <div class="card-gradient p-6 rounded-xl">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Monthly Order Trends</h3>
-                            <div class="chart-container">
-                                <canvas id="orderTrendsChart"></canvas>
-                            </div>
-                        </div>
-
-                        <!-- Order Amounts Chart -->
-                        <div class="card-gradient p-6 rounded-xl">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Monthly Order Amounts</h3>
-                            <div class="chart-container">
-                                <canvas id="orderAmountsChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Data Tables -->
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                        <!-- Top Products -->
-                        <div class="card-gradient p-6 rounded-xl">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top Products by Quantity</h3>
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full">
-                                    <thead>
-                                        <tr class="border-b border-gray-200 dark:border-gray-600">
-                                            <th class="text-left py-2 text-sm font-medium text-gray-600 dark:text-gray-400">Product</th>
-                                            <th class="text-left py-2 text-sm font-medium text-gray-600 dark:text-gray-400">Quantity</th>
-                                            <th class="text-left py-2 text-sm font-medium text-gray-600 dark:text-gray-400">Revenue</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($topProducts as $product)
-                                        <tr class="border-b border-gray-100 dark:border-gray-700">
-                                            <td class="py-2 text-sm text-gray-900 dark:text-white">{{ $product->name }}</td>
-                                            <td class="py-2 text-sm text-gray-600 dark:text-gray-400">{{ $product->total_quantity }}</td>
-                                            <td class="py-2 text-sm text-gray-600 dark:text-gray-400">${{ number_format($product->total_revenue, 2) }}</td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <!-- Order Status Distribution -->
-                        <div class="card-gradient p-6 rounded-xl">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Order Status Distribution</h3>
-                            <div class="space-y-3">
-                                @foreach($statusDistribution as $status)
-                                <div class="flex items-center justify-between">
-                                    <span class="text-sm text-gray-600 dark:text-gray-400 capitalize">{{ $status->status }}</span>
-                                    <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $status->count }}</span>
-                                </div>
-                                @endforeach
-                            </div>
+                    <!-- Daily Sales Chart -->
+                    <div class="card-gradient p-6 rounded-xl mb-8">
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Daily Sales Trend</h2>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead>
+                                    <tr class="border-b border-gray-200 dark:border-gray-600">
+                                        <th class="text-left py-2 text-sm font-medium text-gray-600 dark:text-gray-400">Date</th>
+                                        <th class="text-left py-2 text-sm font-medium text-gray-600 dark:text-gray-400">Sales</th>
+                                        <th class="text-left py-2 text-sm font-medium text-gray-600 dark:text-gray-400">Orders</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($dailySales as $day)
+                                    <tr class="border-b border-gray-100 dark:border-gray-700">
+                                        <td class="py-2 text-sm text-gray-600 dark:text-gray-400">{{ \Carbon\Carbon::parse($day->date)->format('M d, Y') }}</td>
+                                        <td class="py-2 text-sm text-gray-900 dark:text-white">${{ number_format($day->total_sales, 2) }}</td>
+                                        <td class="py-2 text-sm text-gray-900 dark:text-white">{{ $day->order_count }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
 
-                    <!-- Recent Activity -->
+                    <!-- Sales Details -->
                     <div class="card-gradient p-6 rounded-xl">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Activity</h3>
+                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Sales Details</h2>
                         <div class="overflow-x-auto">
                             <table class="min-w-full">
                                 <thead>
@@ -320,24 +270,26 @@
                                         <th class="text-left py-2 text-sm font-medium text-gray-600 dark:text-gray-400">Order ID</th>
                                         <th class="text-left py-2 text-sm font-medium text-gray-600 dark:text-gray-400">Date</th>
                                         <th class="text-left py-2 text-sm font-medium text-gray-600 dark:text-gray-400">Status</th>
+                                        <th class="text-left py-2 text-sm font-medium text-gray-600 dark:text-gray-400">Payment Method</th>
                                         <th class="text-left py-2 text-sm font-medium text-gray-600 dark:text-gray-400">Amount</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($recentActivity as $order)
+                                    @foreach($salesData as $order)
                                     <tr class="border-b border-gray-100 dark:border-gray-700">
                                         <td class="py-2 text-sm text-gray-900 dark:text-white">#{{ $order->id }}</td>
                                         <td class="py-2 text-sm text-gray-600 dark:text-gray-400">{{ $order->order_date->format('M d, Y') }}</td>
                                         <td class="py-2 text-sm">
                                             <span class="px-2 py-1 text-xs rounded-full 
-                                                @if($order->status === 'completed') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                                @if($order->status === 'delivered') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
                                                 @elseif($order->status === 'pending') bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
                                                 @elseif($order->status === 'cancelled') bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
                                                 @else bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 @endif">
                                                 {{ ucfirst($order->status) }}
                                             </span>
                                         </td>
-                                        <td class="py-2 text-sm text-gray-600 dark:text-gray-400">${{ number_format($order->total_amount, 2) }}</td>
+                                        <td class="py-2 text-sm text-gray-600 dark:text-gray-400 capitalize">{{ $order->payment_method }}</td>
+                                        <td class="py-2 text-sm text-gray-900 dark:text-white">${{ number_format($order->total_amount, 2) }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -349,94 +301,11 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // Mobile menu toggle
         document.getElementById('menu-toggle').addEventListener('click', function() {
             document.getElementById('sidebar').classList.toggle('open');
         });
-
-        // Chart data from PHP
-        const chartLabels = {!! json_encode($chartLabels ?? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']) !!};
-        const orderCounts = {!! json_encode($orderCounts ?? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) !!};
-        const orderAmounts = {!! json_encode($orderAmounts ?? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) !!};
-
-        // Order Trends Chart
-        const orderTrendsCtx = document.getElementById('orderTrendsChart').getContext('2d');
-        new Chart(orderTrendsCtx, {
-                type: 'line',
-                data: {
-                    labels: chartLabels,
-                    datasets: [{
-                        label: 'Orders',
-                        data: orderCounts,
-                    borderColor: 'rgb(59, 130, 246)',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        tension: 0.4,
-                    fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
-                            }
-                        },
-                        x: {
-                            grid: {
-                            display: false
-                        }
-                        }
-                    }
-                }
-            });
-
-        // Order Amounts Chart
-        const orderAmountsCtx = document.getElementById('orderAmountsChart').getContext('2d');
-        new Chart(orderAmountsCtx, {
-                type: 'bar',
-                data: {
-                    labels: chartLabels,
-                    datasets: [{
-                    label: 'Amount ($)',
-                        data: orderAmounts,
-                    backgroundColor: 'rgba(147, 51, 234, 0.8)',
-                    borderColor: 'rgb(147, 51, 234)',
-                    borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
-                            }
-                        },
-                        x: {
-                            grid: {
-                            display: false
-                        }
-                        }
-                    }
-                }
-            });
     </script>
 </body>
 </html> 
