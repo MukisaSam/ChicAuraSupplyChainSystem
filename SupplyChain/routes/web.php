@@ -62,10 +62,9 @@ Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('
 Route::middleware(['auth', 'role:wholesaler'])->prefix('wholesaler')->name('wholesaler.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\WholesalerDashboardController::class, 'index'])->name('dashboard');
 });
-
 // Registration routes
 Route::get('/register/admin', [RegisteredUserController::class, 'createAdmin'])->name('register.admin');
-Route::post('/register/admin', [RegisteredUserController::class, 'storeAdmin']);
+Route::post('/register/admin', [RegisteredUserController::class, 'storeAdmin'])->name('register.admin.store');
 
 // Supplier registration routes
 Route::get('/register/supplier', [RegisteredUserController::class, 'createSupplier'])->name('register.supplier');
@@ -78,3 +77,4 @@ Route::post('/register/manufacturer', [RegisteredUserController::class, 'storeMa
 // Wholesaler registration routes
 Route::get('/register/wholesaler', [RegisteredUserController::class, 'createWholesaler'])->name('register.wholesaler');
 Route::post('/register/wholesaler', [RegisteredUserController::class, 'storeWholesaler'])->name('register.wholesaler.store');
+
