@@ -331,7 +331,7 @@
             </header>
 
             <!-- Main Content -->
-            <main class="flex-1 p-4 overflow-hidden">
+            <main class="flex-1 p-4">
                 <div class="mb-6">
                     <h2 class="text-2xl font-bold text-white mb-1">Chat</h2>
                     <p class="text-gray-200 text-sm">Communicate with manufacturers and support team</p>

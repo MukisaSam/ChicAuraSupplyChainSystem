@@ -19,7 +19,6 @@
             background-position: center;
             background-attachment: fixed;
             min-height: 100vh;
-            overflow: hidden;
         }
         
         /* Dark mode styles */

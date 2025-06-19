@@ -16,7 +16,6 @@
             background-position: center;
             background-attachment: fixed;
             min-height: 100vh;
-            overflow: hidden;
         }
         
         /* Dark mode styles */
@@ -189,7 +188,7 @@
             </header>
 
             <!-- Main Content -->
-            <main class="flex-1 p-4 overflow-hidden">
+            <main class="flex-1 p-4">
                 <div class="mb-4">
                     <h2 class="text-2xl font-bold text-white mb-1">Administrator Dashboard</h2>
                     <p class="text-gray-200 text-sm">Welcome back! Here's your system overview.</p>
