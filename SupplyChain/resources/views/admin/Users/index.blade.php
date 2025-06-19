@@ -1,0 +1,1004 @@
+{{-- resources/views/admin/dashboard.blade.php --}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrator Dashboard - ChicAura SCM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ asset('js/theme-switcher.js') }}"></script>
+    <style>
+        body { 
+            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 100%), url('{{ asset('images/black.jpeg') }}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* Main content container */
+        #app-container {
+            transition: filter 0.3s ease, opacity 0.3s ease;
+        }
+        
+        #app-container.blurred {
+            filter: blur(4px);
+            opacity: 0.7;
+            pointer-events: none;
+        }
+        
+        /* Dark mode styles */
+        .dark body {
+            background: linear-gradient(135deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.8) 100%), url('https://images.unsplash.com/photo-1519751138087-5bf79df62d5b?q=80&w=2070');
+        }
+        
+        .sidebar { 
+            transition: transform 0.3s ease-in-out;
+            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+        }
+        
+        .dark .sidebar {
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+        }
+        
+        .logo-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .dark .logo-container {
+            background: rgba(255, 255, 255, 0.9);
+        }
+        
+        .card-gradient {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .dark .card-gradient {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #f1f5f9;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .dark .stat-card {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #f1f5f9;
+        }
+        
+        .dark .stat-card p {
+            color: #f1f5f9;
+        }
+        
+        .dark .stat-card .text-gray-600 {
+            color: #cbd5e1;
+        }
+        
+        .dark .stat-card .text-gray-800 {
+            color: #f1f5f9;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .nav-link {
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            margin: 4px 0;
+        }
+        .nav-link:hover {
+            transform: translateX(5px);
+        }
+        .header-gradient {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        
+        .dark .header-gradient {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-color: #475569;
+        }
+        
+        .dark .text-white {
+            color: #f1f5f9;
+        }
+        
+        .dark .text-gray-200 {
+            color: #cbd5e1;
+        }
+        
+        .user-table {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+        }
+        .user-table th {
+            background-color: #f1f5f9;
+            position: sticky;
+            top: 0;
+        }
+        .dark .user-table th {
+            background-color: #1e293b;
+        }
+        .user-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .modal-overlay {
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 100;
+        }
+        
+        .modal-content {
+            animation: modalOpen 0.4s ease-out;
+            max-height: 90vh;
+            overflow-y: auto;
+            width: 90%;
+            max-width: 800px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+        
+        .dark .modal-content {
+            background: #1e293b;
+            color: #f1f5f9;
+        }
+        
+        @keyframes modalOpen {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .permission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .permission-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .permission-card:hover {
+            background-color: #f1f5f9;
+            transform: translateY(-2px);
+        }
+        
+        .dark .permission-card {
+            border-color: #334155;
+        }
+        
+        .dark .permission-card:hover {
+            background-color: #1e293b;
+        }
+        
+        .form-input:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+            outline: none;
+        }
+        
+        .form-error {
+            animation: shake 0.5s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .role-admin {
+            background-color: #dbeafe;
+            color: #2563eb;
+        }
+        
+        .role-supplier {
+            background-color: #dcfce7;
+            color: #16a34a;
+        }
+        
+        .role-manufacturer {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+        
+        .role-wholesaler {
+            background-color: #ede9fe;
+            color: #7c3aed;
+        }
+        
+        .dark .role-admin {
+            background-color: rgba(37, 99, 235, 0.2);
+            color: #93c5fd;
+        }
+        
+        .dark .role-supplier {
+            background-color: rgba(22, 163, 74, 0.2);
+            color: #86efac;
+        }
+        
+        .dark .role-manufacturer {
+            background-color: rgba(217, 119, 6, 0.2);
+            color: #fcd34d;
+        }
+        
+        .dark .role-wholesaler {
+            background-color: rgba(124, 58, 237, 0.2);
+            color: #c4b5fd;
+        }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .status-active {
+            background-color: #dcfce7;
+            color: #16a34a;
+        }
+        
+        .status-pending {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+        
+        .status-suspended {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+        
+        .dark .status-active {
+            background-color: rgba(22, 163, 74, 0.2);
+            color: #86efac;
+        }
+        
+        .dark .status-pending {
+            background-color: rgba(217, 119, 6, 0.2);
+            color: #fcd34d;
+        }
+        
+        .dark .status-suspended {
+            background-color: rgba(220, 38, 38, 0.2);
+            color: #fca5a5;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(37, 99, 235, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #334155;
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+        
+        .dark .btn-secondary {
+            background: #334155;
+            color: #f1f5f9;
+        }
+        
+        .dark .btn-secondary:hover {
+            background: #475569;
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .permission-grid {
+                grid-template-columns: 1fr;
+            }
+            .modal-content {
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+<body class="font-sans antialiased">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
+            <div class="flex flex-col h-full">
+                <div class="flex items-center justify-center h-16 border-b border-gray-600">
+                    <div class="logo-container">
+                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="h-12 w-auto">
+                    </div>
+                </div>
+                <div class="px-4 py-4">
+                    <h3 class="text-white text-sm font-semibold mb-3 px-3">ADMINISTRATION</h3>
+                </div>
+                <nav class="flex-1 px-4 py-2 space-y-1">
+                    <a href="{{route('admin.dashboard')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-tachometer-alt w-5"></i><span class="ml-2 font-medium text-sm">Dashboard</span></a>
+                    <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-users-cog w-5"></i><span class="ml-2 text-sm">User Management</span></a>
+                    <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-shield-alt w-5"></i><span class="ml-2 text-sm">Roles & Permissions</span></a>
+                    <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-cogs w-5"></i><span class="ml-2 text-sm">System Settings</span></a>
+                    <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-chart-pie w-5"></i><span class="ml-2 text-sm">Analytics</span></a>
+                    <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-history w-5"></i><span class="ml-2 text-sm">Audit Logs</span></a>
+                    <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-bell w-5"></i><span class="ml-2 text-sm">Notifications</span></a>
+                    <a href="{{route('admin.users')}}" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl shadow-lg"><i class="fa-solid fa-user"></i><span class="ml-2 text-sm">Users</span></a>
+                </nav>
+                <div class="p-3 border-t border-gray-600">
+                    <div class="text-center text-gray-400 text-xs">
+                        <p>ChicAura SCM</p>
+                        <p class="text-xs mt-1">v2.1.0</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <div class="flex flex-col flex-1 w-full">
+             <!-- Top Navigation Bar -->
+            <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b">
+                <div class="flex items-center">
+                    <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700"><i class="fas fa-bars text-lg"></i></button>
+                    <div class="relative ml-3 hidden md:block">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3"><i class="fas fa-search text-gray-400"></i></span>
+                        <input type="text" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" placeholder="Search users, logs, or settings...">
+                    </div>
+                </div>
+                <div class="flex items-center pr-4 space-x-3">
+                    <button class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"><i class="fas fa-bell text-lg"></i></button>
+                    <button data-theme-toggle class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors" title="Switch Theme">
+                        <i class="fas fa-moon text-lg"></i>
+                    </button>
+                    <div class="relative">
+                        <button class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
+                            <span class="mr-2 text-gray-700 font-medium text-sm">{{ Auth::user()->name ?? 'System Admin' }}</span>
+                            <img class="w-7 h-7 rounded-full border-2 border-blue-200 object-cover" 
+                                 src="{{ Auth::user()->profile_picture ? Storage::disk('public')->url(Auth::user()->profile_picture) : asset('images/default-avatar.svg') }}" 
+                                 alt="User Avatar">
+                        </button>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <a href="{{ route('user.profile.edit') }}" class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors" title="Edit Profile">
+                            <i class="fas fa-user-edit text-lg"></i>
+                        </a>
+                        <form method="POST" action="{{ route('logout') }}" class="inline">
+                            @csrf
+                            <button type="submit" class="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors" title="Logout">
+                                <i class="fas fa-sign-out-alt text-lg"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <main class="flex-1 p-4">
+                    <!-- Page Header -->
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                        <div>
+                            <h1 class="text-2xl font-bold text-white">User Management</h1>
+                            <p class="text-gray-300 mt-1">Manage all user accounts and permissions</p>
+                        </div>
+                        <div class="flex flex-wrap gap-2 mt-4 md:mt-0">
+                            <button id="addUserBtn" class="btn-primary flex items-center">
+                                <i class="fas fa-plus mr-2"></i> Add New User
+                            </button>
+                            <button class="btn-secondary flex items-center">
+                                <i class="fas fa-file-export mr-2"></i> Export
+                            </button>
+                            <button class="btn-secondary flex items-center">
+                                <i class="fas fa-filter mr-2"></i> Filters
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Stats Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
+                        <div class="stat-card rounded-2xl p-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-gray-600 text-sm">Total Users</p>
+                                    <h3 class="text-2xl font-bold text-gray-800 mt-1">65</h3>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                                    <i class="fas fa-users text-blue-600"></i>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <span class="text-green-600 text-sm font-medium"><i class="fas fa-arrow-up mr-1"></i> 12.5%</span>
+                                <span class="text-gray-500 text-sm ml-2">from last month</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card rounded-2xl p-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-gray-600 text-sm">Admins</p>
+                                    <h3 class="text-2xl font-bold text-gray-800 mt-1">5</h3>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center">
+                                    <i class="fas fa-user-shield text-indigo-600"></i>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <span class="text-green-600 text-sm font-medium"><i class="fas fa-arrow-up mr-1"></i> 5%</span>
+                                <span class="text-gray-500 text-sm ml-2">from last month</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card rounded-2xl p-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-gray-600 text-sm">Suppliers</p>
+                                    <h3 class="text-2xl font-bold text-gray-800 mt-1">25</h3>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
+                                    <i class="fas fa-truck-loading text-green-600"></i>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <span class="text-green-600 text-sm font-medium"><i class="fas fa-arrow-up mr-1"></i> 8.2%</span>
+                                <span class="text-gray-500 text-sm ml-2">from last month</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card rounded-2xl p-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-gray-600 text-sm">Manufacturers</p>
+                                    <h3 class="text-2xl font-bold text-gray-800 mt-1">15</h3>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center">
+                                    <i class="fas fa-industry text-yellow-600"></i>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <span class="text-green-600 text-sm font-medium"><i class="fas fa-arrow-up mr-1"></i> 3.7%</span>
+                                <span class="text-gray-500 text-sm ml-2">from last month</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card rounded-2xl p-4">
+                            <div class="flex justify-between items-center">
+                                <div>
+                                    <p class="text-gray-600 text-sm">Wholesalers</p>
+                                    <h3 class="text-2xl font-bold text-gray-800 mt-1">20</h3>
+                                </div>
+                                <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
+                                    <i class="fas fa-boxes text-purple-600"></i>
+                                </div>
+                            </div>
+                            <div class="mt-3">
+                                <span class="text-red-600 text-sm font-medium"><i class="fas fa-arrow-down mr-1"></i> 1.2%</span>
+                                <span class="text-gray-500 text-sm ml-2">from last month</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Charts and Table Section -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- User Roles Chart -->
+                        <div class="lg:col-span-1">
+                            <div class="card-gradient rounded-2xl p-4 h-full">
+                                <div class="flex justify-between items-center mb-4">
+                                    <h2 class="text-lg font-semibold">User Distribution</h2>
+                                    <button class="text-gray-500 hover:text-blue-600">
+                                        <i class="fas fa-ellipsis-h"></i>
+                                    </button>
+                                </div>
+                                <div class="h-64">
+                                    <canvas id="userRolesChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Users Table -->
+                        <div class="lg:col-span-2">
+                            <div class="card-gradient rounded-2xl p-4">
+                                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
+                                    <h2 class="text-lg font-semibold">All Users</h2>
+                                    <div class="relative mt-2 md:mt-0">
+                                        <span class="absolute inset-y-0 left-0 flex items-center pl-3"><i class="fas fa-search text-gray-400"></i></span>
+                                        <input type="text" class="py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm w-full md:w-64" placeholder="Search users...">
+                                    </div>
+                                </div>
+                                
+                                <div class="overflow-x-auto">
+                                    <table class="w-full user-table">
+                                        <thead>
+                                            <tr class="text-left">
+                                                <th class="px-4 py-3 rounded-tl-xl">User</th>
+                                                <th class="px-4 py-3">Role</th>
+                                                <th class="px-4 py-3">Status</th>
+                                                <th class="px-4 py-3">Last Active</th>
+                                                <th class="px-4 py-3 rounded-tr-xl">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- User 1 -->
+                                            <tr class="border-b border-gray-200 dark:border-gray-700">
+                                                <td class="px-4 py-3">
+                                                    <div class="flex items-center">
+                                                        <img class="w-8 h-8 rounded-full mr-3" src="https://randomuser.me/api/portraits/women/44.jpg" alt="User">
+                                                        <div>
+                                                            <p class="font-medium">Sarah Johnson</p>
+                                                            <p class="text-gray-500 text-sm">sarah@chicaura.com</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <span class="role-badge role-admin">Admin</span>
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <span class="status-badge status-active">Active</span>
+                                                </td>
+                                                <td class="px-4 py-3 text-sm">Today, 09:24 AM</td>
+                                                <td class="px-4 py-3">
+                                                    <div class="flex space-x-2">
+                                                        <button class="p-1 text-blue-600 hover:text-blue-800">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button class="p-1 text-gray-600 hover:text-gray-800">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <button class="p-1 text-red-600 hover:text-red-800">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            
+                                            <!-- User 2 -->
+                                            <tr class="border-b border-gray-200 dark:border-gray-700">
+                                                <td class="px-4 py-3">
+                                                    <div class="flex items-center">
+                                                        <img class="w-8 h-8 rounded-full mr-3" src="https://randomuser.me/api/portraits/men/32.jpg" alt="User">
+                                                        <div>
+                                                            <p class="font-medium">Michael Chen</p>
+                                                            <p class="text-gray-500 text-sm">michael@supplier.com</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <span class="role-badge role-supplier">Supplier</span>
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <span class="status-badge status-active">Active</span>
+                                                </td>
+                                                <td class="px-4 py-3 text-sm">Yesterday, 04:15 PM</td>
+                                                <td class="px-4 py-3">
+                                                    <div class="flex space-x-2">
+                                                        <button class="p-1 text-blue-600 hover:text-blue-800">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button class="p-1 text-gray-600 hover:text-gray-800">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <button class="p-1 text-red-600 hover:text-red-800">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            
+                                            <!-- User 3 -->
+                                            <tr class="border-b border-gray-200 dark:border-gray-700">
+                                                <td class="px-4 py-3">
+                                                    <div class="flex items-center">
+                                                        <img class="w-8 h-8 rounded-full mr-3" src="https://randomuser.me/api/portraits/women/68.jpg" alt="User">
+                                                        <div>
+                                                            <p class="font-medium">Emma Rodriguez</p>
+                                                            <p class="text-gray-500 text-sm">emma@manufacturer.com</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <span class="role-badge role-manufacturer">Manufacturer</span>
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <span class="status-badge status-pending">Pending</span>
+                                                </td>
+                                                <td class="px-4 py-3 text-sm">May 12, 2024</td>
+                                                <td class="px-4 py-3">
+                                                    <div class="flex space-x-2">
+                                                        <button class="p-1 text-blue-600 hover:text-blue-800">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button class="p-1 text-gray-600 hover:text-gray-800">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <button class="p-1 text-red-600 hover:text-red-800">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            
+                                            <!-- User 4 -->
+                                            <tr class="border-b border-gray-200 dark:border-gray-700">
+                                                <td class="px-4 py-3">
+                                                    <div class="flex items-center">
+                                                        <img class="w-8 h-8 rounded-full mr-3" src="https://randomuser.me/api/portraits/men/67.jpg" alt="User">
+                                                        <div>
+                                                            <p class="font-medium">David Kim</p>
+                                                            <p class="text-gray-500 text-sm">david@wholesaler.com</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <span class="role-badge role-wholesaler">Wholesaler</span>
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <span class="status-badge status-active">Active</span>
+                                                </td>
+                                                <td class="px-4 py-3 text-sm">Today, 10:45 AM</td>
+                                                <td class="px-4 py-3">
+                                                    <div class="flex space-x-2">
+                                                        <button class="p-1 text-blue-600 hover:text-blue-800">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button class="p-1 text-gray-600 hover:text-gray-800">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <button class="p-1 text-red-600 hover:text-red-800">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            
+                                            <!-- User 5 -->
+                                            <tr>
+                                                <td class="px-4 py-3 rounded-bl-xl">
+                                                    <div class="flex items-center">
+                                                        <img class="w-8 h-8 rounded-full mr-3" src="https://randomuser.me/api/portraits/women/26.jpg" alt="User">
+                                                        <div>
+                                                            <p class="font-medium">Sophia Williams</p>
+                                                            <p class="text-gray-500 text-sm">sophia@chicaura.com</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <span class="role-badge role-admin">Admin</span>
+                                                </td>
+                                                <td class="px-4 py-3">
+                                                    <span class="status-badge status-suspended">Suspended</span>
+                                                </td>
+                                                <td class="px-4 py-3 text-sm">April 28, 2024</td>
+                                                <td class="px-4 py-3 rounded-br-xl">
+                                                    <div class="flex space-x-2">
+                                                        <button class="p-1 text-blue-600 hover:text-blue-800">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button class="p-1 text-gray-600 hover:text-gray-800">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                        <button class="p-1 text-red-600 hover:text-red-800">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                
+                                <!-- Pagination -->
+                                <div class="flex flex-col md:flex-row justify-between items-center mt-6">
+                                    <p class="text-sm text-gray-600 mb-4 md:mb-0">Showing 1 to 5 of 65 results</p>
+                                    <div class="flex space-x-2">
+                                        <button class="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300">
+                                            <i class="fas fa-chevron-left"></i>
+                                        </button>
+                                        <button class="px-3 py-1 rounded-lg bg-blue-600 text-white">1</button>
+                                        <button class="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300">2</button>
+                                        <button class="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300">3</button>
+                                        <button class="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300">...</button>
+                                        <button class="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300">12</button>
+                                        <button class="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal (outside of app container) -->
+    <div id="addUserModal" class="hidden fixed inset-0 z-50">
+        <div class="modal-overlay">
+            <div class="modal-content">
+                <div class="p-5 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+                    <div>
+                        <h3 class="text-xl font-bold">Add New User</h3>
+                        <p class="text-gray-500 text-sm mt-1">Fill in the details to create a new user account</p>
+                    </div>
+                    <button id="closeModal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
+                        <i class="fas fa-times text-lg"></i>
+                    </button>
+                </div>
+                <div class="p-5">
+                    <form method="POST" action="{{ route('register.user.store') }}" id="admin/users" class="space-y-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium mb-2" for="firstName">Full Name <span class="text-red-500">*</span></label>
+                                <input type="text" name="name" id="name" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none focus:border-blue-500" placeholder="Enter fullname" required>
+                                <p class="text-red-500 text-sm mt-1 hidden" id="firstNameError">Full name is required</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2" for="email">Email Address <span class="text-red-500">*</span></label>
+                                <input type="email" name="email" id="email" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none focus:border-blue-500" placeholder="Enter email" required>
+                                <p class="text-red-500 text-sm mt-1 hidden" id="emailError">Please enter a valid email</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium mb-2" for="phone">Password</label>
+                                <input type="password" name="password" id="password" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none focus:border-blue-500" placeholder="Enter phone number">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2" for="role">Role <span class="text-red-500">*</span></label>
+                                <select id="role" name="role" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none focus:border-blue-500" required>
+                                    <option value="admin">Administrator</option>
+                                    <option value="supplier">Supplier</option>
+                                    <option value="manufacturer">Manufacturer</option>
+                                    <option value="wholesaler">Wholesaler</option>
+                                </select>
+                                <p class="text-red-500 text-sm mt-1 hidden" id="roleError">Please select a role</p>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-end space-x-3 mt-8">
+                            <button type="button" id="cancelBtn" class="btn-secondary px-5 py-2.5">Cancel</button>
+                            <button type="submit" class="btn-primary px-5 py-2.5 flex items-center">
+                                <i class="fas fa-user-plus mr-2"></i> Create User
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('open');
+        });
+
+        // Theme toggle
+        document.querySelector('[data-theme-toggle]').addEventListener('click', function() {
+            document.documentElement.classList.toggle('dark');
+            const icon = this.querySelector('i');
+            if (document.documentElement.classList.contains('dark')) {
+                icon.classList.replace('fa-moon', 'fa-sun');
+            } else {
+                icon.classList.replace('fa-sun', 'fa-moon');
+            }
+        });
+
+        // User Roles Chart
+        const userRolesCtx = document.getElementById('userRolesChart').getContext('2d');
+        new Chart(userRolesCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Admins', 'Suppliers', 'Manufacturers', 'Wholesalers'],
+                datasets: [{
+                    data: [5, 25, 15, 20],
+                    backgroundColor: [
+                        '#3B82F6',
+                        '#10B981', 
+                        '#F59E0B',
+                        '#8B5CF6'
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 10,
+                            usePointStyle: true,
+                            font: {
+                                size: 10
+                            }
+                        }
+                    }
+                },
+                cutout: '60%'
+            }
+        });
+
+        // Modal functionality
+        const modal = document.getElementById('addUserModal');
+        const addUserBtn = document.getElementById('addUserBtn');
+        const closeModal = document.getElementById('closeModal');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const form = document.getElementById('addUserForm');
+        const appContainer = document.getElementById('app-container');
+        
+        // Open modal
+        addUserBtn.addEventListener('click', () => {
+            modal.classList.remove('hidden');
+            appContainer.classList.add('blurred');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        });
+        
+        // Close modal
+        function closeModalFunc() {
+            modal.classList.add('hidden');
+            appContainer.classList.remove('blurred');
+            document.body.style.overflow = 'auto'; // Enable scrolling
+            resetForm();
+        }
+        
+        closeModal.addEventListener('click', closeModalFunc);
+        cancelBtn.addEventListener('click', closeModalFunc);
+        
+        // Close modal when clicking outside
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                closeModalFunc();
+            }
+        });
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                closeModalFunc();
+            }
+        });
+        
+        // Form validation and submission
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Reset errors
+            document.querySelectorAll('.text-red-500').forEach(el => {
+                el.classList.add('hidden');
+            });
+            document.querySelectorAll('.form-input').forEach(el => {
+                el.classList.remove('border-red-500', 'form-error');
+            });
+            
+            let isValid = true;
+            const firstName = document.getElementById('firstName');
+            const lastName = document.getElementById('lastName');
+            const email = document.getElementById('email');
+            const role = document.getElementById('role');
+            
+            // Validate first name
+            if (!firstName.value.trim()) {
+                isValid = false;
+                firstName.classList.add('border-red-500', 'form-error');
+                document.getElementById('firstNameError').classList.remove('hidden');
+            }
+            
+            // Validate last name
+            if (!lastName.value.trim()) {
+                isValid = false;
+                lastName.classList.add('border-red-500', 'form-error');
+                document.getElementById('lastNameError').classList.remove('hidden');
+            }
+            
+            // Validate email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email.value)) {
+                isValid = false;
+                email.classList.add('border-red-500', 'form-error');
+                document.getElementById('emailError').classList.remove('hidden');
+            }
+            
+            // Validate role
+            if (!role.value) {
+                isValid = false;
+                role.classList.add('border-red-500', 'form-error');
+                document.getElementById('roleError').classList.remove('hidden');
+            }
+            
+            if (isValid) {
+                // Show success message
+                const successMessage = document.createElement('div');
+                successMessage.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center z-50';
+                successMessage.innerHTML = `
+                    <i class="fas fa-check-circle mr-2"></i>
+                    User created successfully!
+                `;
+                document.body.appendChild(successMessage);
+                
+                // Remove message after 3 seconds
+                setTimeout(() => {
+                    successMessage.remove();
+                }, 3000);
+                
+                closeModalFunc();
+            }
+        });
+        
+        // Reset form
+        function resetForm() {
+            form.reset();
+            document.querySelectorAll('.text-red-500').forEach(el => {
+                el.classList.add('hidden');
+            });
+            document.querySelectorAll('.form-input').forEach(el => {
+                el.classList.remove('border-red-500', 'form-error');
+            });
+        }
+    </script>
+</body>
+</html>

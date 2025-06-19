@@ -59,6 +59,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 // Admin routes
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [App\Http\Controllers\AdminDashboardController::class, 'index'])->name('admin.dashboard');
+     Route::get('/admin/users', [App\Http\Controllers\AdminUsersController::class, 'index'])->name('admin.users');
 });
 
 // Supplier routes
@@ -76,7 +77,34 @@ Route::middleware(['auth', 'role:supplier'])->prefix('supplier')->name('supplier
 
 // Manufacturer routes
 Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('manufacturer.')->group(function () {
+
+    //Dashboard
     Route::get('/dashboard', [App\Http\Controllers\ManufacturerDashboardController::class, 'index'])->name('dashboard');
+    
+    //Orders routes
+    Route::get('/orders', [App\Http\Controllers\ManufacturerOrdersController::class, 'index'])->name('orders');
+
+    //Analytics routes
+    Route::get('/analytics', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'index'])->name('analytics');
+
+    //Inventory routes
+    Route::get('/inventory', [App\Http\Controllers\ManufacturerInventoryController::class, 'index'])->name('inventory');
+
+    //Wholesalers routes
+    Route::get('/wholesalers', [App\Http\Controllers\ManufacturerWholesalersController::class, 'index'])->name('wholesalers');
+
+    //Suppliers routes
+    Route::get('/suppliers', [App\Http\Controllers\ManufacturerSuppliersController::class, 'index'])->name('suppliers');
+
+    //Chat routes
+    Route::get('/chat', [App\Http\Controllers\ManufacturerChatController::class, 'index'])->name('chat');
+
+    //Reports routes
+    Route::get('/reports', [App\Http\Controllers\ManufacturerReportsController::class, 'index'])->name('reports');
+
+    //Revenue routes
+    Route::get('/revenue', [App\Http\Controllers\ManufacturerRevenueController::class, 'index'])->name('revenue');
+
 });
 
 // Wholesaler routes

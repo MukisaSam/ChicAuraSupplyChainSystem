@@ -15,6 +15,11 @@ Route::middleware('guest')->group(function () {
     // Role selection page
     Route::get('register', [RegisteredUserController::class, 'create'])
                 ->name('register');
+    
+    //User registration
+    Route::post('admin/users', [RegisteredUserController::class, 'storeUser'])
+                ->name('register.user.store');
+
 
     // Admin registration
     Route::get('register/admin', [RegisteredUserController::class, 'createAdmin'])

@@ -138,11 +138,11 @@
                 </div>
                 <!-- Sidebar Navigation -->
                 <nav class="flex-1 px-4 py-2 space-y-1">
-                    <a href="{{route('manufacturer.dashboard')}}" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-indigo-600 to-indigo-700 rounded-xl shadow-lg">
+                    <a href="{{route('manufacturer.dashboard')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-home w-5"></i>
                         <span class="ml-2 font-medium text-sm">Home</span>
                     </a>
-                    <a href="{{route('manufacturer.orders')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                    <a href="{{route('manufacturer.orders')}}" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-indigo-600 to-indigo-700 rounded-xl shadow-lg">
                         <i class="fas fa-box w-5"></i>
                         <span class="ml-2 text-sm">Orders</span>
                     </a>
@@ -210,7 +210,7 @@
                     <!-- Profile Dropdown -->
                     <div class="relative">
                         <button class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
-                            <span class="mr-2 text-gray-700 font-medium text-sm">{{ Auth::user()->name ?? 'Admin User' }}</span>
+                            <span class="mr-2 text-gray-700 font-medium text-sm">{{ Auth::user()->name ?? 'Manufacturer User' }}</span>
                             <img class="w-7 h-7 rounded-full border-2 border-indigo-200 object-cover" 
                                  src="{{ Auth::user()->profile_picture ? Storage::disk('public')->url(Auth::user()->profile_picture) : asset('images/default-avatar.svg') }}" 
                                  alt="User Avatar">
@@ -233,7 +233,7 @@
             <!-- Main Content -->
             <main class="flex-1 p-4 overflow-hidden">
                 <div class="mb-4">
-                    <h2 class="text-2xl font-bold text-white mb-1">Manufacturer Dashboard</h2>
+                    <h2 class="text-2xl font-bold text-white mb-1">Orders</h2>
                     <p class="text-gray-200 text-sm">Welcome back! Here's an overview of your supply chain.</p>
                 </div>
 

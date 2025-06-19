@@ -59,6 +59,32 @@ class RegisteredUserController extends Controller
         return view('auth.register-wholesaler');
     }
 
+
+     /**
+     * Handle an admin adding a user.
+     */
+    public function storeUser(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+           'role' => ['required', 'in:admin,supplier,manufacturer,wholesaler'],
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => $request->role,
+        ]);
+
+        event(new Registered($user));
+
+        return redirect('/admin/users');
+
+    }
+
     /**
      * Handle an admin registration request.
      */
