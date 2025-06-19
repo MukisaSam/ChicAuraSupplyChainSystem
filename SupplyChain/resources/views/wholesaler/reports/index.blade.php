@@ -197,7 +197,7 @@
 
                     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
                         <!-- Sales Overview Card -->
-                        <div class="card-gradient p-6 rounded-xl">
+                        <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
                             <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Sales Overview</h2>
                             <div class="flex flex-col gap-3">
                                 <div class="flex justify-between text-sm">
@@ -212,13 +212,9 @@
                                     <span class="text-gray-600 dark:text-gray-400">Avg. Order Value</span>
                                     <span class="font-bold text-gray-900 dark:text-white">${{ number_format($salesOverview['current']['avg_order_value'], 2) }}</span>
                                 </div>
-                                <div class="flex justify-between text-xs text-green-600 mt-2">
+                                <div class="flex justify-between text-xs text-green-600 dark:text-green-400 mt-2">
                                     <span>Sales Growth</span>
                                     <span>{{ number_format($salesOverview['growth']['sales_growth'], 1) }}%</span>
-                                </div>
-                                <div class="flex justify-between text-xs text-blue-600">
-                                    <span>Order Growth</span>
-                                    <span>{{ number_format($salesOverview['growth']['order_growth'], 1) }}%</span>
                                 </div>
                             </div>
                         </div>
@@ -247,16 +243,35 @@
                         </div>
 
                         <!-- Top Products Card -->
-                        <div class="card-gradient p-6 rounded-xl">
+                        <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
                             <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top Products</h2>
-                            <ul class="divide-y divide-gray-100 dark:divide-gray-700">
+                            <div class="space-y-4">
                                 @foreach($topProducts as $product)
-                                <li class="flex justify-between py-2 text-sm">
-                                    <span class="text-gray-600 dark:text-gray-400">{{ $product->name }}</span>
-                                    <span class="font-bold text-gray-900 dark:text-white">{{ $product->total_quantity }} sold</span>
-                                </li>
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0">
+                                        <img src="{{ $product->image_url ?? asset('images/default-product.jpg') }}" 
+                                             alt="{{ $product->name }}" 
+                                             class="w-10 h-10 rounded-lg object-cover">
+                                    </div>
+                                    <div class="ml-4 flex-1">
+                                        <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                            {{ $product->name }}
+                                        </div>
+                                        <div class="text-sm text-gray-600 dark:text-gray-400">
+                                            {{ $product->total_quantity }} units
+                                        </div>
+                                    </div>
+                                    <div class="ml-4 text-right">
+                                        <div class="text-sm font-medium text-gray-900 dark:text-white">
+                                            ${{ number_format($product->total_revenue, 2) }}
+                                        </div>
+                                        <div class="text-xs text-gray-600 dark:text-gray-400">
+                                            Revenue
+                                        </div>
+                                    </div>
+                                </div>
                                 @endforeach
-                            </ul>
+                            </div>
                         </div>
                     </div>
 

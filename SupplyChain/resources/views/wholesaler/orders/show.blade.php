@@ -142,63 +142,102 @@
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <div class="lg:col-span-2">
-                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 mb-6">
-                                <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Order Items</h3>
+                            <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-6">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Order Items</h3>
                                 @foreach($order->orderItems as $orderItem)
                                     <div class="border-b border-gray-200 dark:border-gray-700 py-4 last:border-b-0">
                                         <div class="flex justify-between items-center">
                                             <div>
-                                                <h4 class="font-medium text-gray-900 dark:text-gray-100">{{ $orderItem->item->name }}</h4>
+                                                <h4 class="font-medium text-gray-900 dark:text-white">{{ $orderItem->item->name }}</h4>
                                                 <p class="text-sm text-gray-600 dark:text-gray-400">{{ $orderItem->item->description }}</p>
+                                                <div class="mt-2 flex items-center space-x-4">
+                                                    <span class="text-sm text-gray-500 dark:text-gray-400">Category: {{ $orderItem->item->category }}</span>
+                                                    <span class="text-sm text-gray-500 dark:text-gray-400">Material: {{ $orderItem->item->material }}</span>
+                                                </div>
                                             </div>
                                             <div class="text-right">
-                                                <p class="font-medium text-gray-900 dark:text-gray-100">Qty: {{ $orderItem->quantity }}</p>
+                                                <p class="font-medium text-gray-900 dark:text-white">Qty: {{ $orderItem->quantity }}</p>
                                                 <p class="text-sm text-gray-600 dark:text-gray-400">${{ number_format($orderItem->unit_price, 2) }} each</p>
-                                                <p class="font-bold text-gray-900 dark:text-gray-100">${{ number_format($orderItem->total_price, 2) }}</p>
+                                                <p class="font-bold text-gray-900 dark:text-white mt-1">${{ number_format($orderItem->total_price, 2) }}</p>
                                             </div>
                                         </div>
                                     </div>
                                 @endforeach
                             </div>
+
+                            <!-- Order Timeline -->
+                            <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Order Timeline</h3>
+                                <div class="space-y-6">
+                                    @foreach($order->timeline as $event)
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0">
+                                            <div class="w-8 h-8 rounded-full flex items-center justify-center 
+                                                @if($event->type === 'success') bg-green-100 dark:bg-green-900
+                                                @elseif($event->type === 'warning') bg-yellow-100 dark:bg-yellow-900
+                                                @elseif($event->type === 'error') bg-red-100 dark:bg-red-900
+                                                @else bg-blue-100 dark:bg-blue-900 @endif">
+                                                <i class="fas {{ $event->icon }} 
+                                                    @if($event->type === 'success') text-green-600 dark:text-green-400
+                                                    @elseif($event->type === 'warning') text-yellow-600 dark:text-yellow-400
+                                                    @elseif($event->type === 'error') text-red-600 dark:text-red-400
+                                                    @else text-blue-600 dark:text-blue-400 @endif"></i>
+                                            </div>
+                                        </div>
+                                        <div class="ml-4">
+                                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $event->title }}</p>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400">{{ $event->description }}</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">{{ $event->timestamp->format('M d, Y H:i') }}</p>
+                                        </div>
+                                    </div>
+                                    @endforeach
+                                </div>
+                            </div>
                         </div>
 
                         <div class="lg:col-span-1">
-                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-                                <h3 class="text-lg font-semibold mb-4 text-gray-900 dark:text-gray-100">Order Information</h3>
-                                <div class="space-y-3">
+                            <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Order Information</h3>
+                                <div class="space-y-4">
                                     <div>
                                         <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Status:</span>
-                                        <span class="ml-2 px-2 py-1 text-xs font-semibold rounded-full {{ $order->status_color }} text-white">
-                                            {{ ucfirst(str_replace('_', ' ', $order->status)) }}
+                                        <span class="ml-2 px-2 py-1 text-xs font-semibold rounded-full 
+                                            @if($order->status === 'completed') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                            @elseif($order->status === 'pending') bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
+                                            @elseif($order->status === 'cancelled') bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
+                                            @else bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 @endif">
+                                            {{ ucfirst($order->status) }}
                                         </span>
                                     </div>
                                     <div>
                                         <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Amount:</span>
-                                        <span class="ml-2 font-bold text-gray-900 dark:text-gray-100">${{ number_format($order->total_amount, 2) }}</span>
+                                        <span class="ml-2 font-bold text-gray-900 dark:text-white">${{ number_format($order->total_amount, 2) }}</span>
                                     </div>
                                     <div>
                                         <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Payment Method:</span>
-                                        <span class="ml-2 text-gray-900 dark:text-gray-100">{{ ucfirst($order->payment_method) }}</span>
+                                        <span class="ml-2 text-gray-900 dark:text-white">{{ ucfirst($order->payment_method) }}</span>
                                     </div>
                                     <div>
                                         <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Order Date:</span>
-                                        <span class="ml-2 text-gray-900 dark:text-gray-100">{{ $order->order_date->format('M d, Y') }}</span>
+                                        <span class="ml-2 text-gray-900 dark:text-white">{{ $order->created_at->format('M d, Y') }}</span>
                                     </div>
                                     <div>
                                         <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Estimated Delivery:</span>
-                                        <span class="ml-2 text-gray-900 dark:text-gray-100">{{ $order->estimated_delivery ? $order->estimated_delivery->format('M d, Y') : 'TBD' }}</span>
+                                        <span class="ml-2 text-gray-900 dark:text-white">{{ $order->estimated_delivery ? $order->estimated_delivery->format('M d, Y') : 'TBD' }}</span>
                                     </div>
-                                    @if($order->shipping_address)
-                                        <div>
-                                            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Shipping Address:</span>
-                                            <p class="ml-2 text-sm text-gray-900 dark:text-gray-100 mt-1">{{ $order->shipping_address }}</p>
-                                        </div>
-                                    @endif
-                                    @if($order->notes)
-                                        <div>
-                                            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Notes:</span>
-                                            <p class="ml-2 text-sm text-gray-900 dark:text-gray-100 mt-1">{{ $order->notes }}</p>
-                                        </div>
+                                </div>
+
+                                <div class="mt-6 space-y-3">
+                                    <a href="{{ route('wholesaler.orders.index') }}" 
+                                       class="block w-full text-center px-4 py-2 bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 font-medium rounded-lg transition-colors">
+                                        Back to Orders
+                                    </a>
+                                    @if(in_array($order->status, ['pending', 'processing']))
+                                    <button type="button" 
+                                            class="block w-full px-4 py-2 bg-red-100 hover:bg-red-200 dark:bg-red-900/20 dark:hover:bg-red-900/30 text-red-700 dark:text-red-400 font-medium rounded-lg transition-colors"
+                                            onclick="confirmCancelOrder()">
+                                        Cancel Order
+                                    </button>
                                     @endif
                                 </div>
                             </div>

@@ -205,102 +205,91 @@
                     </div>
                 @endif
 
-                <!-- Orders List -->
-                <div class="card-gradient rounded-xl p-6">
-                    <div class="flex items-center justify-between mb-6">
-                        <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200">Order History</h3>
-                        <div class="flex space-x-2">
-                            <select class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
-                                <option value="">All Status</option>
-                                <option value="pending">Pending</option>
-                                <option value="confirmed">Confirmed</option>
-                                <option value="in_production">In Production</option>
-                                <option value="shipped">Shipped</option>
-                                <option value="delivered">Delivered</option>
-                                <option value="cancelled">Cancelled</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    @if($orders->count() > 0)
-                        <div class="container mx-auto px-2 sm:px-4 md:px-8 py-6">
-                            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                                @foreach($orders as $order)
-                                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
-                                        <div class="flex items-center justify-between mb-4">
-                                            <div class="flex items-center space-x-4">
-                                                <div class="w-12 h-12 flex items-center justify-center rounded-full {{ $order->status_color }} bg-opacity-10">
-                                                    <i class="fas {{ $order->status_icon }} {{ $order->status_color }} text-lg"></i>
-                                                </div>
-                                                <div>
-                                                    <h4 class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ $order->order_number }}</h4>
-                                                    <p class="text-sm text-gray-500 dark:text-gray-400">Placed on {{ $order->order_date->format('M d, Y') }}</p>
-                                                </div>
+                <!-- Orders Grid -->
+                @if($orders->count() > 0)
+                    <div class="container mx-auto px-2 sm:px-4 md:px-8 py-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                            @foreach($orders as $order)
+                                <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-md transition-shadow">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <div class="flex items-center space-x-4">
+                                            <div class="w-12 h-12 flex items-center justify-center rounded-full 
+                                                @if($order->status === 'completed') bg-green-100 dark:bg-green-900
+                                                @elseif($order->status === 'pending') bg-yellow-100 dark:bg-yellow-900
+                                                @elseif($order->status === 'cancelled') bg-red-100 dark:bg-red-900
+                                                @else bg-gray-100 dark:bg-gray-800 @endif">
+                                                <i class="fas {{ $order->status_icon }} 
+                                                    @if($order->status === 'completed') text-green-600 dark:text-green-400
+                                                    @elseif($order->status === 'pending') text-yellow-600 dark:text-yellow-400
+                                                    @elseif($order->status === 'cancelled') text-red-600 dark:text-red-400
+                                                    @else text-gray-600 dark:text-gray-400 @endif text-lg"></i>
                                             </div>
-                                            <div class="text-right">
-                                                <p class="text-2xl font-bold text-gray-900 dark:text-gray-100">${{ number_format($order->total_amount, 2) }}</p>
-                                                <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {{ $order->status_color }} text-white">
-                                                    {{ ucfirst(str_replace('_', ' ', $order->status)) }}
-                                                </span>
+                                            <div>
+                                                <h4 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $order->order_number }}</h4>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">Placed on {{ $order->order_date->format('M d, Y') }}</p>
                                             </div>
                                         </div>
-                                        
-                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                                            <div>
-                                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Items</p>
-                                                <p class="text-sm text-gray-900 dark:text-gray-100">{{ $order->orderItems->count() }} items</p>
-                                            </div>
-                                            <div>
-                                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Payment</p>
-                                                <p class="text-sm text-gray-900 dark:text-gray-100">{{ ucfirst($order->payment_method) }}</p>
-                                            </div>
-                                            <div>
-                                                <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Estimated Delivery</p>
-                                                <p class="text-sm text-gray-900 dark:text-gray-100">{{ $order->estimated_delivery ? $order->estimated_delivery->format('M d, Y') : 'TBD' }}</p>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="flex items-center justify-between pt-4 border-t border-gray-200 dark:border-gray-700">
-                                            <div class="flex space-x-2">
-                                                <a href="{{ route('wholesaler.orders.show', $order) }}" class="bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-200 dark:hover:bg-blue-900/40 transition-colors">
-                                                    <i class="fas fa-eye mr-1"></i> View Details
-                                                </a>
-                                                @if(in_array($order->status, ['pending', 'confirmed']))
-                                                    <form method="POST" action="{{ route('wholesaler.orders.cancel', $order) }}" class="inline" onsubmit="return confirm('Are you sure you want to cancel this order?')">
-                                                        @csrf
-                                                        <button type="submit" class="bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400 px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-200 dark:hover:bg-red-900/40 transition-colors">
-                                                            <i class="fas fa-times mr-1"></i> Cancel Order
-                                                        </button>
-                                                    </form>
-                                                @endif
-                                            </div>
-                                            <div class="text-sm text-gray-500 dark:text-gray-400">
-                                                Order ID: {{ $order->id }}
-                                            </div>
+                                        <div class="text-right">
+                                            <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($order->total_amount, 2) }}</p>
+                                            <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                                @if($order->status === 'completed') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
+                                                @elseif($order->status === 'pending') bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
+                                                @elseif($order->status === 'cancelled') bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
+                                                @else bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 @endif">
+                                                {{ ucfirst(str_replace('_', ' ', $order->status)) }}
+                                            </span>
                                         </div>
                                     </div>
-                                @endforeach
-                            </div>
+                                    
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Items</p>
+                                            <p class="text-sm text-gray-900 dark:text-white">{{ $order->orderItems->count() }} items</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Payment</p>
+                                            <p class="text-sm text-gray-900 dark:text-white">{{ ucfirst($order->payment_method) }}</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Estimated Delivery</p>
+                                            <p class="text-sm text-gray-900 dark:text-white">{{ $order->estimated_delivery ? $order->estimated_delivery->format('M d, Y') : 'TBD' }}</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex justify-end space-x-3">
+                                        <a href="{{ route('wholesaler.orders.show', $order->id) }}" 
+                                           class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-md text-purple-600 bg-purple-50 hover:bg-purple-100 dark:text-purple-400 dark:bg-purple-900/20 dark:hover:bg-purple-900/30">
+                                            <i class="fas fa-eye mr-2"></i>
+                                            View Details
+                                        </a>
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
-                        
+
                         <!-- Pagination -->
-                        <div class="mt-6">
-                            {{ $orders->links() }}
-                        </div>
-                    @else
-                        <div class="text-center py-12">
-                            <div class="w-24 h-24 mx-auto mb-4 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                                <i class="fas fa-shopping-cart text-gray-400 dark:text-gray-500 text-3xl"></i>
+                        @if($orders->hasPages())
+                            <div class="mt-6">
+                                <div class="bg-white dark:bg-slate-800 px-4 py-3 flex items-center justify-between border border-gray-200 dark:border-gray-700 rounded-lg">
+                                    {{ $orders->links() }}
+                                </div>
                             </div>
-                            <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-2">No orders yet</h3>
-                            <p class="text-gray-500 dark:text-gray-400 mb-6">Start by placing your first order for clothing items.</p>
-                            <a href="{{ route('wholesaler.orders.create') }}" class="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-6 py-3 rounded-xl shadow-lg hover:from-purple-700 hover:to-purple-800 transition-all duration-300 inline-flex items-center">
+                        @endif
+                    </div>
+                @else
+                    <div class="text-center py-12">
+                        <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-8 max-w-lg mx-auto">
+                            <i class="fas fa-shopping-cart text-4xl text-gray-400 dark:text-gray-500 mb-4"></i>
+                            <h3 class="text-xl font-medium text-gray-900 dark:text-white mb-2">No Orders Yet</h3>
+                            <p class="text-gray-600 dark:text-gray-400 mb-6">Start placing orders to build your wholesale business.</p>
+                            <a href="{{ route('wholesaler.orders.create') }}" 
+                               class="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-600 text-white font-medium rounded-lg transition-colors">
                                 <i class="fas fa-plus mr-2"></i>
-                                Place Your First Order
+                                Place New Order
                             </a>
                         </div>
-                    @endif
-                </div>
+                    </div>
+                @endif
             </main>
         </div>
     </div>

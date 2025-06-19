@@ -33,14 +33,14 @@
         }
         
         .logo-container {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.98);
             border-radius: 12px;
             padding: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         
         .dark .logo-container {
-            background: rgba(255, 255, 255, 0.9);
+            background: rgba(255, 255, 255, 0.95);
         }
         
         .card-gradient {
@@ -51,9 +51,9 @@
         }
         
         .dark .card-gradient {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
             border: 1px solid rgba(255,255,255,0.1);
-            color: #f1f5f9;
+            color: #f8fafc;
         }
         
         .nav-link {
@@ -70,7 +70,7 @@
         }
         
         .dark .header-gradient {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
             border-color: #475569;
         }
         
@@ -116,11 +116,51 @@
             position: relative;
             height: 300px;
             width: 100%;
+            @apply bg-white/5 dark:bg-black/5 rounded-lg p-4;
         }
         
         /* Dark mode chart adjustments */
         .dark .chart-container canvas {
-            filter: brightness(0.9) contrast(1.1);
+            filter: brightness(1.1) contrast(1.2);
+        }
+        
+        /* Enhanced card content visibility */
+        .card-gradient .text-gray-600 {
+            @apply text-gray-700 dark:text-gray-300;
+        }
+        
+        .card-gradient .text-gray-900 {
+            @apply text-gray-900 dark:text-gray-100;
+        }
+        
+        /* Status badges with enhanced visibility */
+        .status-badge {
+            @apply px-2 py-1 text-xs rounded-full font-medium;
+        }
+        
+        .status-badge-completed {
+            @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200;
+        }
+        
+        .status-badge-pending {
+            @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200;
+        }
+        
+        .status-badge-cancelled {
+            @apply bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200;
+        }
+        
+        /* Enhanced table styles for better visibility */
+        table thead tr {
+            @apply bg-gray-50 dark:bg-gray-800;
+        }
+        
+        table th {
+            @apply text-gray-700 dark:text-gray-200 font-semibold;
+        }
+        
+        table td {
+            @apply text-gray-800 dark:text-gray-300;
         }
     </style>
 </head>
@@ -201,49 +241,49 @@
 
                     <!-- Summary Cards -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                        <div class="card-gradient p-6 rounded-xl">
+                        <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
                             <div class="flex items-center">
-                                <div class="p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl">
+                                <div class="p-3 rounded-xl bg-blue-500 dark:bg-blue-700">
                                     <i class="fas fa-shopping-cart text-white text-xl"></i>
                                 </div>
                                 <div class="ml-4">
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Total Orders</p>
+                                    <p class="text-sm text-gray-700 dark:text-gray-300">Total Orders</p>
                                     <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $totalOrders }}</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="card-gradient p-6 rounded-xl">
+                        <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
                             <div class="flex items-center">
-                                <div class="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl">
+                                <div class="p-3 rounded-xl bg-green-500 dark:bg-green-700">
                                     <i class="fas fa-dollar-sign text-white text-xl"></i>
                                 </div>
                                 <div class="ml-4">
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Total Spent</p>
+                                    <p class="text-sm text-gray-700 dark:text-gray-300">Total Spent</p>
                                     <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($totalSpent, 2) }}</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="card-gradient p-6 rounded-xl">
+                        <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
                             <div class="flex items-center">
-                                <div class="p-3 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl">
+                                <div class="p-3 rounded-xl bg-purple-500 dark:bg-purple-700">
                                     <i class="fas fa-chart-line text-white text-xl"></i>
                                 </div>
                                 <div class="ml-4">
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Avg Order Value</p>
+                                    <p class="text-sm text-gray-700 dark:text-gray-300">Avg Order Value</p>
                                     <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($averageOrderValue, 2) }}</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="card-gradient p-6 rounded-xl">
+                        <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
                             <div class="flex items-center">
-                                <div class="p-3 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl">
+                                <div class="p-3 rounded-xl bg-orange-500 dark:bg-orange-700">
                                     <i class="fas fa-clock text-white text-xl"></i>
                                 </div>
                                 <div class="ml-4">
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Pending Orders</p>
+                                    <p class="text-sm text-gray-700 dark:text-gray-300">Pending Orders</p>
                                     <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $pendingOrders }}</p>
                                 </div>
                             </div>
@@ -253,7 +293,7 @@
                     <!-- Charts Section -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                         <!-- Order Trends Chart -->
-                        <div class="card-gradient p-6 rounded-xl">
+                        <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Monthly Order Trends</h3>
                             <div class="chart-container">
                                 <canvas id="orderTrendsChart"></canvas>
@@ -261,7 +301,7 @@
                         </div>
 
                         <!-- Order Amounts Chart -->
-                        <div class="card-gradient p-6 rounded-xl">
+                        <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Monthly Order Amounts</h3>
                             <div class="chart-container">
                                 <canvas id="orderAmountsChart"></canvas>
@@ -272,7 +312,7 @@
                     <!-- Data Tables -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                         <!-- Top Products -->
-                        <div class="card-gradient p-6 rounded-xl">
+                        <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top Products by Quantity</h3>
                             <div class="overflow-x-auto">
                                 <table class="min-w-full">
@@ -297,7 +337,7 @@
                         </div>
 
                         <!-- Order Status Distribution -->
-                        <div class="card-gradient p-6 rounded-xl">
+                        <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
                             <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Order Status Distribution</h3>
                             <div class="space-y-3">
                                 @foreach($statusDistribution as $status)
@@ -311,7 +351,7 @@
                     </div>
 
                     <!-- Recent Activity -->
-                    <div class="card-gradient p-6 rounded-xl">
+                    <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Recent Activity</h3>
                         <div class="overflow-x-auto">
                             <table class="min-w-full">
@@ -329,11 +369,7 @@
                                         <td class="py-2 text-sm text-gray-900 dark:text-white">#{{ $order->id }}</td>
                                         <td class="py-2 text-sm text-gray-600 dark:text-gray-400">{{ $order->order_date->format('M d, Y') }}</td>
                                         <td class="py-2 text-sm">
-                                            <span class="px-2 py-1 text-xs rounded-full 
-                                                @if($order->status === 'completed') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
-                                                @elseif($order->status === 'pending') bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
-                                                @elseif($order->status === 'cancelled') bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
-                                                @else bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 @endif">
+                                            <span class="status-badge {{ $order->status === 'completed' ? 'status-badge-completed' : ($order->status === 'pending' ? 'status-badge-pending' : ($order->status === 'cancelled' ? 'status-badge-cancelled' : '')) }}">
                                                 {{ ucfirst($order->status) }}
                                             </span>
                                         </td>
@@ -370,10 +406,10 @@
                     datasets: [{
                         label: 'Orders',
                         data: orderCounts,
-                    borderColor: 'rgb(59, 130, 246)',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                        borderColor: 'rgb(99, 102, 241)',
+                        backgroundColor: 'rgba(99, 102, 241, 0.2)',
                         tension: 0.4,
-                    fill: true
+                        fill: true
                     }]
                 },
                 options: {
@@ -382,19 +418,32 @@
                     plugins: {
                         legend: {
                             display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            padding: 12,
+                            displayColors: false
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
                             grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
+                                color: document.documentElement.classList.contains('dark') ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                            },
+                            ticks: {
+                                color: document.documentElement.classList.contains('dark') ? '#cbd5e1' : '#475569'
                             }
                         },
                         x: {
                             grid: {
-                            display: false
-                        }
+                                display: false
+                            },
+                            ticks: {
+                                color: document.documentElement.classList.contains('dark') ? '#cbd5e1' : '#475569'
+                            }
                         }
                     }
                 }
@@ -407,11 +456,11 @@
                 data: {
                     labels: chartLabels,
                     datasets: [{
-                    label: 'Amount ($)',
+                        label: 'Amount ($)',
                         data: orderAmounts,
-                    backgroundColor: 'rgba(147, 51, 234, 0.8)',
-                    borderColor: 'rgb(147, 51, 234)',
-                    borderWidth: 1
+                        backgroundColor: 'rgba(168, 85, 247, 0.8)',
+                        borderColor: 'rgb(168, 85, 247)',
+                        borderWidth: 1
                     }]
                 },
                 options: {
@@ -420,23 +469,52 @@
                     plugins: {
                         legend: {
                             display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            padding: 12,
+                            displayColors: false
                         }
                     },
                     scales: {
                         y: {
                             beginAtZero: true,
                             grid: {
-                            color: 'rgba(0, 0, 0, 0.1)'
+                                color: document.documentElement.classList.contains('dark') ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'
+                            },
+                            ticks: {
+                                color: document.documentElement.classList.contains('dark') ? '#cbd5e1' : '#475569'
                             }
                         },
                         x: {
                             grid: {
-                            display: false
-                        }
+                                display: false
+                            },
+                            ticks: {
+                                color: document.documentElement.classList.contains('dark') ? '#cbd5e1' : '#475569'
+                            }
                         }
                     }
                 }
             });
+
+        // Update chart colors when theme changes
+        document.querySelector('[data-theme-toggle]').addEventListener('click', function() {
+            setTimeout(() => {
+                const isDark = document.documentElement.classList.contains('dark');
+                const tickColor = isDark ? '#cbd5e1' : '#475569';
+                const gridColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)';
+                
+                [orderTrendsChart, orderAmountsChart].forEach(chart => {
+                    chart.options.scales.y.grid.color = gridColor;
+                    chart.options.scales.y.ticks.color = tickColor;
+                    chart.options.scales.x.ticks.color = tickColor;
+                    chart.update();
+                });
+            }, 100);
+        });
     </script>
 </body>
 </html> 

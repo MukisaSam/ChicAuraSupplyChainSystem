@@ -194,51 +194,54 @@
                 </div>
                 
                 <div class="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <div class="stat-card p-4 rounded-xl">
+                    <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
                         <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl shadow-lg">
+                            <div class="p-3 rounded-xl bg-indigo-500 dark:bg-indigo-700">
                                 <i class="fas fa-receipt text-white text-xl"></i>
                             </div>
                             <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Total Orders</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['total_orders'] ?? '0' }}</p>
-                                <p class="text-xs text-indigo-600 mt-1">↗ +18% this month</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-300">Total Orders</p>
+                                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $stats['total_orders'] ?? '0' }}</p>
+                                <p class="text-sm text-indigo-600 dark:text-indigo-400 mt-1">↗ +18% this month</p>
                             </div>
                         </div>
                     </div>
-                    <div class="stat-card p-4 rounded-xl">
+
+                    <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
                         <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg">
+                            <div class="p-3 rounded-xl bg-green-500 dark:bg-green-700">
                                 <i class="fas fa-dollar-sign text-white text-xl"></i>
                             </div>
                             <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Total Spent</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['total_spent'] ?? '$0' }}</p>
-                                <p class="text-xs text-green-600 mt-1">↗ +22% this quarter</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-300">Revenue</p>
+                                <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($stats['total_revenue'] ?? '0', 2) }}</p>
+                                <p class="text-sm text-green-600 dark:text-green-400 mt-1">↗ +12% this month</p>
                             </div>
                         </div>
                     </div>
-                    <div class="stat-card p-4 rounded-xl">
+
+                    <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
                         <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl shadow-lg">
-                                <i class="fas fa-shipping-fast text-white text-xl"></i>
+                            <div class="p-3 rounded-xl bg-purple-500 dark:bg-purple-700">
+                                <i class="fas fa-chart-line text-white text-xl"></i>
                             </div>
                             <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Pending Shipments</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['pending_shipments'] ?? '0' }}</p>
-                                <p class="text-xs text-yellow-600 mt-1">🚚 In transit</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-300">Avg Order Value</p>
+                                <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($stats['avg_order_value'] ?? '0', 2) }}</p>
+                                <p class="text-sm text-purple-600 dark:text-purple-400 mt-1">↗ +5% this month</p>
                             </div>
                         </div>
                     </div>
-                    <div class="stat-card p-4 rounded-xl">
+
+                    <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
                         <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg">
-                                <i class="fas fa-calendar-alt text-white text-xl"></i>
+                            <div class="p-3 rounded-xl bg-orange-500 dark:bg-orange-700">
+                                <i class="fas fa-clock text-white text-xl"></i>
                             </div>
                             <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Last Order</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['last_order'] ?? 'N/A' }}</p>
-                                <p class="text-xs text-purple-600 mt-1">📅 Recent activity</p>
+                                <p class="text-sm text-gray-700 dark:text-gray-300">Pending Orders</p>
+                                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $stats['pending_orders'] ?? '0' }}</p>
+                                <p class="text-sm text-orange-600 dark:text-orange-400 mt-1">{{ $stats['pending_orders_change'] ?? '0' }}% from last month</p>
                             </div>
                         </div>
                     </div>
