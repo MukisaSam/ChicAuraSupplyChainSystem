@@ -59,17 +59,16 @@ class RegisteredUserController extends Controller
         return view('auth.register-wholesaler');
     }
 
-
-     /**
-     * Handle an admin adding a user.
+    /**
+     * Handle an admin registration request.
      */
     public function storeUser(Request $request): RedirectResponse
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-           'role' => ['required', 'in:admin,supplier,manufacturer,wholesaler'],
+            'password' => ['required'],
+            'role' => ['required', 'in:admin,supplier,manufacturer,wholesaler'],
         ]);
 
         $user = User::create([
@@ -80,35 +79,8 @@ class RegisteredUserController extends Controller
         ]);
 
         event(new Registered($user));
-
+        
         return redirect('/admin/users');
-
-    }
-
-    /**
-     * Handle an admin registration request.
-     */
-    public function storeAdmin(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'admin_code' => ['required', 'string', 'in:'.config('auth.admin_registration_code')],
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'admin',
-        ]);
-
-        event(new Registered($user));
-
-        Auth::login($user);
-
-        return redirect('/admin/dashboard');
     }
 
     /**

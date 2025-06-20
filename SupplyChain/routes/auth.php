@@ -22,9 +22,9 @@ Route::middleware('guest')->group(function () {
 
 
     // Admin registration
-    Route::get('register/admin', [RegisteredUserController::class, 'createAdmin'])
+    Route::get('register/new_user', [RegisteredUserController::class, 'createAdmin'])
                 ->name('register.admin');
-    Route::post('register/admin', [RegisteredUserController::class, 'storeAdmin'])
+    Route::post('register/new_user', [RegisteredUserController::class, 'storeUser'])
                 ->name('register.admin.store');
 
     // Supplier registration

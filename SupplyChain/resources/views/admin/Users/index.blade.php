@@ -444,9 +444,9 @@
                             <p class="text-gray-300 mt-1">Manage all user accounts and permissions</p>
                         </div>
                         <div class="flex flex-wrap gap-2 mt-4 md:mt-0">
-                            <button id="addUserBtn" class="btn-primary flex items-center">
+                            <a id="addUserBtn" href="{{route('register.admin')}}" class="btn-primary flex items-center">
                                 <i class="fas fa-plus mr-2"></i> Add New User
-                            </button>
+                            </a>
                             <button class="btn-secondary flex items-center">
                                 <i class="fas fa-file-export mr-2"></i> Export
                             </button>
@@ -772,63 +772,6 @@
         </div>
     </div>
 
-    <!-- Add User Modal (outside of app container) -->
-    <div id="addUserModal" class="hidden fixed inset-0 z-50">
-        <div class="modal-overlay">
-            <div class="modal-content">
-                <div class="p-5 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-                    <div>
-                        <h3 class="text-xl font-bold">Add New User</h3>
-                        <p class="text-gray-500 text-sm mt-1">Fill in the details to create a new user account</p>
-                    </div>
-                    <button id="closeModal" class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700">
-                        <i class="fas fa-times text-lg"></i>
-                    </button>
-                </div>
-                <div class="p-5">
-                    <form method="POST" action="{{ route('register.user.store') }}" id="admin/users" class="space-y-6">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-medium mb-2" for="firstName">Full Name <span class="text-red-500">*</span></label>
-                                <input type="text" name="name" id="name" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none focus:border-blue-500" placeholder="Enter fullname" required>
-                                <p class="text-red-500 text-sm mt-1 hidden" id="firstNameError">Full name is required</p>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium mb-2" for="email">Email Address <span class="text-red-500">*</span></label>
-                                <input type="email" name="email" id="email" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none focus:border-blue-500" placeholder="Enter email" required>
-                                <p class="text-red-500 text-sm mt-1 hidden" id="emailError">Please enter a valid email</p>
-                            </div>
-                        </div>
-                        
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-medium mb-2" for="phone">Password</label>
-                                <input type="password" name="password" id="password" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none focus:border-blue-500" placeholder="Enter phone number">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium mb-2" for="role">Role <span class="text-red-500">*</span></label>
-                                <select id="role" name="role" class="w-full p-3 border border-gray-300 rounded-lg form-input focus:outline-none focus:border-blue-500" required>
-                                    <option value="admin">Administrator</option>
-                                    <option value="supplier">Supplier</option>
-                                    <option value="manufacturer">Manufacturer</option>
-                                    <option value="wholesaler">Wholesaler</option>
-                                </select>
-                                <p class="text-red-500 text-sm mt-1 hidden" id="roleError">Please select a role</p>
-                            </div>
-                        </div>
-                        
-                        <div class="flex justify-end space-x-3 mt-8">
-                            <button type="button" id="cancelBtn" class="btn-secondary px-5 py-2.5">Cancel</button>
-                            <button type="submit" class="btn-primary px-5 py-2.5 flex items-center">
-                                <i class="fas fa-user-plus mr-2"></i> Create User
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
         // Mobile menu toggle
         document.getElementById('menu-toggle').addEventListener('click', function() {
@@ -923,82 +866,7 @@
             }
         });
         
-        // Form validation and submission
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            // Reset errors
-            document.querySelectorAll('.text-red-500').forEach(el => {
-                el.classList.add('hidden');
-            });
-            document.querySelectorAll('.form-input').forEach(el => {
-                el.classList.remove('border-red-500', 'form-error');
-            });
-            
-            let isValid = true;
-            const firstName = document.getElementById('firstName');
-            const lastName = document.getElementById('lastName');
-            const email = document.getElementById('email');
-            const role = document.getElementById('role');
-            
-            // Validate first name
-            if (!firstName.value.trim()) {
-                isValid = false;
-                firstName.classList.add('border-red-500', 'form-error');
-                document.getElementById('firstNameError').classList.remove('hidden');
-            }
-            
-            // Validate last name
-            if (!lastName.value.trim()) {
-                isValid = false;
-                lastName.classList.add('border-red-500', 'form-error');
-                document.getElementById('lastNameError').classList.remove('hidden');
-            }
-            
-            // Validate email
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email.value)) {
-                isValid = false;
-                email.classList.add('border-red-500', 'form-error');
-                document.getElementById('emailError').classList.remove('hidden');
-            }
-            
-            // Validate role
-            if (!role.value) {
-                isValid = false;
-                role.classList.add('border-red-500', 'form-error');
-                document.getElementById('roleError').classList.remove('hidden');
-            }
-            
-            if (isValid) {
-                // Show success message
-                const successMessage = document.createElement('div');
-                successMessage.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center z-50';
-                successMessage.innerHTML = `
-                    <i class="fas fa-check-circle mr-2"></i>
-                    User created successfully!
-                `;
-                document.body.appendChild(successMessage);
-                
-                // Remove message after 3 seconds
-                setTimeout(() => {
-                    successMessage.remove();
-                }, 3000);
-                
-                closeModalFunc();
-            }
-        });
         
-        // Reset form
-        function resetForm() {
-            form.reset();
-            document.querySelectorAll('.text-red-500').forEach(el => {
-                el.classList.add('hidden');
-            });
-            document.querySelectorAll('.form-input').forEach(el => {
-                el.classList.remove('border-red-500', 'form-error');
-            });
-        }
     </script>
 </body>
 </html>

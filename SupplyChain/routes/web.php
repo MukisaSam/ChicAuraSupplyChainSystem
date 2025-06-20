@@ -137,8 +137,8 @@ Route::middleware(['auth', 'role:wholesaler'])->prefix('wholesaler')->name('whol
 });
 
 // Registration routes
-Route::get('/register/admin', [RegisteredUserController::class, 'createAdmin'])->name('register.admin');
-Route::post('/register/admin', [RegisteredUserController::class, 'storeAdmin'])->name('register.admin.store');
+Route::get('/register/new_user', [RegisteredUserController::class, 'createAdmin'])->name('register.admin');
+Route::post('/register/new_user', [RegisteredUserController::class, 'storeUser'])->name('register.admin.store');
 
 // Supplier registration routes
 Route::get('/register/supplier', [RegisteredUserController::class, 'createSupplier'])->name('register.supplier');

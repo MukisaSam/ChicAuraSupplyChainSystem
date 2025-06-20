@@ -43,6 +43,11 @@
             color: var(--text-light) !important;
         }
 
+        select.form-input option {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: var(--text-light); 
+}
+
         .form-label {
             color: var(--text-light) !important;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
@@ -73,10 +78,10 @@
                 <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="h-24 w-auto drop-shadow-lg">
             </div>
             <h2 class="mt-6 text-center text-4xl font-bold text-white drop-shadow-lg">
-                Admin Registration
+                User Registration
             </h2>
             <p class="mt-2 text-center text-lg text-gray-200">
-                Join our elite team of administrators and help manage the ChicAura supply chain ecosystem
+                Join our elite team and help manage the ChicAura supply chain ecosystem
             </p>
         </div>
 
@@ -108,44 +113,24 @@
                     </div>
 
                     <div>
-                        <label for="password_confirmation" class="form-label block text-sm font-medium">Confirm Password</label>
+                        <label for="admin_code" class="form-label block text-sm font-medium">Role</label>
                         <div class="mt-1">
-                            <input id="password_confirmation" name="password_confirmation" type="password" required class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                            <select id="role" name="role" class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <option value="admin">Administrator</option>
+                                <option value="supplier">Supplier</option>
+                                <option value="manufacturer">Manufacturer</option>
+                                <option value="wholesaler">Wholesaler</option>
+                            </select>
                         </div>
-                    </div>
-
-                    <div>
-                        <label for="admin_code" class="form-label block text-sm font-medium">Admin Registration Code</label>
-                        <div class="mt-1">
-                            <input id="admin_code" name="admin_code" type="password" required class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                        </div>
+                                
                     </div>
 
                     <div>
                         <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            Register as Admin
+                            Register User
                         </button>
                     </div>
                 </form>
-
-                <div class="mt-6">
-                    <div class="relative">
-                        <div class="absolute inset-0 flex items-center">
-                            <div class="w-full border-t border-gray-300"></div>
-                        </div>
-                        <div class="relative flex justify-center text-sm">
-                            <span class="divider-text px-2">
-                                Already have an account?
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="mt-6">
-                        <a href="{{ route('login') }}" class="login-btn w-full flex justify-center py-2 px-4 rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            Sign in
-                        </a>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
