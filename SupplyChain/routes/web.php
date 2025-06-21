@@ -97,6 +97,9 @@ Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('
     
     //Analytics routes
     Route::get('/analytics', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'index'])->name('analytics');
+    Route::get('/analytics/chart-data', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'getChartData'])->name('analytics.chart-data');
+    Route::get('/analytics/supplier-report', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'getSupplierReport'])->name('analytics.supplier-report');
+    Route::get('/analytics/wholesaler-report', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'getCustomerReport'])->name('analytics.wholesaler-report');
 
     //Inventory routes
     Route::get('/inventory', [App\Http\Controllers\ManufacturerInventoryController::class, 'index'])->name('inventory');
@@ -109,6 +112,12 @@ Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('
 
     //Chat routes
     Route::get('/chat', [App\Http\Controllers\ManufacturerChatController::class, 'index'])->name('chat');
+    Route::get('/chat/{contactId}', [App\Http\Controllers\ManufacturerChatController::class, 'show'])->name('chat.show');
+    Route::post('/chat/send', [App\Http\Controllers\ManufacturerChatController::class, 'sendMessage'])->name('chat.send');
+    Route::post('/chat/mark-read', [App\Http\Controllers\ManufacturerChatController::class, 'markAsRead'])->name('chat.mark-read');
+    Route::get('/chat/unread-count', [App\Http\Controllers\ManufacturerChatController::class, 'getUnreadCount'])->name('chat.unread-count');
+    Route::get('/chat/{contactId}/messages', [App\Http\Controllers\ManufacturerChatController::class, 'getRecentMessages'])->name('chat.messages');
+    Route::get('/chat/unread-messages', [App\Http\Controllers\ManufacturerChatController::class, 'getUnreadMessages'])->name('chat.unread-messages');
 
     //Reports routes
     Route::get('/reports', [App\Http\Controllers\ManufacturerReportsController::class, 'index'])->name('reports');

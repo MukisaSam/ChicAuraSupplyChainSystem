@@ -98,7 +98,7 @@
                     </div>
                 </div>
                 <div class="px-4 py-4">
-                    <h3 class="text-white text-sm font-semibold mb-3 px-3">MANUFACTURING</h3>
+                        <h3 class="text-white text-sm font-semibold mb-3 px-3">MANUFACTURER PORTAL</h3>
                 </div>
                 <!-- Sidebar Navigation -->
                 <nav class="flex-1 px-4 py-2 space-y-1">

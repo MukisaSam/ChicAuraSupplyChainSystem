@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\User;
 use App\Models\Manufacturer;
 use App\Models\Wholesaler;
+use App\Models\Supplier;
 use App\Models\ChatMessage;
 use Illuminate\Support\Facades\Hash;
 
@@ -46,6 +47,29 @@ class ChatTestDataSeeder extends Seeder
                 'license_document' => 'manufacturer_license.pdf',
                 'production_capacity' => 10000,
                 'specialization' => json_encode(['dresses', 'shirts', 'pants']),
+            ]);
+        }
+
+        // Get or create test supplier
+        $supplier = User::firstOrCreate(
+            ['email' => 'supplier@chicaura.com'],
+            [
+                'name' => 'Textile Supplier',
+                'password' => Hash::make('password'),
+                'role' => 'supplier',
+            ]
+        );
+
+        // Create supplier profile if it doesn't exist
+        if (!$supplier->supplier) {
+            Supplier::create([
+                'user_id' => $supplier->id,
+                'business_address' => '789 Textile Ave, Supply District',
+                'phone' => '+1122334455',
+                'license_document' => 'supplier_license.pdf',
+                'business_type' => 'Textile Supply',
+                'specialization' => json_encode(['cotton', 'silk', 'polyester']),
+                'supply_capacity' => 5000,
             ]);
         }
 
@@ -98,6 +122,27 @@ class ChatTestDataSeeder extends Seeder
                     'created_at' => now()->subMinutes(30),
                 ],
                 [
+                    'sender_id' => $manufacturer->id,
+                    'receiver_id' => $supplier->id,
+                    'content' => 'Hi! We need 5000 meters of premium cotton fabric. What\'s your best price?',
+                    'message_type' => 'text',
+                    'created_at' => now()->subHours(3),
+                ],
+                [
+                    'sender_id' => $supplier->id,
+                    'receiver_id' => $manufacturer->id,
+                    'content' => 'Hello! For that quantity, I can offer $2.50 per meter. Delivery within 2 weeks.',
+                    'message_type' => 'text',
+                    'created_at' => now()->subHours(2),
+                ],
+                [
+                    'sender_id' => $manufacturer->id,
+                    'receiver_id' => $supplier->id,
+                    'content' => 'Perfect! Can you also provide silk fabric for our luxury line?',
+                    'message_type' => 'text',
+                    'created_at' => now()->subMinutes(45),
+                ],
+                [
                     'sender_id' => $admin->id,
                     'receiver_id' => $wholesaler->id,
                     'content' => 'Welcome to ChicAura! How can I help you with your orders today?',
@@ -122,6 +167,7 @@ class ChatTestDataSeeder extends Seeder
         $this->command->info('Test accounts:');
         $this->command->info('- Admin: admin@chicaura.com / password');
         $this->command->info('- Manufacturer: manufacturer@chicaura.com / password');
+        $this->command->info('- Supplier: supplier@chicaura.com / password');
         $this->command->info('- Wholesaler: wholesaler@chicaura.com / password');
     }
 }
