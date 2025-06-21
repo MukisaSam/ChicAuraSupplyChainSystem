@@ -82,8 +82,19 @@ Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('
     Route::get('/dashboard', [App\Http\Controllers\ManufacturerDashboardController::class, 'index'])->name('dashboard');
     
     //Orders routes
+    Route::get('/orders/analytics', [App\Http\Controllers\ManufacturerOrdersController::class, 'analytics'])->name('orders.analytics');
     Route::get('/orders', [App\Http\Controllers\ManufacturerOrdersController::class, 'index'])->name('orders');
-
+    Route::get('/orders/{order}', [App\Http\Controllers\ManufacturerOrdersController::class, 'show'])->name('orders.show');
+    Route::put('/orders/{order}/status', [App\Http\Controllers\ManufacturerOrdersController::class, 'updateStatus'])->name('orders.update-status');
+    
+    // Supply Request routes
+    Route::get('/orders/supply-requests/create', [App\Http\Controllers\ManufacturerOrdersController::class, 'createSupplyRequest'])->name('orders.create-supply-request');
+    Route::post('/orders/supply-requests', [App\Http\Controllers\ManufacturerOrdersController::class, 'storeSupplyRequest'])->name('orders.store-supply-request');
+    Route::get('/orders/supply-requests/{supplyRequest}', [App\Http\Controllers\ManufacturerOrdersController::class, 'showSupplyRequest'])->name('orders.show-supply-request');
+    Route::put('/orders/supply-requests/{supplyRequest}/status', [App\Http\Controllers\ManufacturerOrdersController::class, 'updateSupplyRequestStatus'])->name('orders.update-supply-request-status');
+    
+    // Orders Analytics
+    
     //Analytics routes
     Route::get('/analytics', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'index'])->name('analytics');
 

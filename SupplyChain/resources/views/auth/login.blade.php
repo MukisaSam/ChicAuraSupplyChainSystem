@@ -29,62 +29,59 @@
         }
 
         .form-container {
-            background: rgba(255, 255, 255, 0.1) !important;
+            background: rgba(248, 250, 252, 0.95) !important;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .form-input {
-            background: rgba(255, 255, 255, 0.1) !important;
-            border: 2px solid rgba(255, 255, 255, 0.3) !important;
-            color: var(--text-light) !important;
+            background: rgba(255, 255, 255, 0.9) !important;
+            border: 2px solid rgba(203, 213, 225, 0.5) !important;
+            color: #1e293b !important;
             backdrop-filter: blur(5px);
         }
 
         .form-input::placeholder {
-            color: rgba(255, 255, 255, 0.7) !important;
+            color: #64748b !important;
         }
 
         .form-input:focus {
-            background: rgba(255, 255, 255, 0.2) !important;
+            background: rgba(255, 255, 255, 1) !important;
             border-color: var(--primary-color) !important;
-            color: var(--text-light) !important;
+            color: #1e293b !important;
         }
 
         .form-label {
-            color: var(--text-light) !important;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            color: #1e293b !important;
+            font-weight: 600;
         }
 
         .checkbox-label {
-            color: var(--text-light) !important;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            color: #374151 !important;
         }
 
         .forgot-link {
-            color: var(--text-light) !important;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-        }
-
-        .forgot-link:hover {
             color: var(--primary-color) !important;
         }
 
+        .forgot-link:hover {
+            color: var(--primary-dark) !important;
+        }
+
         .divider-text {
-            background: rgba(255, 255, 255, 0.1) !important;
-            color: var(--text-light) !important;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            background: rgba(248, 250, 252, 0.95) !important;
+            color: #374151 !important;
         }
 
         .register-btn {
             background: transparent !important;
-            color: var(--text-light) !important;
-            border: 2px solid rgba(255, 255, 255, 0.3) !important;
+            color: var(--primary-color) !important;
+            border: 2px solid var(--primary-color) !important;
         }
 
         .register-btn:hover {
-            background: rgba(255, 255, 255, 0.1) !important;
-            border-color: var(--primary-color) !important;
+            background: var(--primary-color) !important;
+            color: white !important;
         }
     </style>
 </head>

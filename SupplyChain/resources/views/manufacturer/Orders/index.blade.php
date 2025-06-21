@@ -3,16 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manufacturer Dashboard - ChicAura SCM</title>
-    <!-- Tailwind CSS via CDN for standalone use, but it's already included in Laravel/Breeze setup -->
+    <title>Orders Management - ChicAura SCM</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <!-- Chart.js for graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
-        /* Custom styles for a better look and feel */
         body { 
             background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/manufacturer.png') }}');
             background-size: cover;
@@ -21,7 +17,6 @@
             min-height: 100vh;
         }
         
-        /* Dark mode styles */
         .dark body {
             background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 100%), url('{{ asset('images/manufacturer.png') }}');
         }
@@ -116,6 +111,21 @@
             color: #cbd5e1;
         }
         
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        
+        .status-pending { background-color: #fef3c7; color: #92400e; }
+        .status-confirmed { background-color: #dbeafe; color: #1e40af; }
+        .status-in_production { background-color: #e9d5ff; color: #7c3aed; }
+        .status-shipped { background-color: #c7d2fe; color: #4338ca; }
+        .status-delivered { background-color: #d1fae5; color: #065f46; }
+        .status-cancelled { background-color: #fee2e2; color: #dc2626; }
+        
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
@@ -149,6 +159,10 @@
                     <a href="{{route('manufacturer.analytics')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-chart-pie w-5"></i>
                         <span class="ml-2 text-sm">Analytics</span>
+                    </a>
+                    <a href="{{ route('manufacturer.orders.analytics') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-chart-line w-5"></i>
+                        <span class="ml-2 text-sm">Order Analytics</span>
                     </a>
                     <a href="{{route('manufacturer.inventory')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-warehouse w-5"></i>
@@ -231,89 +245,282 @@
             </header>
 
             <!-- Main Content -->
-            <main class="flex-1 p-4 overflow-hidden">
-                <div class="mb-4">
-                    <h2 class="text-2xl font-bold text-white mb-1">Orders</h2>
-                    <p class="text-gray-200 text-sm">Welcome back! Here's an overview of your supply chain.</p>
+            <main class="flex-1 p-4 overflow-y-auto">
+                <!-- Header Section -->
+                <div class="mb-8">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Orders Management</h1>
+                            <p class="text-gray-600 dark:text-gray-400 mt-2">Manage wholesaler orders and supplier requests</p>
+                        </div>
+                        <div class="flex space-x-3">
+                            <a href="{{ route('manufacturer.orders.create-supply-request') }}" 
+                               class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
+                                <i class="fas fa-plus"></i>
+                                <span>New Supply Request</span>
+                            </a>
+                            <a href="{{ route('manufacturer.orders.analytics') }}" 
+                               class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
+                                <i class="fas fa-chart-bar"></i>
+                                <span>Analytics</span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Stats Cards -->
-                <div class="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <div class="stat-card p-4 rounded-xl">
+                <div class="grid grid-cols-1 gap-6 mb-8 sm:grid-cols-2 lg:grid-cols-4">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
                         <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl shadow-lg">
-                                <i class="fas fa-cogs text-white text-xl"></i>
+                            <div class="p-3 bg-indigo-100 dark:bg-indigo-900 rounded-lg">
+                                <i class="fas fa-shopping-cart text-indigo-600 dark:text-indigo-400 text-xl"></i>
                             </div>
-                            <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Total Raw Materials</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['raw_materials'] ?? '0' }}</p>
-                                <p class="text-xs text-indigo-600 mt-1">↗ +8% this month</p>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Orders</p>
+                                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $stats['total_orders'] ?? 0 }}</p>
                             </div>
                         </div>
                     </div>
-                    <div class="stat-card p-4 rounded-xl">
+                    
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
                         <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg">
-                                <i class="fas fa-tshirt text-white text-xl"></i>
+                            <div class="p-3 bg-yellow-100 dark:bg-yellow-900 rounded-lg">
+                                <i class="fas fa-clock text-yellow-600 dark:text-yellow-400 text-xl"></i>
                             </div>
-                            <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Total Products</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['products'] ?? '0' }}</p>
-                                <p class="text-xs text-green-600 mt-1">↗ +12% this month</p>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Pending Orders</p>
+                                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $stats['pending_orders'] ?? 0 }}</p>
                             </div>
                         </div>
                     </div>
-                    <div class="stat-card p-4 rounded-xl">
+                    
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
                         <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl shadow-lg">
-                                <i class="fas fa-truck text-white text-xl"></i>
+                            <div class="p-3 bg-purple-100 dark:bg-purple-900 rounded-lg">
+                                <i class="fas fa-cogs text-purple-600 dark:text-purple-400 text-xl"></i>
                             </div>
-                            <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Total Suppliers</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['suppliers'] ?? '0' }}</p>
-                                <p class="text-xs text-yellow-600 mt-1">↗ +5% this month</p>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">In Production</p>
+                                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $stats['in_production_orders'] ?? 0 }}</p>
                             </div>
                         </div>
                     </div>
-                    <div class="stat-card p-4 rounded-xl">
+                    
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
                         <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg">
-                                <i class="fas fa-dollar-sign text-white text-xl"></i>
+                            <div class="p-3 bg-green-100 dark:bg-green-900 rounded-lg">
+                                <i class="fas fa-dollar-sign text-green-600 dark:text-green-400 text-xl"></i>
                             </div>
-                            <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Revenue</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['revenue'] ?? '$0' }}</p>
-                                <p class="text-xs text-purple-600 mt-1">↗ +15% this month</p>
+                            <div class="ml-4">
+                                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Revenue</p>
+                                <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($stats['total_revenue'] ?? 0, 2) }}</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-3 h-64">
-                    <div class="card-gradient p-4 rounded-xl lg:col-span-2 overflow-hidden">
-                        <h3 class="text-lg font-bold text-gray-800 mb-3">Production Overview</h3>
-                        <canvas id="productionChart" class="w-full h-48"></canvas>
+
+                <!-- Tabs -->
+                <div class="mb-6">
+                    <div class="border-b border-gray-200 dark:border-gray-700">
+                        <nav class="-mb-px flex space-x-8">
+                            <button onclick="showTab('orders')" id="orders-tab" class="tab-button active py-2 px-1 border-b-2 border-indigo-500 font-medium text-sm text-indigo-600 dark:text-indigo-400">
+                                <i class="fas fa-shopping-cart mr-2"></i>
+                                Wholesaler Orders
+                            </button>
+                            <button onclick="showTab('supply')" id="supply-tab" class="tab-button py-2 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300">
+                                <i class="fas fa-truck mr-2"></i>
+                                Supply Requests
+                            </button>
+                        </nav>
                     </div>
-                    <div class="card-gradient p-4 rounded-xl overflow-hidden">
-                        <h3 class="text-lg font-bold text-gray-800 mb-3">Recent Activities</h3>
-                        <div class="space-y-2 h-48 overflow-y-auto">
-                            @forelse ($recentActivities ?? [] as $activity)
-                                <div class="flex items-start p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                                    <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full {{ $activity['color'] ?? 'bg-blue-100' }} bg-opacity-10">
-                                        <i class="fas {{ $activity['icon'] ?? 'fa-info' }} {{ $activity['color'] ?? 'text-blue-600' }} text-sm"></i>
-                                    </div>
-                                    <div class="ml-3 flex-1">
-                                        <p class="text-xs font-medium text-gray-800">{{ $activity['description'] ?? 'No activity' }}</p>
-                                        <p class="text-xs text-gray-500 mt-1">{{ $activity['time'] ?? 'N/A' }}</p>
-                                    </div>
+                </div>
+
+                <!-- Orders Tab Content -->
+                <div id="orders-content" class="tab-content">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                            <div class="flex justify-between items-center">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Recent Orders from Wholesalers</h3>
+                                <div class="flex space-x-2">
+                                    <select class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                        <option>All Status</option>
+                                        <option>Pending</option>
+                                        <option>Confirmed</option>
+                                        <option>In Production</option>
+                                        <option>Shipped</option>
+                                        <option>Delivered</option>
+                                    </select>
                                 </div>
-                            @empty 
-                                <div class="text-center py-6">
-                                    <i class="fas fa-inbox text-gray-400 text-2xl mb-2"></i>
-                                    <p class="text-gray-500 text-sm">No recent activities found.</p>
-                                </div>
-                            @endforelse
+                            </div>
                         </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead class="bg-gray-50 dark:bg-gray-700">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Order</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Wholesaler</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Items</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Amount</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                    @forelse($orders as $order)
+                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900 dark:text-white">#{{ $order->order_number }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900 dark:text-white">{{ $order->wholesaler->user->name ?? 'N/A' }}</div>
+                                            <div class="text-sm text-gray-500 dark:text-gray-400">{{ $order->wholesaler->business_type ?? 'N/A' }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900 dark:text-white">{{ $order->orderItems->count() }} items</div>
+                                            <div class="text-sm text-gray-500 dark:text-gray-400">
+                                                @foreach($order->orderItems->take(2) as $item)
+                                                    {{ $item->item->name ?? 'N/A' }}{{ !$loop->last ? ', ' : '' }}
+                                                @endforeach
+                                                @if($order->orderItems->count() > 2)
+                                                    +{{ $order->orderItems->count() - 2 }} more
+                                                @endif
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900 dark:text-white">${{ number_format($order->total_amount, 2) }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
+                                                @if($order->status === 'pending') bg-yellow-100 text-yellow-800
+                                                @elseif($order->status === 'confirmed') bg-blue-100 text-blue-800
+                                                @elseif($order->status === 'in_production') bg-purple-100 text-purple-800
+                                                @elseif($order->status === 'shipped') bg-indigo-100 text-indigo-800
+                                                @elseif($order->status === 'delivered') bg-green-100 text-green-800
+                                                @else bg-red-100 text-red-800
+                                                @endif">
+                                                {{ ucfirst(str_replace('_', ' ', $order->status)) }}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                            {{ $order->created_at->format('M d, Y') }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="{{ route('manufacturer.orders.show', $order) }}" 
+                                               class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    @empty
+                                    <tr>
+                                        <td colspan="7" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                                            <div class="flex flex-col items-center py-8">
+                                                <i class="fas fa-shopping-cart text-4xl mb-4 text-gray-300"></i>
+                                                <p class="text-lg font-medium">No orders found</p>
+                                                <p class="text-sm">Orders from wholesalers will appear here</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        @if($orders->hasPages())
+                        <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+                            {{ $orders->links() }}
+                        </div>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Supply Requests Tab Content -->
+                <div id="supply-content" class="tab-content hidden">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                            <div class="flex justify-between items-center">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Supply Requests to Suppliers</h3>
+                                <div class="flex space-x-2">
+                                    <select class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                        <option>All Status</option>
+                                        <option>Pending</option>
+                                        <option>Approved</option>
+                                        <option>Completed</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead class="bg-gray-50 dark:bg-gray-700">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Request</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Supplier</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Item</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Due Date</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                    @forelse($supplyRequests as $request)
+                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900 dark:text-white">#{{ $request->id }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900 dark:text-white">{{ $request->supplier->user->name ?? 'N/A' }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900 dark:text-white">{{ $request->item->name ?? 'N/A' }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900 dark:text-white">{{ $request->quantity }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                            {{ \Carbon\Carbon::parse($request->due_date)->format('M d, Y') }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
+                                                @if($request->status === 'pending') bg-yellow-100 text-yellow-800
+                                                @elseif($request->status === 'approved') bg-blue-100 text-blue-800
+                                                @elseif($request->status === 'completed') bg-green-100 text-green-800
+                                                @else bg-red-100 text-red-800
+                                                @endif">
+                                                {{ ucfirst($request->status) }}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="{{ route('manufacturer.orders.show-supply-request', $request) }}" 
+                                               class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    @empty
+                                    <tr>
+                                        <td colspan="7" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                                            <div class="flex flex-col items-center py-8">
+                                                <i class="fas fa-truck text-4xl mb-4 text-gray-300"></i>
+                                                <p class="text-lg font-medium">No supply requests found</p>
+                                                <p class="text-sm">Supply requests to suppliers will appear here</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        @if($supplyRequests->hasPages())
+                        <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+                            {{ $supplyRequests->links() }}
+                        </div>
+                        @endif
                     </div>
                 </div>
             </main>
@@ -326,37 +533,33 @@
             document.getElementById('sidebar').classList.toggle('open');
         });
 
-        // Production Chart
-        const productionCtx = document.getElementById('productionChart');
-        if (productionCtx) {
-            new Chart(productionCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [{
-                        label: 'Production Volume',
-                        data: [65, 59, 80, 81, 56, 55],
-                        borderColor: 'rgb(99, 102, 241)',
-                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
+        // Tab functionality
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.add('hidden'));
+            
+            // Remove active class from all tab buttons
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                button.classList.remove('active', 'border-indigo-500', 'text-indigo-600', 'dark:text-indigo-400');
+                button.classList.add('border-transparent', 'text-gray-500', 'dark:text-gray-400');
             });
+            
+            // Show selected tab content
+            document.getElementById(tabName + '-content').classList.remove('hidden');
+            
+            // Add active class to selected tab button
+            const activeButton = document.getElementById(tabName + '-tab');
+            activeButton.classList.add('active', 'border-indigo-500', 'text-indigo-600', 'dark:text-indigo-400');
+            activeButton.classList.remove('border-transparent', 'text-gray-500', 'dark:text-gray-400');
         }
+
+        // Show success messages
+        @if(session('success'))
+            // You can add a toast notification here
+            console.log('{{ session('success') }}');
+        @endif
     </script>
 </body>
-</html>
+</html> 

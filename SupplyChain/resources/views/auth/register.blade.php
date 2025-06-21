@@ -29,21 +29,22 @@
         }
 
         .form-container {
-            background: rgba(255, 255, 255, 0.1) !important;
+            background: rgba(248, 250, 252, 0.95) !important;
             backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .role-btn {
-            background: rgba(255, 255, 255, 0.1) !important;
-            border: 2px solid rgba(255, 255, 255, 0.3) !important;
-            color: var(--text-light) !important;
+            background: rgba(255, 255, 255, 0.9) !important;
+            border: 2px solid rgba(203, 213, 225, 0.5) !important;
+            color: #1e293b !important;
             backdrop-filter: blur(5px);
         }
 
         .role-btn:hover {
-            background: rgba(255, 255, 255, 0.2) !important;
+            background: rgba(255, 255, 255, 1) !important;
             border-color: var(--primary-color) !important;
+            color: #1e293b !important;
         }
 
         .role-btn.admin {
@@ -52,7 +53,8 @@
 
         .role-btn.admin:hover {
             border-color: #6366f1 !important;
-            background: rgba(99, 102, 241, 0.2) !important;
+            background: rgba(99, 102, 241, 0.1) !important;
+            color: #6366f1 !important;
         }
 
         .role-btn.supplier {
@@ -61,7 +63,8 @@
 
         .role-btn.supplier:hover {
             border-color: #22c55e !important;
-            background: rgba(34, 197, 94, 0.2) !important;
+            background: rgba(34, 197, 94, 0.1) !important;
+            color: #22c55e !important;
         }
 
         .role-btn.manufacturer {
@@ -70,7 +73,8 @@
 
         .role-btn.manufacturer:hover {
             border-color: #3b82f6 !important;
-            background: rgba(59, 130, 246, 0.2) !important;
+            background: rgba(59, 130, 246, 0.1) !important;
+            color: #3b82f6 !important;
         }
 
         .role-btn.wholesaler {
@@ -79,24 +83,24 @@
 
         .role-btn.wholesaler:hover {
             border-color: #a855f7 !important;
-            background: rgba(168, 85, 247, 0.2) !important;
+            background: rgba(168, 85, 247, 0.1) !important;
+            color: #a855f7 !important;
         }
 
         .divider-text {
-            background: rgba(255, 255, 255, 0.1) !important;
-            color: var(--text-light) !important;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            background: rgba(248, 250, 252, 0.95) !important;
+            color: #374151 !important;
         }
 
         .login-btn {
             background: transparent !important;
-            color: var(--text-light) !important;
-            border: 2px solid rgba(255, 255, 255, 0.3) !important;
+            color: var(--primary-color) !important;
+            border: 2px solid var(--primary-color) !important;
         }
 
         .login-btn:hover {
-            background: rgba(255, 255, 255, 0.1) !important;
-            border-color: var(--primary-color) !important;
+            background: var(--primary-color) !important;
+            color: white !important;
         }
     </style>
 </head>
