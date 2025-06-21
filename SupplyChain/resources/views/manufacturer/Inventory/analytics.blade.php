@@ -3,16 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventory Management - ChicAura SCM</title>
-    <!-- Tailwind CSS via CDN for standalone use, but it's already included in Laravel/Breeze setup -->
+    <title>Inventory Analytics - ChicAura SCM</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-    <!-- Chart.js for graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
-        /* Custom styles for a better look and feel */
         body { 
             background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/manufacturer.png') }}');
             background-size: cover;
@@ -21,7 +17,6 @@
             min-height: 100vh;
         }
         
-        /* Dark mode styles */
         .dark body {
             background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 100%), url('{{ asset('images/manufacturer.png') }}');
         }
@@ -116,6 +111,12 @@
             color: #cbd5e1;
         }
         
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
@@ -197,7 +198,7 @@
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <i class="fas fa-search text-gray-400"></i>
                         </span>
-                        <input type="text" id="searchInput" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm" placeholder="Search inventory items...">
+                        <input type="text" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm" placeholder="Search analytics, reports...">
                     </div>
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
@@ -232,57 +233,34 @@
 
             <!-- Main Content -->
             <main class="flex-1 p-4 overflow-y-auto">
-                <!-- Success/Error Messages -->
-                @if(session('success'))
-                    <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                @if(session('error'))
-                    <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
-                        {{ session('error') }}
-                    </div>
-                @endif
-
-                <div class="mb-4 flex justify-between items-center">
-                    <div>
-                        <h2 class="text-2xl font-bold text-white mb-1">Inventory Management</h2>
-                        <p class="text-gray-200 text-sm">Manage your raw materials and finished products inventory.</p>
-                    </div>
-                    <div class="flex space-x-2">
-                        <a href="{{ route('manufacturer.inventory.analytics') }}" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
-                            <i class="fas fa-chart-bar mr-2"></i>Analytics
-                        </a>
-                        <a href="{{ route('manufacturer.inventory.create') }}" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
-                            <i class="fas fa-plus mr-2"></i>Add Item
-                        </a>
-                    </div>
+                <div class="mb-4">
+                    <h2 class="text-2xl font-bold text-white mb-1">Inventory Analytics</h2>
+                    <p class="text-gray-200 text-sm">Comprehensive insights into your inventory performance and trends.</p>
                 </div>
 
-                <!-- Stats Cards -->
+                <!-- Analytics Overview Cards -->
                 <div class="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 lg:grid-cols-4">
                     <div class="stat-card p-4 rounded-xl">
                         <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl shadow-lg">
-                                <i class="fas fa-boxes text-white text-xl"></i>
+                            <div class="p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg">
+                                <i class="fas fa-chart-line text-white text-xl"></i>
                             </div>
                             <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Total Items</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['total_items'] ?? '0' }}</p>
-                                <p class="text-xs text-indigo-600 mt-1">Active inventory items</p>
+                                <p class="text-xs font-medium text-gray-600">Total Categories</p>
+                                <p class="text-2xl font-bold text-gray-800">{{ $analytics['categoryDistribution']->count() ?? '0' }}</p>
+                                <p class="text-xs text-blue-600 mt-1">Active categories</p>
                             </div>
                         </div>
                     </div>
                     <div class="stat-card p-4 rounded-xl">
                         <div class="flex items-center">
                             <div class="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg">
-                                <i class="fas fa-layer-group text-white text-xl"></i>
+                                <i class="fas fa-dollar-sign text-white text-xl"></i>
                             </div>
                             <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Total Stock</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['total_stock'] ?? '0' }}</p>
-                                <p class="text-xs text-green-600 mt-1">Units in stock</p>
+                                <p class="text-xs font-medium text-gray-600">Total Value</p>
+                                <p class="text-2xl font-bold text-gray-800">${{ number_format($analytics['stockValueByCategory']->sum('total_value'), 2) ?? '0' }}</p>
+                                <p class="text-xs text-green-600 mt-1">Inventory worth</p>
                             </div>
                         </div>
                     </div>
@@ -293,64 +271,57 @@
                             </div>
                             <div class="ml-3">
                                 <p class="text-xs font-medium text-gray-600">Low Stock Items</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['low_stock_items'] ?? '0' }}</p>
-                                <p class="text-xs text-yellow-600 mt-1">Need reorder</p>
+                                <p class="text-2xl font-bold text-gray-800">{{ $analytics['lowStockItems']->count() ?? '0' }}</p>
+                                <p class="text-xs text-yellow-600 mt-1">Need attention</p>
                             </div>
                         </div>
                     </div>
                     <div class="stat-card p-4 rounded-xl">
                         <div class="flex items-center">
                             <div class="p-3 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg">
-                                <i class="fas fa-dollar-sign text-white text-xl"></i>
+                                <i class="fas fa-chart-pie text-white text-xl"></i>
                             </div>
                             <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Total Value</p>
-                                <p class="text-2xl font-bold text-gray-800">${{ $stats['total_value'] ?? '0' }}</p>
-                                <p class="text-xs text-purple-600 mt-1">Inventory worth</p>
+                                <p class="text-xs font-medium text-gray-600">Avg Stock Level</p>
+                                <p class="text-2xl font-bold text-gray-800">{{ number_format($analytics['lowStockItems']->avg('stock_quantity') ?? 0, 0) }}</p>
+                                <p class="text-xs text-purple-600 mt-1">Per item</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Low Stock Alerts -->
-                @if($lowStockItems->count() > 0)
-                <div class="mb-6">
-                    <div class="card-gradient p-4 rounded-xl">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-bold text-gray-800 flex items-center">
-                                <i class="fas fa-exclamation-triangle text-yellow-600 mr-2"></i>
-                                Low Stock Alerts
-                            </h3>
-                            <span class="text-sm text-gray-600">{{ $lowStockItems->count() }} items need attention</span>
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-2">
+                    <!-- Category Distribution Chart -->
+                    <div class="card-gradient p-6 rounded-xl">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">Inventory by Category</h3>
+                        <div class="chart-container">
+                            <canvas id="categoryChart"></canvas>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                            @foreach($lowStockItems as $item)
-                            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                                <div class="flex justify-between items-start">
-                                    <div>
-                                        <h4 class="font-medium text-gray-800">{{ $item->name }}</h4>
-                                        <p class="text-sm text-gray-600">{{ $item->category }}</p>
-                                        <p class="text-xs text-yellow-700 mt-1">
-                                            <i class="fas fa-box mr-1"></i>
-                                            Only {{ $item->stock_quantity }} units left
-                                        </p>
-                                    </div>
-                                    <button onclick="openStockModal({{ $item->id }}, '{{ $item->name }}')" 
-                                            class="px-3 py-1 bg-yellow-600 text-white text-xs rounded hover:bg-yellow-700 transition-colors">
-                                        Update Stock
-                                    </button>
-                                </div>
-                            </div>
-                            @endforeach
+                    </div>
+
+                    <!-- Stock Value by Category -->
+                    <div class="card-gradient p-6 rounded-xl">
+                        <h3 class="text-lg font-bold text-gray-800 mb-4">Stock Value by Category</h3>
+                        <div class="chart-container">
+                            <canvas id="valueChart"></canvas>
                         </div>
                     </div>
                 </div>
-                @endif
-                
-                <!-- Inventory Items Table -->
+
+                <!-- Stock Movement Chart -->
+                <div class="card-gradient p-6 rounded-xl mb-6">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Stock Movement (Last 30 Days)</h3>
+                    <div class="chart-container">
+                        <canvas id="movementChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Low Stock Items Table -->
                 <div class="card-gradient rounded-xl overflow-hidden">
                     <div class="p-4 border-b border-gray-200">
-                        <h3 class="text-lg font-bold text-gray-800">Inventory Items</h3>
+                        <h3 class="text-lg font-bold text-gray-800">Low Stock Items</h3>
+                        <p class="text-sm text-gray-600 mt-1">Items that need immediate attention</p>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full">
@@ -358,14 +329,14 @@
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Current Stock</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Value</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                @forelse($items as $item)
+                                @forelse($analytics['lowStockItems'] as $item)
                                 <tr class="hover:bg-gray-50">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
@@ -380,7 +351,7 @@
                                             </div>
                                             <div class="ml-4">
                                                 <div class="text-sm font-medium text-gray-900">{{ $item->name }}</div>
-                                                <div class="text-sm text-gray-500">{{ Str::limit($item->description, 50) }}</div>
+                                                <div class="text-sm text-gray-500">{{ Str::limit($item->description, 30) }}</div>
                                             </div>
                                         </div>
                                     </td>
@@ -391,56 +362,27 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm text-gray-900">{{ $item->stock_quantity }}</div>
-                                        @if($item->stock_quantity <= 10)
-                                            <div class="text-xs text-yellow-600">Low stock</div>
-                                        @endif
+                                        <div class="text-xs text-yellow-600">Critical level</div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                         ${{ number_format($item->base_price, 2) }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        @if($item->is_active)
-                                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                                                Active
-                                            </span>
-                                        @else
-                                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-                                                Inactive
-                                            </span>
-                                        @endif
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        ${{ number_format($item->stock_quantity * $item->base_price, 2) }}
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <div class="flex space-x-2">
-                                            <button onclick="openStockModal({{ $item->id }}, '{{ $item->name }}')" 
-                                                    class="text-indigo-600 hover:text-indigo-900" title="Update Stock">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <a href="{{ route('manufacturer.inventory.edit', $item) }}" 
-                                               class="text-blue-600 hover:text-blue-900" title="Edit Item">
-                                                <i class="fas fa-pencil-alt"></i>
-                                            </a>
-                                            <form method="POST" action="{{ route('manufacturer.inventory.destroy', $item) }}" 
-                                                  class="inline" onsubmit="return confirm('Are you sure you want to remove this item?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900" title="Remove Item">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        </div>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
+                                            Low Stock
+                                        </span>
                                     </td>
                                 </tr>
                                 @empty
                                 <tr>
                                     <td colspan="6" class="px-6 py-4 text-center text-gray-500">
                                         <div class="flex flex-col items-center py-8">
-                                            <i class="fas fa-box-open text-4xl text-gray-300 mb-2"></i>
-                                            <p class="text-lg font-medium text-gray-500">No inventory items found</p>
-                                            <p class="text-sm text-gray-400">Start by adding your first inventory item</p>
-                                            <a href="{{ route('manufacturer.inventory.create') }}" 
-                                               class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
-                                                <i class="fas fa-plus mr-2"></i>Add First Item
-                                            </a>
+                                            <i class="fas fa-check-circle text-4xl text-green-300 mb-2"></i>
+                                            <p class="text-lg font-medium text-gray-500">No low stock items</p>
+                                            <p class="text-sm text-gray-400">All items are well stocked</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -448,57 +390,8 @@
                             </tbody>
                         </table>
                     </div>
-                    @if($items->hasPages())
-                    <div class="px-6 py-3 border-t border-gray-200">
-                        {{ $items->links() }}
-                    </div>
-                    @endif
                 </div>
             </main>
-        </div>
-    </div>
-
-    <!-- Stock Update Modal -->
-    <div id="stockModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
-        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-            <div class="mt-3">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-medium text-gray-900">Update Stock</h3>
-                    <button onclick="closeStockModal()" class="text-gray-400 hover:text-gray-600">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-                <form id="stockForm" method="POST">
-                    @csrf
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Item</label>
-                        <p id="modalItemName" class="text-sm text-gray-600"></p>
-                    </div>
-                    <div class="mb-4">
-                        <label for="operation" class="block text-sm font-medium text-gray-700 mb-2">Operation</label>
-                        <select id="operation" name="operation" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                            <option value="add">Add Stock</option>
-                            <option value="subtract">Subtract Stock</option>
-                            <option value="set">Set Stock Level</option>
-                        </select>
-                    </div>
-                    <div class="mb-4">
-                        <label for="quantity" class="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
-                        <input type="number" id="quantity" name="quantity" min="0" required
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                    </div>
-                    <div class="flex justify-end space-x-3">
-                        <button type="button" onclick="closeStockModal()" 
-                                class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50">
-                            Cancel
-                        </button>
-                        <button type="submit" 
-                                class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">
-                            Update Stock
-                        </button>
-                    </div>
-                </form>
-            </div>
         </div>
     </div>
 
@@ -508,41 +401,122 @@
             document.getElementById('sidebar').classList.toggle('open');
         });
 
-        // Search functionality
-        document.getElementById('searchInput').addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
-            const rows = document.querySelectorAll('tbody tr');
-            
-            rows.forEach(row => {
-                const itemName = row.querySelector('td:first-child').textContent.toLowerCase();
-                const category = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-                
-                if (itemName.includes(searchTerm) || category.includes(searchTerm)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
+        // Category Distribution Chart
+        const categoryCtx = document.getElementById('categoryChart');
+        if (categoryCtx) {
+            new Chart(categoryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: {!! json_encode($analytics['categoryDistribution']->pluck('category')) !!},
+                    datasets: [{
+                        data: {!! json_encode($analytics['categoryDistribution']->pluck('count')) !!},
+                        backgroundColor: [
+                            '#3B82F6', '#10B981', '#F59E0B', '#EF4444', 
+                            '#8B5CF6', '#06B6D4', '#84CC16', '#F97316'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true
+                            }
+                        }
+                    }
                 }
             });
-        });
-
-        // Stock modal functions
-        function openStockModal(itemId, itemName) {
-            document.getElementById('modalItemName').textContent = itemName;
-            document.getElementById('stockForm').action = `/manufacturer/inventory/${itemId}/stock`;
-            document.getElementById('stockModal').classList.remove('hidden');
         }
 
-        function closeStockModal() {
-            document.getElementById('stockModal').classList.add('hidden');
-            document.getElementById('stockForm').reset();
+        // Stock Value Chart
+        const valueCtx = document.getElementById('valueChart');
+        if (valueCtx) {
+            new Chart(valueCtx, {
+                type: 'bar',
+                data: {
+                    labels: {!! json_encode($analytics['stockValueByCategory']->pluck('category')) !!},
+                    datasets: [{
+                        label: 'Total Value ($)',
+                        data: {!! json_encode($analytics['stockValueByCategory']->pluck('total_value')) !!},
+                        backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                        borderColor: 'rgb(59, 130, 246)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
         }
 
-        // Close modal when clicking outside
-        document.getElementById('stockModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeStockModal();
-            }
-        });
+        // Stock Movement Chart
+        const movementCtx = document.getElementById('movementChart');
+        if (movementCtx) {
+            // Fetch movement data
+            fetch('{{ route("manufacturer.inventory.chart-data") }}')
+                .then(response => response.json())
+                .then(data => {
+                    const dates = data.stockMovement.map(item => item.date);
+                    const stockIn = data.stockMovement.map(item => item.stock_in);
+                    const stockOut = data.stockMovement.map(item => item.stock_out);
+
+                    new Chart(movementCtx, {
+                        type: 'line',
+                        data: {
+                            labels: dates,
+                            datasets: [{
+                                label: 'Stock In',
+                                data: stockIn,
+                                borderColor: 'rgb(34, 197, 94)',
+                                backgroundColor: 'rgba(34, 197, 94, 0.1)',
+                                tension: 0.4
+                            }, {
+                                label: 'Stock Out',
+                                data: stockOut,
+                                borderColor: 'rgb(239, 68, 68)',
+                                backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                                tension: 0.4
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'top'
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                });
+        }
     </script>
 </body>
-</html>
+</html> 

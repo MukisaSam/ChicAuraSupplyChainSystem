@@ -103,6 +103,14 @@ Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('
 
     //Inventory routes
     Route::get('/inventory', [App\Http\Controllers\ManufacturerInventoryController::class, 'index'])->name('inventory');
+    Route::get('/inventory/create', [App\Http\Controllers\ManufacturerInventoryController::class, 'create'])->name('inventory.create');
+    Route::post('/inventory', [App\Http\Controllers\ManufacturerInventoryController::class, 'store'])->name('inventory.store');
+    Route::get('/inventory/{item}/edit', [App\Http\Controllers\ManufacturerInventoryController::class, 'edit'])->name('inventory.edit');
+    Route::put('/inventory/{item}', [App\Http\Controllers\ManufacturerInventoryController::class, 'update'])->name('inventory.update');
+    Route::delete('/inventory/{item}', [App\Http\Controllers\ManufacturerInventoryController::class, 'destroy'])->name('inventory.destroy');
+    Route::post('/inventory/{item}/stock', [App\Http\Controllers\ManufacturerInventoryController::class, 'updateStock'])->name('inventory.update-stock');
+    Route::get('/inventory/analytics', [App\Http\Controllers\ManufacturerInventoryController::class, 'analytics'])->name('inventory.analytics');
+    Route::get('/inventory/chart-data', [App\Http\Controllers\ManufacturerInventoryController::class, 'getChartData'])->name('inventory.chart-data');
 
     //Wholesalers routes
     Route::get('/wholesalers', [App\Http\Controllers\ManufacturerWholesalersController::class, 'index'])->name('wholesalers');
