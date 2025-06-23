@@ -16,7 +16,14 @@ class ManufacturerSuppliersController extends Controller
             abort(403, 'Access denied. Manufacturer privileges required.');
         }
         
-        
-        return view('manufacturer.suppliers.index');
+        $suppliers = \App\Models\Supplier::with('user')->get();
+        $stats = [
+            'raw_materials' => 150,
+            'products' => 85,
+            'suppliers' => $suppliers->count(),
+            'revenue' => '125,000',
+        ];
+        $recentActivities = [];
+        return view('manufacturer.suppliers.index', compact('suppliers', 'stats', 'recentActivities'));
     }
 }
