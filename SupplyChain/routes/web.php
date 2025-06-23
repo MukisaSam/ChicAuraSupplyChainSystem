@@ -129,6 +129,16 @@ Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('
 
     //Reports routes
     Route::get('/reports', [App\Http\Controllers\ManufacturerReportsController::class, 'index'])->name('reports');
+    Route::get('/reports/sales', [App\Http\Controllers\ManufacturerReportsController::class, 'sales'])->name('reports.sales');
+    Route::get('/reports/inventory', [App\Http\Controllers\ManufacturerReportsController::class, 'inventory'])->name('reports.inventory');
+    Route::get('/reports/suppliers', [App\Http\Controllers\ManufacturerReportsController::class, 'suppliers'])->name('reports.suppliers');
+    Route::get('/reports/fulfillment', [App\Http\Controllers\ManufacturerReportsController::class, 'fulfillment'])->name('reports.fulfillment');
+    Route::get('/reports/export/{type}', [App\Http\Controllers\ManufacturerReportsController::class, 'export'])->name('reports.export');
+    
+    // Chart data routes
+    Route::get('/reports/chart/sales', [App\Http\Controllers\ManufacturerReportsController::class, 'getSalesChartData'])->name('reports.chart.sales');
+    Route::get('/reports/chart/inventory', [App\Http\Controllers\ManufacturerReportsController::class, 'getInventoryChartData'])->name('reports.chart.inventory');
+    Route::get('/reports/chart/suppliers', [App\Http\Controllers\ManufacturerReportsController::class, 'getSupplierChartData'])->name('reports.chart.suppliers');
 
     //Revenue routes
     Route::get('/revenue', [App\Http\Controllers\ManufacturerRevenueController::class, 'index'])->name('revenue');

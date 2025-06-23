@@ -231,89 +231,31 @@
             </header>
 
             <!-- Main Content -->
-            <main class="flex-1 p-4 overflow-hidden">
-                <div class="mb-4">
-                    <h2 class="text-2xl font-bold text-white mb-1">Reports</h2>
-                    <p class="text-gray-200 text-sm">Welcome back! Here's an overview of your supply chain.</p>
+            <main class="flex-1 overflow-y-auto p-8">
+                <h1 class="text-3xl font-bold mb-6 text-indigo-800 dark:text-white">Manufacturer Reports</h1>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <a href="{{ route('manufacturer.reports.sales') }}" class="stat-card p-6 flex flex-col items-center hover:shadow-xl">
+                        <i class="fas fa-chart-line text-3xl text-indigo-600 mb-2"></i>
+                        <span class="font-semibold text-lg">Sales Report</span>
+                    </a>
+                    <a href="{{ route('manufacturer.reports.inventory') }}" class="stat-card p-6 flex flex-col items-center hover:shadow-xl">
+                        <i class="fas fa-boxes text-3xl text-green-600 mb-2"></i>
+                        <span class="font-semibold text-lg">Inventory Report</span>
+                    </a>
+                    <a href="{{ route('manufacturer.reports.suppliers') }}" class="stat-card p-6 flex flex-col items-center hover:shadow-xl">
+                        <i class="fas fa-truck text-3xl text-yellow-600 mb-2"></i>
+                        <span class="font-semibold text-lg">Supplier Performance</span>
+                    </a>
+                    <a href="{{ route('manufacturer.reports.fulfillment') }}" class="stat-card p-6 flex flex-col items-center hover:shadow-xl">
+                        <i class="fas fa-shipping-fast text-3xl text-blue-600 mb-2"></i>
+                        <span class="font-semibold text-lg">Order Fulfillment</span>
+                    </a>
                 </div>
-
-                <!-- Stats Cards -->
-                <div class="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <div class="stat-card p-4 rounded-xl">
-                        <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl shadow-lg">
-                                <i class="fas fa-cogs text-white text-xl"></i>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Total Raw Materials</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['raw_materials'] ?? '0' }}</p>
-                                <p class="text-xs text-indigo-600 mt-1">↗ +8% this month</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stat-card p-4 rounded-xl">
-                        <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg">
-                                <i class="fas fa-tshirt text-white text-xl"></i>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Total Products</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['products'] ?? '0' }}</p>
-                                <p class="text-xs text-green-600 mt-1">↗ +12% this month</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stat-card p-4 rounded-xl">
-                        <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl shadow-lg">
-                                <i class="fas fa-truck text-white text-xl"></i>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Total Suppliers</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['suppliers'] ?? '0' }}</p>
-                                <p class="text-xs text-yellow-600 mt-1">↗ +5% this month</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stat-card p-4 rounded-xl">
-                        <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg">
-                                <i class="fas fa-dollar-sign text-white text-xl"></i>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Revenue</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['revenue'] ?? '$0' }}</p>
-                                <p class="text-xs text-purple-600 mt-1">↗ +15% this month</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-3 h-64">
-                    <div class="card-gradient p-4 rounded-xl lg:col-span-2 overflow-hidden">
-                        <h3 class="text-lg font-bold text-gray-800 mb-3">Production Overview</h3>
-                        <canvas id="productionChart" class="w-full h-48"></canvas>
-                    </div>
-                    <div class="card-gradient p-4 rounded-xl overflow-hidden">
-                        <h3 class="text-lg font-bold text-gray-800 mb-3">Recent Activities</h3>
-                        <div class="space-y-2 h-48 overflow-y-auto">
-                            @forelse ($recentActivities ?? [] as $activity)
-                                <div class="flex items-start p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                                    <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full {{ $activity['color'] ?? 'bg-blue-100' }} bg-opacity-10">
-                                        <i class="fas {{ $activity['icon'] ?? 'fa-info' }} {{ $activity['color'] ?? 'text-blue-600' }} text-sm"></i>
-                                    </div>
-                                    <div class="ml-3 flex-1">
-                                        <p class="text-xs font-medium text-gray-800">{{ $activity['description'] ?? 'No activity' }}</p>
-                                        <p class="text-xs text-gray-500 mt-1">{{ $activity['time'] ?? 'N/A' }}</p>
-                                    </div>
-                                </div>
-                            @empty 
-                                <div class="text-center py-6">
-                                    <i class="fas fa-inbox text-gray-400 text-2xl mb-2"></i>
-                                    <p class="text-gray-500 text-sm">No recent activities found.</p>
-                                </div>
-                            @endforelse
-                        </div>
+                <div class="mt-8">
+                    <h2 class="text-xl font-semibold mb-4">Export Reports</h2>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="{{ route('manufacturer.reports.export', ['type' => 'sales']) }}" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"><i class="fas fa-file-csv mr-2"></i>Export Sales (CSV)</a>
+                        <!-- Add more export buttons as needed -->
                     </div>
                 </div>
             </main>
