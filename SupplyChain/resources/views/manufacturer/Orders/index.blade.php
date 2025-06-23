@@ -188,6 +188,14 @@
                         <i class="fas fa-dollar-sign w-5"></i>
                         <span class="ml-2 text-sm">Revenue</span>
                     </a>
+                    <a href="{{ route('manufacturer.workforce.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-user-tie w-5"></i>
+                        <span class="ml-2 text-sm">Workforce</span>
+                    </a>
+                    <a href="{{ route('manufacturer.warehouse.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-warehouse w-5"></i>
+                        <span class="ml-2 text-sm">Warehouses</span>
+                    </a>
                 </nav>
                 <div class="p-3 border-t border-gray-600">
                     <div class="text-center text-gray-400 text-xs">

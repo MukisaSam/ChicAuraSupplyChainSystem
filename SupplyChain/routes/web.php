@@ -133,6 +133,14 @@ Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('
     //Revenue routes
     Route::get('/revenue', [App\Http\Controllers\ManufacturerRevenueController::class, 'index'])->name('revenue');
 
+    // Workforce routes
+    Route::resource('workforce', App\Http\Controllers\ManufacturerWorkforceController::class)
+        ->names('workforce');
+
+    // Warehouse routes
+    Route::resource('warehouse', App\Http\Controllers\ManufacturerWarehouseController::class)
+        ->names('warehouse');
+
 });
 
 // Wholesaler routes

@@ -129,6 +129,145 @@
                         <i class="fas fa-warehouse w-5"></i>
                         <span class="ml-2 text-sm">Inventory</span>
                     </a>
+                    <a href="{{route('manufacturer.workforce.index')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-user-tie w-5"></i>
+                        <span class="ml-2 text-sm">Workforce</span>
+                    </a>
+                    <a href="{{route('manufacturer.warehouse.index')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-warehouse w-5"></i>
+                        <span class="ml-2 text-sm">Warehouses</span>
+                    </a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manufacturer Analytics - ChicAura SCM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ asset('js/theme-switcher.js') }}"></script>
+    <style>
+        body { 
+            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/manufacturer.png') }}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            min-height: 100vh;
+        }
+        .dark body {
+            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 100%), url('{{ asset('images/manufacturer.png') }}');
+        }
+        .sidebar { 
+            transition: transform 0.3s ease-in-out;
+            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
+            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+        }
+        .dark .sidebar {
+            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+        }
+        .logo-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            padding: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .dark .logo-container {
+            background: rgba(255, 255, 255, 0.9);
+        }
+        .card-gradient {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            backdrop-filter: blur(10px);
+        }
+        .dark .card-gradient {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #f1f5f9;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .dark .stat-card {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #f1f5f9;
+        }
+        .dark .stat-card p {
+            color: #f1f5f9;
+        }
+        .dark .stat-card .text-gray-600 {
+            color: #cbd5e1;
+        }
+        .dark .stat-card .text-gray-800 {
+            color: #f1f5f9;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        .nav-link {
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            margin: 4px 0;
+        }
+        .nav-link:hover {
+            transform: translateX(5px);
+        }
+        .header-gradient {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+        }
+        .dark .header-gradient {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-color: #475569;
+        }
+        .dark .text-white {
+            color: #f1f5f9;
+        }
+        .dark .text-gray-200 {
+            color: #cbd5e1;
+        }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body class="font-sans antialiased">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
+            <div class="flex flex-col h-full">
+                <div class="flex items-center justify-center h-16 border-b border-gray-600">
+                    <div class="logo-container">
+                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="h-12 w-auto">
+                    </div>
+                </div>
+                <div class="px-4 py-4">
+                    <h3 class="text-white text-sm font-semibold mb-3 px-3">MANUFACTURER PORTAL</h3>
+                </div>
+                <nav class="flex-1 px-4 py-2 space-y-1">
+                    <a href="{{route('manufacturer.dashboard')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-home w-5"></i>
+                        <span class="ml-2 text-sm">Home</span>
+                    </a>
+                    <a href="{{route('manufacturer.orders')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-box w-5"></i>
+                        <span class="ml-2 text-sm">Orders</span>
+                    </a>
+                    <a href="{{route('manufacturer.analytics')}}" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-indigo-600 to-indigo-700 rounded-xl shadow-lg">
+                        <i class="fas fa-chart-pie w-5"></i>
+                        <span class="ml-2 font-medium text-sm">Analytics</span>
+                    </a>
+                    <a href="{{route('manufacturer.inventory')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-warehouse w-5"></i>
+                        <span class="ml-2 text-sm">Inventory</span>
+                    </a>
                     <a href="{{route('manufacturer.wholesalers')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-users w-5"></i>
                         <span class="ml-2 text-sm">Wholesalers</span>
