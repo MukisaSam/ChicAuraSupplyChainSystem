@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manufacturer Dashboard - ChicAura SCM</title>
+    <title>Manufacturer Portal - ChicAura SCM</title>
     <!-- Tailwind CSS via CDN for standalone use, but it's already included in Laravel/Breeze setup -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome for icons -->
@@ -241,7 +241,7 @@
             <!-- Main Content -->
             <main class="flex-1 p-4 overflow-hidden">
                 <div class="mb-4">
-                    <h2 class="text-2xl font-bold text-white mb-1">Manufacturer Dashboard</h2>
+                    <h2 class="text-2xl font-bold text-white mb-1">Manufacturer Portal</h2>
                     <p class="text-gray-200 text-sm">Welcome back! Here's an overview of your supply chain.</p>
                 </div>
 
