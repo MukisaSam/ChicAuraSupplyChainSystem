@@ -185,6 +185,12 @@ Route::middleware(['auth', 'role:wholesaler'])->prefix('wholesaler')->name('whol
     Route::get('/reports/export', [App\Http\Controllers\WholesalerReportsController::class, 'export'])->name('reports.export');
 });
 
+// Wholesaler notifications
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/wholesaler/notifications', [App\Http\Controllers\UserController::class, 'wholesalerNotifications']);
+    Route::post('/wholesaler/notifications/mark-all-read', [App\Http\Controllers\UserController::class, 'markAllWholesalerNotificationsRead']);
+});
+
 // Registration routes
 Route::get('/register/new_user', [RegisteredUserController::class, 'createAdmin'])->name('register.admin');
 Route::post('/register/new_user', [RegisteredUserController::class, 'storeUser'])->name('register.admin.store');
