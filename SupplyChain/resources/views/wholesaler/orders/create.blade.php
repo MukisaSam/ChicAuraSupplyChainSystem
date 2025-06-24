@@ -266,15 +266,14 @@
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Payment Method</label>
                                         <select name="payment_method" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
-                                            <option value="cash">Cash</option>
-                                            <option value="credit">Credit</option>
+                                            <option value="cash">Cash on Delivery</option>
+                                            <option value="credit">Mobile Money</option>
                                             <option value="bank_transfer">Bank Transfer</option>
-                                            <option value="installment">Installment</option>
                                         </select>
                                     </div>
                                     
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Shipping Address</label>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Delivery Address</label>
                                         <textarea name="shipping_address" rows="3" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white" placeholder="Enter your shipping address">{{ old('shipping_address') }}</textarea>
                                     </div>
                                     

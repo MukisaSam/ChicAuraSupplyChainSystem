@@ -190,8 +190,9 @@
                             <a href="{{ route('wholesaler.reports.index') }}" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">
                                 <i class="fas fa-arrow-left mr-2"></i>Back to Reports
                             </a>
-                            <a href="{{ route('wholesaler.reports.export', ['type' => 'sales', 'start_date' => $startDate, 'end_date' => $endDate]) }}" class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
-                                <i class="fas fa-download mr-2"></i>Export
+                            <a href="{{ route('wholesaler.reports.export', ['type' => 'sales', 'start_date' => $startDate, 'end_date' => $endDate]) }}" 
+                               class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700">
+                                <i class="fas fa-download mr-2"></i>Export CSV
                             </a>
                         </div>
                     </div>
