@@ -16,10 +16,11 @@ class Order extends Model
         'order_date',
         'total_amount',
         'payment_method',
-        'shipping_address',
+        'delivery_address',
         'notes',
         'estimated_delivery',
         'actual_delivery',
+        'manufacturer_id',
     ];
 
     protected $casts = [
@@ -37,6 +38,11 @@ class Order extends Model
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function manufacturer()
+    {
+        return $this->belongsTo(Manufacturer::class);
     }
 
     public function getStatusColorAttribute()

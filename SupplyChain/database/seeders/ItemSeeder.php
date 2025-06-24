@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Item;
+use Illuminate\Support\Facades\DB;
 
 class ItemSeeder extends Seeder
 {
@@ -220,5 +221,35 @@ class ItemSeeder extends Seeder
         foreach ($items as $item) {
             Item::create($item);
         }
+
+        DB::table('order_items')->delete();
+        DB::table('orders')->delete();
+        DB::table('items')->delete();
+        DB::table('items')->insert([
+            [
+                'name' => 'Classic White T-Shirt',
+                'description' => 'A timeless white t-shirt made from 100% organic cotton.',
+                'category' => 'Tops',
+                'material' => 'Cotton',
+                'base_price' => 12.99,
+                'size_range' => 'S,M,L,XL',
+                'color_options' => 'White',
+                'stock_quantity' => 100,
+                'image_url' => 'images/white-tshirt.jpg',
+                'is_active' => true,
+            ],
+            [
+                'name' => 'Denim Jeans',
+                'description' => 'Classic blue denim jeans with a modern fit.',
+                'category' => 'Bottoms',
+                'material' => 'Denim',
+                'base_price' => 29.99,
+                'size_range' => '28,30,32,34,36',
+                'color_options' => 'Blue',
+                'stock_quantity' => 60,
+                'image_url' => 'images/denim-jeans.jpg',
+                'is_active' => true,
+            ],
+        ]);
     }
 } 
