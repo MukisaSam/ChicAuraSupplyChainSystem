@@ -151,6 +151,9 @@ Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('
     Route::resource('warehouse', App\Http\Controllers\ManufacturerWarehouseController::class)
         ->names('warehouse');
 
+    // Mark notifications as read
+    Route::post('/notifications/mark-as-read', [App\Http\Controllers\ManufacturerDashboardController::class, 'markNotificationsAsRead'])->name('notifications.markAsRead');
+
 });
 
 // Wholesaler routes

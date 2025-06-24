@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use App\Models\Item;
 use App\Models\Wholesaler;
 use Illuminate\Support\Str;
+use App\Notifications\OrderPlacedNotification;
 
 class WholesalerOrderController extends Controller
 {
@@ -102,6 +103,12 @@ class WholesalerOrderController extends Controller
             'notes' => $request->notes,
             'estimated_delivery' => now()->addDays(14), // Default 2 weeks
         ]);
+        
+        // Notify manufacturer (database notification)
+        $manufacturer = $order->manufacturer;
+        if ($manufacturer && $manufacturer->user) {
+            $manufacturer->user->notify(new OrderPlacedNotification($order));
+        }
         
         // Create order items
         foreach ($orderItems as $itemData) {

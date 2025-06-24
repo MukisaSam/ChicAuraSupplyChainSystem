@@ -601,7 +601,7 @@
             function loadMessages(contactId) {
                 console.log('Loading messages for contact:', contactId);
                 
-                fetch(`/wholesaler/chat/${contactId}/messages`)
+                fetch(`/manufacturer/chat/${contactId}/messages`)
                     .then(response => {
                         console.log('Response status:', response.status);
                         return response.json();
@@ -628,11 +628,12 @@
             function sendMessage(receiverId, content) {
                 console.log('Sending message to:', receiverId, 'Content:', content);
                 
-                fetch('/wholesaler/chat/send', {
+                fetch('/manufacturer/chat/send', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
+                        'X-CSRF-TOKEN': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest'
                     },
                     body: JSON.stringify({
                         receiver_id: receiverId,
@@ -662,11 +663,12 @@
             function markMessagesAsRead(senderId) {
                 console.log('Marking messages as read from:', senderId);
                 
-                fetch('/wholesaler/chat/mark-read', {
+                fetch('/manufacturer/chat/mark-read', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
+                        'X-CSRF-TOKEN': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest'
                     },
                     body: JSON.stringify({
                         sender_id: senderId

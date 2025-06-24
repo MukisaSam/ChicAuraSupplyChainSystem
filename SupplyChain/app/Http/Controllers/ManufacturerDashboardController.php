@@ -28,4 +28,11 @@ class ManufacturerDashboardController extends Controller
             'recentActivities' => $recentActivities
         ]);
     }
+
+    public function markNotificationsAsRead()
+    {
+        $user = auth()->user();
+        $user->unreadNotifications->markAsRead();
+        return back();
+    }
 }

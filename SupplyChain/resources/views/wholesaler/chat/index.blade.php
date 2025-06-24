@@ -554,7 +554,11 @@
             function loadMessages(contactId) {
                 console.log('Loading messages for contact:', contactId);
                 
-                fetch(`/wholesaler/chat/${contactId}/messages`)
+                fetch(`/wholesaler/chat/${contactId}/messages`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
                     .then(response => {
                         console.log('Response status:', response.status);
                         return response.json();
@@ -585,7 +589,8 @@
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
+                        'X-CSRF-TOKEN': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest'
                     },
                     body: JSON.stringify({
                         receiver_id: receiverId,
