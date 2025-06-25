@@ -36,8 +36,20 @@ class SupplierController extends Controller
 
         $supplyRequests = $supplier->supplyRequests()->with('item')->latest()->get();
         $suppliedItems = $supplier->suppliedItems()->with('item')->latest()->get();
-
-        return view('supplier.dashboard', compact('supplier', 'supplyRequests', 'suppliedItems'));
+        $items = \App\Models\Item::where('is_active', true)->get();
+        $paymentTypes = ['cash', 'credit', 'bank_transfer'];
+        $deliveryMethods = ['pickup', 'delivery'];
+        $stats = [
+            'total_supplied' => $supplier->suppliedItems()->sum('delivered_quantity'),
+            'average_rating' => $supplier->suppliedItems()->avg('quality_rating'),
+            'active_requests' => $supplier->supplyRequests()->where('status', 'pending')->count(),
+            'total_revenue' => $supplier->suppliedItems()->sum(\DB::raw('price * delivered_quantity')),
+        ];
+        $supplyTrends = $supplier->suppliedItems()
+            ->selectRaw('MONTH(delivery_date) as month, SUM(delivered_quantity) as total')
+            ->groupBy('month')
+            ->get();
+        return view('supplier.dashboard', compact('supplier', 'supplyRequests', 'suppliedItems', 'items', 'paymentTypes', 'deliveryMethods', 'stats', 'supplyTrends'));
     }
 
     public function showSupplyRequest(SupplyRequest $supplyRequest)
@@ -151,5 +163,35 @@ class SupplierController extends Controller
         }
 
         return view('supplier.reports');
+    }
+
+    // Create a new supply request (AJAX)
+    public function store(Request $request)
+    {
+        $supplier = Auth::user()->supplier;
+        if (!$supplier) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+        $validated = $request->validate([
+            'item_id' => 'required|exists:items,id',
+            'quantity' => 'required|integer|min:1',
+            'due_date' => 'required|date|after:today',
+            'payment_type' => 'required|string',
+            'delivery_method' => 'required|string',
+            'notes' => 'nullable|string',
+        ]);
+        $validated['supplier_id'] = $supplier->id;
+        $validated['status'] = 'pending';
+        $supplyRequest = SupplyRequest::create($validated);
+        $supplyRequest->load('item');
+        return response()->json(['success' => true, 'supplyRequest' => $supplyRequest]);
+    }
+
+    // Delete a supply request (AJAX)
+    public function destroy(SupplyRequest $supplyRequest)
+    {
+        $this->authorize('delete', $supplyRequest);
+        $supplyRequest->delete();
+        return response()->json(['success' => true]);
     }
 }

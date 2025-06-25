@@ -49,9 +49,14 @@ class RegisterController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
+            'is_verified'=> 'pending',
         ]);
 
         Auth::login($user);
+
+        if ($user->is_verified === 'pending') {
+    return redirect()->route('pending.validation');
+}
 
         return redirect()->intended(RouteServiceProvider::HOME);
     }

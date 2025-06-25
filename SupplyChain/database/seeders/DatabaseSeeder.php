@@ -228,8 +228,7 @@ class DatabaseSeeder extends Seeder
         }
 
         // Call additional seeders
-        $this->call([
-            WholesalerTestDataSeeder::class,
-        ]);
+
     }
+
 }
