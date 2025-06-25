@@ -10,84 +10,84 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
-        body { 
+        body {
             background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/supplier.jpg') }}');
             background-size: cover;
             background-position: center;
-            background-attachment: fixed;
+            background-attachmecnt: fixed;
             min-height: 100vh;
             overflow: hidden;
         }
-        
+
         /* Dark mode styles */
         .dark body {
             background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 100%), url('{{ asset('images/supplier.jpg') }}');
         }
-        
-        .sidebar { 
+
+        .sidebar {
             transition: transform 0.3s ease-in-out;
             background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
             box-shadow: 4px 0 15px rgba(0,0,0,0.1);
         }
-        
+
         .dark .sidebar {
             background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
         }
-        
+
         .logo-container {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 12px;
             padding: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-        
+
         .dark .logo-container {
             background: rgba(255, 255, 255, 0.9);
         }
-        
+
         .card-gradient {
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
             border: 1px solid rgba(255,255,255,0.2);
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             backdrop-filter: blur(10px);
         }
-        
+
         .dark .card-gradient {
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
             border: 1px solid rgba(255,255,255,0.1);
             color: #f1f5f9;
         }
-        
+
         .stat-card {
             background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
             border: 1px solid rgba(255,255,255,0.3);
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        
+
         .dark .stat-card {
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
             border: 1px solid rgba(255,255,255,0.1);
             color: #f1f5f9;
         }
-        
+
         .dark .stat-card p {
             color: #f1f5f9;
         }
-        
+
         .dark .stat-card .text-gray-600 {
             color: #cbd5e1;
         }
-        
+
         .dark .stat-card .text-gray-800 {
             color: #f1f5f9;
         }
-        
+
         .stat-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
-        
+
         .nav-link {
             transition: all 0.3s ease;
             border-radius: 12px;
@@ -100,20 +100,20 @@
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
             box-shadow: 0 2px 20px rgba(0,0,0,0.1);
         }
-        
+
         .dark .header-gradient {
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
             border-color: #475569;
         }
-        
+
         .dark .text-white {
             color: #f1f5f9;
         }
-        
+
         .dark .text-gray-200 {
             color: #cbd5e1;
         }
-        
+
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
@@ -167,8 +167,8 @@
                     <div class="relative">
                         <button class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
                             <span class="mr-2 text-gray-700 font-medium text-sm">{{ Auth::user()->name ?? 'Supplier User' }}</span>
-                            <img class="w-7 h-7 rounded-full border-2 border-green-200 object-cover" 
-                                 src="{{ Auth::user()->profile_picture ? Storage::disk('public')->url(Auth::user()->profile_picture) : asset('images/default-avatar.svg') }}" 
+                            <img class="w-7 h-7 rounded-full border-2 border-green-200 object-cover"
+                                 src="{{ Auth::user()->profile_picture ? Storage::disk('public')->url(Auth::user()->profile_picture) : asset('images/default-avatar.svg') }}"
                                  alt="User Avatar">
                         </button>
                     </div>
@@ -192,7 +192,7 @@
                     <h2 class="text-2xl font-bold text-white mb-1">Supplier Dashboard</h2>
                     <p class="text-gray-200 text-sm">Manage your supply chain operations efficiently.</p>
                 </div>
-                
+
                 <div class="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2 lg:grid-cols-4">
                     <div class="stat-card p-4 rounded-xl">
                         <div class="flex items-center">
@@ -243,7 +243,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-3 h-64">
                     <div class="card-gradient p-4 rounded-xl lg:col-span-2 overflow-hidden">
                         <h3 class="text-lg font-bold text-gray-800 mb-3">Supply Volume (Units)</h3>
@@ -265,7 +265,7 @@
                                     </div>
                                     <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {{ $request['status_color'] }} text-white">{{ $request['status'] }}</span>
                                 </div>
-                            @empty 
+                            @empty
                                 <div class="text-center py-6">
                                     <i class="fas fa-inbox text-gray-400 text-2xl mb-2"></i>
                                     <p class="text-gray-500 text-sm">No active requests.</p>

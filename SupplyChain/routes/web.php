@@ -2,10 +2,11 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\TypeController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -25,7 +26,7 @@ Route::get('/', function () {
 
 Route::get('/dashboard', function () {
     $user = Auth::user();
-    
+
     switch ($user->role) {
         case 'admin':
             return redirect()->route('admin.dashboard');
@@ -44,13 +45,21 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
+
     // User profile routes
     Route::get('/user-profile', [App\Http\Controllers\UserProfileController::class, 'edit'])->name('user.profile.edit');
     Route::post('/user-profile', [App\Http\Controllers\UserProfileController::class, 'update'])->name('user.profile.update');
     Route::post('/user-profile/password', [App\Http\Controllers\UserProfileController::class, 'updatePassword'])->name('user.profile.password');
     Route::get('/user-profile/picture', [App\Http\Controllers\UserProfileController::class, 'getProfilePicture'])->name('user.profile.picture');
 });
+Route::middleware(['auth', 'verified.user'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    // ...other protected routes...
+});
+// route for users waiting for validation
+Route::get('/pending-validation', function () {
+    return view('auth.pending-validation');
+})->name('pending.validation');
 
 require __DIR__.'/auth.php';
 
@@ -80,21 +89,21 @@ Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('
 
     //Dashboard
     Route::get('/dashboard', [App\Http\Controllers\ManufacturerDashboardController::class, 'index'])->name('dashboard');
-    
+
     //Orders routes
     Route::get('/orders/analytics', [App\Http\Controllers\ManufacturerOrdersController::class, 'analytics'])->name('orders.analytics');
     Route::get('/orders', [App\Http\Controllers\ManufacturerOrdersController::class, 'index'])->name('orders');
     Route::get('/orders/{order}', [App\Http\Controllers\ManufacturerOrdersController::class, 'show'])->name('orders.show');
     Route::put('/orders/{order}/status', [App\Http\Controllers\ManufacturerOrdersController::class, 'updateStatus'])->name('orders.update-status');
-    
+
     // Supply Request routes
     Route::get('/orders/supply-requests/create', [App\Http\Controllers\ManufacturerOrdersController::class, 'createSupplyRequest'])->name('orders.create-supply-request');
     Route::post('/orders/supply-requests', [App\Http\Controllers\ManufacturerOrdersController::class, 'storeSupplyRequest'])->name('orders.store-supply-request');
     Route::get('/orders/supply-requests/{supplyRequest}', [App\Http\Controllers\ManufacturerOrdersController::class, 'showSupplyRequest'])->name('orders.show-supply-request');
     Route::put('/orders/supply-requests/{supplyRequest}/status', [App\Http\Controllers\ManufacturerOrdersController::class, 'updateSupplyRequestStatus'])->name('orders.update-supply-request-status');
-    
+
     // Orders Analytics
-    
+
     //Analytics routes
     Route::get('/analytics', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'index'])->name('analytics');
     Route::get('/analytics/chart-data', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'getChartData'])->name('analytics.chart-data');
@@ -138,17 +147,17 @@ Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('
 // Wholesaler routes
 Route::middleware(['auth', 'role:wholesaler'])->prefix('wholesaler')->name('wholesaler.')->group(function () {
     Route::get('/dashboard', [App\Http\Controllers\WholesalerDashboardController::class, 'index'])->name('dashboard');
-    
+
     // Order routes
     Route::get('/orders', [App\Http\Controllers\WholesalerOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/create', [App\Http\Controllers\WholesalerOrderController::class, 'create'])->name('orders.create');
     Route::post('/orders', [App\Http\Controllers\WholesalerOrderController::class, 'store'])->name('orders.store');
     Route::get('/orders/{order}', [App\Http\Controllers\WholesalerOrderController::class, 'show'])->name('orders.show');
     Route::post('/orders/{order}/cancel', [App\Http\Controllers\WholesalerOrderController::class, 'cancel'])->name('orders.cancel');
-    
+
     // Analytics routes
     Route::get('/analytics', [App\Http\Controllers\WholesalerAnalyticsController::class, 'index'])->name('analytics.index');
-    
+
     // Chat routes
     Route::get('/chat', [App\Http\Controllers\WholesalerChatController::class, 'index'])->name('chat.index');
     Route::get('/chat/{contactId}', [App\Http\Controllers\WholesalerChatController::class, 'show'])->name('chat.show');
@@ -179,4 +188,6 @@ Route::post('/register/manufacturer', [RegisteredUserController::class, 'storeMa
 // Wholesaler registration routes
 Route::get('/register/wholesaler', [RegisteredUserController::class, 'createWholesaler'])->name('register.wholesaler');
 Route::post('/register/wholesaler', [RegisteredUserController::class, 'storeWholesaler'])->name('register.wholesaler.store');
+
+
 
