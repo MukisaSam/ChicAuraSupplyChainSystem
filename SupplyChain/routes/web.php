@@ -138,9 +138,30 @@ Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('
 
     //Reports routes
     Route::get('/reports', [App\Http\Controllers\ManufacturerReportsController::class, 'index'])->name('reports');
+    Route::get('/reports/sales', [App\Http\Controllers\ManufacturerReportsController::class, 'sales'])->name('reports.sales');
+    Route::get('/reports/inventory', [App\Http\Controllers\ManufacturerReportsController::class, 'inventory'])->name('reports.inventory');
+    Route::get('/reports/suppliers', [App\Http\Controllers\ManufacturerReportsController::class, 'suppliers'])->name('reports.suppliers');
+    Route::get('/reports/fulfillment', [App\Http\Controllers\ManufacturerReportsController::class, 'fulfillment'])->name('reports.fulfillment');
+    Route::get('/reports/export/{type}', [App\Http\Controllers\ManufacturerReportsController::class, 'export'])->name('reports.export');
+    
+    // Chart data routes
+    Route::get('/reports/chart/sales', [App\Http\Controllers\ManufacturerReportsController::class, 'getSalesChartData'])->name('reports.chart.sales');
+    Route::get('/reports/chart/inventory', [App\Http\Controllers\ManufacturerReportsController::class, 'getInventoryChartData'])->name('reports.chart.inventory');
+    Route::get('/reports/chart/suppliers', [App\Http\Controllers\ManufacturerReportsController::class, 'getSupplierChartData'])->name('reports.chart.suppliers');
 
     //Revenue routes
     Route::get('/revenue', [App\Http\Controllers\ManufacturerRevenueController::class, 'index'])->name('revenue');
+
+    // Workforce routes
+    Route::resource('workforce', App\Http\Controllers\ManufacturerWorkforceController::class)
+        ->names('workforce');
+
+    // Warehouse routes
+    Route::resource('warehouse', App\Http\Controllers\ManufacturerWarehouseController::class)
+        ->names('warehouse');
+
+    // Mark notifications as read
+    Route::post('/notifications/mark-as-read', [App\Http\Controllers\ManufacturerDashboardController::class, 'markNotificationsAsRead'])->name('notifications.markAsRead');
 
 });
 
@@ -171,6 +192,12 @@ Route::middleware(['auth', 'role:wholesaler'])->prefix('wholesaler')->name('whol
     Route::get('/reports/sales', [App\Http\Controllers\WholesalerReportsController::class, 'salesReport'])->name('reports.sales');
     Route::get('/reports/orders', [App\Http\Controllers\WholesalerReportsController::class, 'orderReport'])->name('reports.orders');
     Route::get('/reports/export', [App\Http\Controllers\WholesalerReportsController::class, 'export'])->name('reports.export');
+});
+
+// Wholesaler notifications
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/wholesaler/notifications', [App\Http\Controllers\UserController::class, 'wholesalerNotifications']);
+    Route::post('/wholesaler/notifications/mark-all-read', [App\Http\Controllers\UserController::class, 'markAllWholesalerNotificationsRead']);
 });
 
 // Registration routes

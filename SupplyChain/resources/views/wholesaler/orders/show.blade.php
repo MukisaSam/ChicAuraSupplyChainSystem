@@ -56,7 +56,7 @@
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
                     <div class="logo-container">
-                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="h-12 w-auto">
+                        <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
                 <div class="px-4 py-4">
@@ -169,25 +169,25 @@
                             <div class="bg-white dark:bg-slate-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
                                 <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Order Timeline</h3>
                                 <div class="space-y-6">
-                                    @foreach($order->timeline as $event)
+                                    @foreach($timeline as $event)
                                     <div class="flex items-start">
                                         <div class="flex-shrink-0">
                                             <div class="w-8 h-8 rounded-full flex items-center justify-center 
-                                                @if($event->type === 'success') bg-green-100 dark:bg-green-900
-                                                @elseif($event->type === 'warning') bg-yellow-100 dark:bg-yellow-900
-                                                @elseif($event->type === 'error') bg-red-100 dark:bg-red-900
+                                                @if($event['type'] === 'success') bg-green-100 dark:bg-green-900
+                                                @elseif($event['type'] === 'warning') bg-yellow-100 dark:bg-yellow-900
+                                                @elseif($event['type'] === 'error') bg-red-100 dark:bg-red-900
                                                 @else bg-blue-100 dark:bg-blue-900 @endif">
-                                                <i class="fas {{ $event->icon }} 
-                                                    @if($event->type === 'success') text-green-600 dark:text-green-400
-                                                    @elseif($event->type === 'warning') text-yellow-600 dark:text-yellow-400
-                                                    @elseif($event->type === 'error') text-red-600 dark:text-red-400
+                                                <i class="fas {{ $event['icon'] }} 
+                                                    @if($event['type'] === 'success') text-green-600 dark:text-green-400
+                                                    @elseif($event['type'] === 'warning') text-yellow-600 dark:text-yellow-400
+                                                    @elseif($event['type'] === 'error') text-red-600 dark:text-red-400
                                                     @else text-blue-600 dark:text-blue-400 @endif"></i>
                                             </div>
                                         </div>
                                         <div class="ml-4">
-                                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $event->title }}</p>
-                                            <p class="text-sm text-gray-600 dark:text-gray-400">{{ $event->description }}</p>
-                                            <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">{{ $event->timestamp->format('M d, Y H:i') }}</p>
+                                            <p class="text-sm font-medium text-gray-900 dark:text-white">{{ $event['title'] }}</p>
+                                            <p class="text-sm text-gray-600 dark:text-gray-400">{{ $event['description'] }}</p>
+                                            <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">{{ \Carbon\Carbon::parse($event['timestamp'])->format('M d, Y H:i') }}</p>
                                         </div>
                                     </div>
                                     @endforeach
@@ -225,6 +225,20 @@
                                         <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Estimated Delivery:</span>
                                         <span class="ml-2 text-gray-900 dark:text-white">{{ $order->estimated_delivery ? $order->estimated_delivery->format('M d, Y') : 'TBD' }}</span>
                                     </div>
+                                    <div>
+                                        <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Delivery Address:</span>
+                                        <span class="ml-2 text-gray-900 dark:text-white">{{ $order->delivery_address }}</span>
+                                    </div>
+                                    <div>
+                                        <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Manufacturer:</span>
+                                        <span class="ml-2 text-gray-900 dark:text-white">{{ $order->manufacturer && $order->manufacturer->user ? $order->manufacturer->user->name : 'N/A' }}</span>
+                                    </div>
+                                    @if($order->notes)
+                                    <div>
+                                        <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Notes:</span>
+                                        <span class="ml-2 text-gray-900 dark:text-white">{{ $order->notes }}</span>
+                                    </div>
+                                    @endif
                                 </div>
 
                                 <div class="mt-6 space-y-3">

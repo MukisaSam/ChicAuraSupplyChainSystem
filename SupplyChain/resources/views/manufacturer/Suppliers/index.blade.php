@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manufacturer Dashboard - ChicAura SCM</title>
+    <title>Manufacturer Portal - ChicAura SCM</title>
     <!-- Tailwind CSS via CDN for standalone use, but it's already included in Laravel/Breeze setup -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome for icons -->
@@ -130,17 +130,17 @@
                 <!-- Sidebar Header -->
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
                     <div class="logo-container">
-                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="h-12 w-auto">
+                        <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
                 <div class="px-4 py-4">
-                    <h3 class="text-white text-sm font-semibold mb-3 px-3">MANUFACTURING</h3>
+                    <h3 class="text-white text-sm font-semibold mb-3 px-3">MANUFACTURER PORTAL</h3>
                 </div>
                 <!-- Sidebar Navigation -->
                 <nav class="flex-1 px-4 py-2 space-y-1">
                     <a href="{{route('manufacturer.dashboard')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-home w-5"></i>
-                        <span class="ml-2 font-medium text-sm">Home</span>
+                        <span class="ml-2 text-sm">Home</span>
                     </a>
                     <a href="{{route('manufacturer.orders')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-box w-5"></i>
@@ -153,6 +153,14 @@
                     <a href="{{route('manufacturer.inventory')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-warehouse w-5"></i>
                         <span class="ml-2 text-sm">Inventory</span>
+                    </a>
+                    <a href="{{route('manufacturer.workforce.index')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-user-tie w-5"></i>
+                        <span class="ml-2 text-sm">Workforce</span>
+                    </a>
+                    <a href="{{route('manufacturer.warehouse.index')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-warehouse w-5"></i>
+                        <span class="ml-2 text-sm">Warehouses</span>
                     </a>
                     <a href="{{route('manufacturer.wholesalers')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-users w-5"></i>
@@ -170,7 +178,7 @@
                         <i class="fas fa-file-alt w-5"></i>
                         <span class="ml-2 text-sm">Reports</span>
                     </a>
-                     <a href="{{route('manufacturer.revenue')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                    <a href="{{route('manufacturer.revenue')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-dollar-sign w-5"></i>
                         <span class="ml-2 text-sm">Revenue</span>
                     </a>
@@ -234,87 +242,50 @@
             <main class="flex-1 p-4 overflow-hidden">
                 <div class="mb-4">
                     <h2 class="text-2xl font-bold text-white mb-1">Suppliers</h2>
-                    <p class="text-gray-200 text-sm">Welcome back! Here's an overview of your supply chain.</p>
                 </div>
 
-                <!-- Stats Cards -->
-                <div class="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <div class="stat-card p-4 rounded-xl">
-                        <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl shadow-lg">
-                                <i class="fas fa-cogs text-white text-xl"></i>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Total Raw Materials</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['raw_materials'] ?? '0' }}</p>
-                                <p class="text-xs text-indigo-600 mt-1">↗ +8% this month</p>
-                            </div>
+                <!-- Supplier List Table -->
+                <div class="card-gradient p-6 rounded-xl mt-4">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Supplier Directory</h3>
+                    @if($suppliers->count())
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead>
+                                    <tr>
+                                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+                                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Business Address</th>
+                                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Materials Supplied</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                    @foreach($suppliers as $supplier)
+                                        <tr>
+                                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $supplier->user->name ?? 'N/A' }}</td>
+                                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $supplier->user->email ?? 'N/A' }}</td>
+                                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $supplier->phone ?? 'N/A' }}</td>
+                                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $supplier->business_address ?? 'N/A' }}</td>
+                                            <td class="px-4 py-2 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
+                                                @if(is_array($supplier->materials_supplied))
+                                                    {{ implode(', ', $supplier->materials_supplied) }}
+                                                @elseif($supplier->materials_supplied)
+                                                    {{ is_string($supplier->materials_supplied) ? $supplier->materials_supplied : '' }}
+                                                @else
+                                                    N/A
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
-                    </div>
-                    <div class="stat-card p-4 rounded-xl">
-                        <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg">
-                                <i class="fas fa-tshirt text-white text-xl"></i>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Total Products</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['products'] ?? '0' }}</p>
-                                <p class="text-xs text-green-600 mt-1">↗ +12% this month</p>
-                            </div>
+                    @else
+                        <div class="text-center py-6">
+                            <i class="fas fa-inbox text-gray-400 text-2xl mb-2"></i>
+                            <p class="text-gray-500 text-sm">No suppliers found.</p>
                         </div>
-                    </div>
-                    <div class="stat-card p-4 rounded-xl">
-                        <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl shadow-lg">
-                                <i class="fas fa-truck text-white text-xl"></i>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Total Suppliers</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['suppliers'] ?? '0' }}</p>
-                                <p class="text-xs text-yellow-600 mt-1">↗ +5% this month</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stat-card p-4 rounded-xl">
-                        <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg">
-                                <i class="fas fa-dollar-sign text-white text-xl"></i>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Revenue</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['revenue'] ?? '$0' }}</p>
-                                <p class="text-xs text-purple-600 mt-1">↗ +15% this month</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-3 h-64">
-                    <div class="card-gradient p-4 rounded-xl lg:col-span-2 overflow-hidden">
-                        <h3 class="text-lg font-bold text-gray-800 mb-3">Production Overview</h3>
-                        <canvas id="productionChart" class="w-full h-48"></canvas>
-                    </div>
-                    <div class="card-gradient p-4 rounded-xl overflow-hidden">
-                        <h3 class="text-lg font-bold text-gray-800 mb-3">Recent Activities</h3>
-                        <div class="space-y-2 h-48 overflow-y-auto">
-                            @forelse ($recentActivities ?? [] as $activity)
-                                <div class="flex items-start p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                                    <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full {{ $activity['color'] ?? 'bg-blue-100' }} bg-opacity-10">
-                                        <i class="fas {{ $activity['icon'] ?? 'fa-info' }} {{ $activity['color'] ?? 'text-blue-600' }} text-sm"></i>
-                                    </div>
-                                    <div class="ml-3 flex-1">
-                                        <p class="text-xs font-medium text-gray-800">{{ $activity['description'] ?? 'No activity' }}</p>
-                                        <p class="text-xs text-gray-500 mt-1">{{ $activity['time'] ?? 'N/A' }}</p>
-                                    </div>
-                                </div>
-                            @empty 
-                                <div class="text-center py-6">
-                                    <i class="fas fa-inbox text-gray-400 text-2xl mb-2"></i>
-                                    <p class="text-gray-500 text-sm">No recent activities found.</p>
-                                </div>
-                            @endforelse
-                        </div>
-                    </div>
+                    @endif
                 </div>
             </main>
         </div>
@@ -325,38 +296,6 @@
         document.getElementById('menu-toggle').addEventListener('click', function() {
             document.getElementById('sidebar').classList.toggle('open');
         });
-
-        // Production Chart
-        const productionCtx = document.getElementById('productionChart');
-        if (productionCtx) {
-            new Chart(productionCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [{
-                        label: 'Production Volume',
-                        data: [65, 59, 80, 81, 56, 55],
-                        borderColor: 'rgb(99, 102, 241)',
-                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
     </script>
 </body>
 </html>

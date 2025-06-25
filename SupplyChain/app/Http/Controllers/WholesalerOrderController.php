@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use App\Models\Item;
 use App\Models\Wholesaler;
 use Illuminate\Support\Str;
+use App\Notifications\OrderPlacedNotification;
 
 class WholesalerOrderController extends Controller
 {
@@ -36,19 +37,29 @@ class WholesalerOrderController extends Controller
             ->where('stock_quantity', '>', 0)
             ->orderBy('name')
             ->get();
-            
-        return view('wholesaler.orders.create', compact('items', 'user'));
+        $manufacturers = \App\Models\Manufacturer::orderBy('id')->get();
+        return view('wholesaler.orders.create', compact('items', 'user', 'manufacturers'));
     }
     
     public function store(Request $request)
     {
+        $itemsInput = $request->input('items', []);
+        // Filter only selected items
+        $selectedItems = array_filter($itemsInput, function($item) {
+            return isset($item['selected']) && $item['selected'];
+        });
+        $request->merge(['selected_items' => $selectedItems]);
         $request->validate([
-            'items' => 'required|array|min:1',
-            'items.*.item_id' => 'required|exists:items,id',
-            'items.*.quantity' => 'required|integer|min:1',
+            'manufacturer_id' => 'required|exists:manufacturers,id',
+            'selected_items' => 'required|array|min:1',
+            'selected_items.*.item_id' => 'required|exists:items,id',
+            'selected_items.*.quantity' => 'required|integer|min:1',
             'payment_method' => 'required|in:cash,credit,bank_transfer,installment',
-            'shipping_address' => 'required|string|max:500',
+            'delivery_address' => 'required|string|max:500',
             'notes' => 'nullable|string|max:1000',
+        ], [
+            'selected_items.required' => 'Please select at least one product and enter quantity.',
+            'selected_items.*.quantity.required' => 'Please enter quantity for each selected product.',
         ]);
         
         $user = Auth::user();
@@ -62,7 +73,7 @@ class WholesalerOrderController extends Controller
         $totalAmount = 0;
         $orderItems = [];
         
-        foreach ($request->items as $itemData) {
+        foreach ($selectedItems as $itemData) {
             $item = Item::find($itemData['item_id']);
             if (!$item || $item->stock_quantity < $itemData['quantity']) {
                 return back()->withErrors(['items' => "Insufficient stock for {$item->name}"]);
@@ -82,15 +93,22 @@ class WholesalerOrderController extends Controller
         // Create order
         $order = Order::create([
             'wholesaler_id' => $wholesaler->id,
+            'manufacturer_id' => $request->manufacturer_id,
             'order_number' => 'ORD-' . strtoupper(Str::random(8)),
             'status' => 'pending',
             'order_date' => now(),
             'total_amount' => $totalAmount,
             'payment_method' => $request->payment_method,
-            'shipping_address' => $request->shipping_address,
+            'delivery_address' => $request->delivery_address,
             'notes' => $request->notes,
             'estimated_delivery' => now()->addDays(14), // Default 2 weeks
         ]);
+        
+        // Notify manufacturer (database notification)
+        $manufacturer = $order->manufacturer;
+        if ($manufacturer && $manufacturer->user) {
+            $manufacturer->user->notify(new OrderPlacedNotification($order));
+        }
         
         // Create order items
         foreach ($orderItems as $itemData) {
@@ -114,9 +132,18 @@ class WholesalerOrderController extends Controller
             abort(403, 'Access denied.');
         }
         
-        $order->load(['orderItems.item']);
-        
-        return view('wholesaler.orders.show', compact('order', 'user'));
+        $order->load(['orderItems.item', 'manufacturer.user']);
+        // Example timeline logic (replace with real events if available)
+        $timeline = [
+            [
+                'type' => 'success',
+                'icon' => 'fa-check-circle',
+                'title' => 'Order Placed',
+                'description' => 'Your order was placed successfully.',
+                'timestamp' => $order->created_at,
+            ],
+        ];
+        return view('wholesaler.orders.show', compact('order', 'user', 'timeline'));
     }
     
     public function cancel(Order $order)

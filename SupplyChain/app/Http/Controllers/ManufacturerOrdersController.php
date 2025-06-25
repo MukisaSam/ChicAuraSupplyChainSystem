@@ -12,6 +12,7 @@ use App\Models\SupplyRequest;
 use App\Models\Supplier;
 use App\Models\SuppliedItem;
 use Illuminate\Support\Facades\DB;
+use App\Notifications\OrderStatusUpdatedNotification;
 
 class ManufacturerOrdersController extends Controller
 {
@@ -77,6 +78,11 @@ class ManufacturerOrdersController extends Controller
             'status' => $request->status,
             'notes' => $request->notes,
         ]);
+        
+        // Notify wholesaler of status update
+        if ($order->wholesaler && $order->wholesaler->user) {
+            $order->wholesaler->user->notify(new OrderStatusUpdatedNotification($order, $request->status));
+        }
         
         // If order is confirmed, check inventory and create supply requests if needed
         if ($request->status === 'confirmed') {

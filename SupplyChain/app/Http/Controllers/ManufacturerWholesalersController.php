@@ -16,7 +16,7 @@ class ManufacturerWholesalersController extends Controller
             abort(403, 'Access denied. Manufacturer privileges required.');
         }
         
-        
-        return view('manufacturer.wholesalers.index');
+        $wholesalers = \App\Models\Wholesaler::with('user')->get();
+        return view('manufacturer.wholesalers.index', compact('wholesalers'));
     }
 }

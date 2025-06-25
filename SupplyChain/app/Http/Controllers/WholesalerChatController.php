@@ -173,7 +173,28 @@ class WholesalerChatController extends Controller
             ->latest()
             ->take(50)
             ->get()
-            ->reverse();
+            ->reverse()
+            ->map(function ($message) {
+                $sender = $message->sender;
+                $receiver = $message->receiver;
+                return [
+                    'id' => $message->id,
+                    'sender_id' => $message->sender_id,
+                    'receiver_id' => $message->receiver_id,
+                    'content' => $message->content,
+                    'created_at' => $message->created_at ? $message->created_at->toIso8601String() : null,
+                    'sender' => [
+                        'id' => $sender ? $sender->id : $message->sender_id,
+                        'name' => $sender ? $sender->name : 'Unknown',
+                        'role' => $sender ? $sender->role : '',
+                    ],
+                    'receiver' => [
+                        'id' => $receiver ? $receiver->id : $message->receiver_id,
+                        'name' => $receiver ? $receiver->name : 'Unknown',
+                        'role' => $receiver ? $receiver->role : '',
+                    ],
+                ];
+            });
 
         return response()->json(['messages' => $messages]);
     }

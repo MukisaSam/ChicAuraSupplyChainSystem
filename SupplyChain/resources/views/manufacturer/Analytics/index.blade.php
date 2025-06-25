@@ -10,14 +10,35 @@
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
         body { 
+            position: relative;
+            min-height: 100vh;
+        }
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
             background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/manufacturer.png') }}');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            min-height: 100vh;
         }
-        .dark body {
-            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 100%), url('{{ asset('images/manufacturer.png') }}');
+        .main-content-container {
+            position: relative;
+            z-index: 1;
+        }
+        .dashboard-header {
+            background: rgba(30, 41, 59, 0.85);
+            border-radius: 1rem;
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.15);
+        }
+        .dashboard-header h2, .dashboard-header p {
+            color: #fff !important;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.25);
         }
         .sidebar { 
             transition: transform 0.3s ease-in-out;
@@ -96,17 +117,21 @@
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
+            .dashboard-header {
+                padding: 1rem;
+            }
         }
     </style>
 </head>
 <body class="font-sans antialiased">
-    <div class="flex h-screen">
+    <div class="background-overlay"></div>
+    <div class="flex h-screen main-content-container">
         <!-- Sidebar -->
         <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
                     <div class="logo-container">
-                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="h-12 w-auto">
+                        <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
                 <div class="px-4 py-4">
@@ -128,6 +153,14 @@
                     <a href="{{route('manufacturer.inventory')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-warehouse w-5"></i>
                         <span class="ml-2 text-sm">Inventory</span>
+                    </a>
+                    <a href="{{route('manufacturer.workforce.index')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-user-tie w-5"></i>
+                        <span class="ml-2 text-sm">Workforce</span>
+                    </a>
+                    <a href="{{route('manufacturer.warehouse.index')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-warehouse w-5"></i>
+                        <span class="ml-2 text-sm">Warehouses</span>
                     </a>
                     <a href="{{route('manufacturer.wholesalers')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-users w-5"></i>
@@ -161,19 +194,19 @@
 
         <div class="flex flex-col flex-1 w-full">
             <!-- Top Navigation Bar -->
-            <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b">
+            <header class="header-gradient relative z-20 flex items-center justify-between h-16 border-b">
                 <div class="flex items-center">
                     <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700">
                         <i class="fas fa-bars text-lg"></i>
                     </button>
-                    <div class="relative ml-3 hidden md:block">
+                    <div class="relative ml-3 hidden md:block z-30">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <i class="fas fa-search text-gray-400"></i>
                         </span>
                         <input type="text" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm" placeholder="Search orders, inventory, suppliers...">
                     </div>
                 </div>
-                <div class="flex items-center pr-4 space-x-3">
+                <div class="flex items-center pr-4 space-x-3 z-30">
                     <button class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors">
                         <i class="fas fa-bell text-lg"></i>
                     </button>
@@ -205,9 +238,9 @@
 
             <!-- Main Content -->
             <main class="flex-1 p-4">
-                <div class="mb-4">
-                    <h2 class="text-2xl font-bold text-white mb-1">Analytics Dashboard</h2>
-                    <p class="text-gray-200 text-sm">Comprehensive insights into your supply chain performance.</p>
+                <div class="dashboard-header">
+                    <h2 class="text-2xl font-bold mb-1">Analytics Dashboard</h2>
+                    <p class="text-sm">Comprehensive insights into your supply chain performance.</p>
                 </div>
 
                 @if(isset($analytics['error']))

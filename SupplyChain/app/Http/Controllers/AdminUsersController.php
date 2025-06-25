@@ -16,6 +16,6 @@ class AdminUsersController extends Controller
             abort(403, 'Access denied. Admin privileges required.');
         }
 
-        return view('admin.users.index');
+        return view('admin.usersmanagement.index');
     }
 }

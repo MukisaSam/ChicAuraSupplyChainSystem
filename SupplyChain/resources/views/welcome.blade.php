@@ -51,26 +51,39 @@
     }
 
     .logo-container {
+      position: relative;
       margin-bottom: 20px;
       opacity: 1;
       transform: scale(1);
       animation: logoAppear 1.5s ease-out forwards;
       display: inline-block;
-      background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.8)), url('/images/showroom.png');
+      background-image: url('/images/silk.jpeg');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
-      padding: 12px 20px;
-      border-radius: 20px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      padding: 18px 32px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
       border: 1px solid rgba(37, 99, 235, 0.1);
+      z-index: 1;
     }
-
+    .logo-container::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(255,255,255,0.7); /* White overlay for contrast */
+      border-radius: 12px;
+      z-index: 2;
+    }
     .logo {
-      max-width: 80px;
+      position: relative;
+      z-index: 3;
+      max-width: 120px;
       height: auto;
-      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-      border-radius: 15px;
+      filter: none;
+      border-radius: 0;
+      display: block;
+      margin: 0 auto;
     }
 
     h1 {
@@ -277,7 +290,7 @@
 <body>
   <div class="container">
     <div class="logo-container">
-      <img src="/images/logo.png" alt="ChicAura Logo" class="logo">
+      <img src="/images/CA-WORD.png" alt="ChicAura Logo" class="logo">
     </div>
     
     <h1>Welcome to ChicAura</h1>

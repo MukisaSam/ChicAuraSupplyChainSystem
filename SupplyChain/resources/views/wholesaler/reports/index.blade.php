@@ -119,7 +119,7 @@
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
                     <div class="logo-container">
-                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="h-12 w-auto">
+                        <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
                 <div class="px-4 py-4">
@@ -343,7 +343,7 @@
                                 </a>
                                 <a href="{{ route('wholesaler.reports.export', ['type' => 'sales', 'start_date' => $startDate, 'end_date' => $endDate]) }}" 
                                    class="block w-full px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 text-center">
-                                    <i class="fas fa-download mr-2"></i>Export PDF
+                                    <i class="fas fa-download mr-2"></i>Export CSV
                                 </a>
                             </div>
                         </div>

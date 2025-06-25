@@ -119,7 +119,7 @@
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
                     <div class="logo-container">
-                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="h-12 w-auto">
+                        <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
                 <div class="px-4 py-4">
@@ -234,12 +234,16 @@
                                                     <div class="text-right">
                                                         <p class="text-xl font-bold text-gray-900 dark:text-gray-100">${{ number_format($item->base_price, 2) }}</p>
                                                         <div class="flex items-center space-x-2 mt-2">
-                                                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Qty:</label>
+                                                            <input type="checkbox" id="select_item_{{ $item->id }}" name="items[{{ $item->id }}][selected]" value="1" onchange="toggleQuantityInput({{ $item->id }})">
+                                                            <label for="select_item_{{ $item->id }}" class="text-sm font-medium text-gray-700 dark:text-gray-300">Select</label>
+                                                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300 ml-2">Qty:</label>
                                                             <input type="number" 
                                                                    name="items[{{ $item->id }}][quantity]" 
+                                                                   id="quantity_input_{{ $item->id }}"
                                                                    min="1" 
                                                                    max="{{ $item->stock_quantity }}"
                                                                    class="w-20 border border-gray-300 dark:border-gray-600 rounded-lg px-2 py-1 text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                                                                   style="display:none;"
                                                                    onchange="updateTotal()">
                                                             <input type="hidden" name="items[{{ $item->id }}][item_id]" value="{{ $item->id }}">
                                                         </div>
@@ -264,18 +268,26 @@
                                 
                                 <div class="space-y-4">
                                     <div>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Select Manufacturer</label>
+                                        <select name="manufacturer_id" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white" required>
+                                            <option value="">-- Select Manufacturer --</option>
+                                            @foreach($manufacturers as $manufacturer)
+                                                <option value="{{ $manufacturer->id }}">{{ $manufacturer->user->name ?? 'Manufacturer #'.$manufacturer->id }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Payment Method</label>
                                         <select name="payment_method" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
-                                            <option value="cash">Cash</option>
-                                            <option value="credit">Credit</option>
+                                            <option value="cash">Cash on Delivery</option>
+                                            <option value="credit">Mobile Money</option>
                                             <option value="bank_transfer">Bank Transfer</option>
-                                            <option value="installment">Installment</option>
                                         </select>
                                     </div>
                                     
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Shipping Address</label>
-                                        <textarea name="shipping_address" rows="3" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white" placeholder="Enter your shipping address">{{ old('shipping_address') }}</textarea>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Delivery Address</label>
+                                        <textarea name="delivery_address" rows="3" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white" placeholder="Enter your delivery address">{{ old('delivery_address') }}</textarea>
                                     </div>
                                     
                                     <div>
@@ -346,6 +358,20 @@
                 input.addEventListener('input', updateTotal);
             });
         });
+
+        function toggleQuantityInput(itemId) {
+            const checkbox = document.getElementById('select_item_' + itemId);
+            const quantityInput = document.getElementById('quantity_input_' + itemId);
+            if (checkbox.checked) {
+                quantityInput.style.display = '';
+                quantityInput.required = true;
+            } else {
+                quantityInput.style.display = 'none';
+                quantityInput.required = false;
+                quantityInput.value = '';
+                updateTotal();
+            }
+        }
     </script>
 </body>
 </html> 

@@ -297,17 +297,68 @@ class WholesalerReportsController extends Controller
      */
     private function exportSalesReport($wholesalerId, $startDate, $endDate, $format)
     {
-        // This would typically use a package like DomPDF or PhpSpreadsheet
-        // For now, we'll return a simple response
-        return response()->json([
-            'message' => 'Export functionality would be implemented here',
-            'data' => [
-                'wholesaler_id' => $wholesalerId,
-                'start_date' => $startDate,
-                'end_date' => $endDate,
-                'format' => $format
-            ]
-        ]);
+        $wholesaler = Wholesaler::findOrFail($wholesalerId);
+        $salesOverview = $this->getSalesOverview($wholesalerId, $startDate, $endDate);
+        $topProducts = $this->getTopProducts($wholesalerId, $startDate, $endDate);
+        $monthlyTrends = $this->getMonthlyTrends($wholesalerId);
+        $paymentMethods = $this->getPaymentMethodDistribution($wholesalerId, $startDate, $endDate);
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="sales-report-' . now()->format('Y-m-d') . '.csv"',
+        ];
+
+        $callback = function() use ($salesOverview, $topProducts, $monthlyTrends, $paymentMethods) {
+            $file = fopen('php://output', 'w');
+
+            // Sales Overview
+            fputcsv($file, ['Sales Overview']);
+            fputcsv($file, ['Metric', 'Value']);
+            fputcsv($file, ['Total Sales', '$' . number_format($salesOverview['current']['total_sales'], 2)]);
+            fputcsv($file, ['Total Orders', $salesOverview['current']['order_count']]);
+            fputcsv($file, ['Average Order Value', '$' . number_format($salesOverview['current']['avg_order_value'], 2)]);
+            fputcsv($file, ['Sales Growth', number_format($salesOverview['growth']['sales_growth'], 1) . '%']);
+            fputcsv($file, []); // Empty line for spacing
+
+            // Top Products
+            fputcsv($file, ['Top Products']);
+            fputcsv($file, ['Product Name', 'Quantity Sold', 'Revenue']);
+            foreach ($topProducts as $product) {
+                fputcsv($file, [
+                    $product->name,
+                    $product->total_quantity,
+                    '$' . number_format($product->total_revenue, 2)
+                ]);
+            }
+            fputcsv($file, []); // Empty line for spacing
+
+            // Monthly Trends
+            fputcsv($file, ['Monthly Trends']);
+            fputcsv($file, ['Month', 'Sales', 'Orders']);
+            foreach ($monthlyTrends as $trend) {
+                fputcsv($file, [
+                    $trend->month_name,
+                    '$' . number_format($trend->total_sales, 2),
+                    $trend->order_count
+                ]);
+            }
+            fputcsv($file, []); // Empty line for spacing
+
+            // Payment Methods
+            fputcsv($file, ['Payment Methods']);
+            fputcsv($file, ['Method', 'Orders', 'Total Amount']);
+            foreach ($paymentMethods as $method) {
+                fputcsv($file, [
+                    ucfirst($method->payment_method),
+                    $method->count,
+                    '$' . number_format($method->total_amount, 2)
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     /**
@@ -315,16 +366,62 @@ class WholesalerReportsController extends Controller
      */
     private function exportOrderReport($wholesalerId, $startDate, $endDate, $format)
     {
-        // This would typically use a package like DomPDF or PhpSpreadsheet
-        // For now, we'll return a simple response
-        return response()->json([
-            'message' => 'Export functionality would be implemented here',
-            'data' => [
-                'wholesaler_id' => $wholesalerId,
-                'start_date' => $startDate,
-                'end_date' => $endDate,
-                'format' => $format
-            ]
-        ]);
+        $wholesaler = Wholesaler::findOrFail($wholesalerId);
+        $orders = Order::where('wholesaler_id', $wholesalerId)
+            ->whereBetween('order_date', [$startDate, $endDate])
+            ->with(['items.item', 'manufacturer'])
+            ->get();
+        
+        $orderMetrics = $this->getOrderMetrics($wholesalerId, $startDate, $endDate);
+        $orderStatuses = $this->getOrderStatusDistribution($wholesalerId, $startDate, $endDate);
+
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="orders-report-' . now()->format('Y-m-d') . '.csv"',
+        ];
+
+        $callback = function() use ($orders, $orderMetrics, $orderStatuses) {
+            $file = fopen('php://output', 'w');
+
+            // Order Metrics
+            fputcsv($file, ['Order Metrics']);
+            fputcsv($file, ['Metric', 'Value']);
+            fputcsv($file, ['Total Orders', $orderMetrics['total_orders']]);
+            fputcsv($file, ['Total Revenue', '$' . number_format($orderMetrics['total_revenue'], 2)]);
+            fputcsv($file, ['Average Order Value', '$' . number_format($orderMetrics['avg_order_value'], 2)]);
+            fputcsv($file, ['Delivery Rate', number_format($orderMetrics['delivery_rate'], 1) . '%']);
+            fputcsv($file, []); // Empty line for spacing
+
+            // Order Status Distribution
+            fputcsv($file, ['Order Status Distribution']);
+            fputcsv($file, ['Status', 'Count', 'Percentage']);
+            foreach ($orderStatuses as $status) {
+                $percentage = ($status->count / $orderMetrics['total_orders']) * 100;
+                fputcsv($file, [
+                    ucfirst($status->status),
+                    $status->count,
+                    number_format($percentage, 1) . '%'
+                ]);
+            }
+            fputcsv($file, []); // Empty line for spacing
+
+            // Orders List
+            fputcsv($file, ['Orders List']);
+            fputcsv($file, ['Order ID', 'Date', 'Manufacturer', 'Items', 'Total Amount', 'Status']);
+            foreach ($orders as $order) {
+                fputcsv($file, [
+                    '#' . $order->id,
+                    $order->order_date->format('M d, Y'),
+                    $order->manufacturer->user->name,
+                    $order->items->count(),
+                    '$' . number_format($order->total_amount, 2),
+                    ucfirst($order->status)
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 }

@@ -126,7 +126,7 @@
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
                     <div class="logo-container">
-                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="h-12 w-auto">
+                        <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
                 <div class="px-4 py-4">
@@ -159,7 +159,21 @@
                     </div>
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
-                    <button class="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-full transition-colors"><i class="fas fa-bell text-lg"></i></button>
+                    <div class="relative">
+                        <button id="notificationDropdownBtn" class="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-full transition-colors focus:outline-none relative">
+                            <i class="fas fa-bell text-lg"></i>
+                            <span id="notificationBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5" style="display:none;">0</span>
+                        </button>
+                        <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+                            <div class="p-4 border-b font-semibold">Notifications</div>
+                            <div id="notificationList" class="max-h-64 overflow-y-auto">
+                                <div class="text-center text-gray-400 py-6">Loading...</div>
+                            </div>
+                            <div class="p-2 text-center border-t">
+                                <button id="markAllReadBtn" class="text-xs text-purple-600 hover:underline">Mark all as read</button>
+                            </div>
+                        </div>
+                    </div>
                     <button data-theme-toggle class="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-full transition-colors" title="Switch Theme">
                         <i class="fas fa-moon text-lg"></i>
                     </button>
@@ -328,6 +342,60 @@
                 }
             }
         });
+
+        // Notification dropdown logic
+        const notificationBtn = document.getElementById('notificationDropdownBtn');
+        const notificationDropdown = document.getElementById('notificationDropdown');
+        const notificationBadge = document.getElementById('notificationBadge');
+        const notificationList = document.getElementById('notificationList');
+        const markAllReadBtn = document.getElementById('markAllReadBtn');
+
+        notificationBtn.addEventListener('click', function(e) {
+            notificationDropdown.classList.toggle('hidden');
+            if (!notificationDropdown.classList.contains('hidden')) {
+                loadNotifications();
+            }
+        });
+        document.addEventListener('click', function(e) {
+            if (!notificationBtn.contains(e.target) && !notificationDropdown.contains(e.target)) {
+                notificationDropdown.classList.add('hidden');
+            }
+        });
+
+        function loadNotifications() {
+            fetch('/wholesaler/notifications')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.notifications && data.notifications.length > 0) {
+                        notificationList.innerHTML = data.notifications.map(n => `
+                            <div class="px-4 py-2 border-b last:border-b-0">
+                                <div class="text-sm">${n.data.message}</div>
+                                <div class="text-xs text-gray-400">${n.created_at_human}</div>
+                            </div>
+                        `).join('');
+                    } else {
+                        notificationList.innerHTML = '<div class="text-center text-gray-400 py-6">No new notifications.</div>';
+                    }
+                    // Update badge
+                    if (data.unread_count > 0) {
+                        notificationBadge.textContent = data.unread_count;
+                        notificationBadge.style.display = 'inline-block';
+                    } else {
+                        notificationBadge.style.display = 'none';
+                    }
+                });
+        }
+        // Auto-refresh notifications every 30 seconds
+        setInterval(loadNotifications, 30000);
+        // Mark all as read
+        markAllReadBtn.addEventListener('click', function() {
+            fetch('/wholesaler/notifications/mark-all-read', { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
+                .then(() => {
+                    loadNotifications();
+                });
+        });
+        // Initial load
+        loadNotifications();
     </script>
 </body>
 </html>

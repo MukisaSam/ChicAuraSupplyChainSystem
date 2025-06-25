@@ -108,7 +108,9 @@
     <div class="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div class="sm:mx-auto sm:w-full sm:max-w-md">
             <div class="flex justify-center mb-8">
-                <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="h-24 w-auto drop-shadow-lg">
+                <div style="background: linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)), url('/images/silk.jpeg') center center/cover no-repeat; padding: 0.75rem; border-radius: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: inline-block;">
+                    <img src="{{ asset('images/CA-WORD.png') }}" alt="ChicAura Logo" class="h-24 w-auto drop-shadow-lg">
+                </div>
             </div>
             <h2 class="mt-6 text-center text-4xl font-bold text-white drop-shadow-lg">
                 Join ChicAura
