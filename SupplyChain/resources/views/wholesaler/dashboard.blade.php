@@ -156,7 +156,7 @@
                     <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700"><i class="fas fa-bars text-lg"></i></button>
                     <div class="relative ml-3 hidden md:block">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3"><i class="fas fa-search text-gray-400"></i></span>
-                        <input type="text" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" placeholder="Search products, orders...">
+                        <input type="text" id="dashboardSearchInput" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" placeholder="Search products, orders...">
                     </div>
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
@@ -385,6 +385,24 @@
         });
         // Initial load
         loadNotifications();
+
+        // Search functionality for dashboard cards and recent orders
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('dashboardSearchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    // Filter stat cards
+                    document.querySelectorAll('.stat-card').forEach(card => {
+                        card.style.display = card.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+                    });
+                    // Filter recent orders
+                    document.querySelectorAll('.card-gradient .flex.items-center.p-3').forEach(order => {
+                        order.style.display = order.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+                    });
+                });
+            }
+        });
     </script>
 
     {{-- Profile Editor Modal --}}

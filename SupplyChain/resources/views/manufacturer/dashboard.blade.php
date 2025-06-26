@@ -206,7 +206,7 @@
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <i class="fas fa-search text-gray-400"></i>
                         </span>
-                        <input type="text" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm" placeholder="Search orders, inventory, suppliers...">
+                        <input type="text" id="dashboardSearchInput" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm" placeholder="Search orders, inventory, suppliers...">
                     </div>
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
@@ -366,6 +366,24 @@
                 }
             });
         }
+
+        // Search functionality for dashboard stat cards and recent activities
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('dashboardSearchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    // Filter stat cards
+                    document.querySelectorAll('.stat-card').forEach(card => {
+                        card.style.display = card.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+                    });
+                    // Filter recent activities
+                    document.querySelectorAll('.card-gradient .flex.items-start.p-3').forEach(activity => {
+                        activity.style.display = activity.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+                    });
+                });
+            }
+        });
     </script>
 
     {{-- Profile Editor Modal --}}
