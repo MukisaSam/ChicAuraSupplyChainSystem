@@ -10,6 +10,10 @@ class AdminDashboardController extends Controller
 {
     public function index()
     {
+        if(!Auth::check()){
+            return redirect() ->route('welcome');
+        }
+
         $user = Auth::user();
 
         if ($user->role !== 'admin') {

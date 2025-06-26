@@ -68,7 +68,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 // Admin routes
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/admin/dashboard', [App\Http\Controllers\AdminDashboardController::class, 'index'])->name('admin.dashboard');
-     Route::get('/admin/users', [App\Http\Controllers\AdminUsersController::class, 'index'])->name('admin.users');
+    Route::get('/admin/users', [App\Http\Controllers\AdminUsersController::class, 'index'])->name('admin.users');
 });
 
 // Supplier routes

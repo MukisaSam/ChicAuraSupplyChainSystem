@@ -189,7 +189,7 @@
             </header>
 
             <!-- Main Content -->
-            <main class="flex-1 p-4">
+            <main class=" flex-1 overflow-y-auto p-6">
                 <div class="mb-4">
                     <h2 class="text-2xl font-bold text-white mb-1">Administrator Dashboard</h2>
                     <p class="text-gray-200 text-sm">Welcome back! Here's your system overview.</p>

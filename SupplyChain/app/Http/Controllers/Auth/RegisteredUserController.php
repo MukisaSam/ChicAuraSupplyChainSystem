@@ -237,7 +237,7 @@ class RegisteredUserController extends Controller
                     'name' => $request->name,
                     'email' => $request->email,
                     'password' => Hash::make($request->password),
-                    'role' => 'supplier',
+                    'role' => 'wholesaler',
                     'business_address' => $request->business_address,
                     'phone' => $request->phone,
                     'license_document' => $fileName,
