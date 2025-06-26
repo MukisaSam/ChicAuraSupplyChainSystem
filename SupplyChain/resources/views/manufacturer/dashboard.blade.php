@@ -6,6 +6,7 @@
     <title>Manufacturer Portal - ChicAura SCM</title>
     <!-- Tailwind CSS via CDN for standalone use, but it's already included in Laravel/Breeze setup -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <!-- Chart.js for graphs -->
@@ -225,9 +226,9 @@
                         </button>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <a href="{{ route('user.profile.edit') }}" class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors" title="Edit Profile">
+                        <button type="button" class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors" title="Edit Profile" x-data x-on:click="$dispatch('open-modal', 'profile-editor-modal')">
                             <i class="fas fa-user-edit text-lg"></i>
-                        </a>
+                        </button>
                         <form method="POST" action="{{ route('logout') }}" class="inline">
                             @csrf
                             <button type="submit" class="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors" title="Logout">
@@ -366,5 +367,8 @@
             });
         }
     </script>
+
+    {{-- Profile Editor Modal --}}
+    <x-profile-editor-modal />
 </body>
 </html>
