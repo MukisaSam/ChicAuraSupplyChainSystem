@@ -134,8 +134,17 @@
                     <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700">
                         <i class="fas fa-bars text-lg"></i>
                     </button>
+                    <!-- Search Bar -->
+                    <div class="relative ml-3 hidden md:block">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </span>
+                        <input type="text" id="searchInput" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm" placeholder="Search...">
+                    </div>
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
+                    <!-- Notifications Dropdown -->
+                    <x-notification-bell />
                     <button data-theme-toggle class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors" title="Switch Theme">
                         <i class="fas fa-moon text-lg"></i>
                     </button>
@@ -148,12 +157,17 @@
                                  alt="User Avatar">
                         </button>
                     </div>
-                    <form method="POST" action="{{ route('logout') }}" class="inline">
-                        @csrf
-                        <button type="submit" class="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors" title="Logout">
-                            <i class="fas fa-sign-out-alt text-lg"></i>
-                        </button>
-                    </form>
+                    <div class="flex items-center space-x-2">
+                        <a href="{{ route('user.profile.edit') }}" class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors" title="Edit Profile">
+                            <i class="fas fa-user-edit text-lg"></i>
+                        </a>
+                        <form method="POST" action="{{ route('logout') }}" class="inline">
+                            @csrf
+                            <button type="submit" class="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors" title="Logout">
+                                <i class="fas fa-sign-out-alt text-lg"></i>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </header>
 
@@ -211,5 +225,6 @@
             document.getElementById('sidebar').classList.toggle('open');
         });
     </script>
+    <x-notification-bell />
 </body>
 </html>

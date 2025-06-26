@@ -164,24 +164,12 @@
                                 @endforelse
                             </ul>
                             @if(auth()->user()->unreadNotifications->count() > 0)
-                                <form method="POST" action="{{ route('notifications.markAsRead') }}" class="p-2 text-center">
+                                <form method="POST" action="{{ route('manufacturer.notifications.markAsRead') }}" class="p-2 text-center">
                                     @csrf
                                     <button type="submit" class="text-xs text-indigo-600 hover:underline">Mark all as read</button>
                                 </form>
                             @endif
                         </div>
-                    </div>
-                    <!-- Debug: Show all notifications for troubleshooting -->
-                    <div class="mt-4 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-800">
-                        <strong>Debug Notifications:</strong>
-                        <ul>
-                        @foreach(auth()->user()->notifications as $notification)
-                            <li>
-                                {{ $notification->data['message'] ?? 'No message' }}
-                                ({{ $notification->created_at }})
-                            </li>
-                        @endforeach
-                        </ul>
                     </div>
                     <button data-theme-toggle class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors" title="Switch Theme">
                         <i class="fas fa-moon text-lg"></i>

@@ -160,19 +160,7 @@
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
                     <div class="relative">
-                        <button id="notificationDropdownBtn" class="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-full transition-colors focus:outline-none relative">
-                            <i class="fas fa-bell text-lg"></i>
-                            <span id="notificationBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5" style="display:none;">0</span>
-                        </button>
-                        <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-                            <div class="p-4 border-b font-semibold">Notifications</div>
-                            <div id="notificationList" class="max-h-64 overflow-y-auto">
-                                <div class="text-center text-gray-400 py-6">Loading...</div>
-                            </div>
-                            <div class="p-2 text-center border-t">
-                                <button id="markAllReadBtn" class="text-xs text-purple-600 hover:underline">Mark all as read</button>
-                            </div>
-                        </div>
+                        <x-wholesaler-notification-bell />
                     </div>
                     <button data-theme-toggle class="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-full transition-colors" title="Switch Theme">
                         <i class="fas fa-moon text-lg"></i>
