@@ -18,87 +18,16 @@ class ChatTestDataSeeder extends Seeder
      */
     public function run(): void
     {
-        // Get or create test admin
-        $admin = User::firstOrCreate(
-            ['email' => 'admin@chicaura.com'],
-            [
-                'name' => 'Admin User',
-                'password' => Hash::make('password'),
-                'role' => 'admin',
-            ]
-        );
+        // Fetch users created by TestUsersSeeder
+        $admin = User::where('email', 'admin@chicaura.com')->first();
+        $manufacturer = User::where('email', 'manufacturer@chicaura.com')->first();
+        $supplier = User::where('email', 'supplier@chicaura.com')->first();
+        $wholesaler = User::where('email', 'wholesaler@chicaura.com')->first();
 
-        // Get or create test manufacturer
-        $manufacturer = User::firstOrCreate(
-            ['email' => 'manufacturer@chicaura.com'],
-            [
-                'name' => 'Fashion Manufacturer',
-                'password' => Hash::make('password'),
-                'role' => 'manufacturer',
-            ]
-        );
-
-        // Create manufacturer profile if it doesn't exist
-        if (!$manufacturer->manufacturer) {
-            Manufacturer::create([
-                'user_id' => $manufacturer->id,
-                'business_address' => '123 Manufacturing St, Fashion District',
-                'phone' => '+1234567890',
-                'license_document' => 'manufacturer_license.pdf',
-                'production_capacity' => 10000,
-                'specialization' => json_encode(['dresses', 'shirts', 'pants']),
-            ]);
-        }
-
-        // Get or create test supplier
-        $supplier = User::firstOrCreate(
-            ['email' => 'supplier@chicaura.com'],
-            [
-                'name' => 'Textile Supplier',
-                'password' => Hash::make('password'),
-                'role' => 'supplier',
-            ]
-        );
-
-        // Create supplier profile if it doesn't exist
-        if (!$supplier->supplier) {
-            Supplier::create([
-                'user_id' => $supplier->id,
-                'business_address' => '789 Textile Ave, Supply District',
-                'phone' => '+1122334455',
-                'license_document' => 'supplier_license.pdf',
-                'business_type' => 'Textile Supply',
-                'specialization' => json_encode(['cotton', 'silk', 'polyester']),
-                'supply_capacity' => 5000,
-            ]);
-        }
-
-        // Get or create test wholesaler
-        $wholesaler = User::firstOrCreate(
-            ['email' => 'wholesaler@chicaura.com'],
-            [
-                'name' => 'Wholesale Retailer',
-                'password' => Hash::make('password'),
-                'role' => 'wholesaler',
-            ]
-        );
-
-        // Create wholesaler profile if it doesn't exist
-        if (!$wholesaler->wholesaler) {
-            Wholesaler::create([
-                'user_id' => $wholesaler->id,
-                'business_address' => '456 Retail Ave, Shopping District',
-                'phone' => '+0987654321',
-                'license_document' => 'wholesaler_license.pdf',
-                'business_type' => 'Fashion Retail',
-                'preferred_categories' => json_encode(['dresses', 'shirts']),
-                'monthly_order_volume' => 500,
-            ]);
-        }
-
-        // Only create chat messages if they don't exist
-        if (ChatMessage::count() == 0) {
-            // Create sample chat messages
+        // Only create chat messages if users exist
+        if ($admin && $manufacturer && $supplier && $wholesaler) {
+            // Always seed messages (truncate first for idempotency)
+            ChatMessage::truncate();
             $messages = [
                 [
                     'sender_id' => $manufacturer->id,
@@ -156,8 +85,35 @@ class ChatTestDataSeeder extends Seeder
                     'message_type' => 'text',
                     'created_at' => now()->subDays(1)->addMinutes(30),
                 ],
+                [
+                    'sender_id' => $wholesaler->id,
+                    'receiver_id' => $manufacturer->id,
+                    'content' => 'Can you provide a discount if I order 1000 units of the new designs?',
+                    'message_type' => 'text',
+                    'created_at' => now()->subMinutes(25),
+                ],
+                [
+                    'sender_id' => $manufacturer->id,
+                    'receiver_id' => $wholesaler->id,
+                    'content' => 'Yes, for 1000 units, we can offer a 10% discount and free shipping.',
+                    'message_type' => 'text',
+                    'created_at' => now()->subMinutes(20),
+                ],
+                [
+                    'sender_id' => $wholesaler->id,
+                    'receiver_id' => $manufacturer->id,
+                    'content' => 'That sounds great! Please send me the invoice and expected delivery date.',
+                    'message_type' => 'text',
+                    'created_at' => now()->subMinutes(15),
+                ],
+                [
+                    'sender_id' => $manufacturer->id,
+                    'receiver_id' => $wholesaler->id,
+                    'content' => 'Invoice sent! Delivery is expected within 10 days.',
+                    'message_type' => 'text',
+                    'created_at' => now()->subMinutes(10),
+                ],
             ];
-
             foreach ($messages as $messageData) {
                 ChatMessage::create($messageData);
             }
@@ -165,9 +121,9 @@ class ChatTestDataSeeder extends Seeder
 
         $this->command->info('Chat test data seeded successfully!');
         $this->command->info('Test accounts:');
-        $this->command->info('- Admin: admin@chicaura.com / password');
-        $this->command->info('- Manufacturer: manufacturer@chicaura.com / password');
-        $this->command->info('- Supplier: supplier@chicaura.com / password');
-        $this->command->info('- Wholesaler: wholesaler@chicaura.com / password');
+        $this->command->info('- Admin: admin@chicaura.com / password123');
+        $this->command->info('- Manufacturer: manufacturer@chicaura.com / password123');
+        $this->command->info('- Supplier: supplier@chicaura.com / password123');
+        $this->command->info('- Wholesaler: wholesaler@chicaura.com / password123');
     }
 }

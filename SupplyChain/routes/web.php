@@ -340,5 +340,7 @@ Route::post('/register/manufacturer', [RegisteredUserController::class, 'storeMa
 Route::get('/register/wholesaler', [RegisteredUserController::class, 'createWholesaler'])->name('register.wholesaler');
 Route::post('/register/wholesaler', [RegisteredUserController::class, 'storeWholesaler'])->name('register.wholesaler.store');
 
-
-
+// Validation Page
+Route::get('/register/validation', function (){
+    return view('auth.validation');
+})->name('register.validation');

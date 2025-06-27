@@ -169,9 +169,7 @@
                     </div>
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
-                    <button class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors">
-                        <i class="fas fa-bell text-lg"></i>
-                    </button>
+                    <x-notification-bell />
                     <button data-theme-toggle class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors" title="Switch Theme">
                         <i class="fas fa-moon text-lg"></i>
                     </button>

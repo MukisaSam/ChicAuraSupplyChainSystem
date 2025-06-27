@@ -177,4 +177,6 @@ document.addEventListener('DOMContentLoaded', function() {
     scrollToBottom();
 });
 </script>
+
+<x-notification-bell />
 @endsection 

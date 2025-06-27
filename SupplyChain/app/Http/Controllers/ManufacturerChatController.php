@@ -146,10 +146,8 @@ class ManufacturerChatController extends Controller
             'file_url' => $request->file_url,
         ]);
 
-        // Notify manufacturer if they are the receiver
-        if ($receiver->role === 'manufacturer') {
-            $receiver->notify(new ChatMessageNotification($message));
-        }
+        // Notify the receiver of the new chat message
+        $receiver->notify(new \App\Notifications\ChatMessageNotification($message));
 
         // Load relationships for response
         $message->load(['sender', 'receiver']);

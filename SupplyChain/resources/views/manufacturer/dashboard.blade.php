@@ -6,6 +6,7 @@
     <title>Manufacturer Portal - ChicAura SCM</title>
     <!-- Tailwind CSS via CDN for standalone use, but it's already included in Laravel/Breeze setup -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <!-- FontAwesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <!-- Chart.js for graphs -->
@@ -205,13 +206,13 @@
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <i class="fas fa-search text-gray-400"></i>
                         </span>
-                        <input type="text" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm" placeholder="Search orders, inventory, suppliers...">
+                        <input type="text" id="dashboardSearchInput" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm" placeholder="Search orders, inventory, suppliers...">
                     </div>
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
-                    <button class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors">
-                        <i class="fas fa-bell text-lg"></i>
-                    </button>
+                    <div class="relative">
+                        <x-notification-bell />
+                    </div>
                     <button data-theme-toggle class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors" title="Switch Theme">
                         <i class="fas fa-moon text-lg"></i>
                     </button>
@@ -225,9 +226,9 @@
                         </button>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <a href="{{ route('user.profile.edit') }}" class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors" title="Edit Profile">
+                        <button type="button" class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors" title="Edit Profile" x-data x-on:click="$dispatch('open-modal', 'profile-editor-modal')">
                             <i class="fas fa-user-edit text-lg"></i>
-                        </a>
+                        </button>
                         <form method="POST" action="{{ route('logout') }}" class="inline">
                             @csrf
                             <button type="submit" class="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors" title="Logout">
@@ -365,6 +366,27 @@
                 }
             });
         }
+
+        // Search functionality for dashboard stat cards and recent activities
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('dashboardSearchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    // Filter stat cards
+                    document.querySelectorAll('.stat-card').forEach(card => {
+                        card.style.display = card.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+                    });
+                    // Filter recent activities
+                    document.querySelectorAll('.card-gradient .flex.items-start.p-3').forEach(activity => {
+                        activity.style.display = activity.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+                    });
+                });
+            }
+        });
     </script>
+
+    {{-- Profile Editor Modal --}}
+    <x-profile-editor-modal />
 </body>
 </html>

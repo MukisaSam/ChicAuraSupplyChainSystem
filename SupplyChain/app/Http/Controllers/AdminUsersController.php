@@ -13,13 +13,21 @@ class AdminUsersController extends Controller
 {
     public function index()
     {
+        if(!Auth::check()){
+            return redirect() ->route('welcome');
+        }
+
         $user = Auth::user();
 
         if ($user->role !== 'admin') {
             abort(403, 'Access denied. Admin privileges required.');
         }
 
-        return view('admin.usersmanagement.index');
+        $records = DB::select('SELECT * FROM pending_users');
+                
+        return view('admin.usersmanagement.index', [
+            'pendingUsers' => json_encode($records),
+        ]);
     }
 
     public function getUsers(Request $request)

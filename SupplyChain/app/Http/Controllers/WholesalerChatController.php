@@ -8,6 +8,7 @@ use App\Models\ChatMessage;
 use App\Models\User;
 use App\Models\Wholesaler;
 use App\Models\Manufacturer;
+use App\Notifications\ChatMessageNotification;
 
 class WholesalerChatController extends Controller
 {
@@ -110,6 +111,9 @@ class WholesalerChatController extends Controller
             'message_type' => $request->message_type ?? 'text',
             'file_url' => $request->file_url,
         ]);
+
+        // Notify the receiver of the new chat message
+        $receiver->notify(new ChatMessageNotification($message));
 
         // Load relationships for response
         $message->load(['sender', 'receiver']);

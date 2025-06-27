@@ -28,4 +28,5 @@
         </table>
     </div>
 </div>
+<x-notification-bell />
 @endsection 

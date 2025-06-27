@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manufacturer Portal - ChicAura SCM</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
@@ -164,24 +165,12 @@
                                 @endforelse
                             </ul>
                             @if(auth()->user()->unreadNotifications->count() > 0)
-                                <form method="POST" action="{{ route('notifications.markAsRead') }}" class="p-2 text-center">
+                                <form method="POST" action="{{ route('manufacturer.notifications.markAsRead') }}" class="p-2 text-center">
                                     @csrf
                                     <button type="submit" class="text-xs text-indigo-600 hover:underline">Mark all as read</button>
                                 </form>
                             @endif
                         </div>
-                    </div>
-                    <!-- Debug: Show all notifications for troubleshooting -->
-                    <div class="mt-4 p-2 bg-yellow-50 border border-yellow-200 rounded text-xs text-yellow-800">
-                        <strong>Debug Notifications:</strong>
-                        <ul>
-                        @foreach(auth()->user()->notifications as $notification)
-                            <li>
-                                {{ $notification->data['message'] ?? 'No message' }}
-                                ({{ $notification->created_at }})
-                            </li>
-                        @endforeach
-                        </ul>
                     </div>
                     <button data-theme-toggle class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors" title="Switch Theme">
                         <i class="fas fa-moon text-lg"></i>
@@ -196,9 +185,6 @@
                         </button>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <a href="{{ route('user.profile.edit') }}" class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors" title="Edit Profile">
-                            <i class="fas fa-user-edit text-lg"></i>
-                        </a>
                         <form method="POST" action="{{ route('logout') }}" class="inline">
                             @csrf
                             <button type="submit" class="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors" title="Logout">
@@ -229,5 +215,7 @@
             }
         });
     </script>
+    {{-- Profile Editor Modal --}}
+    <x-profile-editor-modal />
 </body>
 </html> 

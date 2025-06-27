@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Wholesaler Dashboard - ChicAura SCM</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
@@ -155,24 +156,12 @@
                     <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700"><i class="fas fa-bars text-lg"></i></button>
                     <div class="relative ml-3 hidden md:block">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3"><i class="fas fa-search text-gray-400"></i></span>
-                        <input type="text" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" placeholder="Search products, orders...">
+                        <input type="text" id="dashboardSearchInput" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" placeholder="Search products, orders...">
                     </div>
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
                     <div class="relative">
-                        <button id="notificationDropdownBtn" class="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-full transition-colors focus:outline-none relative">
-                            <i class="fas fa-bell text-lg"></i>
-                            <span id="notificationBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5" style="display:none;">0</span>
-                        </button>
-                        <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-                            <div class="p-4 border-b font-semibold">Notifications</div>
-                            <div id="notificationList" class="max-h-64 overflow-y-auto">
-                                <div class="text-center text-gray-400 py-6">Loading...</div>
-                            </div>
-                            <div class="p-2 text-center border-t">
-                                <button id="markAllReadBtn" class="text-xs text-purple-600 hover:underline">Mark all as read</button>
-                            </div>
-                        </div>
+                        <x-wholesaler-notification-bell />
                     </div>
                     <button data-theme-toggle class="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-full transition-colors" title="Switch Theme">
                         <i class="fas fa-moon text-lg"></i>
@@ -186,9 +175,9 @@
                         </button>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <a href="{{ route('user.profile.edit') }}" class="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-full transition-colors" title="Edit Profile">
+                        <button type="button" class="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-full transition-colors" title="Edit Profile" x-data x-on:click="$dispatch('open-modal', 'profile-editor-modal')">
                             <i class="fas fa-user-edit text-lg"></i>
-                        </a>
+                        </button>
                         <form method="POST" action="{{ route('logout') }}" class="inline">
                             @csrf
                             <button type="submit" class="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors" title="Logout">
@@ -396,6 +385,27 @@
         });
         // Initial load
         loadNotifications();
+
+        // Search functionality for dashboard cards and recent orders
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('dashboardSearchInput');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    // Filter stat cards
+                    document.querySelectorAll('.stat-card').forEach(card => {
+                        card.style.display = card.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+                    });
+                    // Filter recent orders
+                    document.querySelectorAll('.card-gradient .flex.items-center.p-3').forEach(order => {
+                        order.style.display = order.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+                    });
+                });
+            }
+        });
     </script>
+
+    {{-- Profile Editor Modal --}}
+    <x-profile-editor-modal />
 </body>
 </html>
