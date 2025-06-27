@@ -254,6 +254,7 @@
                                         <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
                                         <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Business Address</th>
                                         <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Materials Supplied</th>
+                                        <th class="px-6 py-4 whitespace-nowrap text-sm">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -271,6 +272,11 @@
                                                 @else
                                                     N/A
                                                 @endif
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                                <a href="{{ route('manufacturer.chat.show', ['contactId' => $supplier->user_id]) }}" class="text-green-600 hover:text-green-900 mr-3">
+                                                    <i class="fas fa-comments"></i> Message
+                                                </a>
                                             </td>
                                         </tr>
                                     @endforeach

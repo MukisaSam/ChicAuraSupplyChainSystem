@@ -255,9 +255,9 @@
                     <h3 class="text-white text-sm font-semibold mb-3 px-3">MANUFACTURER PORTAL</h3>
                 </div>
                 <nav class="flex-1 px-4 py-2 space-y-1">
-                    <a href="{{route('manufacturer.dashboard')}}" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-indigo-600 to-indigo-700 rounded-xl shadow-lg">
+                    <a href="{{route('manufacturer.dashboard')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-home w-5"></i>
-                        <span class="ml-2 font-medium text-sm">Home</span>
+                        <span class="ml-2 text-sm">Home</span>
                     </a>
                     <a href="{{route('manufacturer.orders')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-box w-5"></i>
@@ -287,7 +287,7 @@
                         <i class="fas fa-truck-fast w-5"></i>
                         <span class="ml-2 text-sm">Suppliers</span>
                     </a>
-                    <a href="{{route('manufacturer.chat')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                    <a href="{{route('manufacturer.chat')}}" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-indigo-600 to-indigo-700 rounded-xl shadow-lg">
                         <i class="fas fa-comments w-5"></i>
                         <span class="ml-2 text-sm">Chat</span>
                     </a>
@@ -480,7 +480,11 @@
 
                             <!-- Messages Area -->
                             <div id="messages-container" class="flex-1 overflow-y-auto p-6 space-y-4 messages-scroll" style="max-height: 420px; min-height: 200px;">
-                                <!-- Messages will be loaded here -->
+                                <!-- Messages will be loaded here via JavaScript -->
+                                <div id="no-messages-placeholder" class="text-center text-gray-400 py-8" style="display: none;">
+                                    <i class="fas fa-inbox text-3xl mb-2"></i>
+                                    <div>No messages yet. Start the conversation!</div>
+                                </div>
                             </div>
 
                             <!-- Message Input -->
