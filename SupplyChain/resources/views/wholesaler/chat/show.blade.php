@@ -9,14 +9,14 @@
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
         body { 
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/manufacturer.png') }}');
+            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/wholesaler.jpg') }}');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
             min-height: 100vh;
         }
         .dark body {
-            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 100%), url('{{ asset('images/manufacturer.png') }}');
+            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 100%), url('{{ asset('images/wholesaler.jpg') }}');
         }
         .sidebar { 
             transition: transform 0.3s ease-in-out;
@@ -64,7 +64,7 @@
             word-wrap: break-word;
         }
         .message-bubble.own {
-            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
             color: white;
             border-bottom-right-radius: 0.25rem;
         }
@@ -91,53 +91,29 @@
                     </div>
                 </div>
                 <div class="px-4 py-4">
-                    <h3 class="text-white text-sm font-semibold mb-3 px-3">MANUFACTURER PORTAL</h3>
+                    <h3 class="text-white text-sm font-semibold mb-3 px-3">WHOLESALER PORTAL</h3>
                 </div>
                 <!-- Sidebar Navigation -->
                 <nav class="flex-1 px-4 py-2 space-y-1">
-                    <a href="{{route('manufacturer.dashboard')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                    <a href="{{ route('wholesaler.dashboard') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-home w-5"></i>
                         <span class="ml-2 text-sm">Home</span>
                     </a>
-                    <a href="{{route('manufacturer.orders')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-box w-5"></i>
+                    <a href="{{ route('wholesaler.orders.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-shopping-cart w-5"></i>
                         <span class="ml-2 text-sm">Orders</span>
                     </a>
-                    <a href="{{route('manufacturer.analytics')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-chart-pie w-5"></i>
+                    <a href="{{ route('wholesaler.analytics.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-chart-line w-5"></i>
                         <span class="ml-2 text-sm">Analytics</span>
                     </a>
-                    <a href="{{route('manufacturer.inventory')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-warehouse w-5"></i>
-                        <span class="ml-2 text-sm">Inventory</span>
-                    </a>
-                    <a href="{{route('manufacturer.workforce.index')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-user-tie w-5"></i>
-                        <span class="ml-2 text-sm">Workforce</span>
-                    </a>
-                    <a href="{{route('manufacturer.warehouse.index')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-warehouse w-5"></i>
-                        <span class="ml-2 text-sm">Warehouses</span>
-                    </a>
-                    <a href="{{route('manufacturer.wholesalers')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-users w-5"></i>
-                        <span class="ml-2 text-sm">Wholesalers</span>
-                    </a>
-                    <a href="{{route('manufacturer.suppliers')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-truck-fast w-5"></i>
-                        <span class="ml-2 text-sm">Suppliers</span>
-                    </a>
-                    <a href="{{route('manufacturer.chat')}}" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-indigo-600 to-indigo-700 rounded-xl shadow-lg">
+                    <a href="{{ route('wholesaler.chat.index') }}" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-purple-600 to-purple-700 rounded-xl shadow-lg">
                         <i class="fas fa-comments w-5"></i>
-                        <span class="ml-2 text-sm">Chat</span>
+                        <span class="ml-2 font-medium text-sm">Chat</span>
                     </a>
-                    <a href="{{route('manufacturer.reports')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-file-alt w-5"></i>
+                    <a href="{{ route('wholesaler.reports.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-file-invoice-dollar w-5"></i>
                         <span class="ml-2 text-sm">Reports</span>
-                    </a>
-                    <a href="{{route('manufacturer.revenue')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-dollar-sign w-5"></i>
-                        <span class="ml-2 text-sm">Revenue</span>
                     </a>
                 </nav>
             </div>
@@ -154,18 +130,18 @@
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <i class="fas fa-search text-gray-400"></i>
                         </span>
-                        <input type="text" id="searchInput" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm" placeholder="Search...">
+                        <input type="text" id="searchInput" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" placeholder="Search...">
                     </div>
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
-                    <x-notification-bell />
-                    <button data-theme-toggle class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors" title="Switch Theme">
+                    <x-wholesaler-notification-bell />
+                    <button data-theme-toggle class="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-full transition-colors" title="Switch Theme">
                         <i class="fas fa-moon text-lg"></i>
                     </button>
                     <div class="relative">
                         <button class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
-                            <span class="mr-2 text-gray-700 font-medium text-sm">{{ Auth::user()->name ?? 'Manufacturer User' }}</span>
-                            <img class="w-7 h-7 rounded-full border-2 border-indigo-200 object-cover" 
+                            <span class="mr-2 text-gray-700 font-medium text-sm">{{ Auth::user()->name ?? 'Wholesaler User' }}</span>
+                            <img class="w-7 h-7 rounded-full border-2 border-purple-200 object-cover" 
                                  src="{{ Auth::user()->profile_picture ? Storage::disk('public')->url(Auth::user()->profile_picture) : asset('images/default-avatar.svg') }}" 
                                  alt="User Avatar">
                         </button>
@@ -195,17 +171,17 @@
                                 $senderRole = $message->sender->role ?? null;
                                 $senderName = $message->sender->name ?? '';
                                 $avatar = $isOwnMessage
-                                    ? asset('images/manufacturer.png')
-                                    : ($senderRole === 'supplier'
-                                        ? asset('images/supplier.jpg')
-                                        : asset('images/wholesaler.jpg'));
+                                    ? asset('images/default-avatar.svg')
+                                    : ($senderRole === 'manufacturer'
+                                        ? asset('images/manufacturer.png')
+                                        : asset('images/default-avatar.svg'));
                             @endphp
                             <div class="flex {{ $isOwnMessage ? 'justify-end' : 'justify-start' }}">
                                 <div class="flex {{ $isOwnMessage ? 'flex-row-reverse' : 'flex-row' }} items-end space-x-3 max-w-xs lg:max-w-md">
-                                    <img src="{{ $avatar }}" alt="{{ $senderName }}" class="w-8 h-8 rounded-full flex-shrink-0 border-2 border-indigo-200">
+                                    <img src="{{ $avatar }}" alt="{{ $senderName }}" class="w-8 h-8 rounded-full flex-shrink-0 border-2 border-purple-200">
                                     <div class="message-bubble {{ $isOwnMessage ? 'own' : 'other' }}">
                                         <p class="text-sm">{{ $message->content }}</p>
-                                        <p class="text-xs {{ $isOwnMessage ? 'text-indigo-100' : 'text-gray-500 dark:text-gray-400' }} mt-1">
+                                        <p class="text-xs {{ $isOwnMessage ? 'text-purple-100' : 'text-gray-500 dark:text-gray-400' }} mt-1">
                                             {{ $message->created_at->format('H:i') }}
                                         </p>
                                     </div>
@@ -222,10 +198,10 @@
                                        id="message-input" 
                                        name="content" 
                                        placeholder="Type your message..." 
-                                       class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:placeholder-gray-400">
+                                       class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:placeholder-gray-400">
                             </div>
                             <button type="submit" 
-                                    class="px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors">
+                                    class="px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
                                 <i class="fas fa-paper-plane"></i>
                             </button>
                         </form>
@@ -258,7 +234,7 @@
                 formData.append('receiver_id', receiverId);
                 formData.append('content', content);
                 formData.append('_token', '{{ csrf_token() }}');
-                fetch('{{ route("manufacturer.chat.send") }}', {
+                fetch('{{ route("wholesaler.chat.send") }}', {
                     method: 'POST',
                     body: formData,
                     headers: {
@@ -283,11 +259,11 @@
                 const messageHtml = `
                     <div class=\"flex ${isOwnMessage ? 'justify-end' : 'justify-start'}\">
                         <div class=\"flex ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'} items-end space-x-3 max-w-xs lg:max-w-md\">
-                            <img src=\"${isOwnMessage ? '{{ asset('images/manufacturer.png') }}' : '{{ $contact->role === 'supplier' ? asset('images/supplier.jpg') : asset('images/wholesaler.jpg') }}'}\" 
-                                 alt=\"${message.sender.name}\" class=\"w-8 h-8 rounded-full flex-shrink-0 border-2 border-indigo-200\">
+                            <img src=\"${isOwnMessage ? '{{ asset('images/default-avatar.svg') }}' : '{{ asset('images/manufacturer.png') }}'}\" 
+                                 alt=\"${message.sender.name}\" class=\"w-8 h-8 rounded-full flex-shrink-0 border-2 border-purple-200\">
                             <div class=\"message-bubble ${isOwnMessage ? 'own' : 'other'}\">
                                 <p class=\"text-sm\">${message.content}</p>
-                                <p class=\"text-xs ${isOwnMessage ? 'text-indigo-100' : 'text-gray-500 dark:text-gray-400'} mt-1\">
+                                <p class=\"text-xs ${isOwnMessage ? 'text-purple-100' : 'text-gray-500 dark:text-gray-400'} mt-1\">
                                     ${new Date(message.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                                 </p>
                             </div>
@@ -302,6 +278,6 @@
             scrollToBottom();
         });
     </script>
-    <x-notification-bell />
+    <x-wholesaler-notification-bell />
 </body>
 </html> 

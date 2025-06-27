@@ -347,7 +347,8 @@
                                 @foreach($manufacturers as $manufacturer)
                                 <div class="contact-item flex items-center p-4 rounded-xl" 
                                      data-contact-id="{{ $manufacturer->id }}" 
-                                     data-contact-name="{{ $manufacturer->name }}">
+                                     data-contact-name="{{ $manufacturer->name }}"
+                                     data-chat-url="{{ route('wholesaler.chat.show', ['contactId' => $manufacturer->id]) }}">
                                     <div class="relative">
                                         <img src="{{ asset('images/manufacturer.png') }}" alt="{{ $manufacturer->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
                                         <span class="online-indicator absolute -bottom-1 -right-1"></span>
@@ -371,7 +372,8 @@
                                 @foreach($admins as $admin)
                                 <div class="contact-item flex items-center p-4 rounded-xl" 
                                      data-contact-id="{{ $admin->id }}" 
-                                     data-contact-name="{{ $admin->name }}">
+                                     data-contact-name="{{ $admin->name }}"
+                                     data-chat-url="{{ route('wholesaler.chat.show', ['contactId' => $admin->id]) }}">
                                     <div class="relative">
                                         <img src="{{ asset('images/default-avatar.svg') }}" alt="{{ $admin->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
                                         <span class="online-indicator absolute -bottom-1 -right-1"></span>
@@ -485,33 +487,10 @@
             // Handle contact selection
             contactItems.forEach(item => {
                 item.addEventListener('click', function() {
-                    console.log('Contact clicked:', this.dataset.contactId);
-                    
-                    const contactId = this.dataset.contactId;
-                    const contactNameText = this.dataset.contactName;
-                    const contactRoleText = this.querySelector('p').textContent;
-                    const avatarSrc = this.querySelector('img').src;
-
-                    // Update UI
-                    receiverIdInput.value = contactId;
-                    contactName.textContent = contactNameText;
-                    contactRole.textContent = contactRoleText;
-                    contactAvatar.src = avatarSrc;
-
-                    // Show conversation area
-                    chatWelcome.style.display = 'none';
-                    chatConversation.style.display = 'flex';
-
-                    // Remove active class from all contacts
-                    contactItems.forEach(c => c.classList.remove('active'));
-                    // Add active class to selected contact
-                    this.classList.add('active');
-
-                    // Load messages
-                    loadMessages(contactId);
-
-                    // Mark messages as read
-                    markMessagesAsRead(contactId);
+                    const chatUrl = this.dataset.chatUrl;
+                    if (chatUrl) {
+                        window.location.href = chatUrl;
+                    }
                 });
             });
 
