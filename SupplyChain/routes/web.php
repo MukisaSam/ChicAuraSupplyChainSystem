@@ -104,45 +104,83 @@ Route::middleware(['auth', 'role:supplier'])->prefix('supplier')->name('supplier
     Route::resource('supplied-items', \App\Http\Controllers\SupplierController::class)->only(['show', 'update']);
 });
 
-// Manufacturer
+// Manufacturer routes
 Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('manufacturer.')->group(function () {
-    Route::get('/dashboard', [\App\Http\Controllers\ManufacturerDashboardController::class, 'index'])->name('dashboard');
-    Route::resource('orders', \App\Http\Controllers\ManufacturerOrdersController::class)->except(['create', 'store', 'destroy']);
-    Route::put('orders/{order}/status', [\App\Http\Controllers\ManufacturerOrdersController::class, 'updateStatus'])->name('orders.update-status');
 
-    Route::prefix('orders/supply-requests')->group(function () {
-        Route::get('/create', [\App\Http\Controllers\ManufacturerOrdersController::class, 'createSupplyRequest'])->name('orders.create-supply-request');
-        Route::post('/', [\App\Http\Controllers\ManufacturerOrdersController::class, 'storeSupplyRequest'])->name('orders.store-supply-request');
-        Route::get('/{supplyRequest}', [\App\Http\Controllers\ManufacturerOrdersController::class, 'showSupplyRequest'])->name('orders.show-supply-request');
-        Route::put('/{supplyRequest}/status', [\App\Http\Controllers\ManufacturerOrdersController::class, 'updateSupplyRequestStatus'])->name('orders.update-supply-request-status');
-    });
+    //Dashboard
+    Route::get('/dashboard', [App\Http\Controllers\ManufacturerDashboardController::class, 'index'])->name('dashboard');
 
-    Route::prefix('analytics')->group(function () {
-        Route::get('/', [\App\Http\Controllers\ManufacturerAnalyticsController::class, 'index'])->name('analytics');
-        Route::get('/chart-data', [\App\Http\Controllers\ManufacturerAnalyticsController::class, 'getChartData'])->name('analytics.chart-data');
-        Route::get('/supplier-report', [\App\Http\Controllers\ManufacturerAnalyticsController::class, 'getSupplierReport'])->name('analytics.supplier-report');
-        Route::get('/wholesaler-report', [\App\Http\Controllers\ManufacturerAnalyticsController::class, 'getCustomerReport'])->name('analytics.wholesaler-report');
-    });
+    //Orders routes
+    Route::get('/orders/analytics', [App\Http\Controllers\ManufacturerOrdersController::class, 'analytics'])->name('orders.analytics');
+    Route::get('/orders', [App\Http\Controllers\ManufacturerOrdersController::class, 'index'])->name('orders');
+    Route::get('/orders/{order}', [App\Http\Controllers\ManufacturerOrdersController::class, 'show'])->name('orders.show');
+    Route::put('/orders/{order}/status', [App\Http\Controllers\ManufacturerOrdersController::class, 'updateStatus'])->name('orders.update-status');
 
-    Route::resource('inventory', \App\Http\Controllers\ManufacturerInventoryController::class);
-    Route::post('inventory/{item}/stock', [\App\Http\Controllers\ManufacturerInventoryController::class, 'updateStock'])->name('inventory.update-stock');
-    Route::get('inventory/analytics', [\App\Http\Controllers\ManufacturerInventoryController::class, 'analytics'])->name('inventory.analytics');
-    Route::get('inventory/chart-data', [\App\Http\Controllers\ManufacturerInventoryController::class, 'getChartData'])->name('inventory.chart-data');
+    // Supply Request routes
+    Route::get('/orders/supply-requests/create', [App\Http\Controllers\ManufacturerOrdersController::class, 'createSupplyRequest'])->name('orders.create-supply-request');
+    Route::post('/orders/supply-requests', [App\Http\Controllers\ManufacturerOrdersController::class, 'storeSupplyRequest'])->name('orders.store-supply-request');
+    Route::get('/orders/supply-requests/{supplyRequest}', [App\Http\Controllers\ManufacturerOrdersController::class, 'showSupplyRequest'])->name('orders.show-supply-request');
+    Route::put('/orders/supply-requests/{supplyRequest}/status', [App\Http\Controllers\ManufacturerOrdersController::class, 'updateSupplyRequestStatus'])->name('orders.update-supply-request-status');
 
-    Route::get('/wholesalers', [\App\Http\Controllers\ManufacturerWholesalersController::class, 'index'])->name('wholesalers');
-    Route::get('/suppliers', [\App\Http\Controllers\ManufacturerSuppliersController::class, 'index'])->name('suppliers');
-    Route::get('/reports', [\App\Http\Controllers\ManufacturerReportsController::class, 'index'])->name('reports');
-    Route::get('/revenue', [\App\Http\Controllers\ManufacturerRevenueController::class, 'index'])->name('revenue');
+    //Analytics routes
+    Route::get('/analytics', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'index'])->name('analytics');
+    Route::get('/analytics/chart-data', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'getChartData'])->name('analytics.chart-data');
+    Route::get('/analytics/supplier-report', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'getSupplierReport'])->name('analytics.supplier-report');
+    Route::get('/analytics/wholesaler-report', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'getCustomerReport'])->name('analytics.wholesaler-report');
 
-    Route::prefix('chat')->group(function () {
-        Route::get('/', [\App\Http\Controllers\ManufacturerChatController::class, 'index'])->name('chat');
-        Route::get('/{contactId}', [\App\Http\Controllers\ManufacturerChatController::class, 'show'])->name('chat.show');
-        Route::post('/send', [\App\Http\Controllers\ManufacturerChatController::class, 'sendMessage'])->name('chat.send');
-        Route::post('/mark-read', [\App\Http\Controllers\ManufacturerChatController::class, 'markAsRead'])->name('chat.mark-read');
-        Route::get('/unread-count', [\App\Http\Controllers\ManufacturerChatController::class, 'getUnreadCount'])->name('chat.unread-count');
-        Route::get('/{contactId}/messages', [\App\Http\Controllers\ManufacturerChatController::class, 'getRecentMessages'])->name('chat.messages');
-        Route::get('/unread-messages', [\App\Http\Controllers\ManufacturerChatController::class, 'getUnreadMessages'])->name('chat.unread-messages');
-    });
+    //Inventory routes
+    Route::get('/inventory', [App\Http\Controllers\ManufacturerInventoryController::class, 'index'])->name('inventory');
+    Route::get('/inventory/create', [App\Http\Controllers\ManufacturerInventoryController::class, 'create'])->name('inventory.create');
+    Route::post('/inventory', [App\Http\Controllers\ManufacturerInventoryController::class, 'store'])->name('inventory.store');
+    Route::get('/inventory/{item}/edit', [App\Http\Controllers\ManufacturerInventoryController::class, 'edit'])->name('inventory.edit');
+    Route::put('/inventory/{item}', [App\Http\Controllers\ManufacturerInventoryController::class, 'update'])->name('inventory.update');
+    Route::delete('/inventory/{item}', [App\Http\Controllers\ManufacturerInventoryController::class, 'destroy'])->name('inventory.destroy');
+    Route::post('/inventory/{item}/stock', [App\Http\Controllers\ManufacturerInventoryController::class, 'updateStock'])->name('inventory.update-stock');
+    Route::get('/inventory/analytics', [App\Http\Controllers\ManufacturerInventoryController::class, 'analytics'])->name('inventory.analytics');
+    Route::get('/inventory/chart-data', [App\Http\Controllers\ManufacturerInventoryController::class, 'getChartData'])->name('inventory.chart-data');
+
+    //Wholesalers routes
+    Route::get('/wholesalers', [App\Http\Controllers\ManufacturerWholesalersController::class, 'index'])->name('wholesalers');
+
+    //Suppliers routes
+    Route::get('/suppliers', [App\Http\Controllers\ManufacturerSuppliersController::class, 'index'])->name('suppliers');
+
+    //Chat routes
+    Route::get('/chat', [App\Http\Controllers\ManufacturerChatController::class, 'index'])->name('chat');
+    Route::get('/chat/{contactId}', [App\Http\Controllers\ManufacturerChatController::class, 'show'])->name('chat.show');
+    Route::post('/chat/send', [App\Http\Controllers\ManufacturerChatController::class, 'sendMessage'])->name('chat.send');
+    Route::post('/chat/mark-read', [App\Http\Controllers\ManufacturerChatController::class, 'markAsRead'])->name('chat.mark-read');
+    Route::get('/chat/unread-count', [App\Http\Controllers\ManufacturerChatController::class, 'getUnreadCount'])->name('chat.unread-count');
+    Route::get('/chat/{contactId}/messages', [App\Http\Controllers\ManufacturerChatController::class, 'getRecentMessages'])->name('chat.messages');
+    Route::get('/chat/unread-messages', [App\Http\Controllers\ManufacturerChatController::class, 'getUnreadMessages'])->name('chat.unread-messages');
+
+    //Reports routes
+    Route::get('/reports', [App\Http\Controllers\ManufacturerReportsController::class, 'index'])->name('reports');
+    Route::get('/reports/sales', [App\Http\Controllers\ManufacturerReportsController::class, 'sales'])->name('reports.sales');
+    Route::get('/reports/inventory', [App\Http\Controllers\ManufacturerReportsController::class, 'inventory'])->name('reports.inventory');
+    Route::get('/reports/suppliers', [App\Http\Controllers\ManufacturerReportsController::class, 'suppliers'])->name('reports.suppliers');
+    Route::get('/reports/fulfillment', [App\Http\Controllers\ManufacturerReportsController::class, 'fulfillment'])->name('reports.fulfillment');
+    Route::get('/reports/export/{type}', [App\Http\Controllers\ManufacturerReportsController::class, 'export'])->name('reports.export');
+    
+    // Chart data routes
+    Route::get('/reports/chart/sales', [App\Http\Controllers\ManufacturerReportsController::class, 'getSalesChartData'])->name('reports.chart.sales');
+    Route::get('/reports/chart/inventory', [App\Http\Controllers\ManufacturerReportsController::class, 'getInventoryChartData'])->name('reports.chart.inventory');
+    Route::get('/reports/chart/suppliers', [App\Http\Controllers\ManufacturerReportsController::class, 'getSupplierChartData'])->name('reports.chart.suppliers');
+
+    //Revenue routes
+    Route::get('/revenue', [App\Http\Controllers\ManufacturerRevenueController::class, 'index'])->name('revenue');
+
+    // Workforce routes
+    Route::resource('workforce', App\Http\Controllers\ManufacturerWorkforceController::class)
+        ->names('workforce');
+
+    // Warehouse routes
+    Route::resource('warehouse', App\Http\Controllers\ManufacturerWarehouseController::class)
+        ->names('warehouse');
+
+    // Mark notifications as read
+    Route::post('/notifications/mark-as-read', [App\Http\Controllers\ManufacturerDashboardController::class, 'markNotificationsAsRead'])->name('notifications.markAsRead');
+
 });
 
 // Wholesaler
@@ -206,116 +244,6 @@ Route::middleware(['auth', 'role:supplier'])->prefix('supplier')->name('supplier
     Route::post('/supply-requests/{supplyRequest}/negotiate', [App\Http\Controllers\SupplierController::class, 'submitPriceNegotiation'])->name('supply-requests.negotiate');
     Route::get('/supplied-items/{suppliedItem}', [App\Http\Controllers\SupplierController::class, 'showSuppliedItem'])->name('supplied-items.show');
     Route::put('/supplied-items/{suppliedItem}', [App\Http\Controllers\SupplierController::class, 'updateSuppliedItem'])->name('supplied-items.update');
-});
-
-// Manufacturer routes
-Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('manufacturer.')->group(function () {
-
-    //Dashboard
-    Route::get('/dashboard', [App\Http\Controllers\ManufacturerDashboardController::class, 'index'])->name('dashboard');
-
-    //Orders routes
-    Route::get('/orders/analytics', [App\Http\Controllers\ManufacturerOrdersController::class, 'analytics'])->name('orders.analytics');
-    Route::get('/orders', [App\Http\Controllers\ManufacturerOrdersController::class, 'index'])->name('orders');
-    Route::get('/orders/{order}', [App\Http\Controllers\ManufacturerOrdersController::class, 'show'])->name('orders.show');
-    Route::put('/orders/{order}/status', [App\Http\Controllers\ManufacturerOrdersController::class, 'updateStatus'])->name('orders.update-status');
-
-    // Supply Request routes
-    Route::get('/orders/supply-requests/create', [App\Http\Controllers\ManufacturerOrdersController::class, 'createSupplyRequest'])->name('orders.create-supply-request');
-    Route::post('/orders/supply-requests', [App\Http\Controllers\ManufacturerOrdersController::class, 'storeSupplyRequest'])->name('orders.store-supply-request');
-    Route::get('/orders/supply-requests/{supplyRequest}', [App\Http\Controllers\ManufacturerOrdersController::class, 'showSupplyRequest'])->name('orders.show-supply-request');
-    Route::put('/orders/supply-requests/{supplyRequest}/status', [App\Http\Controllers\ManufacturerOrdersController::class, 'updateSupplyRequestStatus'])->name('orders.update-supply-request-status');
-
-    // Orders Analytics
-
-    //Analytics routes
-    Route::get('/analytics', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'index'])->name('analytics');
-    Route::get('/analytics/chart-data', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'getChartData'])->name('analytics.chart-data');
-    Route::get('/analytics/supplier-report', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'getSupplierReport'])->name('analytics.supplier-report');
-    Route::get('/analytics/wholesaler-report', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'getCustomerReport'])->name('analytics.wholesaler-report');
-
-    //Inventory routes
-    Route::get('/inventory', [App\Http\Controllers\ManufacturerInventoryController::class, 'index'])->name('inventory');
-    Route::get('/inventory/create', [App\Http\Controllers\ManufacturerInventoryController::class, 'create'])->name('inventory.create');
-    Route::post('/inventory', [App\Http\Controllers\ManufacturerInventoryController::class, 'store'])->name('inventory.store');
-    Route::get('/inventory/{item}/edit', [App\Http\Controllers\ManufacturerInventoryController::class, 'edit'])->name('inventory.edit');
-    Route::put('/inventory/{item}', [App\Http\Controllers\ManufacturerInventoryController::class, 'update'])->name('inventory.update');
-    Route::delete('/inventory/{item}', [App\Http\Controllers\ManufacturerInventoryController::class, 'destroy'])->name('inventory.destroy');
-    Route::post('/inventory/{item}/stock', [App\Http\Controllers\ManufacturerInventoryController::class, 'updateStock'])->name('inventory.update-stock');
-    Route::get('/inventory/analytics', [App\Http\Controllers\ManufacturerInventoryController::class, 'analytics'])->name('inventory.analytics');
-    Route::get('/inventory/chart-data', [App\Http\Controllers\ManufacturerInventoryController::class, 'getChartData'])->name('inventory.chart-data');
-
-    //Wholesalers routes
-    Route::get('/wholesalers', [App\Http\Controllers\ManufacturerWholesalersController::class, 'index'])->name('wholesalers');
-
-    //Suppliers routes
-    Route::get('/suppliers', [App\Http\Controllers\ManufacturerSuppliersController::class, 'index'])->name('suppliers');
-
-    //Chat routes
-    Route::get('/chat', [App\Http\Controllers\ManufacturerChatController::class, 'index'])->name('chat');
-    Route::get('/chat/{contactId}', [App\Http\Controllers\ManufacturerChatController::class, 'show'])->name('chat.show');
-    Route::post('/chat/send', [App\Http\Controllers\ManufacturerChatController::class, 'sendMessage'])->name('chat.send');
-    Route::post('/chat/mark-read', [App\Http\Controllers\ManufacturerChatController::class, 'markAsRead'])->name('chat.mark-read');
-    Route::get('/chat/unread-count', [App\Http\Controllers\ManufacturerChatController::class, 'getUnreadCount'])->name('chat.unread-count');
-    Route::get('/chat/{contactId}/messages', [App\Http\Controllers\ManufacturerChatController::class, 'getRecentMessages'])->name('chat.messages');
-    Route::get('/chat/unread-messages', [App\Http\Controllers\ManufacturerChatController::class, 'getUnreadMessages'])->name('chat.unread-messages');
-
-    //Reports routes
-    Route::get('/reports', [App\Http\Controllers\ManufacturerReportsController::class, 'index'])->name('reports');
-    Route::get('/reports/sales', [App\Http\Controllers\ManufacturerReportsController::class, 'sales'])->name('reports.sales');
-    Route::get('/reports/inventory', [App\Http\Controllers\ManufacturerReportsController::class, 'inventory'])->name('reports.inventory');
-    Route::get('/reports/suppliers', [App\Http\Controllers\ManufacturerReportsController::class, 'suppliers'])->name('reports.suppliers');
-    Route::get('/reports/fulfillment', [App\Http\Controllers\ManufacturerReportsController::class, 'fulfillment'])->name('reports.fulfillment');
-    Route::get('/reports/export/{type}', [App\Http\Controllers\ManufacturerReportsController::class, 'export'])->name('reports.export');
-    
-    // Chart data routes
-    Route::get('/reports/chart/sales', [App\Http\Controllers\ManufacturerReportsController::class, 'getSalesChartData'])->name('reports.chart.sales');
-    Route::get('/reports/chart/inventory', [App\Http\Controllers\ManufacturerReportsController::class, 'getInventoryChartData'])->name('reports.chart.inventory');
-    Route::get('/reports/chart/suppliers', [App\Http\Controllers\ManufacturerReportsController::class, 'getSupplierChartData'])->name('reports.chart.suppliers');
-
-    //Revenue routes
-    Route::get('/revenue', [App\Http\Controllers\ManufacturerRevenueController::class, 'index'])->name('revenue');
-
-    // Workforce routes
-    Route::resource('workforce', App\Http\Controllers\ManufacturerWorkforceController::class)
-        ->names('workforce');
-
-    // Warehouse routes
-    Route::resource('warehouse', App\Http\Controllers\ManufacturerWarehouseController::class)
-        ->names('warehouse');
-
-    // Mark notifications as read
-    Route::post('/notifications/mark-as-read', [App\Http\Controllers\ManufacturerDashboardController::class, 'markNotificationsAsRead'])->name('notifications.markAsRead');
-
-});
-
-// Wholesaler routes
-Route::middleware(['auth', 'role:wholesaler'])->prefix('wholesaler')->name('wholesaler.')->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\WholesalerDashboardController::class, 'index'])->name('dashboard');
-
-    // Order routes
-    Route::get('/orders', [App\Http\Controllers\WholesalerOrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/create', [App\Http\Controllers\WholesalerOrderController::class, 'create'])->name('orders.create');
-    Route::post('/orders', [App\Http\Controllers\WholesalerOrderController::class, 'store'])->name('orders.store');
-    Route::get('/orders/{order}', [App\Http\Controllers\WholesalerOrderController::class, 'show'])->name('orders.show');
-    Route::post('/orders/{order}/cancel', [App\Http\Controllers\WholesalerOrderController::class, 'cancel'])->name('orders.cancel');
-
-    // Analytics routes
-    Route::get('/analytics', [App\Http\Controllers\WholesalerAnalyticsController::class, 'index'])->name('analytics.index');
-
-    // Chat routes
-    Route::get('/chat', [App\Http\Controllers\WholesalerChatController::class, 'index'])->name('chat.index');
-    Route::get('/chat/{contactId}', [App\Http\Controllers\WholesalerChatController::class, 'show'])->name('chat.show');
-    Route::post('/chat/send', [App\Http\Controllers\WholesalerChatController::class, 'sendMessage'])->name('chat.send');
-    Route::post('/chat/mark-read', [App\Http\Controllers\WholesalerChatController::class, 'markAsRead'])->name('chat.mark-read');
-    Route::get('/chat/unread-count', [App\Http\Controllers\WholesalerChatController::class, 'getUnreadCount'])->name('chat.unread-count');
-    Route::get('/chat/{contactId}/messages', [App\Http\Controllers\WholesalerChatController::class, 'getRecentMessages'])->name('chat.messages');
-
-    // Reports routes
-    Route::get('/reports', [App\Http\Controllers\WholesalerReportsController::class, 'index'])->name('reports.index');
-    Route::get('/reports/sales', [App\Http\Controllers\WholesalerReportsController::class, 'salesReport'])->name('reports.sales');
-    Route::get('/reports/orders', [App\Http\Controllers\WholesalerReportsController::class, 'orderReport'])->name('reports.orders');
-    Route::get('/reports/export', [App\Http\Controllers\WholesalerReportsController::class, 'export'])->name('reports.export');
 });
 
 // Wholesaler notifications

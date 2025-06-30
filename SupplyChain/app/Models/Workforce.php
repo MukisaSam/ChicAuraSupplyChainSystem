@@ -20,4 +20,9 @@ class Workforce extends Model
         'salary',
         'manufacturer_id',
     ];
+
+    public function manufacturer()
+    {
+        return $this->belongsTo(Manufacturer::class);
+    }
 } 

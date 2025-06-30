@@ -382,7 +382,7 @@ class ManufacturerAnalyticsController extends Controller
                     $activities->push([
                         'type' => 'order',
                         'description' => "New order #{$order->order_number} from {$order->wholesaler->name}",
-                        'time' => $order->created_at->diffForHumans(),
+                        'time' => $order->created_at ? $order->created_at->diffForHumans() : 'N/A',
                         'icon' => 'fa-shopping-cart',
                         'color' => 'text-blue-600',
                     ]);
@@ -396,7 +396,7 @@ class ManufacturerAnalyticsController extends Controller
                     $activities->push([
                         'type' => 'supply_request',
                         'description' => "Supply request for {$request->item->name} from {$request->supplier->name}",
-                        'time' => $request->created_at->diffForHumans(),
+                        'time' => $request->created_at ? $request->created_at->diffForHumans() : 'N/A',
                         'icon' => 'fa-truck',
                         'color' => 'text-green-600',
                     ]);
@@ -410,7 +410,7 @@ class ManufacturerAnalyticsController extends Controller
                     $activities->push([
                         'type' => 'delivery',
                         'description' => "Delivery received: {$delivery->item->name} from {$delivery->supplier->name}",
-                        'time' => $delivery->delivery_date->diffForHumans(),
+                        'time' => $delivery->delivery_date ? $delivery->delivery_date->diffForHumans() : 'N/A',
                         'icon' => 'fa-check-circle',
                         'color' => 'text-purple-600',
                     ]);

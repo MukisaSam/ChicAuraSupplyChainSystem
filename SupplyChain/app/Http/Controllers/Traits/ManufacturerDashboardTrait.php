@@ -35,7 +35,7 @@ trait ManufacturerDashboardTrait
                     $activities->push([
                         'type' => 'order',
                         'description' => "New order #{$order->order_number} from {$order->wholesaler->name}",
-                        'time' => $order->created_at->diffForHumans(),
+                        'time' => $order->created_at ? $order->created_at->diffForHumans() : 'N/A',
                         'icon' => 'fa-shopping-cart',
                         'color' => 'text-blue-600',
                     ]);
@@ -49,7 +49,7 @@ trait ManufacturerDashboardTrait
                     $activities->push([
                         'type' => 'supply_request',
                         'description' => "Supply request for {$request->item->name} from {$request->supplier->name}",
-                        'time' => $request->created_at->diffForHumans(),
+                        'time' => $request->created_at ? $request->created_at->diffForHumans() : 'N/A',
                         'icon' => 'fa-truck',
                         'color' => 'text-green-600',
                     ]);

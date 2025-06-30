@@ -14,7 +14,7 @@ class ManufacturerWarehouseController extends Controller
         if ($user->role !== 'manufacturer') {
             abort(403, 'Access denied. Manufacturer privileges required.');
         }
-        $warehouses = Warehouse::where('manufacturer_id', $user->id)->paginate(10);
+        $warehouses = Warehouse::where('manufacturer_id', $user->manufacturer->id)->paginate(10);
         return view('manufacturer.Warehouse.index', compact('warehouses'));
     }
 
@@ -30,7 +30,7 @@ class ManufacturerWarehouseController extends Controller
             'location' => 'required|string|max:255',
             'capacity' => 'nullable|integer',
         ]);
-        Warehouse::create(array_merge($request->all(), ['manufacturer_id' => $user->id]));
+        Warehouse::create(array_merge($request->all(), ['manufacturer_id' => $user->manufacturer->id]));
         return redirect()->route('manufacturer.warehouse.index')->with('success', 'Warehouse added successfully.');
     }
 

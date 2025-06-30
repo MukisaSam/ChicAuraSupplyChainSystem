@@ -208,7 +208,7 @@ class ManufacturerInventoryController extends Controller
         foreach ($recentSupplyRequests as $request) {
             $activities[] = [
                 'description' => "Supply request for {$request->item->name} - {$request->quantity} units",
-                'time' => $request->created_at->diffForHumans(),
+                'time' => $request->created_at ? $request->created_at->diffForHumans() : 'N/A',
                 'icon' => 'fa-truck',
                 'color' => 'text-blue-600'
             ];
@@ -223,7 +223,7 @@ class ManufacturerInventoryController extends Controller
         foreach ($recentItems as $item) {
             $activities[] = [
                 'description' => "Stock updated for {$item->name} - {$item->stock_quantity} units",
-                'time' => $item->updated_at->diffForHumans(),
+                'time' => $item->updated_at ? $item->updated_at->diffForHumans() : 'N/A',
                 'icon' => 'fa-boxes',
                 'color' => 'text-green-600'
             ];

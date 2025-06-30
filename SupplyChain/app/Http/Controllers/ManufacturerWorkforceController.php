@@ -14,7 +14,7 @@ class ManufacturerWorkforceController extends Controller
         if ($user->role !== 'manufacturer') {
             abort(403, 'Access denied. Manufacturer privileges required.');
         }
-        $employees = Workforce::where('manufacturer_id', $user->id)->paginate(10);
+        $employees = Workforce::where('manufacturer_id', $user->manufacturer->id)->paginate(10);
         return view('manufacturer.Workforce.index', compact('employees'));
     }
 
@@ -36,7 +36,7 @@ class ManufacturerWorkforceController extends Controller
             'hire_date' => 'nullable|date',
             'salary' => 'nullable|integer',
         ]);
-        Workforce::create(array_merge($request->all(), ['manufacturer_id' => $user->id]));
+        Workforce::create(array_merge($request->all(), ['manufacturer_id' => $user->manufacturer->id]));
         return redirect()->route('manufacturer.workforce.index')->with('success', 'Employee added successfully.');
     }
 
