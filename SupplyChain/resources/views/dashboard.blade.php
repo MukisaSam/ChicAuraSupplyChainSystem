@@ -14,4 +14,11 @@
             </div>
         </div>
     </div>
+
+    <script>
+    window.addEventListener('beforeunload', function (e) {
+        // Send a synchronous AJAX request to log out
+        navigator.sendBeacon('/logout');
+    });
+    </script>
 </x-app-layout>

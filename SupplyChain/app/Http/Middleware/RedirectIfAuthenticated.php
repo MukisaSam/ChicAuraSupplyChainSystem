@@ -13,9 +13,9 @@ class RedirectIfAuthenticated
      * Handle an incoming request.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
+     * @param  \Closure  $next
      * @param  string|null  ...$guards
-     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
+     * @return mixed
      */
     public function handle(Request $request, Closure $next, ...$guards)
     {
@@ -23,7 +23,25 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+                // If trying to access login page while authenticated
+                if ($request->routeIs('login')) {
+                    Auth::guard($guard)->logout();
+                    $request->session()->invalidate();
+                    $request->session()->regenerateToken();
+                    
+                    return redirect()->route('login')->with('status', 'You have been logged out. Please log in with different credentials.');
+                }
+                
+                // For other routes, redirect to appropriate dashboard
+                $user = Auth::guard($guard)->user();
+                $route = match ($user->role) {
+                    'admin' => '/admin/dashboard',
+                    'supplier' => '/supplier/dashboard',
+                    'wholesaler' => '/wholesaler/dashboard',
+                    'manufacturer' => '/manufacturer/dashboard',
+                    default => '/dashboard',
+                };
+                return redirect($route);
             }
         }
 

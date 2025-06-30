@@ -103,6 +103,12 @@
 
         <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
             <div class="form-container py-8 px-4 shadow-2xl sm:rounded-xl sm:px-10">
+                @if (session('status'))
+                    <div class="mb-4 p-4 text-sm rounded-lg bg-blue-100 text-blue-700">
+                        {{ session('status') }}
+                    </div>
+                @endif
+
                 <form method="POST" action="{{ route('login') }}" class="space-y-6">
                     @csrf
 
