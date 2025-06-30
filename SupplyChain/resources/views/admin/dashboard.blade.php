@@ -183,7 +183,7 @@
                         <form method="POST" action="{{ route('logout') }}" class="inline">
                             @csrf
                             <button type="submit" class="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors" title="Logout">
-                                <i class="fas fa-sign-out-alt text-lg"></i>
+                                <i class="fas fa-sign-out-alt text-lg"></i> 
                             </button>
                         </form>
                     </div>
@@ -278,8 +278,8 @@
                 </section>
                 <section id="user-management" class="dashboard-section hidden mt-10">
                     <h3 class="text-xl font-bold text-white mb-3">User Management</h3>
-                    <div class="card-gradient p-6 rounded-xl mb-6">
-                        <p class="text-gray-800 dark:text-gray-200">Manage users, add new users, and control user access here.</p>
+                    <div class="card-gradient p-6 rounded-xl mb-6" id="user-management-content">
+                        <p class="text-gray-800 dark:text-gray-200">Loading...</p>
                     </div>
                 </section>
                 <section id="roles-permissions" class="dashboard-section hidden mt-10">
@@ -417,6 +417,49 @@
                     });
                 });
             });
+        }
+
+        document.querySelector('a[href="#user-management"]').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelectorAll('.dashboard-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById('user-management').classList.remove('hidden');
+            loadUserTable();
+        });
+
+        function loadUserTable(search = '') {
+            fetch('{{ route('admin.users.ajax') }}' + (search ? '?search=' + encodeURIComponent(search) : ''))
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('user-management-content').innerHTML = html;
+                    attachUserTableListeners();
+                });
+        }
+
+        function attachUserTableListeners() {
+            document.getElementById('user-search').addEventListener('input', function() {
+                loadUserTable(this.value);
+            });
+
+            document.querySelectorAll('.edit-user-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Load edit form via AJAX and show in modal or section
+                });
+            });
+
+            document.querySelectorAll('.delete-user-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    if (confirm('Are you sure?')) {
+                        fetch(`/admin/users/${btn.dataset.id}/ajax`, {
+                            method: 'DELETE',
+                            headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                            }
+                        }).then(() => loadUserTable());
+                    }
+                });
+            });
+
+            // Add similar listeners for view and add user
         }
     </script>
 

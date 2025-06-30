@@ -31,6 +31,7 @@ class User extends Authenticatable
         'password',
         'role',
         'profile_picture',
+        'is_active',
     ];
 
     /**
@@ -51,6 +52,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'role' => 'string',
+        'is_active' => 'boolean',
     ];
 
     public function hasRole($role)

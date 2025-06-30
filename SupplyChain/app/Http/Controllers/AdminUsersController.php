@@ -145,4 +145,53 @@ class AdminUsersController extends Controller
         $user = User::findOrFail($id);
         return response()->json($user);
     }
+
+    public function ajaxIndex(Request $request)
+    {
+        $users = User::query();
+
+        if ($request->has('search')) {
+            $users->where('name', 'like', '%' . $request->search . '%')
+                  ->orWhere('email', 'like', '%' . $request->search . '%');
+        }
+
+        $users = $users->get();
+        return view('admin.users._table', ['users' => $users]);
+    }
+
+    public function ajaxShow(User $user)
+    {
+        return view('admin.users._show', compact('user'));
+    }
+
+    public function ajaxStore(Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users',
+            'role' => 'required|string',
+            'password' => 'required|string|min:6',
+        ]);
+        $data['password'] = bcrypt($data['password']);
+        $user = User::create($data);
+        return response()->json(['success' => true, 'user' => $user]);
+    }
+
+    public function ajaxUpdate(Request $request, User $user)
+    {
+        $data = $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'role' => 'required|string',
+            'is_active' => 'boolean',
+        ]);
+        $user->update($data);
+        return response()->json(['success' => true, 'user' => $user]);
+    }
+
+    public function ajaxDestroy(User $user)
+    {
+        $user->delete();
+        return response()->json(['success' => true]);
+    }
 }

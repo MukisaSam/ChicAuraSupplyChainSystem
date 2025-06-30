@@ -81,15 +81,21 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::get('/{id}', [App\Http\Controllers\AdminUsersController::class, 'show'])->name('show');
         Route::put('/{id}', [App\Http\Controllers\AdminUsersController::class, 'update'])->name('update');
         Route::delete('/{id}', [App\Http\Controllers\AdminUsersController::class, 'destroy'])->name('delete');
+        Route::get('admin/user-roles/ajax', [App\Http\Controllers\Admin\UserRoleController::class, 'ajaxIndex'])->name('admin.user-roles.ajax');
     });
+
+    Route::get('user-roles/ajax', [App\Http\Controllers\Admin\UserRoleController::class, 'ajaxIndex'])->name('user-roles.ajax');
+    Route::get('users/ajax', [App\Http\Controllers\AdminUsersController::class, 'ajaxIndex'])->name('users.ajax');
 });
+
 Route::middleware(['auth', 'can:manage-users'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('user-roles', [App\Http\Controllers\Admin\UserRoleController::class, 'index'])->name('user-roles.index');
     Route::post('user-roles/{user}', [App\Http\Controllers\Admin\UserRoleController::class, 'update'])->name('user-roles.update');
 });
-
-Route::get('admin/user-roles/ajax', [App\Http\Controllers\Admin\UserRoleController::class, 'ajaxIndex'])->name('admin.user-roles.ajax');
 Route::post('admin/user-roles/{user}/ajax', [App\Http\Controllers\Admin\UserRoleController::class, 'ajaxUpdate'])->name('admin.user-roles.ajax-update');
+Route::post('admin/users/ajax', [App\Http\Controllers\AdminUsersController::class, 'ajaxStore'])->name('admin.users.ajax-store');
+Route::put('admin/users/{user}/ajax', [App\Http\Controllers\AdminUsersController::class, 'ajaxUpdate'])->name('admin.users.ajax-update');
+Route::delete('admin/users/{user}/ajax', [App\Http\Controllers\AdminUsersController::class, 'ajaxDestroy'])->name('admin.users.ajax-destroy');
 
 // Supplier
 Route::middleware(['auth', 'role:supplier'])->prefix('supplier')->name('supplier.')->group(function () {
@@ -344,3 +350,9 @@ Route::post('/register/wholesaler', [RegisteredUserController::class, 'storeWhol
 Route::get('/register/validation', function (){
     return view('auth.validation');
 })->name('register.validation');
+
+Route::get('admin/users/ajax', [App\Http\Controllers\AdminUsersController::class, 'ajaxIndex'])->name('admin.users.ajax');
+Route::get('admin/users/{user}/ajax', [App\Http\Controllers\AdminUsersController::class, 'ajaxShow'])->name('admin.users.ajax-show');
+Route::post('admin/users/ajax', [App\Http\Controllers\AdminUsersController::class, 'ajaxStore'])->name('admin.users.ajax-store');
+Route::put('admin/users/{user}/ajax', [App\Http\Controllers\AdminUsersController::class, 'ajaxUpdate'])->name('admin.users.ajax-update');
+Route::delete('admin/users/{user}/ajax', [App\Http\Controllers\AdminUsersController::class, 'ajaxDestroy'])->name('admin.users.ajax-destroy');
