@@ -298,7 +298,7 @@
                 <section id="analytics" class="dashboard-section hidden mt-10">
                     <h3 class="text-xl font-bold text-white mb-3">Analytics</h3>
                     <div class="card-gradient p-6 rounded-xl mb-6">
-                        <p class="text-gray-800 dark:text-gray-200">View system analytics and trends.</p>
+                        <canvas id="userRegistrationsChart" width="400" height="200"></canvas>
                     </div>
                 </section>
                 <section id="audit-logs" class="dashboard-section hidden mt-10">
@@ -504,6 +504,47 @@
                 clearTimeout(timeout);
                 timeout = setTimeout(later, wait);
             };
+        }
+
+        document.querySelector('a[href="#analytics"]').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelectorAll('.dashboard-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById('analytics').classList.remove('hidden');
+            loadUserRegistrationsChart();
+        });
+
+        function loadUserRegistrationsChart() {
+            fetch('/admin/analytics/user-registrations')
+                .then(response => response.json())
+                .then(data => {
+                    const labels = data.map(item => item.month);
+                    const counts = data.map(item => item.count);
+
+                    const ctx = document.getElementById('userRegistrationsChart').getContext('2d');
+                    if (window.userRegistrationsChart) {
+                        window.userRegistrationsChart.destroy();
+                    }
+                    window.userRegistrationsChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'User Registrations',
+                                data: counts,
+                                borderColor: '#3B82F6',
+                                backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                                fill: true,
+                                tension: 0.3
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: { display: true }
+                            }
+                        }
+                    });
+                });
         }
     </script>
 

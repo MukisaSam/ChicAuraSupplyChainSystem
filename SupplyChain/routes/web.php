@@ -91,6 +91,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     });
 
     Route::get('/users/table', [App\Http\Controllers\AdminUsersController::class, 'ajaxIndex'])->name('users.table');
+
+    Route::get('/analytics/user-registrations', [App\Http\Controllers\AdminDashboardController::class, 'userRegistrationsAnalytics'])->name('analytics.user-registrations');
 });
 
 Route::middleware(['auth', 'can:manage-users'])->prefix('admin')->name('admin.')->group(function () {

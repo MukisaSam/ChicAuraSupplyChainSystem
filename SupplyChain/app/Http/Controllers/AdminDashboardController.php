@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 class AdminDashboardController extends Controller
 {
@@ -41,5 +43,16 @@ class AdminDashboardController extends Controller
             'stats' => $stats,
             'recentActivities' => $recentActivities,
         ]);
+    }
+
+    public function userRegistrationsAnalytics()
+    {
+        $data = DB::table('users')
+            ->selectRaw('DATE_FORMAT(created_at, "%Y-%m") as month, COUNT(*) as count')
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
+
+        return response()->json($data);
     }
 }
