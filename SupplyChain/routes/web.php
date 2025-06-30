@@ -74,18 +74,23 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\AdminDashboardController::class, 'index'])->name('dashboard');
     
-    // AJAX routes for user management
+    // User Management Routes
     Route::prefix('users')->name('users.')->group(function () {
+        Route::get('/table', [App\Http\Controllers\AdminUsersController::class, 'ajaxIndex'])->name('table');
         Route::get('/list', [App\Http\Controllers\AdminUsersController::class, 'getUsers'])->name('list');
+        Route::get('/{user}', [App\Http\Controllers\AdminUsersController::class, 'show'])->name('show');
         Route::post('/', [App\Http\Controllers\AdminUsersController::class, 'store'])->name('store');
-        Route::get('/{id}', [App\Http\Controllers\AdminUsersController::class, 'show'])->name('show');
-        Route::put('/{id}', [App\Http\Controllers\AdminUsersController::class, 'update'])->name('update');
-        Route::delete('/{id}', [App\Http\Controllers\AdminUsersController::class, 'destroy'])->name('delete');
-        Route::get('admin/user-roles/ajax', [App\Http\Controllers\Admin\UserRoleController::class, 'ajaxIndex'])->name('admin.user-roles.ajax');
+        Route::put('/{user}', [App\Http\Controllers\AdminUsersController::class, 'update'])->name('update');
+        Route::delete('/{user}', [App\Http\Controllers\AdminUsersController::class, 'destroy'])->name('destroy');
     });
 
-    Route::get('user-roles/ajax', [App\Http\Controllers\Admin\UserRoleController::class, 'ajaxIndex'])->name('user-roles.ajax');
-    Route::get('users/ajax', [App\Http\Controllers\AdminUsersController::class, 'ajaxIndex'])->name('users.ajax');
+    // User Roles Routes
+    Route::prefix('user-roles')->name('user-roles.')->group(function () {
+        Route::get('/ajax', [App\Http\Controllers\Admin\UserRoleController::class, 'ajaxIndex'])->name('ajax');
+        Route::post('/{user}', [App\Http\Controllers\Admin\UserRoleController::class, 'update'])->name('update');
+    });
+
+    Route::get('/users/table', [App\Http\Controllers\AdminUsersController::class, 'ajaxIndex'])->name('users.table');
 });
 
 Route::middleware(['auth', 'can:manage-users'])->prefix('admin')->name('admin.')->group(function () {

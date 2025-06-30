@@ -281,6 +281,7 @@
                     <div class="card-gradient p-6 rounded-xl mb-6" id="user-management-content">
                         <p class="text-gray-800 dark:text-gray-200">Loading...</p>
                     </div>
+
                 </section>
                 <section id="roles-permissions" class="dashboard-section hidden mt-10">
                     <h3 class="text-xl font-bold text-white mb-3">Roles & Permissions</h3>
@@ -427,39 +428,82 @@
         });
 
         function loadUserTable(search = '') {
-            fetch('{{ route('admin.users.ajax') }}' + (search ? '?search=' + encodeURIComponent(search) : ''))
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('user-management-content').innerHTML = html;
-                    attachUserTableListeners();
-                });
+            const content = document.getElementById('user-management-content');
+            content.innerHTML = '<div class="text-center py-4">Loading...</div>';
+
+            fetch('/admin/users/table' + (search ? '?search=' + encodeURIComponent(search) : ''), {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'text/html, application/json'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(html => {
+                content.innerHTML = html;
+                attachUserTableListeners();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                content.innerHTML = `
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                        <strong class="font-bold">Error!</strong>
+                        <span class="block sm:inline"> Failed to load user table. Please try again.</span>
+                    </div>`;
+            });
         }
 
         function attachUserTableListeners() {
-            document.getElementById('user-search').addEventListener('input', function() {
-                loadUserTable(this.value);
-            });
-
-            document.querySelectorAll('.edit-user-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    // Load edit form via AJAX and show in modal or section
-                });
-            });
+            const searchInput = document.getElementById('user-search');
+            if (searchInput) {
+                searchInput.addEventListener('input', debounce(function() {
+                    loadUserTable(this.value);
+                }, 300));
+            }
 
             document.querySelectorAll('.delete-user-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    if (confirm('Are you sure?')) {
-                        fetch(`/admin/users/${btn.dataset.id}/ajax`, {
+                    if (confirm('Are you sure you want to delete this user?')) {
+                        const userId = this.dataset.id;
+                        fetch(`/admin/users/${userId}`, {
                             method: 'DELETE',
                             headers: {
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                                'Accept': 'application/json'
                             }
-                        }).then(() => loadUserTable());
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                loadUserTable();
+                            } else {
+                                alert('Failed to delete user');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('An error occurred while deleting the user');
+                        });
                     }
                 });
             });
+        }
 
-            // Add similar listeners for view and add user
+        // Debounce function to prevent too many requests while typing
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func.apply(this, args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
         }
     </script>
 

@@ -148,15 +148,25 @@ class AdminUsersController extends Controller
 
     public function ajaxIndex(Request $request)
     {
-        $users = User::query();
+        try {
+            $users = User::query();
 
-        if ($request->has('search')) {
-            $users->where('name', 'like', '%' . $request->search . '%')
-                  ->orWhere('email', 'like', '%' . $request->search . '%');
+            if ($request->has('search')) {
+                $users->where(function($query) use ($request) {
+                    $query->where('name', 'like', '%' . $request->search . '%')
+                          ->orWhere('email', 'like', '%' . $request->search . '%');
+                });
+            }
+
+            $users = $users->get();
+            
+            return view('admin.users._table', compact('users'));
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => 'Failed to load users table',
+                'message' => $e->getMessage()
+            ], 500);
         }
-
-        $users = $users->get();
-        return view('admin.users._table', ['users' => $users]);
     }
 
     public function ajaxShow(User $user)
