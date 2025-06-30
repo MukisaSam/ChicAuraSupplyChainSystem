@@ -34,7 +34,7 @@ class ManufacturerRevenueController extends Controller
                     'description' => 'Order #' . $order->order_number . ' (' . ucfirst($order->status) . ')',
                     'icon' => $order->getStatusIconAttribute(),
                     'color' => $order->getStatusColorAttribute(),
-                    'time' => $order->created_at->diffForHumans(),
+                    'time' => $order->created_at ? $order->created_at->diffForHumans() : 'N/A',
                 ];
             });
         $recentSupplyRequests = \App\Models\SupplyRequest::where('created_at', '>=', now()->subDays(7))
@@ -46,7 +46,7 @@ class ManufacturerRevenueController extends Controller
                     'description' => 'Supply Request for ' . ($req->item->name ?? 'Item') . ' (' . ucfirst($req->status) . ')',
                     'icon' => 'fa-truck',
                     'color' => 'text-yellow-600',
-                    'time' => $req->created_at->diffForHumans(),
+                    'time' => $req->created_at ? $req->created_at->diffForHumans() : 'N/A',
                 ];
             });
         $recentActivities = $recentOrders->merge($recentSupplyRequests)->sortByDesc('time')->take(7)->values();

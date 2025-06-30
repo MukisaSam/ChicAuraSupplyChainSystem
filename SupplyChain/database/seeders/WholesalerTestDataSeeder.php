@@ -137,7 +137,7 @@ class WholesalerTestDataSeeder extends Seeder
         }
         Order::where('wholesaler_id', $wholesaler->id)->delete();
         $statuses = ['pending', 'confirmed', 'in_production', 'shipped', 'delivered', 'cancelled'];
-        $paymentMethods = ['cash', 'credit', 'bank_transfer', 'installment'];
+        $paymentMethods = ['cash on delivery', 'mobile money', 'bank_transfer'];
         $startDate = Carbon::now()->subDays(30);
         for ($day = 0; $day <= 30; $day++) {
             $currentDate = $startDate->copy()->addDays($day);

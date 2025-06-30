@@ -54,7 +54,7 @@ class WholesalerOrderController extends Controller
             'selected_items' => 'required|array|min:1',
             'selected_items.*.item_id' => 'required|exists:items,id',
             'selected_items.*.quantity' => 'required|integer|min:1',
-            'payment_method' => 'required|in:cash,credit,bank_transfer,installment',
+            'payment_method' => 'required|in:cash on delivery,mobile money,bank_transfer',
             'delivery_address' => 'required|string|max:500',
             'notes' => 'nullable|string|max:1000',
         ], [

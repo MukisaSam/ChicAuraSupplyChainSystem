@@ -17,7 +17,7 @@ class UserController extends Controller
                 'data' => $n->data,
                 'read_at' => $n->read_at,
                 'created_at' => $n->created_at,
-                'created_at_human' => $n->created_at->diffForHumans(),
+                'created_at_human' => $n->created_at ? $n->created_at->diffForHumans() : 'N/A',
             ];
         });
         $unreadCount = $user->unreadNotifications()->count();

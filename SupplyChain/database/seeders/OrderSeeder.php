@@ -25,7 +25,7 @@ class OrderSeeder extends Seeder
         }
         
         $statuses = ['pending', 'confirmed', 'in_production', 'shipped', 'delivered'];
-        $paymentMethods = ['cash', 'credit', 'bank_transfer', 'installment'];
+        $paymentMethods = ['cash on delivery', 'mobile money', 'bank_transfer'];
         
         foreach ($wholesalers as $wholesaler) {
             for ($i = 0; $i < 10; $i++) {

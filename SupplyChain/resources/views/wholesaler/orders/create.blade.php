@@ -279,8 +279,8 @@
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Payment Method</label>
                                         <select name="payment_method" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
-                                            <option value="cash">Cash on Delivery</option>
-                                            <option value="credit">Mobile Money</option>
+                                            <option value="cash on delivery">Cash on Delivery</option>
+                                            <option value="mobile money">Mobile Money</option>
                                             <option value="bank_transfer">Bank Transfer</option>
                                         </select>
                                     </div>

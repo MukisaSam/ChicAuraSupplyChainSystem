@@ -194,13 +194,7 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $wholesaler->business_type ?? 'N/A' }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">{{ $wholesaler->phone ?? 'N/A' }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                            <a href="#" class="text-indigo-600 hover:text-indigo-900 mr-3"><i class="fas fa-eye"></i> View</a>
-                                            <a href="#" class="text-green-600 hover:text-green-900 mr-3"><i class="fas fa-comments"></i> Message</a>
-                                            <form action="#" method="POST" class="inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i> Delete</button>
-                                            </form>
+                                           <a href="{{ route('manufacturer.chat.show', ['contactId' => $wholesaler->user_id]) }}" class="text-green-600 hover:text-green-900 mr-3"><i class="fas fa-comments"></i> Message</a>
                                         </td>
                                     </tr>
                                 @empty

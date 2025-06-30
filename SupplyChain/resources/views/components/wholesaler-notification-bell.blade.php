@@ -13,7 +13,7 @@
             @forelse(auth()->user()->unreadNotifications as $notification)
                 <li class="px-4 py-2 border-b hover:bg-gray-50">
                     <div class="text-sm">{{ $notification->data['message'] ?? 'You have a new notification.' }}</div>
-                    <div class="text-xs text-gray-400">{{ \Carbon\Carbon::parse($notification->created_at)->diffForHumans() }}</div>
+                    <div class="text-xs text-gray-400">{{ $notification->created_at ? \Carbon\Carbon::parse($notification->created_at)->diffForHumans() : 'N/A' }}</div>
                 </li>
             @empty
                 <li class="px-4 py-2 text-gray-500 text-sm">No new notifications.</li>

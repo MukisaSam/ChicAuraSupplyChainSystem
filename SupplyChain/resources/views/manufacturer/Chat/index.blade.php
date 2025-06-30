@@ -255,9 +255,9 @@
                     <h3 class="text-white text-sm font-semibold mb-3 px-3">MANUFACTURER PORTAL</h3>
                 </div>
                 <nav class="flex-1 px-4 py-2 space-y-1">
-                    <a href="{{route('manufacturer.dashboard')}}" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-indigo-600 to-indigo-700 rounded-xl shadow-lg">
+                    <a href="{{route('manufacturer.dashboard')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-home w-5"></i>
-                        <span class="ml-2 font-medium text-sm">Home</span>
+                        <span class="ml-2 text-sm">Home</span>
                     </a>
                     <a href="{{route('manufacturer.orders')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-box w-5"></i>
@@ -287,7 +287,7 @@
                         <i class="fas fa-truck-fast w-5"></i>
                         <span class="ml-2 text-sm">Suppliers</span>
                     </a>
-                    <a href="{{route('manufacturer.chat')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                    <a href="{{route('manufacturer.chat')}}" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-indigo-600 to-indigo-700 rounded-xl shadow-lg">
                         <i class="fas fa-comments w-5"></i>
                         <span class="ml-2 text-sm">Chat</span>
                     </a>
@@ -370,7 +370,8 @@
                                 @foreach($suppliers as $supplier)
                                 <div class="contact-item flex items-center p-4 rounded-xl" 
                                      data-contact-id="{{ $supplier->id }}" 
-                                     data-contact-name="{{ $supplier->name }}">
+                                     data-contact-name="{{ $supplier->name }}"
+                                     data-chat-url="{{ route('manufacturer.chat.show', ['contactId' => $supplier->id]) }}">
                                     <div class="relative">
                                         <img src="{{ asset('images/supplier.jpg') }}" alt="{{ $supplier->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
                                         <span class="online-indicator absolute -bottom-1 -right-1"></span>
@@ -394,7 +395,8 @@
                                 @foreach($wholesalers as $wholesaler)
                                 <div class="contact-item flex items-center p-4 rounded-xl" 
                                      data-contact-id="{{ $wholesaler->id }}" 
-                                     data-contact-name="{{ $wholesaler->name }}">
+                                     data-contact-name="{{ $wholesaler->name }}"
+                                     data-chat-url="{{ route('manufacturer.chat.show', ['contactId' => $wholesaler->id]) }}">
                                     <div class="relative">
                                         <img src="{{ asset('images/wholesaler.jpg') }}" alt="{{ $wholesaler->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
                                         <span class="online-indicator absolute -bottom-1 -right-1"></span>
@@ -418,7 +420,8 @@
                                 @foreach($admins as $admin)
                                 <div class="contact-item flex items-center p-4 rounded-xl" 
                                      data-contact-id="{{ $admin->id }}" 
-                                     data-contact-name="{{ $admin->name }}">
+                                     data-contact-name="{{ $admin->name }}"
+                                     data-chat-url="{{ route('manufacturer.chat.show', ['contactId' => $admin->id]) }}">
                                     <div class="relative">
                                         <img src="{{ asset('images/default-avatar.svg') }}" alt="{{ $admin->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
                                         <span class="online-indicator absolute -bottom-1 -right-1"></span>
@@ -480,7 +483,11 @@
 
                             <!-- Messages Area -->
                             <div id="messages-container" class="flex-1 overflow-y-auto p-6 space-y-4 messages-scroll" style="max-height: 420px; min-height: 200px;">
-                                <!-- Messages will be loaded here -->
+                                <!-- Messages will be loaded here via JavaScript -->
+                                <div id="no-messages-placeholder" class="text-center text-gray-400 py-8" style="display: none;">
+                                    <i class="fas fa-inbox text-3xl mb-2"></i>
+                                    <div>No messages yet. Start the conversation!</div>
+                                </div>
                             </div>
 
                             <!-- Message Input -->
@@ -532,33 +539,10 @@
             // Handle contact selection
             contactItems.forEach(item => {
                 item.addEventListener('click', function() {
-                    console.log('Contact clicked:', this.dataset.contactId);
-                    
-                    const contactId = this.dataset.contactId;
-                    const contactNameText = this.dataset.contactName;
-                    const contactRoleText = this.querySelector('p').textContent;
-                    const avatarSrc = this.querySelector('img').src;
-
-                    // Update UI
-                    receiverIdInput.value = contactId;
-                    contactName.textContent = contactNameText;
-                    contactRole.textContent = contactRoleText;
-                    contactAvatar.src = avatarSrc;
-
-                    // Show conversation area
-                    chatWelcome.style.display = 'none';
-                    chatConversation.style.display = 'flex';
-
-                    // Remove active class from all contacts
-                    contactItems.forEach(c => c.classList.remove('active'));
-                    // Add active class to selected contact
-                    this.classList.add('active');
-
-                    // Load messages
-                    loadMessages(contactId);
-
-                    // Mark messages as read
-                    markMessagesAsRead(contactId);
+                    const chatUrl = this.dataset.chatUrl;
+                    if (chatUrl) {
+                        window.location.href = chatUrl;
+                    }
                 });
             });
 

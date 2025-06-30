@@ -27,4 +27,9 @@ class Manufacturer extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function workforce()
+    {
+        return $this->hasMany(Workforce::class);
+    }
 } 
