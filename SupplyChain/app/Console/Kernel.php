@@ -15,6 +15,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        $schedule->command('orders:automate-processing')->everyFiveMinutes();
+        $schedule->command('notify:low-inventory-delayed-shipments')->everyFiveMinutes();
         // $schedule->command('inspire')->hourly();
     }
 
@@ -25,6 +27,9 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
+        if (!is_dir(__DIR__.'/Commands')) {
+            mkdir(__DIR__.'/Commands', 0777, true);
+        }
         $this->load(__DIR__.'/Commands');
 
         require base_path('routes/console.php');
