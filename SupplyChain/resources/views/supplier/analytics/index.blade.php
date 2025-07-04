@@ -8,7 +8,7 @@
             <div class="card">
                 <div class="card-body">
                     <h5 class="card-title">Total Supplied</h5>
-                    <p class="card-text display-6">{{ $stats['total_supplied'] }}</p>
+                    <p class="card-text display-6">{{ $stats['total_supplied'] ?? 0 }}</p>
                 </div>
             </div>
         </div>

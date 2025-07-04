@@ -296,10 +296,7 @@
                     </div>
                 </section>
                 <section id="analytics" class="dashboard-section hidden mt-10">
-                    <h3 class="text-xl font-bold text-white mb-3">Analytics</h3>
-                    <div class="card-gradient p-6 rounded-xl mb-6">
-                        <canvas id="userRegistrationsChart" width="400" height="200"></canvas>
-                    </div>
+                    @include('admin.analytics')
                 </section>
                 <section id="audit-logs" class="dashboard-section hidden mt-10">
                     <h3 class="text-xl font-bold text-white mb-3">Audit Logs</h3>
@@ -314,10 +311,10 @@
                     </div>
                 </section>
                 <section id="users" class="dashboard-section hidden mt-10">
-                    <h3 class="text-xl font-bold text-white mb-3">Users Management</h3>
-                    <div class="card-gradient p-6 rounded-xl mb-6">
-                        <p class="text-gray-800 dark:text-gray-200">Manage all users in the system from this section.</p>
-                    </div>
+                    @include('admin.users')
+                </section>
+                <section id="suppliers" class="dashboard-section hidden mt-10">
+                    @include('admin.suppliers')
                 </section>
             </main>
         </div>
@@ -508,9 +505,11 @@
 
         document.querySelector('a[href="#analytics"]').addEventListener('click', function(e) {
             e.preventDefault();
-            document.querySelectorAll('.dashboard-section').forEach(el => el.classList.add('hidden'));
-            document.getElementById('analytics').classList.remove('hidden');
-            loadUserRegistrationsChart();
+            fetch('/admin/analytics')
+                .then(response => response.text())
+                .then(html => {
+                    document.getElementById('dashboard-content').innerHTML = html;
+                });
         });
 
         function loadUserRegistrationsChart() {
@@ -543,6 +542,30 @@
                                 legend: { display: true }
                             }
                         }
+                    });
+                });
+        }
+
+        function loadOrdersChart() {
+            fetch('/admin/analytics/orders')
+                .then(response => response.json())
+                .then(data => {
+                    const labels = data.map(item => item.month);
+                    const counts = data.map(item => item.count);
+
+                    const ctx = document.getElementById('ordersChart').getContext('2d');
+                    if (window.ordersChart) window.ordersChart.destroy();
+                    window.ordersChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Orders',
+                                data: counts,
+                                backgroundColor: '#10B981'
+                            }]
+                        },
+                        options: { responsive: true }
                     });
                 });
         }

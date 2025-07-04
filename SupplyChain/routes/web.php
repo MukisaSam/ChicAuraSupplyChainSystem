@@ -7,7 +7,8 @@ use App\Http\Controllers\{
     DashboardController,
     ProfileController,
     TypeController,
-    UserController
+    UserController,
+    SupplierChatController
 };
 
 /*
@@ -93,6 +94,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/users/table', [App\Http\Controllers\AdminUsersController::class, 'ajaxIndex'])->name('users.table');
 
     Route::get('/analytics/user-registrations', [App\Http\Controllers\AdminDashboardController::class, 'userRegistrationsAnalytics'])->name('analytics.user-registrations');
+
+    Route::get('/analytics', [AdminDashboardController::class, 'analytics'])->name('admin.analytics');
 });
 
 Route::middleware(['auth', 'can:manage-users'])->prefix('admin')->name('admin.')->group(function () {
@@ -104,18 +107,43 @@ Route::post('admin/users/ajax', [App\Http\Controllers\AdminUsersController::clas
 Route::put('admin/users/{user}/ajax', [App\Http\Controllers\AdminUsersController::class, 'ajaxUpdate'])->name('admin.users.ajax-update');
 Route::delete('admin/users/{user}/ajax', [App\Http\Controllers\AdminUsersController::class, 'ajaxDestroy'])->name('admin.users.ajax-destroy');
 
-// Supplier
-Route::middleware(['auth', 'role:supplier'])->prefix('supplier')->name('supplier.')->group(function () {
-    Route::get('/dashboard', [\App\Http\Controllers\SupplierController::class, 'dashboard'])->name('dashboard');
-    Route::get('/analytics', [\App\Http\Controllers\SupplierController::class, 'analytics'])->name('analytics');
-    Route::get('/chat', [\App\Http\Controllers\SupplierController::class, 'chat'])->name('chat');
-    Route::get('/reports', [\App\Http\Controllers\SupplierController::class, 'reports'])->name('reports');
-    Route::resource('supply-requests', \App\Http\Controllers\SupplierController::class)->only(['show', 'update']);
-    Route::post('supply-requests', [\App\Http\Controllers\SupplierController::class, 'store'])->name('supply-requests.store');
-    Route::delete('supply-requests/{supplyRequest}', [\App\Http\Controllers\SupplierController::class, 'destroy'])->name('supply-requests.destroy');
-    Route::post('supply-requests/{supplyRequest}/negotiate', [\App\Http\Controllers\SupplierController::class, 'submitPriceNegotiation'])->name('supply-requests.negotiate');
-    Route::resource('supplied-items', \App\Http\Controllers\SupplierController::class)->only(['show', 'update']);
-});
+Route::get('/admin/analytics/orders', [App\Http\Controllers\AdminDashboardController::class, 'ordersOverTime']);
+
+// Supplier Routes
+Route::middleware(['auth', 'role:supplier'])
+    ->prefix('supplier')
+    ->name('supplier.')
+    ->group(function () {
+        // Supplier dashboard etc.
+        Route::get('/dashboard', [\App\Http\Controllers\SupplierController::class, 'dashboard'])->name('dashboard');
+        Route::get('/analytics', [\App\Http\Controllers\SupplierController::class, 'analytics'])->name('analytics.index');
+        Route::get('/chat', [\App\Http\Controllers\SupplierController::class, 'chat'])->name('chat.index');
+        Route::get('/reports', [\App\Http\Controllers\SupplierController::class, 'reports'])->name('reports.index');
+
+        // Supply Requests
+        Route::resource('supply-requests', \App\Http\Controllers\SupplierController::class)->only(['show', 'update']);
+        Route::post('supply-requests', [\App\Http\Controllers\SupplierController::class, 'store'])->name('supply-requests.store');
+        Route::delete('supply-requests/{supplyRequest}', [\App\Http\Controllers\SupplierController::class, 'destroy'])->name('supply-requests.destroy');
+        Route::post('supply-requests/{supplyRequest}/negotiate', [\App\Http\Controllers\SupplierController::class, 'submitPriceNegotiation'])->name('supply-requests.negotiate');
+        Route::get('supply-requests', [\App\Http\Controllers\SupplierController::class, 'supplyRequestsIndex'])->name('supply-requests.index');
+        Route::get('supply-requests/{supplyRequest}', [\App\Http\Controllers\SupplierController::class, 'showSupplyRequest'])->name('supply-requests.show');
+
+        // Supplied Items
+        Route::get('supplied-items/{suppliedItem}', [\App\Http\Controllers\SupplierController::class, 'showSuppliedItem'])->name('supplied-items.show');
+        Route::put('supplied-items/{suppliedItem}', [\App\Http\Controllers\SupplierController::class, 'updateSuppliedItem'])->name('supplied-items.update');
+        Route::get('supplied-items', [\App\Http\Controllers\SupplierController::class, 'suppliedItems'])->name('supplied-items.index');
+
+        // Supplier Chat Routes
+        Route::prefix('chat')->name('chat.')->group(function () {
+            Route::get('/', [\App\Http\Controllers\SupplierChatController::class, 'index'])->name('index');
+            Route::get('/{contactId}', [\App\Http\Controllers\SupplierChatController::class, 'show'])->name('show');
+            Route::post('/send', [\App\Http\Controllers\SupplierChatController::class, 'sendMessage'])->name('send');
+            Route::post('/mark-read', [\App\Http\Controllers\SupplierChatController::class, 'markAsRead'])->name('mark-read');
+            Route::get('/unread-count', [\App\Http\Controllers\SupplierChatController::class, 'getUnreadCount'])->name('unread-count');
+            Route::get('/{contactId}/messages', [\App\Http\Controllers\SupplierChatController::class, 'getRecentMessages'])->name('messages');
+        });
+    });
+
 
 // Manufacturer routes
 Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('manufacturer.')->group(function () {
@@ -245,20 +273,6 @@ Route::middleware(['auth', 'can:manage-users'])->prefix('admin')->name('admin.')
     Route::post('user-roles/{user}', [App\Http\Controllers\Admin\UserRoleController::class, 'update'])->name('user-roles.update');
 });
 
-
-// Supplier routes
-Route::middleware(['auth', 'role:supplier'])->prefix('supplier')->name('supplier.')->group(function () {
-    Route::get('/dashboard', [App\Http\Controllers\SupplierController::class, 'dashboard'])->name('dashboard');
-    Route::get('/analytics', [App\Http\Controllers\SupplierController::class, 'analytics'])->name('analytics');
-    Route::get('/chat', [App\Http\Controllers\SupplierController::class, 'chat'])->name('chat');
-    Route::get('/reports', [App\Http\Controllers\SupplierController::class, 'reports'])->name('reports');
-    Route::get('/supply-requests/{supplyRequest}', [App\Http\Controllers\SupplierController::class, 'showSupplyRequest'])->name('supply-requests.show');
-    Route::put('/supply-requests/{supplyRequest}', [App\Http\Controllers\SupplierController::class, 'updateSupplyRequest'])->name('supply-requests.update');
-    Route::post('/supply-requests/{supplyRequest}/negotiate', [App\Http\Controllers\SupplierController::class, 'submitPriceNegotiation'])->name('supply-requests.negotiate');
-    Route::get('/supplied-items/{suppliedItem}', [App\Http\Controllers\SupplierController::class, 'showSuppliedItem'])->name('supplied-items.show');
-    Route::put('/supplied-items/{suppliedItem}', [App\Http\Controllers\SupplierController::class, 'updateSuppliedItem'])->name('supplied-items.update');
-});
-
 // Wholesaler notifications
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/wholesaler/notifications', [App\Http\Controllers\UserController::class, 'wholesalerNotifications']);
@@ -291,3 +305,7 @@ Route::get('admin/users/{user}/ajax', [App\Http\Controllers\AdminUsersController
 Route::post('admin/users/ajax', [App\Http\Controllers\AdminUsersController::class, 'ajaxStore'])->name('admin.users.ajax-store');
 Route::put('admin/users/{user}/ajax', [App\Http\Controllers\AdminUsersController::class, 'ajaxUpdate'])->name('admin.users.ajax-update');
 Route::delete('admin/users/{user}/ajax', [App\Http\Controllers\AdminUsersController::class, 'ajaxDestroy'])->name('admin.users.ajax-destroy');
+
+
+
+

@@ -20,8 +20,8 @@ class SupplierController extends Controller
         if (!$supplier) {
         abort(403, 'You are not a supplier.');
     }
-        $supplyRequests = $supplier->supplyRequests()->with('item')->latest()->get();
-        $suppliedItems = $supplier->suppliedItems()->with('item')->latest()->get();
+        $supplyRequests = $supplier->supplyRequests()->with('item')->latest()->paginate(10);
+        $suppliedItems = $supplier->suppliedItems()->with('item')->latest()->paginate(10);
 
         return view('supplier.dashboard', compact('supplier', 'supplyRequests', 'suppliedItems'));
     }
@@ -34,8 +34,8 @@ class SupplierController extends Controller
             abort(403, 'You are not a supplier.');
         }
 
-        $supplyRequests = $supplier->supplyRequests()->with('item')->latest()->get();
-        $suppliedItems = $supplier->suppliedItems()->with('item')->latest()->get();
+        $supplyRequests = $supplier->supplyRequests()->with('item')->latest()->paginate(10);
+        $suppliedItems = $supplier->suppliedItems()->with('item')->latest()->paginate(10);
         $items = \App\Models\Item::where('is_active', true)->get();
         $paymentTypes = ['cash', 'credit', 'bank_transfer'];
         $deliveryMethods = ['pickup', 'delivery'];
@@ -49,7 +49,33 @@ class SupplierController extends Controller
             ->selectRaw('MONTH(delivery_date) as month, SUM(delivered_quantity) as total')
             ->groupBy('month')
             ->get();
-        return view('supplier.dashboard', compact('supplier', 'supplyRequests', 'suppliedItems', 'items', 'paymentTypes', 'deliveryMethods', 'stats', 'supplyTrends'));
+
+        // Monthly report: group by month, sum quantity, revenue, avg rating
+        $monthlyReport = $supplier->suppliedItems()
+            ->selectRaw('MONTH(delivery_date) as month, SUM(delivered_quantity) as quantity, SUM(price * delivered_quantity) as revenue, AVG(quality_rating) as avg_rating')
+            ->groupBy('month')
+            ->get();
+
+        // Item report: group by item, sum quantity, avg price, avg rating
+        $itemReport = $supplier->suppliedItems()
+            ->selectRaw('item_id, SUM(delivered_quantity) as total_quantity, AVG(price) as avg_price, AVG(quality_rating) as avg_rating')
+            ->with('item')
+            ->groupBy('item_id')
+            ->get();
+
+        // Fetch chat contacts
+        $user = Auth::user();
+        $admins = \App\Models\User::where('role', 'admin')->get();
+        $manufacturers = \App\Models\User::where('role', 'manufacturer')->get();
+        $wholesalers = \App\Models\User::where('role', 'wholesaler')->get();
+
+        // Example unread counts (replace with your actual logic if needed)
+        $unreadCounts = [];
+
+        return view('supplier.dashboard', compact(
+            'supplier', 'supplyRequests', 'suppliedItems', 'items', 'paymentTypes', 'deliveryMethods', 'stats', 'supplyTrends',
+            'monthlyReport', 'itemReport', 'user', 'admins', 'manufacturers', 'wholesalers', 'unreadCounts'
+        ));
     }
 
     public function showSupplyRequest(SupplyRequest $supplyRequest)
@@ -140,7 +166,7 @@ class SupplierController extends Controller
             ->groupBy('month')
             ->get();
 
-        return view('supplier.analytics', compact('stats', 'supplyTrends'));
+        return view('supplier/analytics.index', compact('stats', 'supplyTrends'));
     }
 
     public function chat()
@@ -154,7 +180,7 @@ class SupplierController extends Controller
         return view('supplier.chat');
     }
 
-    public function reports()
+    public function reports(Request $request)
     {
         $supplier = Auth::user()->supplier;
 
@@ -162,7 +188,20 @@ class SupplierController extends Controller
             abort(403, 'You are not a supplier.');
         }
 
-        return view('supplier.reports');
+        // Monthly report: group by month, sum quantity, revenue, avg rating
+        $monthlyReport = $supplier->suppliedItems()
+            ->selectRaw('MONTH(delivery_date) as month, SUM(delivered_quantity) as quantity, SUM(price * delivered_quantity) as revenue, AVG(quality_rating) as avg_rating')
+            ->groupBy('month')
+            ->get();
+
+        // Item report: group by item, sum quantity, avg price, avg rating
+        $itemReport = $supplier->suppliedItems()
+            ->selectRaw('item_id, SUM(delivered_quantity) as total_quantity, AVG(price) as avg_price, AVG(quality_rating) as avg_rating')
+            ->with('item')
+            ->groupBy('item_id')
+            ->get();
+
+        return view('supplier.reports.index', compact('monthlyReport', 'itemReport'));
     }
 
     // Create a new supply request (AJAX)
@@ -193,5 +232,30 @@ class SupplierController extends Controller
         $this->authorize('delete', $supplyRequest);
         $supplyRequest->delete();
         return response()->json(['success' => true]);
+    }
+
+    public function supplyRequestsIndex()
+    {
+        $supplier = Auth::user()->supplier;
+        $supplyRequests = $supplier->supplyRequests()->with('item')->latest()->paginate(10);
+
+        return view('supplier.supply-requests.index', compact('supplyRequests'));
+    }
+
+    public function suppliedItems(Request $request)
+    {
+        $supplier = Auth::user()->supplier;
+        if (!$supplier) {
+            abort(403, 'You are not a supplier.');
+        }
+        $query = $supplier->suppliedItems()->with('item')->latest();
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        if ($request->filled('delivery_date')) {
+            $query->whereDate('delivery_date', $request->delivery_date);
+        }
+        $suppliedItems = $query->paginate(10);
+        return view('supplier.supplied-items.index', compact('suppliedItems'));
     }
 }

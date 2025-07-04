@@ -23,17 +23,17 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('supplier.analytics') }}">
+                        <a class="nav-link" href="{{ route('supplier.analytics.index') }}">
                             <i class="fas fa-chart-line"></i> Analytics
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('supplier.chat') }}">
+                        <a class="nav-link" href="{{ route('supplier.chat.index') }}">
                             <i class="fas fa-comments"></i> Chat
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="{{ route('supplier.reports') }}">
+                        <a class="nav-link active" href="{{ route('supplier.reports.index') }}">
                             <i class="fas fa-file-alt"></i> Reports
                         </a>
                     </li>
