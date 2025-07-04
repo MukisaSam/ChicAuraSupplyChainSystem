@@ -399,6 +399,20 @@
                                     <p class="text-2xl font-bold">${{ number_format($stats['total_revenue'], 2) }}</p>
                                 </div>
                             </div>
+                            
+                            <!-- Charts Section -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+                                    <h5 class="font-semibold mb-2">Revenue Trend</h5>
+                                    <canvas id="revenueChart" width="400" height="200"></canvas>
+                                </div>
+                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+                                    <h5 class="font-semibold mb-2">Quality Rating Trend</h5>
+                                    <canvas id="ratingChart" width="400" height="200"></canvas>
+                                </div>
+                            </div>
+                            
+                            <!-- Supply Trends Table -->
                             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
                                 <h5 class="mb-0 font-semibold">Supply Trends (Monthly)</h5>
                                 <div class="overflow-x-auto">
@@ -427,7 +441,7 @@
                     <div class="max-w-5xl mx-auto px-4">
                         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
                             <div class="flex justify-between flex-wrap items-center border-b border-gray-200 dark:border-gray-700 pb-2 mb-3">
-                                <h1 class="text-2xl font-bold">Reports & Analytics</h1>
+                                <h1 class="text-2xl font-bold">Reports</h1>
                                 <div class="flex gap-2">
                                     <button type="button" class="btn btn-sm btn-outline-secondary" onclick="window.print()">
                                         <i class="fas fa-print"></i> Print
@@ -543,14 +557,6 @@
                                 </table>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-                                    <h5 class="font-semibold mb-2">Revenue Trend</h5>
-                                    <canvas id="revenueChart" width="400" height="200"></canvas>
-                                </div>
-                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
-                                    <h5 class="font-semibold mb-2">Quality Rating Trend</h5>
-                                    <canvas id="ratingChart" width="400" height="200"></canvas>
-                                </div>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 text-center">
