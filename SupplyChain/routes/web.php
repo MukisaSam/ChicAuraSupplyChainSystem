@@ -18,7 +18,7 @@ use App\Http\Controllers\{
 */
 
 // Public routes
-Route::get('/', fn() => view('welcome'));
+Route::get('/', fn() => view('welcome'))->name('welcome');
 
 // Authentication and Registration
 Route::post('/register', [UserController::class, 'register']);

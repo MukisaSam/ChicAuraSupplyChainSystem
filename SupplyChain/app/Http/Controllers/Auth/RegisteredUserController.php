@@ -165,6 +165,7 @@ class RegisteredUserController extends Controller
         // Validation starts
         $filePath = $request->file('license_document')->getPathname();
         $fileName = $request->file('license_document')->getClientOriginalName();
+        $storePath =$request->file('license_document')->store('uploads', 'public');
 
         $response = Http::attach('file',fopen($filePath, 'r'),$fileName)->post('http://localhost:8080/application/validate');
 
@@ -180,7 +181,7 @@ class RegisteredUserController extends Controller
                     'business_address' => $request->business_address,
                     'phone' => $request->phone,
                     'license_document' => $fileName,
-                    'production_capacity' => $request->production_capacity,
+                    'document_path' => $storePath,                    
                     'specialization' => json_encode($request->specialization),
                     'visitDate' => $data['visitDate'],
                 ]);
@@ -222,12 +223,12 @@ class RegisteredUserController extends Controller
             'license_document' => ['required', 'file', 'mimes:pdf', 'max:2048'],
             'business_type' => ['required', 'string'],
             'preferred_categories' => ['required', 'array'],
-            'monthly_order_volume' => ['required', 'integer', 'min:1'],
         ]);
 
         // Validation starts
         $filePath = $request->file('license_document')->getPathname();
         $fileName = $request->file('license_document')->getClientOriginalName();
+        $storePath =$request->file('license_document')->store('uploads', 'public');
 
         $response = Http::attach('file',fopen($filePath, 'r'),$fileName)->post('http://localhost:8080/application/validate');
 
@@ -243,9 +244,9 @@ class RegisteredUserController extends Controller
                     'business_address' => $request->business_address,
                     'phone' => $request->phone,
                     'license_document' => $fileName,
+                    'document_path' => $storePath,
                     'business_type' => $request->business_type,
                     'preferred_categories' => json_encode($request->preferred_categories),
-                    'monthly_order_volume' => $request->monthly_order_volume,
                     'visitDate' => $data['visitDate'],
                 ]);
 

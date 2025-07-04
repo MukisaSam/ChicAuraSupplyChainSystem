@@ -142,7 +142,7 @@
                     <a href="#analytics" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-chart-pie w-5"></i><span class="ml-2 text-sm">Analytics</span></a>
                     <a href="#audit-logs" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-history w-5"></i><span class="ml-2 text-sm">Audit Logs</span></a>
                     <a href="#notifications" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-bell w-5"></i><span class="ml-2 text-sm">Notifications</span></a>
-                    <a href="#users" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fa-solid fa-user"></i><span class="ml-2 text-sm">Users Management</span></a>
+                    <a href="{{route('admin.users')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-users-cog w-5"></i><span class="ml-2 text-sm">Users Management</span></a>
                 </nav>
                 <div class="p-3 border-t border-gray-600">
                     <div class="text-center text-gray-400 text-xs">

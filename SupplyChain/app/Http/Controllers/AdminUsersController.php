@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
 class AdminUsersController extends Controller
 {
@@ -26,7 +27,7 @@ class AdminUsersController extends Controller
         $records = DB::select('SELECT * FROM pending_users');
                 
         return view('admin.usersmanagement.index', [
-            'pendingUsers' => json_encode($records),
+            'pendingUsers' => $records,
         ]);
     }
 
