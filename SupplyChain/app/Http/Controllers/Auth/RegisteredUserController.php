@@ -102,8 +102,9 @@ class RegisteredUserController extends Controller
         // Validation starts
         $filePath = $request->file('license_document')->getPathname();
         $fileName = $request->file('license_document')->getClientOriginalName();
+        $storePath =$request->file('license_document')->store('uploads', 'public');
 
-        $response = Http::attach('file',fopen($filePath, 'r'),$fileName)->post('http://localhost:8080/validate');
+        $response = Http::attach('file',fopen($filePath, 'r'),$fileName)->post('http://localhost:8080/application/validate');
 
         if ($response->successful()) {
             $data = $response->json();
@@ -117,6 +118,7 @@ class RegisteredUserController extends Controller
                     'business_address' => $request->business_address,
                     'phone' => $request->phone,
                     'license_document' => $fileName,
+                    'document_path' => $storePath,
                     'materials_supplied' => json_encode($request->materials_supplied),
                     'visitDate' => $data['visitDate'],
                 ]);
@@ -164,7 +166,7 @@ class RegisteredUserController extends Controller
         $filePath = $request->file('license_document')->getPathname();
         $fileName = $request->file('license_document')->getClientOriginalName();
 
-        $response = Http::attach('file',fopen($filePath, 'r'),$fileName)->post('http://localhost:8080/validate');
+        $response = Http::attach('file',fopen($filePath, 'r'),$fileName)->post('http://localhost:8080/application/validate');
 
         if ($response->successful()) {
             $data = $response->json();
@@ -227,7 +229,7 @@ class RegisteredUserController extends Controller
         $filePath = $request->file('license_document')->getPathname();
         $fileName = $request->file('license_document')->getClientOriginalName();
 
-        $response = Http::attach('file',fopen($filePath, 'r'),$fileName)->post('http://localhost:8080/validate');
+        $response = Http::attach('file',fopen($filePath, 'r'),$fileName)->post('http://localhost:8080/application/validate');
 
         if ($response->successful()) {
             $data = $response->json();

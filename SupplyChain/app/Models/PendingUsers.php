@@ -19,10 +19,9 @@ class PendingUsers extends Model
         'business_address',
         'phone',
         'license_document',
+        'document_path',
         'business_type',
         'preferred_categories',
-        'monthly_order_volume',
-        'production_capacity',
         'specialization',
         'materials_supplied',
     ];

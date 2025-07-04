@@ -23,10 +23,9 @@ return new class extends Migration
             $table->text('business_address')->nullable();
             $table->string('phone')->nullable();
             $table->string('license_document')->nullable();
+            $table->integer('document_path')->nullable();
             $table->string('business_type')->nullable();
             $table->json('preferred_categories')->nullable();
-            $table->integer('monthly_order_volume')->nullable();
-            $table->integer('production_capacity')->nullable();
             $table->json('specialization')->nullable();
             $table->json('materials_supplied')->nullable();
             $table->timestamps();
