@@ -74,8 +74,12 @@ Route::middleware('auth')->group(function () {
 // Admin
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/users', [App\Http\Controllers\AdminUsersController::class, 'index'])->name('users');
+    Route::get('/users/add', fn() => view('admin.usersmanagement.adduser'))->name('users.add.view');
+    Route::post('/users/add', [App\Http\Controllers\AdminUsersController::class, 'addUserView'])->name('users.add');
     
     // User Management Routes
+    /*
     Route::prefix('users')->name('users.')->group(function () {
         Route::get('/table', [App\Http\Controllers\AdminUsersController::class, 'ajaxIndex'])->name('table');
         Route::get('/list', [App\Http\Controllers\AdminUsersController::class, 'getUsers'])->name('list');
@@ -84,6 +88,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::put('/{user}', [App\Http\Controllers\AdminUsersController::class, 'update'])->name('update');
         Route::delete('/{user}', [App\Http\Controllers\AdminUsersController::class, 'destroy'])->name('destroy');
     });
+    */
 
     // User Roles Routes
     Route::prefix('user-roles')->name('user-roles.')->group(function () {
@@ -95,7 +100,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     Route::get('/analytics/user-registrations', [App\Http\Controllers\AdminDashboardController::class, 'userRegistrationsAnalytics'])->name('analytics.user-registrations');
 
-    Route::get('/analytics', [AdminDashboardController::class, 'analytics'])->name('admin.analytics');
+    Route::get('/analytics', [App\Http\Controllers\AdminDashboardController::class, 'analytics'])->name('admin.analytics');
 });
 
 Route::middleware(['auth', 'can:manage-users'])->prefix('admin')->name('admin.')->group(function () {
@@ -253,25 +258,8 @@ Route::middleware(['auth', 'role:wholesaler'])->prefix('wholesaler')->name('whol
 require __DIR__.'/auth.php';
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/admin/users/add', [App\Http\Controllers\AdminUsersController::class, 'addUser'])->name('admin.users.add');
 
-// Admin routes
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', [App\Http\Controllers\AdminDashboardController::class, 'index'])->name('admin.dashboard');
-    Route::get('/admin/users', [App\Http\Controllers\AdminUsersController::class, 'index'])->name('admin.users');
-    
-    // AJAX routes for user management
-    Route::prefix('admin/users')->name('admin.users.')->group(function () {
-        Route::get('/list', [App\Http\Controllers\AdminUsersController::class, 'getUsers'])->name('list');
-        Route::post('/', [App\Http\Controllers\AdminUsersController::class, 'store'])->name('store');
-        Route::get('/{id}', [App\Http\Controllers\AdminUsersController::class, 'show'])->name('show');
-        Route::put('/{id}', [App\Http\Controllers\AdminUsersController::class, 'update'])->name('update');
-        Route::delete('/{id}', [App\Http\Controllers\AdminUsersController::class, 'destroy'])->name('delete');
-    });
-});
-Route::middleware(['auth', 'can:manage-users'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('user-roles', [App\Http\Controllers\Admin\UserRoleController::class, 'index'])->name('user-roles.index');
-    Route::post('user-roles/{user}', [App\Http\Controllers\Admin\UserRoleController::class, 'update'])->name('user-roles.update');
-});
 
 // Wholesaler notifications
 Route::middleware(['auth', 'verified'])->group(function () {

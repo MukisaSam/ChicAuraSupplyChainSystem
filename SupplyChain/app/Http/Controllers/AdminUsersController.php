@@ -31,6 +31,32 @@ class AdminUsersController extends Controller
         ]);
     }
 
+    public function addUserView(Request $request)
+    {
+        $id = $request->id;
+
+        // Fetch the user record
+        $record = DB::table('pending_users')->where('id', $id)->first();
+
+        //First pass
+        $raw1 = json_decode($record->preferred_categories, true);
+        $raw2 = json_decode($record->specialization, true);
+        $raw3 = json_decode($record->materials_supplied, true);
+        
+        //Second pass
+        $preferred_categories = json_decode($raw1, true);
+        $specialization = json_decode($raw2, true);
+        $materials_supplied = json_decode($raw3, true);
+        
+        // Pass the record to the view
+        return view('admin.usersmanagement.adduser', [
+            'record' => $record,
+            'preferred_categories' => $preferred_categories,
+            'specialization' => $specialization,
+            'materials_supplied' => $materials_supplied,
+        ]);
+    }
+
     public function getUsers(Request $request)
     {
         $query = User::query();

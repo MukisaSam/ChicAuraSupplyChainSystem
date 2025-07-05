@@ -624,7 +624,7 @@
                     <div class="lg:col-span-2">
                         <div class="card-gradient rounded-2xl p-4">
                             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4">
-                                <h2 class="text-lg font-semibold">All Users</h2>
+                                <h2 class="text-lg font-semibold">Active Users</h2>
                                 <div class="relative mt-2 md:mt-0">
                                     <span class="absolute inset-y-0 left-0 flex items-center pl-3"><i
                                             class="fas fa-search text-gray-400"></i></span>
@@ -640,7 +640,6 @@
                                         <tr class="text-left">
                                             <th class="px-4 py-3 rounded-tl-xl">User</th>
                                             <th class="px-4 py-3">Role</th>
-                                            <th class="px-4 py-3">Status</th>
                                             <th class="px-4 py-3">Last Active</th>
                                             <th class="px-4 py-3 rounded-tr-xl">Actions</th>
                                         </tr>
@@ -661,9 +660,6 @@
                                             </td>
                                             <td class="px-4 py-3">
                                                 <span class="role-badge role-admin">Admin</span>
-                                            </td>
-                                            <td class="px-4 py-3">
-                                                <span class="status-badge status-active">Active</span>
                                             </td>
                                             <td class="px-4 py-3 text-sm">Today, 09:24 AM</td>
                                             <td class="px-4 py-3">
@@ -695,9 +691,6 @@
                                             </td>
                                             <td class="px-4 py-3">
                                                 <span class="role-badge role-supplier">Supplier</span>
-                                            </td>
-                                            <td class="px-4 py-3">
-                                                <span class="status-badge status-active">Active</span>
                                             </td>
                                             <td class="px-4 py-3 text-sm">Yesterday, 04:15 PM</td>
                                             <td class="px-4 py-3">
@@ -731,9 +724,6 @@
                                             <td class="px-4 py-3">
                                                 <span class="role-badge role-manufacturer">Manufacturer</span>
                                             </td>
-                                            <td class="px-4 py-3">
-                                                <span class="status-badge status-pending">Pending</span>
-                                            </td>
                                             <td class="px-4 py-3 text-sm">May 12, 2024</td>
                                             <td class="px-4 py-3">
                                                 <div class="flex space-x-2">
@@ -764,9 +754,6 @@
                                             </td>
                                             <td class="px-4 py-3">
                                                 <span class="role-badge role-wholesaler">Wholesaler</span>
-                                            </td>
-                                            <td class="px-4 py-3">
-                                                <span class="status-badge status-active">Active</span>
                                             </td>
                                             <td class="px-4 py-3 text-sm">Today, 10:45 AM</td>
                                             <td class="px-4 py-3">
@@ -800,10 +787,7 @@
                                             <td class="px-4 py-3">
                                                 <span class="role-badge role-admin">Admin</span>
                                             </td>
-                                            <td class="px-4 py-3">
-                                                <span class="status-badge status-suspended">Suspended</span>
-                                            </td>
-                                            <td class="px-4 py-3 text-sm">April 28, 2024</td>
+                                           <td class="px-4 py-3 text-sm">April 28, 2024</td>
                                             <td class="px-4 py-3 rounded-br-xl">
                                                 <div class="flex space-x-2">
                                                     <button class="p-1 text-blue-600 hover:text-blue-800">
@@ -951,6 +935,7 @@
         const users =[
             @foreach ($pendingUsers as $pending )
             {
+                id: {{ $pending->id }},
                 name: "{{ $pending->name }}",
                 email: "{{ $pending->email }}",
                 role: "{{ $pending->role }}",
@@ -1038,15 +1023,27 @@
                     <td class="px-4 py-3 text-sm">${user.created_at}</td>
                     <td class="px-4 py-3 ${isLastRow ? 'rounded-br-xl' : ''}">
                         <div class="flex space-x-2">
-                            <button class="action-btn text-blue-600 hover:bg-blue-50">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="action-btn text-gray-600 hover:bg-gray-100">
-                                <i class="fas fa-user-plus"></i>
-                            </button>
-                            <button class="action-btn text-red-600 hover:bg-red-50">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
+                            <form action="{{route('admin.users.add')}}" method="POST">
+                                @csrf
+                                <button type="submit" class="action-btn text-blue-600">
+                                    <input type="text" name="id" class="hidden" value="${user.id}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </form>
+                            <form>
+                                @csrf
+                                <button type="submit" class="action-btn text-gray-600">
+                                    <input type="text" name="id" class="hidden" value="${user.id}">
+                                    <i class="fas fa-user-plus"></i>
+                                </button>
+                            </form>
+                            <form>
+                                @csrf
+                                <button class="action-btn text-red-600 hover:bg-red-50">
+                                    <input type="text" name="id" class="hidden" value="${user.id}">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
                         </div>
                     </td>
                 `;
