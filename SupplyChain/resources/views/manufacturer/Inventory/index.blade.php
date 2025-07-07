@@ -353,7 +353,7 @@
                 <!-- Inventory Items Table -->
                 <div class="card-gradient rounded-xl overflow-hidden">
                     <div class="p-4 border-b border-gray-200">
-                        <h3 class="text-lg font-bold text-gray-800">Inventory Items</h3>
+                        <h3 class="text-lg font-bold text-black">Inventory Items</h3>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full">

@@ -318,7 +318,7 @@
                 <div class="grid grid-cols-1 gap-4 mt-6 lg:grid-cols-2">
                     <!-- Monthly Orders Chart -->
                     <div class="card-gradient p-4 rounded-xl">
-                        <h3 class="text-lg font-bold text-gray-800 mb-3">Monthly Order Trends</h3>
+                        <h3 class="text-lg font-bold text-black mb-3">Monthly Order Trends</h3>
                         <div class="relative" style="height: 300px;">
                             <canvas id="monthlyOrdersChart"></canvas>
                         </div>
@@ -326,7 +326,7 @@
 
                     <!-- Order Status Distribution -->
                     <div class="card-gradient p-4 rounded-xl">
-                        <h3 class="text-lg font-bold text-gray-800 mb-3">Order Status Distribution</h3>
+                        <h3 class="text-lg font-bold text-black mb-3">Order Status Distribution</h3>
                         <div class="relative" style="height: 300px;">
                             <canvas id="orderStatusChart"></canvas>
                         </div>
@@ -380,7 +380,7 @@
                 <div class="grid grid-cols-1 gap-4 mt-6 lg:grid-cols-2">
                     <!-- Top Wholesalers -->
                     <div class="card-gradient p-4 rounded-xl">
-                        <h3 class="text-lg font-bold text-gray-800 mb-3">Top Wholesalers by Revenue</h3>
+                        <h3 class="text-lg font-bold text-black mb-3">Top Wholesalers by Revenue</h3>
                         <div class="space-y-3">
                             @forelse($orderStats['top_wholesalers'] ?? [] as $wholesaler)
                                 <div class="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm">
@@ -408,7 +408,7 @@
 
                     <!-- Top Suppliers -->
                     <div class="card-gradient p-4 rounded-xl">
-                        <h3 class="text-lg font-bold text-gray-800 mb-3">Top Suppliers by Performance</h3>
+                        <h3 class="text-lg font-bold text-black mb-3">Top Suppliers by Performance</h3>
                         <div class="space-y-3">
                             @forelse($supplyStats['supplier_performance'] ?? [] as $supplier)
                                 <div class="flex items-center justify-between p-3 bg-white rounded-lg shadow-sm">

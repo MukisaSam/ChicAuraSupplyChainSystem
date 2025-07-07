@@ -300,11 +300,11 @@
                 
                 <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-3 h-64">
                     <div class="card-gradient p-4 rounded-xl lg:col-span-2 overflow-hidden">
-                        <h3 class="text-lg font-bold text-gray-800 mb-3">Production Overview</h3>
+                        <h3 class="text-lg font-bold text-black mb-3">Production Overview</h3>
                         <canvas id="productionChart" class="w-full h-48"></canvas>
                     </div>
                     <div class="card-gradient p-4 rounded-xl overflow-hidden">
-                        <h3 class="text-lg font-bold text-gray-800 mb-3">Recent Activities</h3>
+                        <h3 class="text-lg font-bold text-black mb-3">Recent Activities</h3>
                         <div class="space-y-2 h-48 overflow-y-auto">
                             @forelse ($recentActivities ?? [] as $activity)
                                 <div class="flex items-start p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
@@ -345,7 +345,7 @@
                     datasets: [{
                         label: 'Production Volume',
                         data: [65, 59, 80, 81, 56, 55],
-                        borderColor: 'rgb(99, 102, 241)',
+                        borderColor: 'rgb(59, 130, 246)',
                         backgroundColor: 'rgba(99, 102, 241, 0.1)',
                         tension: 0.4
                     }]

@@ -202,8 +202,8 @@
                                     <i class="fas fa-dollar-sign text-white text-xl"></i>
                                 </div>
                                 <div class="ml-4">
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Total Sales</p>
-                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($salesData->sum('total_amount'), 2) }}</p>
+                                    <p class="text-sm text-black">Total Sales</p>
+                                    <p class="text-2xl font-bold text-black">${{ number_format($salesData->sum('total_amount'), 2) }}</p>
                                 </div>
                             </div>
                         </div>
@@ -214,8 +214,8 @@
                                     <i class="fas fa-shopping-cart text-white text-xl"></i>
                                 </div>
                                 <div class="ml-4">
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Total Orders</p>
-                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $salesData->count() }}</p>
+                                    <p class="text-sm text-black">Total Orders</p>
+                                    <p class="text-2xl font-bold text-black">{{ $salesData->count() }}</p>
                                 </div>
                             </div>
                         </div>
@@ -226,8 +226,8 @@
                                     <i class="fas fa-chart-line text-white text-xl"></i>
                                 </div>
                                 <div class="ml-4">
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Avg Order Value</p>
-                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($salesData->avg('total_amount'), 2) }}</p>
+                                    <p class="text-sm text-black">Avg Order Value</p>
+                                    <p class="text-2xl font-bold text-black">${{ number_format($salesData->avg('total_amount'), 2) }}</p>
                                 </div>
                             </div>
                         </div>
@@ -235,22 +235,22 @@
 
                     <!-- Daily Sales Chart -->
                     <div class="card-gradient p-6 rounded-xl mb-8">
-                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Daily Sales Trend</h2>
+                        <h2 class="text-lg font-semibold text-black mb-4">Daily Sales Trend</h2>
                         <div class="overflow-x-auto">
                             <table class="min-w-full">
                                 <thead>
                                     <tr class="border-b border-gray-200 dark:border-gray-600">
-                                        <th class="text-left py-2 text-sm font-medium text-gray-600 dark:text-gray-400">Date</th>
-                                        <th class="text-left py-2 text-sm font-medium text-gray-600 dark:text-gray-400">Sales</th>
-                                        <th class="text-left py-2 text-sm font-medium text-gray-600 dark:text-gray-400">Orders</th>
+                                        <th class="text-left py-2 text-sm font-medium text-black">Date</th>
+                                        <th class="text-left py-2 text-sm font-medium text-black">Sales</th>
+                                        <th class="text-left py-2 text-sm font-medium text-black">Orders</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($dailySales as $day)
                                     <tr class="border-b border-gray-100 dark:border-gray-700">
-                                        <td class="py-2 text-sm text-gray-600 dark:text-gray-400">{{ \Carbon\Carbon::parse($day->date)->format('M d, Y') }}</td>
-                                        <td class="py-2 text-sm text-gray-900 dark:text-white">${{ number_format($day->total_sales, 2) }}</td>
-                                        <td class="py-2 text-sm text-gray-900 dark:text-white">{{ $day->order_count }}</td>
+                                        <td class="py-2 text-sm text-black">{{ \Carbon\Carbon::parse($day->date)->format('M d, Y') }}</td>
+                                        <td class="py-2 text-sm text-black">${{ number_format($day->total_sales, 2) }}</td>
+                                        <td class="py-2 text-sm text-black">{{ $day->order_count }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
@@ -260,34 +260,34 @@
 
                     <!-- Sales Details -->
                     <div class="card-gradient p-6 rounded-xl">
-                        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Sales Details</h2>
+                        <h2 class="text-lg font-semibold text-black mb-4">Sales Details</h2>
                         <div class="overflow-x-auto">
                             <table class="min-w-full">
                                 <thead>
                                     <tr class="border-b border-gray-200 dark:border-gray-600">
-                                        <th class="text-left py-2 text-sm font-medium text-gray-600 dark:text-gray-400">Order ID</th>
-                                        <th class="text-left py-2 text-sm font-medium text-gray-600 dark:text-gray-400">Date</th>
-                                        <th class="text-left py-2 text-sm font-medium text-gray-600 dark:text-gray-400">Status</th>
-                                        <th class="text-left py-2 text-sm font-medium text-gray-600 dark:text-gray-400">Payment Method</th>
-                                        <th class="text-left py-2 text-sm font-medium text-gray-600 dark:text-gray-400">Amount</th>
+                                        <th class="text-left py-2 text-sm font-medium text-black">Order ID</th>
+                                        <th class="text-left py-2 text-sm font-medium text-black">Date</th>
+                                        <th class="text-left py-2 text-sm font-medium text-black">Status</th>
+                                        <th class="text-left py-2 text-sm font-medium text-black">Payment Method</th>
+                                        <th class="text-left py-2 text-sm font-medium text-black">Amount</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($salesData as $order)
                                     <tr class="border-b border-gray-100 dark:border-gray-700">
-                                        <td class="py-2 text-sm text-gray-900 dark:text-white">#{{ $order->id }}</td>
-                                        <td class="py-2 text-sm text-gray-600 dark:text-gray-400">{{ $order->order_date->format('M d, Y') }}</td>
+                                        <td class="py-2 text-sm text-black">#{{ $order->id }}</td>
+                                        <td class="py-2 text-sm text-black">{{ $order->order_date->format('M d, Y') }}</td>
                                         <td class="py-2 text-sm">
                                             <span class="px-2 py-1 text-xs rounded-full 
                                                 @if($order->status === 'delivered') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
                                                 @elseif($order->status === 'pending') bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200
                                                 @elseif($order->status === 'cancelled') bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
-                                                @else bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 @endif">
+                                                @else bg-gray-100 text-black dark:bg-gray-700 text-black @endif">
                                                 {{ ucfirst($order->status) }}
                                             </span>
                                         </td>
-                                        <td class="py-2 text-sm text-gray-600 dark:text-gray-400 capitalize">{{ $order->payment_method }}</td>
-                                        <td class="py-2 text-sm text-gray-900 dark:text-white">${{ number_format($order->total_amount, 2) }}</td>
+                                        <td class="py-2 text-sm text-black capitalize">{{ $order->payment_method }}</td>
+                                        <td class="py-2 text-sm text-black">${{ number_format($order->total_amount, 2) }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>

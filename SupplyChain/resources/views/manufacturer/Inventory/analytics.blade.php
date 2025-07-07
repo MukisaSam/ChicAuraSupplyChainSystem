@@ -299,7 +299,7 @@
                 <div class="grid grid-cols-1 gap-6 mb-6 lg:grid-cols-2">
                     <!-- Category Distribution Chart -->
                     <div class="card-gradient p-6 rounded-xl">
-                        <h3 class="text-lg font-bold text-gray-800 mb-4">Inventory by Category</h3>
+                        <h3 class="text-lg font-bold text-black mb-4">Inventory by Category</h3>
                         <div class="chart-container">
                             <canvas id="categoryChart"></canvas>
                         </div>
@@ -307,7 +307,7 @@
 
                     <!-- Stock Value by Category -->
                     <div class="card-gradient p-6 rounded-xl">
-                        <h3 class="text-lg font-bold text-gray-800 mb-4">Stock Value by Category</h3>
+                        <h3 class="text-lg font-bold text-black mb-4">Stock Value by Category</h3>
                         <div class="chart-container">
                             <canvas id="valueChart"></canvas>
                         </div>
@@ -316,16 +316,16 @@
 
                 <!-- Stock Movement Chart -->
                 <div class="card-gradient p-6 rounded-xl mb-6">
-                    <h3 class="text-lg font-bold text-gray-800 mb-4">Stock Movement (Last 30 Days)</h3>
+                    <h3 class="text-lg font-bold text-black mb-4">Stock Movement (Last 30 Days)</h3>
                     <div class="chart-container">
                         <canvas id="movementChart"></canvas>
                     </div>
                 </div>
 
                 <!-- Low Stock Items Table -->
-                <div class="card-gradient rounded-xl overflow-hidden">
+                <div class="card-gradient rounded-xl">
                     <div class="p-4 border-b border-gray-200">
-                        <h3 class="text-lg font-bold text-gray-800">Low Stock Items</h3>
+                        <h3 class="text-lg font-bold text-black">Low Stock Items</h3>
                         <p class="text-sm text-gray-600 mt-1">Items that need immediate attention</p>
                     </div>
                     <div class="overflow-x-auto">

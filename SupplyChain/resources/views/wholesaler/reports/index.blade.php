@@ -218,23 +218,23 @@
 
                         <!-- Order Analytics Card -->
                         <div class="card-gradient p-6 rounded-xl">
-                            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Order Analytics</h2>
+                            <h2 class="text-lg font-semibold text-black mb-4">Order Analytics</h2>
                             <div class="flex flex-col gap-3">
                                 <div class="flex justify-between text-sm">
-                                    <span class="text-gray-600 dark:text-gray-400">Total Orders</span>
-                                    <span class="font-bold text-gray-900 dark:text-white">{{ $orderAnalytics['total_orders'] }}</span>
+                                    <span class="text-black">Total Orders</span>
+                                    <span class="font-bold text-black">{{ $orderAnalytics['total_orders'] }}</span>
                                 </div>
                                 <div class="flex justify-between text-sm">
-                                    <span class="text-gray-600 dark:text-gray-400">Completed</span>
-                                    <span class="font-bold text-gray-900 dark:text-white">{{ $orderAnalytics['completed_orders'] }}</span>
+                                    <span class="text-black">Completed</span>
+                                    <span class="font-bold text-black">{{ $orderAnalytics['completed_orders'] }}</span>
                                 </div>
                                 <div class="flex justify-between text-sm">
-                                    <span class="text-gray-600 dark:text-gray-400">Pending</span>
-                                    <span class="font-bold text-gray-900 dark:text-white">{{ $orderAnalytics['pending_orders'] }}</span>
+                                    <span class="text-black">Pending</span>
+                                    <span class="font-bold text-black">{{ $orderAnalytics['pending_orders'] }}</span>
                                 </div>
                                 <div class="flex justify-between text-sm">
-                                    <span class="text-gray-600 dark:text-gray-400">Cancelled</span>
-                                    <span class="font-bold text-gray-900 dark:text-white">{{ $orderAnalytics['cancelled_orders'] }}</span>
+                                    <span class="text-black">Cancelled</span>
+                                    <span class="font-bold text-black">{{ $orderAnalytics['cancelled_orders'] }}</span>
                                 </div>
                             </div>
                         </div>
@@ -275,11 +275,11 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                         <!-- Monthly Trends Card -->
                         <div class="card-gradient p-6 rounded-xl">
-                            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Monthly Trends (Last 12 Months)</h2>
+                            <h2 class="text-lg font-semibold text-black mb-4">Monthly Trends (Last 12 Months)</h2>
                             <div class="overflow-x-auto">
                                 <table class="min-w-full text-xs md:text-sm">
                                     <thead>
-                                        <tr class="text-left text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-gray-600">
+                                        <tr class="text-black">
                                             <th class="pr-4 py-2">Month</th>
                                             <th class="pr-4 py-2">Sales</th>
                                             <th class="pr-4 py-2">Orders</th>
@@ -288,9 +288,9 @@
                                     <tbody>
                                         @foreach($monthlyTrends as $trend)
                                         <tr class="border-b border-gray-100 dark:border-gray-700">
-                                            <td class="pr-4 py-2 text-gray-600 dark:text-gray-400">{{ $trend->month_name }}</td>
-                                            <td class="pr-4 py-2 text-gray-900 dark:text-white">${{ number_format($trend->total_sales, 2) }}</td>
-                                            <td class="pr-4 py-2 text-gray-900 dark:text-white">{{ $trend->order_count }}</td>
+                                            <td class="pr-4 py-2 text-black">{{ $trend->month_name }}</td>
+                                            <td class="pr-4 py-2 text-black">${{ number_format($trend->total_sales, 2) }}</td>
+                                            <td class="pr-4 py-2 text-black">{{ $trend->order_count }}</td>
                                         </tr>
                                         @endforeach
                                     </tbody>
@@ -300,12 +300,12 @@
 
                         <!-- Payment Methods Card -->
                         <div class="card-gradient p-6 rounded-xl">
-                            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Payment Methods</h2>
+                            <h2 class="text-lg font-semibold text-black mb-4">Payment Methods</h2>
                             <ul class="divide-y divide-gray-100 dark:divide-gray-700">
                                 @foreach($paymentMethods as $method)
                                 <li class="flex justify-between py-2 text-sm">
-                                    <span class="text-gray-600 dark:text-gray-400 capitalize">{{ $method->payment_method }}</span>
-                                    <span class="font-bold text-gray-900 dark:text-white">{{ $method->count }} orders</span>
+                                    <span class="text-black capitalize">{{ $method->payment_method }}</span>
+                                    <span class="font-bold text-black">{{ $method->count }} orders</span>
                                 </li>
                                 @endforeach
                             </ul>
@@ -315,12 +315,12 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <!-- Order Statuses Card -->
                         <div class="card-gradient p-6 rounded-xl">
-                            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Order Statuses</h2>
+                            <h2 class="text-lg font-semibold text-black mb-4">Order Statuses</h2>
                             <ul class="divide-y divide-gray-100 dark:divide-gray-700">
                                 @foreach($orderStatuses as $status)
                                 <li class="flex justify-between py-2 text-sm">
-                                    <span class="text-gray-600 dark:text-gray-400 capitalize">{{ $status->status }}</span>
-                                    <span class="font-bold text-gray-900 dark:text-white">{{ $status->count }} orders</span>
+                                    <span class="text-black capitalize">{{ $status->status }}</span>
+                                    <span class="font-bold text-black">{{ $status->count }} orders</span>
                                 </li>
                                 @endforeach
                             </ul>
@@ -328,7 +328,7 @@
 
                         <!-- Export Options Card -->
                         <div class="card-gradient p-6 rounded-xl">
-                            <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Export Reports</h2>
+                            <h2 class="text-lg font-semibold text-black mb-4">Export Reports</h2>
                             <div class="space-y-3">
                                 <a href="{{ route('wholesaler.reports.sales', ['start_date' => $startDate, 'end_date' => $endDate]) }}" 
                                    class="block w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-center">

@@ -251,11 +251,11 @@
                 
                 <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-3 h-64">
                     <div class="card-gradient p-4 rounded-xl lg:col-span-2 overflow-hidden">
-                        <h3 class="text-lg font-bold text-gray-800 mb-3">Purchase History ($)</h3>
+                        <h3 class="text-lg font-bold text-black mb-3">Purchase History ($)</h3>
                         <canvas id="purchaseChart" class="w-full h-48"></canvas>
                     </div>
-                    <div class="card-gradient p-4 rounded-xl overflow-hidden">
-                        <h3 class="text-lg font-bold text-gray-800 mb-3">Recent Orders</h3>
+                    <div class="card-gradient p-4 rounded-xl">
+                        <h3 class="text-lg font-bold text-black mb-3">Recent Orders</h3>
                         <div class="space-y-2 h-48 overflow-y-auto">
                             @forelse ($recentOrders as $order)
                                 <div class="flex items-center p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
