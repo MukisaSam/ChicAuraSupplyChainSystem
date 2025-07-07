@@ -497,7 +497,12 @@
             <!-- Main Content -->
             <main class=" flex-1 overflow-y-auto p-6">
                 @if($record)
-                <form action="" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('admin.users.add') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+
+                <!-- Primary Key -->
+                <input type="text" name="id" class="hidden"  value="{{$record->id}}">  
+
                 <!-- Page Header -->
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
                     <div>
@@ -549,24 +554,24 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <label class="block text-gray-700 font-medium mb-2">Company / Firm Name</label>
-                                    <input type="text" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none" value="{{$record->name}}">
+                                    <input type="text" name="name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none" value="{{$record->name}}">
                                 </div>
                                 <div>
                                     <label class="block text-gray-700 font-medium mb-2">Business Email</label>
-                                    <input type="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none" value="{{$record->email}}">
+                                    <input type="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none" value="{{$record->email}}">
                                 </div>
                                 <div>
                                     <label class="block text-gray-700 font-medium mb-2">Phone Number</label>
-                                    <input type="tel" class="w-full px-4 py-3 border border-gray-300  rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none" value="{{$record->phone}}">
+                                    <input type="tel" name="phone" class="w-full px-4 py-3 border border-gray-300  rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none" value="{{$record->phone}}">
                                 </div>
                                 <div>
                                     <label class="block text-gray-700 font-medium mb-2">Role</label>
-                                    <input type="text" class="w-full px-4 py-3 border border-gray-300  rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none" value="{{$record->role}}">
+                                    <input type="text" name="role" class="w-full px-4 py-3 border border-gray-300  rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none" value="{{$record->role}}">
                                 </div>
                                 <div>
-                                    <label class="block text-gray-700 font-medium mb-2">Current Password</label>
+                                    <label class="block text-gray-700 font-medium mb-2">New Password</label>
                                     <div class="relative">
-                                        <input type="password" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none" placeholder="Enter current password">
+                                        <input type="password" id="password" name="password" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none" placeholder="Change Old Password">
                                         <div class="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600 cursor-pointer">
                                             <i class="fas fa-eye"></i>
                                         </div>
@@ -575,7 +580,7 @@
                                 <div>
                                     <label class="block text-gray-700 font-medium mb-2">Confirm Password</label>
                                     <div class="relative">
-                                        <input type="password" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none" placeholder="Confirm new password">
+                                        <input type="password" id="password_confirmation" name="password_confirmation" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none" placeholder="Confirm new password">
                                         <div class="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600 cursor-pointer">
                                             <i class="fas fa-eye"></i>
                                         </div>
@@ -583,7 +588,7 @@
                                 </div>
                                 <div>
                                     <label class="block text-gray-700 font-medium mb-2">Business Address</label>
-                                    <input type="text" class="w-full px-4 py-3 border border-gray-300  rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none" value="{{$record->business_address}}">
+                                    <input type="text" name="business_address" class="w-full px-4 py-3 border border-gray-300  rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none" value="{{$record->business_address}}">
                                 </div>
                                 @if($record->role == 'supplier')
                                 <div>
@@ -593,7 +598,7 @@
                                           $allOptions = ['fabric','thread','buttons','zippers','dyes','other'];
                                         ?>
                                         @foreach($allOptions as $option)
-                                            <div><input type="checkbox" name="materials_supplied" value="{{$option}}" @if(in_array($option, $materials_supplied)) checked @endif><label class="ml-1" for="">{{ ucfirst($option) }}</label></div>
+                                            <div><input type="checkbox" name="materials_supplied[]" value="{{$option}}" @if(in_array($option, $materials_supplied)) checked @endif><label class="ml-1" for="">{{ ucfirst($option) }}</label></div>
                                         @endforeach
                                     </div>
                                 </div>
@@ -601,7 +606,7 @@
                                 @if($record->role == 'manufacturer')
                                 <div>
                                     <label class="block text-gray-700 font-medium mb-2">Production Capacity</label>
-                                    <input type="text" class="w-full px-4 py-3 border border-gray-300  rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none" value="123456">
+                                    <input type="text" name="production_capacity" class="w-full px-4 py-3 border border-gray-300  rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none" value="{{ $record->production_capacity }}">
                                 </div> 
                                 <div>
                                     <label class="block text-gray-700 font-medium mb-2">Specialization</label>
@@ -610,7 +615,7 @@
                                           $allOptions2 = ['casual_wear','formal_wear','sports_wear','evening_wear','accessories','other'];
                                         ?>
                                         @foreach($allOptions2 as $option)
-                                            <div><input type="checkbox" name="specialization" value="{{$option}}" @if(in_array($option, $specialization)) checked @endif><label class="ml-1" for="">{{ ucfirst(str_replace('_', ' ', $option)) }}</label></div>
+                                            <div><input type="checkbox" name="specialization[]" value="{{$option}}" @if(in_array($option, $specialization)) checked @endif><label class="ml-1" for="">{{ ucfirst(str_replace('_', ' ', $option)) }}</label></div>
                                         @endforeach
                                     </div>
                                 </div> 
@@ -618,22 +623,22 @@
                                 @if($record->role == 'wholesaler')
                                 <div>
                                     <label class="block text-gray-700 font-medium mb-2">Business Type</label>
-                                    <input type="text" class="w-full px-4 py-3 border border-gray-300  rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none" value="{{$record->business_type}}">
+                                    <input type="text" name="business_type" class="w-full px-4 py-3 border border-gray-300  rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none" value="{{ ucfirst(str_replace('_', ' ', $record->business_type)) }}">
                                 </div>
                                 <div>
                                     <label class="block text-gray-700 font-medium mb-2">Preferred Categories</label>
-                                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 px-4 py-3 border border-gray-300  rounded-lg hover:ring-2 hover:ring-blue-500 hover:border-transparent bg-white">
+                                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 px-4 py-3 border border-gray-300 rounded-lg hover:ring-2 hover:ring-blue-500 hover:border-transparent bg-white">
                                         <?php
                                           $allOptions3 = ['casual_wear','formal_wear','sports_wear','evening_wear','accessories','other'];
                                         ?>
                                         @foreach($allOptions3 as $option)
-                                            <div><input type="checkbox" name="preferred_categories" value="{{$option}}" @if(in_array($option, $preferred_categories)) checked @endif><label class="ml-1" for="">{{ ucfirst(str_replace('_', ' ', $option)) }}</label></div>
+                                            <div><input type="checkbox" name="preferred_categories[]" value="{{$option}}" @if(in_array($option, $preferred_categories)) checked @endif><label class="ml-1" for="">{{ ucfirst(str_replace('_', ' ', $option)) }}</label></div>
                                         @endforeach
                                     </div>
                                 </div>
                                 <div>
                                     <label class="block text-gray-700 font-medium mb-2">Monthy Order Volume</label>
-                                    <input type="text" class="w-full px-4 py-3 border border-gray-300  rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none" value="1000">
+                                    <input type="text" name="monthly_order_volume" class="w-full px-4 py-3 border border-gray-300  rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none" value="{{ $record->monthly_order_volume }}">
                                 </div>                                
                                 @endif
                             </div>
@@ -656,7 +661,7 @@
                                 </p>
                                 <label class="btn-secondary w-full cursor-pointer inline-flex items-center justify-center p-2 rounded">
                                      <i class="fas fa-upload mr-2"></i> Upload New Photo
-                                    <input type="file" class="hidden" name="photo" accept=".jpg,.jpeg,.gif,.png" id="photoInput" />
+                                    <input type="file" class="hidden" name="profile_picture" accept=".jpg,.jpeg,.gif,.png" id="photoInput" />
                                 </label>
                                 <p id="fileName" class="text-gray-600 text-sm mt-2 text-center"></p>
                             </div>

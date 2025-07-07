@@ -39,7 +39,24 @@
 
         .form-input:focus {
             background: rgba(255, 255, 255, 0.2) !important;
-            border-color: var(--primary-color) !important;
+            border-color: #2b7fff !important;
+            color: var(--text-light) !important;
+        }
+
+        .form-input2 {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border: 2px solid rgba(255, 255, 255, 0.3) !important;
+            color: var(--text-light) !important;
+            backdrop-filter: blur(5px);
+        }
+
+        .form-input2::placeholder {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+        .form-input2:hover {
+            background: rgba(255, 255, 255, 0.2) !important;
+            border-color: #2b7fff !important;
             color: var(--text-light) !important;
         }
 
@@ -148,7 +165,7 @@
                         </div>
                     </div>
 
-                    <div>
+                    <!--<div>
                         <label for="preferred_categories" class="form-label block text-sm font-medium">Preferred Categories</label>
                         <div class="mt-1">
                             <select id="preferred_categories" name="preferred_categories[]" multiple required class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
@@ -160,15 +177,24 @@
                                 <option value="other">Other</option>
                             </select>
                         </div>
+                    </div>-->
+                    <div>
+                        <label for="preferred_categories" class="form-label block text-sm font-semibold mb-2">Specialization</label>
+                        <div id="preferred_categories"multiple required class="form-input2  grid grid-cols-1 lg:grid-cols-2 gap-6 w-full px-4 py-3 rounded-lg hover:ring-2 hover:ring-blue-500 transition duration-200">
+                                <div class="flex items-center"><input type="checkbox" name="preferred_categories[]" value="casual_wear" class="rounded-[4px]"><label class="ml-1">Casual Wear</label></div>
+                                <div class="flex items-center"><input type="checkbox" name="preferred_categories[]" value="formal_wear" class="rounded-[4px]"><label class="ml-1">Formal Wear</label></div>
+                                <div class="flex items-center"><input type="checkbox" name="preferred_categories[]" value="sports_wear" class="rounded-[4px]"><label class="ml-1">Sports Wear</label></div>
+                                <div class="flex items-center"><input type="checkbox" name="preferred_categories[]" value="evening_wear" class="rounded-[4px]"><label class="ml-1">Evening Wear</label></div>
+                                <div class="flex items-center"><input type="checkbox" name="preferred_categories[]" value="accessories" class="rounded-[4px]"><label class="ml-1">Accessories</label></div>
+                                <div class="flex items-center"><input type="checkbox" name="preferred_categories[]" value="other" class="rounded-[4px]"><label class="ml-1">Other</label></div>
+                        </div>
                     </div>
-
-                    <!--
                     <div>
                         <label for="monthly_order_volume" class="form-label block text-sm font-medium">Expected Monthly Order Volume (units)</label>
                         <div class="mt-1">
                             <input id="monthly_order_volume" name="monthly_order_volume" type="number" required class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                         </div>
-                    </div>-->
+                    </div>
 
                     <div>
                         <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">

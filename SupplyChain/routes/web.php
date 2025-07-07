@@ -75,8 +75,11 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/users', [App\Http\Controllers\AdminUsersController::class, 'index'])->name('users');
-    Route::get('/users/add', fn() => view('admin.usersmanagement.adduser'))->name('users.add.view');
-    Route::post('/users/add', [App\Http\Controllers\AdminUsersController::class, 'addUserView'])->name('users.add');
+    Route::get('/users/add', fn() => view('admin.UsersManagement.addUser'))->name('users.add.view');
+    Route::post('/users', [App\Http\Controllers\AdminUsersController::class, 'addUserView'])->name('users.addview');
+    Route::post('/users/add', [App\Http\Controllers\AdminUsersController::class, 'addUser'])->name('users.add');
+    Route::post('/users/add', [App\Http\Controllers\AdminUsersController::class, 'removeUser'])->name('users.remove');
+    
     
     // User Management Routes
     /*
