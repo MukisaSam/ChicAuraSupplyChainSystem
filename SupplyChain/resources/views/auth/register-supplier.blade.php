@@ -39,7 +39,24 @@
 
         .form-input:focus {
             background: rgba(255, 255, 255, 0.2) !important;
-            border-color: var(--primary-color) !important;
+            border-color: #2b7fff !important;
+            color: var(--text-light) !important;
+        }
+
+        .form-input2 {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border: 2px solid rgba(255, 255, 255, 0.3) !important;
+            color: var(--text-light) !important;
+            backdrop-filter: blur(5px);
+        }
+
+        .form-input2::placeholder {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+        .form-input2:hover {
+            background: rgba(255, 255, 255, 0.2) !important;
+            border-color: #2b7fff !important;
             color: var(--text-light) !important;
         }
 
@@ -143,7 +160,7 @@
                         </div>
                     </div>
 
-                    <div>
+                    <!--<div>
                         <label for="materials_supplied" class="form-label block text-sm font-medium">Materials Supplied</label>
                         <div class="mt-1">
                             <select id="materials_supplied" name="materials_supplied[]" multiple required class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
@@ -154,6 +171,20 @@
                                 <option value="dyes">Dyes</option>
                                 <option value="other">Other</option>
                             </select>
+                        </div>
+                    </div>-->
+
+                    <div>
+                        <label for="materials_supplied" class="form-label block text-sm font-medium">Materials Supplied</label>
+                        <div class="mt-1">
+                            <div id="materials_supplied" class="form-input2 grid grid-cols-1 lg:grid-cols-3 gap-6 block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 outline-none hover:ring-2 hover:ring-indigo-500 hover:border-indigo-500 sm:text-sm">
+                                <div class="flex items-center"><input type="checkbox" name="materials_supplied[]" value="fabric" class="rounded-[4px]"><label class="ml-1">Fabric</label></div>
+                                <div class="flex items-center"><input type="checkbox" name="materials_supplied[]" value="thread" class="rounded-[4px]"><label class="ml-1">Thread</label></div>
+                                <div class="flex items-center"><input type="checkbox" name="materials_supplied[]" value="button" class="rounded-[4px]"><label class="ml-1">Buttons</label></div>
+                                <div class="flex items-center"><input type="checkbox" name="materials_supplied[]" value="zippers" class="rounded-[4px]"><label class="ml-1">Zippers</label></div>
+                                <div class="flex items-center"><input type="checkbox" name="materials_supplied[]" value="dyes" class="rounded-[4px]"><label class="ml-1">Dyes</label></div>
+                                <div class="flex items-center"><input type="checkbox" name="materials_supplied[]" value="other" class="rounded-[4px]"><label class="ml-1">Other</label></div>
+                            </div>
                         </div>
                     </div>
 

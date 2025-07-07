@@ -21,6 +21,8 @@ class PendingUsers extends Model
         'license_document',
         'document_path',
         'business_type',
+        'monthly_order_volume',
+        'production_capacity',
         'preferred_categories',
         'specialization',
         'materials_supplied',

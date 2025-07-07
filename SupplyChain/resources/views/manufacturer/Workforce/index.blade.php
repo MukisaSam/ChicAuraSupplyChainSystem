@@ -1,7 +1,7 @@
 @extends('manufacturer.layouts.dashboard')
 @section('content')
 <div class="container mx-auto py-6">
-    <h1 class="text-2xl font-bold mb-4">Workforce Management</h1>
+    <h1 class="text-2xl font-bold mb-4 text-white">Workforce Management</h1>
     <a href="{{ route('manufacturer.workforce.create') }}" class="bg-indigo-600 text-white px-4 py-2 rounded mb-4 inline-block">Add Employee</a>
     @if(session('success'))
         <div class="bg-green-100 text-green-800 p-2 rounded mb-4">{{ session('success') }}</div>

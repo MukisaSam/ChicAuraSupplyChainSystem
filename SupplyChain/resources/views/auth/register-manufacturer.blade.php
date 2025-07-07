@@ -39,7 +39,24 @@
 
         .form-input:focus {
             background: rgba(255, 255, 255, 0.2) !important;
-            border-color: var(--primary-color) !important;
+            border-color: #2b7fff !important;
+            color: var(--text-light) !important;
+        }
+
+        .form-input2 {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border: 2px solid rgba(255, 255, 255, 0.3) !important;
+            color: var(--text-light) !important;
+            backdrop-filter: blur(5px);
+        }
+
+        .form-input2::placeholder {
+            color: rgba(255, 255, 255, 0.7) !important;
+        }
+
+        .form-input2:hover {
+            background: rgba(255, 255, 255, 0.2) !important;
+            border-color: #2b7fff !important;
             color: var(--text-light) !important;
         }
 
@@ -127,7 +144,7 @@
                         <input id="production_capacity" name="production_capacity" type="number" required class="form-input w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200" placeholder="Enter monthly production capacity">
                     </div>
 
-                    <div>
+                    <!--<div>
                         <label for="specialization" class="form-label block text-sm font-semibold mb-2">Specialization</label>
                         <select id="specialization" name="specialization[]" multiple required class="form-input w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
                             <option value="casual_wear">Casual Wear</option>
@@ -137,8 +154,18 @@
                             <option value="accessories">Accessories</option>
                             <option value="other">Other</option>
                         </select>
+                    </div>-->
+                    <div>
+                        <label for="specialization" class="form-label block text-sm font-semibold mb-2">Specialization</label>
+                        <div id="specialization"multiple required class="form-input2  grid grid-cols-1 lg:grid-cols-2 gap-6 w-full px-4 py-3 rounded-lg hover:ring-2 hover:ring-blue-500 transition duration-200">
+                                <div class="flex items-center"><input type="checkbox" name="specialization[]" value="casual_wear" class="rounded-[4px]"><label class="ml-1">Casual Wear</label></div>
+                                <div class="flex items-center"><input type="checkbox" name="specialization[]" value="formal_wear" class="rounded-[4px]"><label class="ml-1">Formal Wear</label></div>
+                                <div class="flex items-center"><input type="checkbox" name="specialization[]" value="sports_wear" class="rounded-[4px]"><label class="ml-1">Sports Wear</label></div>
+                                <div class="flex items-center"><input type="checkbox" name="specialization[]" value="evening_wear" class="rounded-[4px]"><label class="ml-1">Evening Wear</label></div>
+                                <div class="flex items-center"><input type="checkbox" name="specialization[]" value="accessories" class="rounded-[4px]"><label class="ml-1">Accessories</label></div>
+                                <div class="flex items-center"><input type="checkbox" name="specialization[]" value="other" class="rounded-[4px]"><label class="ml-1">Other</label></div>
+                        </div>
                     </div>
-
                     <div>
                         <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-200 transform hover:scale-105">
                             <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">

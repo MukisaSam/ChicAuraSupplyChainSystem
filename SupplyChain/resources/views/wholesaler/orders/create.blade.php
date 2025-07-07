@@ -210,7 +210,7 @@
                         <!-- Product Selection -->
                         <div class="lg:col-span-2">
                             <div class="card-gradient rounded-xl p-6">
-                                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Select Products</h3>
+                                <h3 class="text-lg font-semibold text-black mb-4">Select Products</h3>
                                 
                                 @if($items->count() > 0)
                                     <div class="space-y-4" id="itemsContainer">
@@ -235,8 +235,8 @@
                                                         <p class="text-xl font-bold text-gray-900 dark:text-gray-100">${{ number_format($item->base_price, 2) }}</p>
                                                         <div class="flex items-center space-x-2 mt-2">
                                                             <input type="checkbox" id="select_item_{{ $item->id }}" name="items[{{ $item->id }}][selected]" value="1" onchange="toggleQuantityInput({{ $item->id }})">
-                                                            <label for="select_item_{{ $item->id }}" class="text-sm font-medium text-gray-700 dark:text-gray-300">Select</label>
-                                                            <label class="text-sm font-medium text-gray-700 dark:text-gray-300 ml-2">Qty:</label>
+                                                            <label for="select_item_{{ $item->id }}" class="text-sm font-medium text-black">Select</label>
+                                                            <label class="text-sm font-medium text-gray-700 dark:text-black ml-2">Qty:</label>
                                                             <input type="number" 
                                                                    name="items[{{ $item->id }}][quantity]" 
                                                                    id="quantity_input_{{ $item->id }}"
@@ -255,7 +255,7 @@
                                 @else
                                     <div class="text-center py-8">
                                         <i class="fas fa-box-open text-gray-400 dark:text-gray-500 text-4xl mb-4"></i>
-                                        <p class="text-gray-500 dark:text-gray-400">No products available at the moment.</p>
+                                        <p class="text-black">No products available at the moment.</p>
                                     </div>
                                 @endif
                             </div>
@@ -264,11 +264,11 @@
                         <!-- Order Summary -->
                         <div class="lg:col-span-1">
                             <div class="card-gradient rounded-xl p-6 sticky top-4">
-                                <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-4">Order Summary</h3>
+                                <h3 class="text-lg font-semibold text-gray-800 dark:text-black mb-4">Order Summary</h3>
                                 
                                 <div class="space-y-4">
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Select Manufacturer</label>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-black mb-2">Select Manufacturer</label>
                                         <select name="manufacturer_id" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white" required>
                                             <option value="">-- Select Manufacturer --</option>
                                             @foreach($manufacturers as $manufacturer)
@@ -277,7 +277,7 @@
                                         </select>
                                     </div>
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Payment Method</label>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-black mb-2">Payment Method</label>
                                         <select name="payment_method" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
                                             <option value="cash on delivery">Cash on Delivery</option>
                                             <option value="mobile money">Mobile Money</option>
@@ -286,27 +286,27 @@
                                     </div>
                                     
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Delivery Address</label>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-black mb-2">Delivery Address</label>
                                         <textarea name="delivery_address" rows="3" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white" placeholder="Enter your delivery address">{{ old('delivery_address') }}</textarea>
                                     </div>
                                     
                                     <div>
-                                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Notes (Optional)</label>
+                                        <label class="block text-sm font-medium text-gray-700 dark:text-black mb-2">Notes (Optional)</label>
                                         <textarea name="notes" rows="3" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white" placeholder="Any special instructions...">{{ old('notes') }}</textarea>
                                     </div>
                                     
                                     <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
                                         <div class="flex justify-between text-sm mb-2">
-                                            <span class="text-gray-600 dark:text-gray-400">Subtotal:</span>
-                                            <span class="font-medium dark:text-gray-200" id="subtotal">$0.00</span>
+                                            <span class="text-gray-600 dark:text-black">Subtotal:</span>
+                                            <span class="font-medium dark:text-black" id="subtotal">$0.00</span>
                                         </div>
                                         <div class="flex justify-between text-sm mb-2">
-                                            <span class="text-gray-600 dark:text-gray-400">Tax (10%):</span>
-                                            <span class="font-medium dark:text-gray-200" id="tax">$0.00</span>
+                                            <span class="text-gray-600 dark:text-black">Tax (10%):</span>
+                                            <span class="font-medium dark:text-black" id="tax">$0.00</span>
                                         </div>
                                         <div class="flex justify-between text-lg font-bold border-t border-gray-200 dark:border-gray-700 pt-2">
-                                            <span class="dark:text-gray-200">Total:</span>
-                                            <span class="dark:text-gray-200" id="total">$0.00</span>
+                                            <span class="dark:text-black">Total:</span>
+                                            <span class="dark:text-black" id="total">$0.00</span>
                                         </div>
                                     </div>
                                     

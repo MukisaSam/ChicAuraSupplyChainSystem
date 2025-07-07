@@ -341,13 +341,13 @@
                 <!-- Charts Section -->
                 <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-3">
                     <div class="card-gradient p-4 rounded-xl lg:col-span-2">
-                        <h3 class="text-lg font-bold text-gray-800 mb-3">Production & Revenue Trends</h3>
+                        <h3 class="text-lg font-bold text-black mb-3">Production & Revenue Trends</h3>
                         <div class="relative" style="height: 300px;">
                             <canvas id="productionChart"></canvas>
                         </div>
                     </div>
                     <div class="card-gradient p-4 rounded-xl">
-                        <h3 class="text-lg font-bold text-gray-800 mb-3">Recent Activities</h3>
+                        <h3 class="text-lg font-bold text-black mb-3">Recent Activities</h3>
                         <div class="space-y-2 max-h-64 overflow-y-auto">
                             @forelse ($analytics['recentActivities'] as $activity)
                                 <div class="flex items-start p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
@@ -362,7 +362,7 @@
                             @empty 
                                 <div class="text-center py-6">
                                     <i class="fas fa-inbox text-gray-400 text-2xl mb-2"></i>
-                                    <p class="text-gray-500 text-sm">No recent activities found.</p>
+                                    <p class="text-black text-sm">No recent activities found.</p>
                                 </div>
                             @endforelse
                         </div>
@@ -372,13 +372,13 @@
                 <!-- Additional Charts -->
                 <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2">
                     <div class="card-gradient p-4 rounded-xl">
-                        <h3 class="text-lg font-bold text-gray-800 mb-3">Revenue Analysis</h3>
+                        <h3 class="text-lg font-bold text-black mb-3">Revenue Analysis</h3>
                         <div class="relative" style="height: 300px;">
                             <canvas id="revenueChart"></canvas>
                         </div>
                     </div>
                     <div class="card-gradient p-4 rounded-xl">
-                        <h3 class="text-lg font-bold text-gray-800 mb-3">Order Volume</h3>
+                        <h3 class="text-lg font-bold text-black mb-3">Order Volume</h3>
                         <div class="relative" style="height: 300px;">
                             <canvas id="ordersChart"></canvas>
                         </div>
@@ -389,7 +389,7 @@
                 <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2">
                     <!-- Supplier Performance Table -->
                     <div class="card-gradient rounded-xl p-4 ">
-                        <h3 class="text-lg font-bold text-gray-800 mb-3">Supplier Performance (Last 6 Months)</h3>
+                        <h3 class="text-lg font-bold text-black mb-3">Supplier Performance (Last 6 Months)</h3>
                         <div class="overflow-x-auto">
                             <table class="min-w-full text-sm">
                                 <thead>
@@ -416,7 +416,7 @@
 
                     <!-- Customer Segmentation Table -->
                     <div class="card-gradient rounded-xl p-4 ">
-                        <h3 class="text-lg font-bold text-gray-800 mb-3">Wholesaler Segmentation</h3>
+                        <h3 class="text-lg font-bold text-black mb-3">Wholesaler Segmentation</h3>
                         <div class="overflow-x-auto">
                             <table class="min-w-full text-sm">
                                 <thead>

@@ -94,7 +94,7 @@
                 <!-- Sidebar Header -->
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
                     <div class="logo-container">
-                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="h-12 w-auto">
+                        <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
                 <div class="px-4 py-4">
@@ -170,7 +170,7 @@
                             <i class="fas fa-warehouse"></i>
                         </a>
                         <span class="text-gray-400">/</span>
-                        <span class="text-gray-700 font-medium">Add Item</span>
+                        <span class="text-black font-medium">Add Item</span>
                     </div>
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
@@ -203,10 +203,10 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Basic Information -->
                             <div class="space-y-4">
-                                <h3 class="text-lg font-semibold text-gray-800 border-b pb-2">Basic Information</h3>
+                                <h3 class="text-lg font-semibold text-black border-b pb-2">Basic Information</h3>
                                 
                                 <div>
-                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Item Name *</label>
+                                    <label for="name" class="block text-sm font-medium text-black mb-2">Item Name *</label>
                                     <input type="text" id="name" name="name" value="{{ old('name') }}" required
                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                     @error('name')
@@ -215,7 +215,7 @@
                                 </div>
 
                                 <div>
-                                    <label for="category" class="block text-sm font-medium text-gray-700 mb-2">Category *</label>
+                                    <label for="category" class="block text-sm font-medium text-black mb-2">Category *</label>
                                     <select id="category" name="category" required
                                             class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                         <option value="">Select Category</option>
@@ -234,7 +234,7 @@
                                 </div>
 
                                 <div>
-                                    <label for="material" class="block text-sm font-medium text-gray-700 mb-2">Material *</label>
+                                    <label for="material" class="block text-sm font-medium text-black mb-2">Material *</label>
                                     <input type="text" id="material" name="material" value="{{ old('material') }}" required
                                            placeholder="e.g., Cotton, Silk, Polyester"
                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -244,7 +244,7 @@
                                 </div>
 
                                 <div>
-                                    <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description *</label>
+                                    <label for="description" class="block text-sm font-medium text-black mb-2">Description *</label>
                                     <textarea id="description" name="description" rows="3" required
                                               placeholder="Describe the item, its specifications, and any important details"
                                               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">{{ old('description') }}</textarea>
@@ -256,10 +256,10 @@
 
                             <!-- Pricing & Stock -->
                             <div class="space-y-4">
-                                <h3 class="text-lg font-semibold text-gray-800 border-b pb-2">Pricing & Stock</h3>
+                                <h3 class="text-lg font-semibold text-black border-b pb-2">Pricing & Stock</h3>
                                 
                                 <div>
-                                    <label for="base_price" class="block text-sm font-medium text-gray-700 mb-2">Base Price ($) *</label>
+                                    <label for="base_price" class="block text-sm font-medium text-black mb-2">Base Price ($) *</label>
                                     <input type="number" id="base_price" name="base_price" value="{{ old('base_price') }}" step="0.01" min="0" required
                                            placeholder="0.00"
                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -269,7 +269,7 @@
                                 </div>
 
                                 <div>
-                                    <label for="stock_quantity" class="block text-sm font-medium text-gray-700 mb-2">Initial Stock Quantity *</label>
+                                    <label for="stock_quantity" class="block text-sm font-medium text-black mb-2">Initial Stock Quantity *</label>
                                     <input type="number" id="stock_quantity" name="stock_quantity" value="{{ old('stock_quantity', 0) }}" min="0" required
                                            placeholder="0"
                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -279,7 +279,7 @@
                                 </div>
 
                                 <div>
-                                    <label for="size_range" class="block text-sm font-medium text-gray-700 mb-2">Size Range</label>
+                                    <label for="size_range" class="block text-sm font-medium text-black mb-2">Size Range</label>
                                     <input type="text" id="size_range" name="size_range" value="{{ old('size_range') }}"
                                            placeholder="e.g., S, M, L, XL or 36-42"
                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -289,7 +289,7 @@
                                 </div>
 
                                 <div>
-                                    <label for="color_options" class="block text-sm font-medium text-gray-700 mb-2">Color Options</label>
+                                    <label for="color_options" class="block text-sm font-medium text-black mb-2">Color Options</label>
                                     <input type="text" id="color_options" name="color_options" value="{{ old('color_options') }}"
                                            placeholder="e.g., Red, Blue, Green, Black"
                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -302,18 +302,18 @@
 
                         <!-- Image Upload -->
                         <div class="mt-6">
-                            <h3 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-4">Item Image</h3>
+                            <h3 class="text-lg font-semibold text-black border-b pb-2 mb-4">Item Image</h3>
                             <div class="flex items-center space-x-4">
                                 <div class="flex-shrink-0">
                                     <div id="imagePreview" class="w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50">
                                         <div class="text-center">
                                             <i class="fas fa-image text-gray-400 text-2xl mb-2"></i>
-                                            <p class="text-xs text-gray-500">No image</p>
+                                            <p class="text-xs text-black">No image</p>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="flex-1">
-                                    <label for="image" class="block text-sm font-medium text-gray-700 mb-2">Upload Image</label>
+                                    <label for="image" class="block text-sm font-medium text-black mb-2">Upload Image</label>
                                     <input type="file" id="image" name="image" accept="image/*"
                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                     <p class="text-xs text-gray-500 mt-1">Supported formats: JPEG, PNG, JPG, GIF (Max: 2MB)</p>
@@ -327,7 +327,7 @@
                         <!-- Form Actions -->
                         <div class="mt-8 flex justify-end space-x-3">
                             <a href="{{ route('manufacturer.inventory') }}" 
-                               class="px-6 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors">
+                               class="px-6 py-2 border border-gray-300 text-black rounded-md hover:bg-gray-50 transition-colors">
                                 Cancel
                             </a>
                             <button type="submit" 

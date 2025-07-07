@@ -198,11 +198,11 @@
                     <div class="card-gradient p-6 rounded-xl mb-6">
                         <form method="GET" action="{{ route('wholesaler.reports.orders') }}" class="flex flex-col md:flex-row gap-4">
                             <div class="flex-1">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Start Date</label>
+                                <label class="block text-sm font-medium text-black mb-2">Start Date</label>
                                 <input type="date" name="start_date" value="{{ $startDate }}" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
                             </div>
                             <div class="flex-1">
-                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">End Date</label>
+                                <label class="block text-sm font-medium text-black mb-2">End Date</label>
                                 <input type="date" name="end_date" value="{{ $endDate }}" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
                             </div>
                             <div class="flex items-end">
@@ -221,8 +221,8 @@
                                     <i class="fas fa-shopping-cart text-white text-xl"></i>
                                 </div>
                                 <div class="ml-4">
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Total Orders</p>
-                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $orderMetrics['total_orders'] }}</p>
+                                    <p class="text-sm text-black">Total Orders</p>
+                                    <p class="text-2xl font-bold text-black">{{ $orderMetrics['total_orders'] }}</p>
                                 </div>
                             </div>
                         </div>
@@ -233,8 +233,8 @@
                                     <i class="fas fa-dollar-sign text-white text-xl"></i>
                                 </div>
                                 <div class="ml-4">
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Total Revenue</p>
-                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($orderMetrics['total_revenue'], 2) }}</p>
+                                    <p class="text-sm text-black">Total Revenue</p>
+                                    <p class="text-2xl font-bold text-black">${{ number_format($orderMetrics['total_revenue'], 2) }}</p>
                                 </div>
                             </div>
                         </div>
@@ -245,8 +245,8 @@
                                     <i class="fas fa-chart-line text-white text-xl"></i>
                                 </div>
                                 <div class="ml-4">
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Avg Order Value</p>
-                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($orderMetrics['avg_order_value'], 2) }}</p>
+                                    <p class="text-sm text-black">Avg Order Value</p>
+                                    <p class="text-2xl font-bold text-black">${{ number_format($orderMetrics['avg_order_value'], 2) }}</p>
                                 </div>
                             </div>
                         </div>
@@ -257,8 +257,8 @@
                                     <i class="fas fa-truck text-white text-xl"></i>
                                 </div>
                                 <div class="ml-4">
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Delivery Rate</p>
-                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ number_format($orderMetrics['delivery_rate'], 1) }}%</p>
+                                    <p class="text-sm text-black">Delivery Rate</p>
+                                    <p class="text-2xl font-bold text-black">{{ number_format($orderMetrics['delivery_rate'], 1) }}%</p>
                                 </div>
                             </div>
                         </div>
@@ -267,8 +267,8 @@
                     <!-- Order Details Table -->
                     <div class="card-gradient p-6 rounded-xl">
                         <div class="flex items-center justify-between mb-6">
-                            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Order Details</h2>
-                            <div class="text-sm text-gray-600 dark:text-gray-400">
+                            <h2 class="text-lg font-semibold text-black">Order Details</h2>
+                            <div class="text-sm text-black">
                                 Showing {{ $orders->firstItem() ?? 0 }} to {{ $orders->lastItem() ?? 0 }} of {{ $orders->total() }} orders
                             </div>
                         </div>
@@ -277,20 +277,20 @@
                             <table class="min-w-full">
                                 <thead>
                                     <tr class="border-b border-gray-200 dark:border-gray-600">
-                                        <th class="text-left py-3 px-4 text-sm font-medium text-gray-600 dark:text-gray-400">Order ID</th>
-                                        <th class="text-left py-3 px-4 text-sm font-medium text-gray-600 dark:text-gray-400">Date</th>
-                                        <th class="text-left py-3 px-4 text-sm font-medium text-gray-600 dark:text-gray-400">Status</th>
-                                        <th class="text-left py-3 px-4 text-sm font-medium text-gray-600 dark:text-gray-400">Items</th>
-                                        <th class="text-left py-3 px-4 text-sm font-medium text-gray-600 dark:text-gray-400">Payment Method</th>
-                                        <th class="text-left py-3 px-4 text-sm font-medium text-gray-600 dark:text-gray-400">Amount</th>
-                                        <th class="text-left py-3 px-4 text-sm font-medium text-gray-600 dark:text-gray-400">Actions</th>
+                                        <th class="text-left py-3 px-4 text-sm font-medium text-black">Order ID</th>
+                                        <th class="text-left py-3 px-4 text-sm font-medium text-black">Date</th>
+                                        <th class="text-left py-3 px-4 text-sm font-medium text-black">Status</th>
+                                        <th class="text-left py-3 px-4 text-sm font-medium text-black">Items</th>
+                                        <th class="text-left py-3 px-4 text-sm font-medium text-black">Payment Method</th>
+                                        <th class="text-left py-3 px-4 text-sm font-medium text-black">Amount</th>
+                                        <th class="text-left py-3 px-4 text-sm font-medium text-black">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse($orders as $order)
                                     <tr class="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                                        <td class="py-3 px-4 text-sm text-gray-900 dark:text-white font-medium">#{{ $order->id }}</td>
-                                        <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">{{ $order->order_date->format('M d, Y') }}</td>
+                                        <td class="py-3 px-4 text-sm text-black font-medium">#{{ $order->id }}</td>
+                                        <td class="py-3 px-4 text-sm text-black">{{ $order->order_date->format('M d, Y') }}</td>
                                         <td class="py-3 px-4 text-sm">
                                             <span class="px-3 py-1 text-xs rounded-full font-medium
                                                 @if($order->status === 'delivered') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
@@ -299,15 +299,15 @@
                                                 @elseif($order->status === 'in_production') bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200
                                                 @elseif($order->status === 'shipped') bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200
                                                 @elseif($order->status === 'cancelled') bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200
-                                                @else bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-200 @endif">
+                                                @else bg-gray-100 text-black dark:bg-gray-700 text-black @endif">
                                                 {{ ucfirst(str_replace('_', ' ', $order->status)) }}
                                             </span>
                                         </td>
-                                        <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400">
+                                        <td class="py-3 px-4 text-sm text-black">
                                             {{ $order->orderItems->count() }} items
                                         </td>
-                                        <td class="py-3 px-4 text-sm text-gray-600 dark:text-gray-400 capitalize">{{ $order->payment_method }}</td>
-                                        <td class="py-3 px-4 text-sm text-gray-900 dark:text-white font-medium">${{ number_format($order->total_amount, 2) }}</td>
+                                        <td class="py-3 px-4 text-sm text-black capitalize">{{ $order->payment_method }}</td>
+                                        <td class="py-3 px-4 text-sm text-black font-medium">${{ number_format($order->total_amount, 2) }}</td>
                                         <td class="py-3 px-4 text-sm">
                                             <a href="{{ route('wholesaler.orders.show', $order->id) }}" class="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300">
                                                 <i class="fas fa-eye mr-1"></i>View
@@ -316,7 +316,7 @@
                                     </tr>
                                     @empty
                                     <tr>
-                                        <td colspan="7" class="py-8 text-center text-gray-500 dark:text-gray-400">
+                                        <td colspan="7" class="py-8 text-center text-black">
                                             <i class="fas fa-inbox text-4xl mb-4 block"></i>
                                             <p>No orders found for the selected date range.</p>
                                         </td>
@@ -338,7 +338,7 @@
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
                         <!-- Order Status Distribution -->
                         <div class="card-gradient p-6 rounded-xl">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Order Status Distribution</h3>
+                            <h3 class="text-lg font-semibold text-black mb-4">Order Status Distribution</h3>
                             <div class="space-y-3">
                                 @php
                                     $statusColors = [
@@ -354,11 +354,11 @@
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center">
                                         <div class="w-3 h-3 rounded-full {{ $statusColors[$status] ?? 'bg-gray-500' }} mr-3"></div>
-                                        <span class="text-sm text-gray-600 dark:text-gray-400 capitalize">{{ str_replace('_', ' ', $status) }}</span>
+                                        <span class="text-sm text-black capitalize">{{ str_replace('_', ' ', $status) }}</span>
                                     </div>
                                     <div class="flex items-center space-x-2">
-                                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $statusOrders->count() }}</span>
-                                        <span class="text-xs text-gray-500 dark:text-gray-400">({{ number_format(($statusOrders->count() / $orders->count()) * 100, 1) }}%)</span>
+                                        <span class="text-sm font-medium text-black">{{ $statusOrders->count() }}</span>
+                                        <span class="text-xs text-black">({{ number_format(($statusOrders->count() / $orders->count()) * 100, 1) }}%)</span>
                                     </div>
                                 </div>
                                 @endforeach
@@ -367,17 +367,17 @@
 
                         <!-- Payment Method Distribution -->
                         <div class="card-gradient p-6 rounded-xl">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Payment Method Distribution</h3>
+                            <h3 class="text-lg font-semibold text-black mb-4">Payment Method Distribution</h3>
                             <div class="space-y-3">
                                 @foreach($orders->groupBy('payment_method') as $method => $methodOrders)
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center">
                                         <div class="w-3 h-3 rounded-full bg-purple-500 mr-3"></div>
-                                        <span class="text-sm text-gray-600 dark:text-gray-400 capitalize">{{ $method }}</span>
+                                        <span class="text-sm text-black capitalize">{{ $method }}</span>
                                     </div>
                                     <div class="flex items-center space-x-2">
-                                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $methodOrders->count() }}</span>
-                                        <span class="text-xs text-gray-500 dark:text-gray-400">({{ number_format(($methodOrders->count() / $orders->count()) * 100, 1) }}%)</span>
+                                        <span class="text-sm font-medium text-black">{{ $methodOrders->count() }}</span>
+                                        <span class="text-xs text-black">({{ number_format(($methodOrders->count() / $orders->count()) * 100, 1) }}%)</span>
                                     </div>
                                 </div>
                                 @endforeach

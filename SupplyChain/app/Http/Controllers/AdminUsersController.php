@@ -5,9 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User;
+use App\Models\{User,Supplier,Manufacturer,Wholesaler};
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\DB;
 
 class AdminUsersController extends Controller
@@ -25,9 +26,11 @@ class AdminUsersController extends Controller
         }
 
         $records = DB::select('SELECT * FROM pending_users');
+        $activeUsers = DB::select('SELECT * FROM users');
                 
         return view('admin.usersmanagement.index', [
             'pendingUsers' => $records,
+            'activeUsers' => $activeUsers,
         ]);
     }
 
@@ -55,6 +58,98 @@ class AdminUsersController extends Controller
             'specialization' => $specialization,
             'materials_supplied' => $materials_supplied,
         ]);
+    }
+
+    public function addUser(Request $request){
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
+            'role' => ['required', 'in:supplier,manufacturer,wholesaler'],
+            'business_address' => ['required', 'string'],
+            'phone' => ['required', 'string'],
+            'profile_picture' => ['nullable', 'image'],
+            'materials_supplied' => ['array'],
+            'business_type' => ['string'],
+            'monthly_order_volume' => ['numeric'],
+            'preferred_categories' => ['array'],
+            'production_capacity' => ['numeric'],
+            'specialization' => ['array'],
+        ]);
+
+        //Store image and create path
+        $storePath = null;
+        if ($request->hasFile('profile_picture')) {
+            $storePath = $request->file('profile_picture')->store('uploads', 'public');
+        }
+
+        //Retrive Some Details From pending_users
+        $id = $request->id;
+        $details = DB::table('pending_users')->where('id', $id)->first();
+
+        //Check password
+
+        if($request->password == null){
+            $password = $details->password;
+        }else{
+            $request->validate(['password' => ['required', 'confirmed', Rules\Password::defaults()],]);
+            $password = Hash::make($request->password);
+        }
+
+        $details->document_path;
+
+        //Add to Users
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => $password,
+            'role' => $request->role,
+            'profile_picture' => $storePath,
+        ]);
+
+        $role = $request->role;
+        if ($role == 'supplier') {
+            Supplier::create([
+                'user_id' => $user->id,
+                'business_address' => $request->business_address,
+                'phone' => $request->phone,
+                'license_document' => $details->license_document,
+                'materials_supplied' => json_encode($request->materials_supplied),
+            ]);
+        }else if ($role == 'wholesaler') {
+            Wholesaler::create([
+                'user_id' => $user->id,
+                'business_address' => $request->business_address,
+                'phone' => $request->phone,
+                'license_document' => $details->license_document,
+                'business_type' => $request->business_type,
+                'monthly_order_volume' => $request->monthly_order_volume,
+                'preferred_categories' => json_encode($request->preferred_categories),
+            ]);
+        } else if ($role == 'manufacturer') {
+            Manufacturer::create([
+                'user_id' => $user->id,
+                'business_address' => $request->business_address,
+                'phone' => $request->phone,
+                'license_document' => $details->license_document,
+                'production_capacity' => $request->production_capacity,
+                'specialization' => json_encode($request->specialization),
+            ]);
+        }
+
+        //Remove record from pending_users
+        DB::delete('DELETE FROM pending_users WHERE id = ?', [$id]);
+        
+        
+        return redirect()->route('admin.users');
+        
+    }
+
+    public function removeUser(Request $request){
+        $id = $request->id;
+        
+        //Remove record from pending_users
+        DB::delete('DELETE FROM pending_users WHERE id = ?', [$id]);
+        return redirect()->route('admin.users');
     }
 
     public function getUsers(Request $request)

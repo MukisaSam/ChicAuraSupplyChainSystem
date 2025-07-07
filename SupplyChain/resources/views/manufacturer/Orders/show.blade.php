@@ -228,7 +228,7 @@
                     <div class="card-gradient p-6 rounded-xl">
                         <div class="flex justify-between items-center">
                             <div>
-                                <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Order Status</h2>
+                                <h2 class="text-xl font-semibold text-black mb-2">Order Status</h2>
                                 <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full 
                                     @if($order->status === 'pending') bg-yellow-100 text-yellow-800
                                     @elseif($order->status === 'confirmed') bg-blue-100 text-blue-800
@@ -241,8 +241,8 @@
                                 </span>
                             </div>
                             <div class="text-right">
-                                <p class="text-sm text-gray-600 dark:text-gray-400">Order Date</p>
-                                <p class="text-lg font-semibold text-gray-800 dark:text-white">{{ $order->created_at->format('M d, Y H:i') }}</p>
+                                <p class="text-sm text-black">Order Date</p>
+                                <p class="text-lg font-semibold text-black">{{ $order->created_at->format('M d, Y H:i') }}</p>
                             </div>
                         </div>
                     </div>
@@ -253,62 +253,62 @@
                     <div class="lg:col-span-2">
                         <!-- Wholesaler Information -->
                         <div class="card-gradient p-6 rounded-xl mb-6">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Wholesaler Information</h3>
+                            <h3 class="text-lg font-semibold text-black mb-4">Wholesaler Information</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Name</p>
-                                    <p class="text-lg text-gray-800 dark:text-white">{{ $order->wholesaler->user->name ?? 'N/A' }}</p>
+                                    <p class="text-sm font-medium text-black">Name</p>
+                                    <p class="text-lg text-black">{{ $order->wholesaler->user->name ?? 'N/A' }}</p>
                                 </div>
                                 <div>
-                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Business Type</p>
-                                    <p class="text-lg text-gray-800 dark:text-white">{{ $order->wholesaler->business_type ?? 'N/A' }}</p>
+                                    <p class="text-sm font-medium text-black">Business Type</p>
+                                    <p class="text-lg text-black">{{ $order->wholesaler->business_type ?? 'N/A' }}</p>
                                 </div>
                                 <div>
-                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Email</p>
-                                    <p class="text-lg text-gray-800 dark:text-white">{{ $order->wholesaler->user->email ?? 'N/A' }}</p>
+                                    <p class="text-sm font-medium text-black">Email</p>
+                                    <p class="text-lg text-black">{{ $order->wholesaler->user->email ?? 'N/A' }}</p>
                                 </div>
                                 <div>
-                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Phone</p>
-                                    <p class="text-lg text-gray-800 dark:text-white">{{ $order->wholesaler->phone ?? 'N/A' }}</p>
+                                    <p class="text-sm font-medium text-black">Phone</p>
+                                    <p class="text-lg text-black">{{ $order->wholesaler->phone ?? 'N/A' }}</p>
                                 </div>
                                 <div class="md:col-span-2">
-                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Address</p>
-                                    <p class="text-lg text-gray-800 dark:text-white">{{ $order->wholesaler->business_address ?? 'N/A' }}</p>
+                                    <p class="text-sm font-medium text-black">Address</p>
+                                    <p class="text-lg text-black">{{ $order->wholesaler->business_address ?? 'N/A' }}</p>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Order Items -->
                         <div class="card-gradient p-6 rounded-xl">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Order Items</h3>
+                            <h3 class="text-lg font-semibold text-black mb-4">Order Items</h3>
                             <div class="overflow-x-auto">
                                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                                     <thead class="bg-gray-50 dark:bg-gray-700">
                                         <tr>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Item</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Description</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Unit Price</th>
-                                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Total</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium gray-500 dark:text-gray-300 uppercase tracking-wider">Item</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medigray-500 dark:text-gray-300 uppercase tracking-wider">Description</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium gray-500 dark:text-gray-300 uppercase tracking-wider">Quantity</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium gray-500 dark:text-gray-300 uppercase tracking-wider">Unit Price</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium gray-500 dark:text-gray-300 uppercase tracking-wider">Total</th>
                                         </tr>
                                     </thead>
                                     <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                         @foreach($order->orderItems as $item)
                                         <tr>
                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="text-sm font-medium text-gray-900 dark:text-white">{{ $item->item->name ?? 'N/A' }}</div>
+                                                <div class="text-sm font-medium gray-500 dark:text-gray-300">{{ $item->item->name ?? 'N/A' }}</div>
                                             </td>
                                             <td class="px-6 py-4">
-                                                <div class="text-sm text-gray-900 dark:text-white">{{ $item->item->description ?? 'N/A' }}</div>
+                                                <div class="text-sm gray-500 dark:text-gray-300">{{ $item->item->description ?? 'N/A' }}</div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="text-sm text-gray-900 dark:text-white">{{ $item->quantity }}</div>
+                                                <div class="text-sm gray-500 dark:text-gray-300">{{ $item->quantity }}</div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="text-sm text-gray-900 dark:text-white">${{ number_format($item->unit_price, 2) }}</div>
+                                                <div class="text-sm gray-500 dark:text-gray-300">${{ number_format($item->unit_price, 2) }}</div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="text-sm font-medium text-gray-900 dark:text-white">${{ number_format($item->total_price, 2) }}</div>
+                                                <div class="text-sm font-medium gray-500 dark:text-gray-300">${{ number_format($item->total_price, 2) }}</div>
                                             </td>
                                         </tr>
                                         @endforeach
@@ -322,36 +322,36 @@
                     <div class="lg:col-span-1">
                         <!-- Order Summary -->
                         <div class="card-gradient p-6 rounded-xl mb-6">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Order Summary</h3>
+                            <h3 class="text-lg font-semibold text-black mb-4">Order Summary</h3>
                             <div class="space-y-3">
                                 <div class="flex justify-between">
-                                    <span class="text-gray-600 dark:text-gray-400">Subtotal:</span>
-                                    <span class="text-gray-800 dark:text-white">${{ number_format($order->total_amount, 2) }}</span>
+                                    <span class="text-black">Subtotal:</span>
+                                    <span class="text-black">${{ number_format($order->total_amount, 2) }}</span>
                                 </div>
                                 <div class="flex justify-between">
-                                    <span class="text-gray-600 dark:text-gray-400">Shipping:</span>
-                                    <span class="text-gray-800 dark:text-white">$0.00</span>
+                                    <span class="text-black">Shipping:</span>
+                                    <span class="text-black">$0.00</span>
                                 </div>
                                 <div class="flex justify-between">
-                                    <span class="text-gray-600 dark:text-gray-400">Tax:</span>
-                                    <span class="text-gray-800 dark:text-white">$0.00</span>
+                                    <span class="text-black">Tax:</span>
+                                    <span class="text-black">$0.00</span>
                                 </div>
                                 <hr class="border-gray-200 dark:border-gray-700">
                                 <div class="flex justify-between">
-                                    <span class="text-lg font-semibold text-gray-800 dark:text-white">Total:</span>
-                                    <span class="text-lg font-semibold text-gray-800 dark:text-white">${{ number_format($order->total_amount, 2) }}</span>
+                                    <span class="text-lg font-semibold text-black">Total:</span>
+                                    <span class="text-lg font-semibold text-black">${{ number_format($order->total_amount, 2) }}</span>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Update Status -->
                         <div class="card-gradient p-6 rounded-xl mb-6">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Update Status</h3>
+                            <h3 class="text-lg font-semibold text-black mb-4">Update Status</h3>
                             <form action="{{ route('manufacturer.orders.update-status', $order) }}" method="POST">
                                 @csrf
                                 @method('PUT')
                                 <div class="mb-4">
-                                    <label for="status" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status</label>
+                                    <label for="status" class="block text-sm font-medium text-black mb-2">Status</label>
                                     <select name="status" id="status" 
                                             class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
                                         <option value="pending" {{ $order->status === 'pending' ? 'selected' : '' }}>Pending</option>
@@ -363,9 +363,9 @@
                                     </select>
                                 </div>
                                 <div class="mb-4">
-                                    <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Notes</label>
+                                    <label for="notes" class="block text-sm font-medium text-black mb-2">Notes</label>
                                     <textarea name="notes" id="notes" rows="3" 
-                                              class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                              class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                               placeholder="Add any notes about this order...">{{ $order->notes }}</textarea>
                                 </div>
                                 <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors">
@@ -376,26 +376,26 @@
 
                         <!-- Order Details -->
                         <div class="card-gradient p-6 rounded-xl">
-                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Order Details</h3>
+                            <h3 class="text-lg font-semibold text-black mb-4">Order Details</h3>
                             <div class="space-y-3">
                                 <div>
-                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Payment Method</p>
-                                    <p class="text-gray-800 dark:text-white">{{ $order->payment_method ?? 'N/A' }}</p>
+                                    <p class="text-sm font-medium text-black">Payment Method</p>
+                                    <p class="text-black">{{ $order->payment_method ?? 'N/A' }}</p>
                                 </div>
                                 <div>
-                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Shipping Address</p>
-                                    <p class="text-gray-800 dark:text-white">{{ $order->shipping_address ?? 'N/A' }}</p>
+                                    <p class="text-sm font-medium text-black">Shipping Address</p>
+                                    <p class="text-black">{{ $order->shipping_address ?? 'N/A' }}</p>
                                 </div>
                                 @if($order->estimated_delivery)
                                 <div>
-                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Estimated Delivery</p>
-                                    <p class="text-gray-800 dark:text-white">{{ $order->estimated_delivery->format('M d, Y') }}</p>
+                                    <p class="text-sm font-medium text-black">Estimated Delivery</p>
+                                    <p class="text-black">{{ $order->estimated_delivery->format('M d, Y') }}</p>
                                 </div>
                                 @endif
                                 @if($order->actual_delivery)
                                 <div>
-                                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Actual Delivery</p>
-                                    <p class="text-gray-800 dark:text-white">{{ $order->actual_delivery->format('M d, Y') }}</p>
+                                    <p class="text-sm font-medium text-black">Actual Delivery</p>
+                                    <p class="text-black">{{ $order->actual_delivery->format('M d, Y') }}</p>
                                 </div>
                                 @endif
                             </div>
