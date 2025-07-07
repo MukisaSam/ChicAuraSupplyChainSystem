@@ -10,10 +10,10 @@
                 <p class="text-gray-600 dark:text-gray-400 mt-2">Request #{{ $supplyRequest->id }}</p>
             </div>
             <div class="flex space-x-3">
-                <a href="{{ route('manufacturer.orders') }}" 
+                <a href="{{ route('supplier.dashboard') }}" 
                    class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
                     <i class="fas fa-arrow-left"></i>
-                    <span>Back to Orders</span>
+                    <span>Back to dashboard</span>
                 </a>
             </div>
         </div>
