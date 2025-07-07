@@ -74,12 +74,16 @@ Route::middleware('auth')->group(function () {
 // Admin
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\AdminDashboardController::class, 'index'])->name('dashboard');
+
+    //User Managemnet
     Route::get('/users', [App\Http\Controllers\AdminUsersController::class, 'index'])->name('users');
     Route::get('/users/add', fn() => view('admin.UsersManagement.addUser'))->name('users.add.view');
+    Route::get('/users/edit', fn() => view('admin.UsersManagement.editUser'))->name('users.edit.view');
     Route::post('/users', [App\Http\Controllers\AdminUsersController::class, 'addUserView'])->name('users.addview');
+    Route::post('/users/edit', [App\Http\Controllers\AdminUsersController::class, 'editUserView'])->name('users.editview');
     Route::post('/users/add', [App\Http\Controllers\AdminUsersController::class, 'addUser'])->name('users.add');
-    Route::post('/users/add', [App\Http\Controllers\AdminUsersController::class, 'removeUser'])->name('users.remove');
-    
+    Route::post('/users/remove', [App\Http\Controllers\AdminUsersController::class, 'removeUser'])->name('users.remove');
+    Route::post('/users/update', [App\Http\Controllers\AdminUsersController::class, 'updateUser'])->name('users.update');
     
     // User Management Routes
     /*
@@ -261,7 +265,6 @@ Route::middleware(['auth', 'role:wholesaler'])->prefix('wholesaler')->name('whol
 require __DIR__.'/auth.php';
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Route::get('/admin/users/add', [App\Http\Controllers\AdminUsersController::class, 'addUser'])->name('admin.users.add');
 
 
 // Wholesaler notifications

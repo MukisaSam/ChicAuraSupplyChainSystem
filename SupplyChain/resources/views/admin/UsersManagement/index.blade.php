@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Administrator Dashboard - ChicAura SCM</title>
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
@@ -521,7 +521,7 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <p class="text-gray-600 text-sm">Total Users</p>
-                                <h3 class="text-2xl font-bold text-gray-800 mt-1">65</h3>
+                                <h3 class="text-2xl font-bold text-gray-800 mt-1">{{$numberofUsers}}</h3>
                             </div>
                             <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center">
                                 <i class="fas fa-users text-indigo-600"></i>
@@ -538,7 +538,7 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <p class="text-gray-600 text-sm">Admins</p>
-                                <h3 class="text-2xl font-bold text-gray-800 mt-1">5</h3>
+                                <h3 class="text-2xl font-bold text-gray-800 mt-1">{{$admin}}</h3>
                             </div>
                             <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
                                 <i class="fa-solid fa-user-tie text-blue-600"></i>
@@ -555,7 +555,7 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <p class="text-gray-600 text-sm">Suppliers</p>
-                                <h3 class="text-2xl font-bold text-gray-800 mt-1">25</h3>
+                                <h3 class="text-2xl font-bold text-gray-800 mt-1">{{$supplier}}</h3>
                             </div>
                             <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
                                 <i class="fas fa-truck-loading text-green-600"></i>
@@ -572,7 +572,7 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <p class="text-gray-600 text-sm">Manufacturers</p>
-                                <h3 class="text-2xl font-bold text-gray-800 mt-1">15</h3>
+                                <h3 class="text-2xl font-bold text-gray-800 mt-1">{{$manufacturer}}</h3>
                             </div>
                             <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center">
                                 <i class="fas fa-industry text-yellow-600"></i>
@@ -589,7 +589,7 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <p class="text-gray-600 text-sm">Wholesalers</p>
-                                <h3 class="text-2xl font-bold text-gray-800 mt-1">20</h3>
+                                <h3 class="text-2xl font-bold text-gray-800 mt-1">{{$wholesaler}}</h3>
                             </div>
                             <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
                                 <i class="fas fa-boxes text-purple-600"></i>
@@ -730,7 +730,7 @@
             data: {
                 labels: ['Admins', 'Suppliers', 'Manufacturers', 'Wholesalers'],
                 datasets: [{
-                    data: [5, 25, 15, 20],
+                    data: [{{$admin}}, {{$supplier}}, {{$manufacturer}}, {{$wholesaler}}],
                     backgroundColor: [
                         '#3B82F6',
                         '#10B981',
@@ -1068,7 +1068,7 @@
                     <td class="px-4 py-3 text-sm">${user.created_at}</td>
                     <td class="px-4 py-3 ${isLastRow ? 'rounded-br-xl' : ''}">
                         <div class="flex space-x-2">
-                            <form action="{{route('admin.users.addview')}}" method="POST">
+                            <form action="{{route('admin.users.editview')}}" method="POST">
                                 @csrf
                                 <button type="submit" class="action-btn text-blue-600">
                                     <input type="text" name="id" class="hidden" value="${user.id}">
@@ -1079,6 +1079,7 @@
                                 @csrf
                                 <button class="action-btn text-red-600 hover:bg-red-50">
                                     <input type="text" name="id" class="hidden" value="${user.id}">
+                                    <input type="text" name="database" class="hidden" value="users">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                             </form>

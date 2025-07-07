@@ -25,12 +25,24 @@ class AdminUsersController extends Controller
             abort(403, 'Access denied. Admin privileges required.');
         }
 
-        $records = DB::select('SELECT * FROM pending_users');
+        $pendingUsers = DB::select('SELECT * FROM pending_users');
         $activeUsers = DB::select('SELECT * FROM users');
+        $numberofUsers = DB::table('users')->count();
+        $admin = DB::table('users')->where('role', 'admin')->count();
+        $manufacturer = DB::table('users')->where('role', 'manufacturer')->count();
+        $supplier = DB::table('users')->where('role', 'supplier')->count();
+        $wholesaler = DB::table('users')->where('role', 'wholesaler')->count();
+
                 
         return view('admin.usersmanagement.index', [
-            'pendingUsers' => $records,
+            'pendingUsers' => $pendingUsers,
             'activeUsers' => $activeUsers,
+            'numberofUsers' => $numberofUsers,
+            'admin' => $admin,
+            'manufacturer' => $manufacturer,
+            'supplier' => $supplier,
+            'wholesaler' => $wholesaler,
+            
         ]);
     }
 
@@ -58,6 +70,82 @@ class AdminUsersController extends Controller
             'specialization' => $specialization,
             'materials_supplied' => $materials_supplied,
         ]);
+    }
+
+    public function editUserView(Request $request)
+    {
+        $id = $request->id;
+
+        // Fetch the user record
+        $data = DB::select('SELECT `role` FROM users WHERE id = ?', [$id]);
+
+        $role = $data[0]->role ?? '';
+
+        if($role == 'admin'){
+           $record = DB::table('users')->where('id', $id)->first();
+                   
+            // Pass the record to the view
+            return view('admin.usersmanagement.edituser', [
+                'record' => $record,
+            ]);
+        }
+        else if ($role == 'supplier') {
+            $record = DB::table('users as u')->join('suppliers as s', 'u.id', '=', 's.user_id')
+            ->select(
+                'u.id', 'u.name', 'u.email', 'u.profile_picture', 'u.password', 'u.role',
+                's.business_address', 's.phone', 's.license_document', 's.materials_supplied'
+            )->where('u.id', $id)->first();
+
+            //First pass
+            $raw3 = json_decode($record->materials_supplied, true);
+        
+            //Second pass
+            $materials_supplied = json_decode($raw3, true);
+        
+            // Pass the record to the view
+            return view('admin.usersmanagement.edituser', [
+                'record' => $record,
+                'materials_supplied' => $materials_supplied,
+            ]);
+
+        }else if($role == 'manufacturer'){
+            $record = DB::table('users as u')->join('manufacturers as m', 'u.id', '=', 'm.user_id')
+            ->select(
+                'u.id', 'u.name', 'u.email', 'u.profile_picture', 'u.password', 'u.role',
+                'm.business_address', 'm.phone', 'm.license_document', 'm.production_capacity', 'm.specialization'
+            )->where('u.id', $id)->first();
+
+            //First pass
+            $raw2 = json_decode($record->specialization, true);
+        
+            //Second pass
+            $specialization = json_decode($raw2, true);
+        
+            // Pass the record to the view
+            return view('admin.usersmanagement.edituser', [
+                'record' => $record,
+                'specialization' => $specialization,
+            ]);
+        }else{
+            $record = DB::table('users as u')->join('wholesalers as w', 'u.id', '=', 'w.user_id')
+            ->select(
+                'u.id', 'u.name', 'u.email', 'u.profile_picture', 'u.password', 'u.role',
+                'w.business_address', 'w.phone', 'w.license_document', 'w.business_type' , 'w.preferred_categories', 'w.monthly_order_volume'
+            )->where('u.id', $id)->first();
+
+            //First pass
+            $raw1 = json_decode($record->preferred_categories, true);
+        
+            //Second pass
+            $preferred_categories = json_decode($raw1, true);
+        
+            // Pass the record to the view
+            return view('admin.usersmanagement.edituser', [
+                'record' => $record,
+                'preferred_categories' => $preferred_categories,
+            ]);
+        }
+
     }
 
     public function addUser(Request $request){
@@ -146,10 +234,16 @@ class AdminUsersController extends Controller
 
     public function removeUser(Request $request){
         $id = $request->id;
-        
-        //Remove record from pending_users
-        DB::delete('DELETE FROM pending_users WHERE id = ?', [$id]);
-        return redirect()->route('admin.users');
+
+        if($request->database == 'users'){
+            //Remove record from users
+            DB::delete('DELETE FROM users WHERE id = ?', [$id]);
+            return redirect()->route('admin.users');
+        }else{
+            //Remove record from pending_users
+            DB::delete('DELETE FROM pending_users WHERE id = ?', [$id]);
+            return redirect()->route('admin.users');
+        }
     }
 
     public function getUsers(Request $request)

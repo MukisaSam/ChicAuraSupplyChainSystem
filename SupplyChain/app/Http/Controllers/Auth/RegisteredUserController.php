@@ -33,6 +33,16 @@ class RegisteredUserController extends Controller
      */
     public function createAdmin(): View
     {
+        if(!Auth::check()){
+            return view('welcome');
+        }
+
+        $user = Auth::user();
+
+        if ($user->role !== 'admin') {
+            abort(403, 'Access denied. Admin privileges required.');
+        }
+
         return view('auth.register-admin');
     }
 

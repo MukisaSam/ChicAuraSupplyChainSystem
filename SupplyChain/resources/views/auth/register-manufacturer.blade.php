@@ -65,6 +65,11 @@
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
         }
 
+        select.form-input option {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: var(--text-light);
+        }
+
         .divider-text {
             background: rgba(255, 255, 255, 0.1) !important;
             color: var(--text-light) !important;
