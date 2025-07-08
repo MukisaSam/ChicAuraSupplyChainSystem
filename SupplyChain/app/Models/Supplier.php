@@ -33,7 +33,7 @@ class Supplier extends Model
 
     public function suppliedItems()
     {
-        return $this->hasMany(SuppliedItem::class);
+        return $this->hasMany(\App\Models\SuppliedItem::class);
     }
 
     public function priceNegotiations()

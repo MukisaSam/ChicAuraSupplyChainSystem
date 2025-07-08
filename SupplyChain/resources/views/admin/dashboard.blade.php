@@ -136,13 +136,11 @@
                 </div>
                 <nav class="flex-1 px-4 py-2 space-y-1">
                     <a href="#home" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl shadow-lg"><i class="fas fa-tachometer-alt w-5"></i><span class="ml-2 font-medium text-sm">Home</span></a>
-                    <a href="#user-management" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-users-cog w-5"></i><span class="ml-2 text-sm">User Management</span></a>
-                    <a href="#roles-permissions" id="roles-permissions-link" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-shield-alt w-5"></i><span class="ml-2 text-sm">Roles & Permissions</span></a>
-                    <a href="#system-settings" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-cogs w-5"></i><span class="ml-2 text-sm">System Settings</span></a>
+                    <a href="{{ route('admin.users') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-users-cog w-5"></i><span class="ml-2 text-sm">Users Management</span></a>
+                    <a href="#roles-permissions" id="roles-permissions-link" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-shield-alt w-5"></i><span class="ml-2 text-sm">Roles & Permissions</span></a>                    
                     <a href="#analytics" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-chart-pie w-5"></i><span class="ml-2 text-sm">Analytics</span></a>
                     <a href="#audit-logs" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-history w-5"></i><span class="ml-2 text-sm">Audit Logs</span></a>
-                    <a href="#notifications" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-bell w-5"></i><span class="ml-2 text-sm">Notifications</span></a>
-                    <a href="{{route('admin.users')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-users-cog w-5"></i><span class="ml-2 text-sm">Users Management</span></a>
+                    <a href="#notifications" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-bell w-5"></i><span class="ml-2 text-sm">Notifications</span></a>                    
                 </nav>
                 <div class="p-3 border-t border-gray-600">
                     <div class="text-center text-gray-400 text-xs">
@@ -276,27 +274,19 @@
                         </div>
                     </div>
                 </section>
-                <section id="user-management" class="dashboard-section hidden mt-10">
-                    <h3 class="text-xl font-bold text-white mb-3">User Management</h3>
-                    <div class="card-gradient p-6 rounded-xl mb-6" id="user-management-content">
-                        <p class="text-gray-800 dark:text-gray-200">Loading...</p>
-                    </div>
-
+                <section id="users" class="dashboard-section hidden mt-10">
+                    @include('admin.users')
                 </section>
                 <section id="roles-permissions" class="dashboard-section hidden mt-10">
                     <h3 class="text-xl font-bold text-white mb-3">Roles & Permissions</h3>
                     <div class="card-gradient p-6 rounded-xl mb-6" id="roles-permissions-content">
-                        <p class="text-gray-800 dark:text-gray-200">Loading...</p>
-                    </div>
-                </section>
-                <section id="system-settings" class="dashboard-section hidden mt-10">
-                    <h3 class="text-xl font-bold text-white mb-3">System Settings</h3>
-                    <div class="card-gradient p-6 rounded-xl mb-6">
-                        <p class="text-gray-800 dark:text-gray-200">Configure system-wide settings and preferences here.</p>
+                    @include('admin.users')                       
                     </div>
                 </section>
                 <section id="analytics" class="dashboard-section hidden mt-10">
-                    @include('admin.analytics')
+                    <div style="backgroungcolor: white">
+                  <p>wot wot </p>
+    </div>
                 </section>
                 <section id="audit-logs" class="dashboard-section hidden mt-10">
                     <h3 class="text-xl font-bold text-white mb-3">Audit Logs</h3>
@@ -309,13 +299,7 @@
                     <div class="card-gradient p-6 rounded-xl mb-6">
                         <p class="text-gray-800 dark:text-gray-200">View and manage system notifications.</p>
                     </div>
-                </section>
-                <section id="users" class="dashboard-section hidden mt-10">
-                    @include('admin.users')
-                </section>
-                <section id="suppliers" class="dashboard-section hidden mt-10">
-                    @include('admin.suppliers')
-                </section>
+                </section>                
             </main>
         </div>
     </div>
