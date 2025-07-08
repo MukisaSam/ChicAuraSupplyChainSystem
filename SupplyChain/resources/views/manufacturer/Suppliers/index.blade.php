@@ -243,7 +243,7 @@
 
                 <!-- Supplier List Table -->
                 <div class="card-gradient p-6 rounded-xl mt-4">
-                    <h3 class="text-lg font-bold text-gray-800 mb-4">Supplier Directory</h3>
+                    <h3 class="text-lg font-bold text-black mb-4">Supplier Directory</h3>
                     @if($suppliers->count())
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -254,7 +254,7 @@
                                         <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
                                         <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Business Address</th>
                                         <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Materials Supplied</th>
-                                        <th class="px-6 py-4 whitespace-nowrap text-sm">Actions</th>
+                                        <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">

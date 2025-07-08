@@ -336,7 +336,7 @@
                     <!-- Contacts Sidebar -->
                     <div class="w-80 card-gradient rounded-xl flex flex-col">
                         <div class="p-6 border-b border-gray-200 dark:border-gray-600">
-                            <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Contacts</h3>
+                            <h3 class="text-lg font-semibold text-black mb-4">Contacts</h3>
                         </div>
 
                         <div class="flex-1 overflow-y-auto p-4 contacts-scroll" style="height: calc(100vh - 300px); max-height: 420px;">
@@ -354,7 +354,7 @@
                                         <span class="online-indicator absolute -bottom-1 -right-1"></span>
                                     </div>
                                     <div class="ml-4 flex-1">
-                                        <h5 class="text-sm font-medium text-gray-900 dark:text-white">{{ $manufacturer->name }}</h5>
+                                        <h5 class="text-sm font-medium text-black">{{ $manufacturer->name }}</h5>
                                         <p class="text-xs text-gray-500 dark:text-gray-400">Manufacturer</p>
                                     </div>
                                     @if(isset($unreadCounts[$manufacturer->id]) && $unreadCounts[$manufacturer->id] > 0)
@@ -379,7 +379,7 @@
                                         <span class="online-indicator absolute -bottom-1 -right-1"></span>
                                     </div>
                                     <div class="ml-4 flex-1">
-                                        <h5 class="text-sm font-medium text-gray-900 dark:text-white">{{ $admin->name }}</h5>
+                                        <h5 class="text-sm font-medium text-black">{{ $admin->name }}</h5>
                                         <p class="text-xs text-gray-500 dark:text-gray-400">Support Team</p>
                                     </div>
                                     @if(isset($unreadCounts[$admin->id]) && $unreadCounts[$admin->id] > 0)
@@ -410,7 +410,7 @@
                                 <div class="w-24 h-24 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900 dark:to-purple-800 rounded-full flex items-center justify-center mx-auto mb-6">
                                     <i class="fas fa-comments text-4xl text-purple-600 dark:text-purple-300"></i>
                                 </div>
-                                <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Welcome to Chat</h3>
+                                <h3 class="text-xl font-semibold text-black mb-2">Welcome to Chat</h3>
                                 <p class="text-gray-600 dark:text-gray-400">Select a contact from the sidebar to start a conversation</p>
                             </div>
                         </div>
@@ -488,8 +488,12 @@
             contactItems.forEach(item => {
                 item.addEventListener('click', function() {
                     const chatUrl = this.dataset.chatUrl;
+                    const senderId = this.dataset.contactId;
+                    if (senderId) {
+                        markMessagesAsRead(senderId);
+                    }
                     if (chatUrl) {
-                        window.location.href = chatUrl;
+                        setTimeout(() => { window.location.href = chatUrl; }, 150); // slight delay to allow AJAX
                     }
                 });
             });

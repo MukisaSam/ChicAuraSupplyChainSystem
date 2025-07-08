@@ -497,7 +497,7 @@
             <!-- Main Content -->
             <main class=" flex-1 overflow-y-auto p-6">
                 @if($record)
-                <form action="{{ route('admin.users.add') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('admin.users.update') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <!-- Primary Key -->
@@ -511,7 +511,10 @@
                     </div>
                     <div class="flex space-x-2 mt-4 md:mt-0">
                         <button type="submit" class="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 py-2 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300 flex items-center">
-                            <i class="fas fa-save mr-2"></i> Add User
+                            <i class="fas fa-save mr-2"></i> Save Changes
+                        </button>
+                        <button type="submit" class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-4 py-2 rounded-lg font-semibold shadow-md hover:shadow-lg transition-all duration-300 flex items-center">
+                            <i class="fa-solid fa-xmark mr-2"></i> Delete Account
                         </button>
                     </div>
                 </div>
@@ -520,6 +523,11 @@
                 <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl p-6 mb-6 shadow-xl">
                     <div class="flex flex-col md:flex-row items-center">
                         <div class="relative mb-4 md:mb-0 md:mr-6">
+                            @if($record->role == 'admin')
+                                <div class="w-24 h-24 md:w-32 md:h-32 bg-purple-100 rounded-full border-4 border-white shadow-lg overflow-hidden flex items-center justify-center">
+                                    <i class="fa-solid fa-user-tie text-blue-600 text-[70px]"></i>
+                                </div>
+                            @endif
                             @if($record->role == 'supplier')
                                 <div class="w-24 h-24 md:w-32 md:h-32 bg-green-100 rounded-full border-4 border-white shadow-lg overflow-hidden flex items-center justify-center">
                                     <i class="fas fa-truck-loading text-green-600 text-[70px]"></i>
@@ -560,10 +568,12 @@
                                     <label class="block text-gray-700 font-medium mb-2">Business Email</label>
                                     <input type="email" name="email" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none" value="{{$record->email}}">
                                 </div>
+                                @if($record->role != 'admin') 
                                 <div>
                                     <label class="block text-gray-700 font-medium mb-2">Phone Number</label>
                                     <input type="tel" name="phone" class="w-full px-4 py-3 border border-gray-300  rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none" value="{{$record->phone}}">
                                 </div>
+                                @endif
                                 <div>
                                     <label class="block text-gray-700 font-medium mb-2">Role</label>
                                     <input type="text" name="role" class="w-full px-4 py-3 border border-gray-300  rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none" value="{{$record->role}}">
@@ -586,10 +596,12 @@
                                         </div>
                                     </div>
                                 </div>
+                                @if($record->role != 'admin') 
                                 <div>
                                     <label class="block text-gray-700 font-medium mb-2">Business Address</label>
                                     <input type="text" name="business_address" class="w-full px-4 py-3 border border-gray-300  rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white outline-none" value="{{$record->business_address}}">
                                 </div>
+                                @endif
                                 @if($record->role == 'supplier')
                                 <div>
                                     <label class="block text-gray-700 font-medium mb-2">Materials Supplied</label>
@@ -674,7 +686,7 @@
                                         <i class="fa-regular fa-file-pdf text-[80px]" style="color: #b00b00;"></i>
                                     </div>
                                 </div>
-                                @if($record->document_path)
+                                @if($record->profile_picture)
                                 <p class="text-gray-600 text-sm mb-4 text-center">
                                     {{$record->license_document}}
                                 </p>

@@ -90,7 +90,7 @@
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
                     <x-wholesaler-notification-bell />
-                    <button data-theme-toggle class="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-full transition-colors" title="Switch Theme">
+                    <button data-theme-toggle class="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 dark:text-gray-400 dark:hover:text-purple-400 dark:hover:bg-purple-900/20 rounded-full transition-colors" title="Switch Theme">
                         <i class="fas fa-moon text-lg"></i>
                     </button>
                     <div class="relative">

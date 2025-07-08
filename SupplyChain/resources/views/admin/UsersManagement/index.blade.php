@@ -521,10 +521,10 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <p class="text-gray-600 text-sm">Total Users</p>
-                                <h3 class="text-2xl font-bold text-gray-800 mt-1">65</h3>
+                                <h3 class="text-2xl font-bold text-gray-800 mt-1">{{$numberofUsers}}</h3>
                             </div>
-                            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-                                <i class="fas fa-users text-blue-600"></i>
+                            <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center">
+                                <i class="fas fa-users text-indigo-600"></i>
                             </div>
                         </div>
                         <div class="mt-3">
@@ -538,10 +538,10 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <p class="text-gray-600 text-sm">Admins</p>
-                                <h3 class="text-2xl font-bold text-gray-800 mt-1">5</h3>
+                                <h3 class="text-2xl font-bold text-gray-800 mt-1">{{$admin}}</h3>
                             </div>
-                            <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center">
-                                <i class="fas fa-user-shield text-indigo-600"></i>
+                            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                                <i class="fa-solid fa-user-tie text-blue-600"></i>
                             </div>
                         </div>
                         <div class="mt-3">
@@ -555,7 +555,7 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <p class="text-gray-600 text-sm">Suppliers</p>
-                                <h3 class="text-2xl font-bold text-gray-800 mt-1">25</h3>
+                                <h3 class="text-2xl font-bold text-gray-800 mt-1">{{$supplier}}</h3>
                             </div>
                             <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
                                 <i class="fas fa-truck-loading text-green-600"></i>
@@ -572,7 +572,7 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <p class="text-gray-600 text-sm">Manufacturers</p>
-                                <h3 class="text-2xl font-bold text-gray-800 mt-1">15</h3>
+                                <h3 class="text-2xl font-bold text-gray-800 mt-1">{{$manufacturer}}</h3>
                             </div>
                             <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center">
                                 <i class="fas fa-industry text-yellow-600"></i>
@@ -589,7 +589,7 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <p class="text-gray-600 text-sm">Wholesalers</p>
-                                <h3 class="text-2xl font-bold text-gray-800 mt-1">20</h3>
+                                <h3 class="text-2xl font-bold text-gray-800 mt-1">{{$wholesaler}}</h3>
                             </div>
                             <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
                                 <i class="fas fa-boxes text-purple-600"></i>
@@ -628,7 +628,7 @@
                                 <div class="relative mt-2 md:mt-0">
                                     <span class="absolute inset-y-0 left-0 flex items-center pl-3"><i
                                             class="fas fa-search text-gray-400"></i></span>
-                                    <input type="text"
+                                    <input type="text" id="search-activeusers"
                                         class="py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm w-full md:w-64"
                                         placeholder="Search users...">
                                 </div>
@@ -644,187 +644,17 @@
                                             <th class="px-4 py-3 rounded-tr-xl">Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <!-- User 1 -->
-                                        <tr class="border-b border-gray-200 dark:border-gray-700">
-                                            <td class="px-4 py-3">
-                                                <div class="flex items-center">
-                                                    <img class="w-8 h-8 rounded-full mr-3"
-                                                        src="https://randomuser.me/api/portraits/women/44.jpg"
-                                                        alt="User">
-                                                    <div>
-                                                        <p class="font-medium">Sarah Johnson</p>
-                                                        <p class="text-gray-500 text-sm">sarah@chicaura.com</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="px-4 py-3">
-                                                <span class="role-badge role-admin">Admin</span>
-                                            </td>
-                                            <td class="px-4 py-3 text-sm">Today, 09:24 AM</td>
-                                            <td class="px-4 py-3">
-                                                <div class="flex space-x-2">
-                                                    <button class="p-1 text-blue-600 hover:text-blue-800">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                    <button class="p-1 text-gray-600 hover:text-gray-800">
-                                                        <i class="fas fa-eye"></i>
-                                                    </button>
-                                                    <button class="p-1 text-red-600 hover:text-red-800">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                        <!-- User 2 -->
-                                        <tr class="border-b border-gray-200 dark:border-gray-700">
-                                            <td class="px-4 py-3">
-                                                <div class="flex items-center">
-                                                    <img class="w-8 h-8 rounded-full mr-3"
-                                                        src="https://randomuser.me/api/portraits/men/32.jpg" alt="User">
-                                                    <div>
-                                                        <p class="font-medium">Michael Chen</p>
-                                                        <p class="text-gray-500 text-sm">michael@supplier.com</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="px-4 py-3">
-                                                <span class="role-badge role-supplier">Supplier</span>
-                                            </td>
-                                            <td class="px-4 py-3 text-sm">Yesterday, 04:15 PM</td>
-                                            <td class="px-4 py-3">
-                                                <div class="flex space-x-2">
-                                                    <button class="p-1 text-blue-600 hover:text-blue-800">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                    <button class="p-1 text-gray-600 hover:text-gray-800">
-                                                        <i class="fas fa-eye"></i>
-                                                    </button>
-                                                    <button class="p-1 text-red-600 hover:text-red-800">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                        <!-- User 3 -->
-                                        <tr class="border-b border-gray-200 dark:border-gray-700">
-                                            <td class="px-4 py-3">
-                                                <div class="flex items-center">
-                                                    <img class="w-8 h-8 rounded-full mr-3"
-                                                        src="https://randomuser.me/api/portraits/women/68.jpg"
-                                                        alt="User">
-                                                    <div>
-                                                        <p class="font-medium">Emma Rodriguez</p>
-                                                        <p class="text-gray-500 text-sm">emma@manufacturer.com</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="px-4 py-3">
-                                                <span class="role-badge role-manufacturer">Manufacturer</span>
-                                            </td>
-                                            <td class="px-4 py-3 text-sm">May 12, 2024</td>
-                                            <td class="px-4 py-3">
-                                                <div class="flex space-x-2">
-                                                    <button class="p-1 text-blue-600 hover:text-blue-800">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                    <button class="p-1 text-gray-600 hover:text-gray-800">
-                                                        <i class="fas fa-eye"></i>
-                                                    </button>
-                                                    <button class="p-1 text-red-600 hover:text-red-800">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                        <!-- User 4 -->
-                                        <tr class="border-b border-gray-200 dark:border-gray-700">
-                                            <td class="px-4 py-3">
-                                                <div class="flex items-center">
-                                                    <img class="w-8 h-8 rounded-full mr-3"
-                                                        src="https://randomuser.me/api/portraits/men/67.jpg" alt="User">
-                                                    <div>
-                                                        <p class="font-medium">David Kim</p>
-                                                        <p class="text-gray-500 text-sm">david@wholesaler.com</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="px-4 py-3">
-                                                <span class="role-badge role-wholesaler">Wholesaler</span>
-                                            </td>
-                                            <td class="px-4 py-3 text-sm">Today, 10:45 AM</td>
-                                            <td class="px-4 py-3">
-                                                <div class="flex space-x-2">
-                                                    <button class="p-1 text-blue-600 hover:text-blue-800">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                    <button class="p-1 text-gray-600 hover:text-gray-800">
-                                                        <i class="fas fa-eye"></i>
-                                                    </button>
-                                                    <button class="p-1 text-red-600 hover:text-red-800">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
-
-                                        <!-- User 5 -->
-                                        <tr>
-                                            <td class="px-4 py-3 rounded-bl-xl">
-                                                <div class="flex items-center">
-                                                    <img class="w-8 h-8 rounded-full mr-3"
-                                                        src="https://randomuser.me/api/portraits/women/26.jpg"
-                                                        alt="User">
-                                                    <div>
-                                                        <p class="font-medium">Sophia Williams</p>
-                                                        <p class="text-gray-500 text-sm">sophia@chicaura.com</p>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="px-4 py-3">
-                                                <span class="role-badge role-admin">Admin</span>
-                                            </td>
-                                           <td class="px-4 py-3 text-sm">April 28, 2024</td>
-                                            <td class="px-4 py-3 rounded-br-xl">
-                                                <div class="flex space-x-2">
-                                                    <button class="p-1 text-blue-600 hover:text-blue-800">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                    <button class="p-1 text-gray-600 hover:text-gray-800">
-                                                        <i class="fas fa-eye"></i>
-                                                    </button>
-                                                    <button class="p-1 text-red-600 hover:text-red-800">
-                                                        <i class="fas fa-trash-alt"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                    <tbody id="active-users-body">
+                                        <!-- Users will be populated by JavaScript -->
                                     </tbody>
                                 </table>
                             </div>
 
                             <!-- Pagination -->
                             <div class="flex flex-col md:flex-row justify-between items-center mt-6">
-                                <p class="text-sm text-gray-600 mb-4 md:mb-0">Showing 1 to 5 of 65 results</p>
-                                <div class="flex space-x-2">
-                                    <button class="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300">
-                                        <i class="fas fa-chevron-left"></i>
-                                    </button>
-                                    <button class="px-3 py-1 rounded-lg bg-blue-600 text-white">1</button>
-                                    <button
-                                        class="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300">2</button>
-                                    <button
-                                        class="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300">3</button>
-                                    <button
-                                        class="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300">...</button>
-                                    <button
-                                        class="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300">12</button>
-                                    <button class="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300">
-                                        <i class="fas fa-chevron-right"></i>
-                                    </button>
+                                <p id="activeuser-pagination-info" class="text-sm text-gray-600 mb-4 md:mb-0">Showing 1 to 5 of 65 results</p>
+                                <div class="flex space-x-2" id="active-users-pagination">
+                                    <!-- Will be populated by JavaScript -->
                                 </div>
                             </div>
                         </div>
@@ -856,7 +686,7 @@
                                         </tr>
                                     </thead>
                                     <tbody id="pending-users-body">
-                                        <!-- Users will be populated by JavaScript -->
+                                        <!-- Pending users will be populated by JavaScript -->
                                     </tbody>
                                 </table>
                             </div>
@@ -900,7 +730,7 @@
             data: {
                 labels: ['Admins', 'Suppliers', 'Manufacturers', 'Wholesalers'],
                 datasets: [{
-                    data: [5, 25, 15, 20],
+                    data: [{{$admin}}, {{$supplier}}, {{$manufacturer}}, {{$wholesaler}}],
                     backgroundColor: [
                         '#3B82F6',
                         '#10B981',
@@ -929,9 +759,8 @@
                 cutout: '60%'
             }
         });
-        //Loading Users
-        //Pending Users
 
+        //Loading pending users
         const users =[
             @foreach ($pendingUsers as $pending )
             {
@@ -960,7 +789,9 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             renderUsers();
+            renderActiveusers();
             setupEventListeners();
+            setupActiveEventListeners();
         });
 
         // Render users for current page
@@ -1023,21 +854,14 @@
                     <td class="px-4 py-3 text-sm">${user.created_at}</td>
                     <td class="px-4 py-3 ${isLastRow ? 'rounded-br-xl' : ''}">
                         <div class="flex space-x-2">
-                            <form action="{{route('admin.users.add')}}" method="POST">
+                            <form action="{{route('admin.users.addview')}}" method="POST">
                                 @csrf
                                 <button type="submit" class="action-btn text-blue-600">
-                                    <input type="text" name="id" class="hidden" value="${user.id}">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                            </form>
-                            <form>
-                                @csrf
-                                <button type="submit" class="action-btn text-gray-600">
                                     <input type="text" name="id" class="hidden" value="${user.id}">
                                     <i class="fas fa-user-plus"></i>
                                 </button>
                             </form>
-                            <form>
+                            <form action="{{route('admin.users.remove')}}" method="POST">
                                 @csrf
                                 <button class="action-btn text-red-600 hover:bg-red-50">
                                     <input type="text" name="id" class="hidden" value="${user.id}">
@@ -1159,45 +983,221 @@
             });
         }        
         
-        // Modal functionality
-        const modal = document.getElementById('addUserModal');
-        const addUserBtn = document.getElementById('addUserBtn');
-        const closeModal = document.getElementById('closeModal');
-        const cancelBtn = document.getElementById('cancelBtn');
-        const form = document.getElementById('addUserForm');
-        const appContainer = document.getElementById('app-container');
+        //Loading active users
+        const Activeusers =[
+            @foreach ($activeUsers as $users )
+            {
+                id: {{ $users->id }},
+                name: "{{ $users->name }}",
+                email: "{{ $users->email }}",
+                role: "{{ $users->role }}",
+                created_at: "{{ $users->created_at }}"
+            },
+            @endforeach            
+        ];       
 
-        // Open modal
-        addUserBtn.addEventListener('click', () => {
-            modal.classList.remove('hidden');
-            appContainer.classList.add('blurred');
-            document.body.style.overflow = 'hidden'; // Prevent scrolling
-        });
+        let current_ActiveUser_Page = 1;
+        const activeUsersPerPage = 5;
+        let filteredActiveusers = [...Activeusers];
+        let searchTerm_Active = '';
 
-        // Close modal
-        function closeModalFunc() {
-            modal.classList.add('hidden');
-            appContainer.classList.remove('blurred');
-            document.body.style.overflow = 'auto'; // Enable scrolling
-            resetForm();
+        // DOM elements
+        const activetableBody = document.getElementById('active-users-body');
+        const activepaginationInfo = document.getElementById('activeuser-pagination-info');
+        const activepaginationControls = document.getElementById('active-users-pagination');
+        const activesearchInput = document.getElementById('search-activeusers');
+
+        
+        // Render users for current page
+        function renderActiveusers() {
+            activetableBody.innerHTML = '';
+
+            const startIndex = (current_ActiveUser_Page - 1) * activeUsersPerPage;
+            const endIndex = startIndex + activeUsersPerPage;
+            const usersToShow = filteredActiveusers.slice(startIndex, endIndex);
+
+            if (usersToShow.length === 0) {
+                activetableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center py-8 text-gray-500">
+                            No users found matching your criteria.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            usersToShow.forEach((user, index) => {
+                const isLastRow = index === usersToShow.length - 1;
+                const row = document.createElement('tr');
+                row.className = isLastRow ? '' : 'border-b border-gray-200 dark:border-gray-700';
+
+                //Image Allocation
+                let image = "";
+                if(user.role === 'admin'){
+                    image = "<i class=\"fa-solid fa-user-tie text-blue-600\"></i>"
+                }else if(user.role === 'supplier'){
+                    image = "<i class=\"fas fa-truck-loading text-green-600\"></i>"
+                }else if (user.role === 'manufacturer'){
+                    image = "<i class=\"fas fa-industry text-yellow-600\"></i>"
+                }else {
+                     image = "<i class=\"fas fa-boxes text-purple-600\"></i>"
+                }
+
+                // Highlight row if it matches search term
+                const highlightClass = searchTerm_Active && (
+                    user.name.toLowerCase().includes(searchTerm_Active) ||
+                    user.email.toLowerCase().includes(searchTerm_Active)
+                );
+
+                row.innerHTML = `
+                    <td class="px-4 py-3 ${isLastRow ? 'rounded-bl-xl' : ''}">
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 mr-3 rounded-full bg-blue-100 flex items-center justify-center">
+                                ${image}
+                            </div>
+                            <div>
+                                <p class="font-medium">${user.name}</p>
+                                <p class="text-gray-500 text-sm">${user.email}</p>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="px-4 py-3">
+                        <span class="role-badge role-${user.role.toLowerCase()}">${user.role}</span>
+                    </td>
+                    <td class="px-4 py-3 text-sm">${user.created_at}</td>
+                    <td class="px-4 py-3 ${isLastRow ? 'rounded-br-xl' : ''}">
+                        <div class="flex space-x-2">
+                            <form action="{{route('admin.users.editview')}}" method="POST">
+                                @csrf
+                                <button type="submit" class="action-btn text-blue-600">
+                                    <input type="text" name="id" class="hidden" value="${user.id}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </form>
+                            <form action="{{route('admin.users.remove')}}" method="POST">
+                                @csrf
+                                <button class="action-btn text-red-600 hover:bg-red-50">
+                                    <input type="text" name="id" class="hidden" value="${user.id}">
+                                    <input type="text" name="database" class="hidden" value="users">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                `;
+                activetableBody.appendChild(row);
+            });
+
+            updateActivepagination();
         }
 
-        closeModal.addEventListener('click', closeModalFunc);
-        cancelBtn.addEventListener('click', closeModalFunc);
+        // Update pagination controls
+        function updateActivepagination() {
+            const totalPages = Math.ceil(filteredActiveusers.length / activeUsersPerPage);
+            const startUser = (current_ActiveUser_Page - 1) * activeUsersPerPage + 1;
+            const endUser = Math.min(current_ActiveUser_Page * activeUsersPerPage, filteredActiveusers.length);
 
-        // Close modal when clicking outside
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('modal-overlay')) {
-                closeModalFunc();
-            }
-        });
+            activepaginationInfo.textContent = `Showing ${startUser} to ${endUser} of ${filteredActiveusers.length} users`;
 
-        // Close modal with Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
-                closeModalFunc();
+            activepaginationControls.innerHTML = '';
+
+            // Previous button
+            const prevButton = document.createElement('button');
+            prevButton.className = 'px-3 py-1 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300';
+            prevButton.disabled = current_ActiveUser_Page === 1;
+            prevButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            prevButton.addEventListener('click', () => {
+                if (current_ActiveUser_Page > 1) {
+                    current_ActiveUser_Page--;
+                    renderActiveusers();
+                }
+            });
+            activepaginationControls.appendChild(prevButton);
+
+            // Page numbers
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, current_ActiveUser_Page - Math.floor(maxVisiblePages / 2));
+            let endPage = startPage + maxVisiblePages - 1;
+
+            if (endPage > totalPages) {
+                endPage = totalPages;
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
             }
-        });
+
+            if (startPage > 1) {
+                const firstPageButton = createPageButton(1);
+                activepaginationControls.appendChild(firstPageButton);
+
+                if (startPage > 2) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.className = 'px-3 py-1';
+                    ellipsis.textContent = '...';
+                    activepaginationControls.appendChild(ellipsis);
+                }
+            }
+
+            for (let i = startPage; i <= endPage; i++) {
+                const pageButton = createPageButton(i);
+                activepaginationControls.appendChild(pageButton);
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) {
+                    const ellipsis = document.createElement('span');
+                    ellipsis.className = 'px-3 py-1';
+                    ellipsis.textContent = '...';
+                    activepaginationControls.appendChild(ellipsis);
+                }
+
+                const lastPageButton = createPageButton(totalPages);
+                activepaginationControls.appendChild(lastPageButton);
+            }
+
+            // Next button
+            const nextButton = document.createElement('button');
+            nextButton.className = 'px-3 py-1 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300';
+            nextButton.disabled = current_ActiveUser_Page === totalPages;
+            nextButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            nextButton.addEventListener('click', () => {
+                if (current_ActiveUser_Page < totalPages) {
+                    current_ActiveUser_Page++;
+                    renderActiveusers();
+                }
+            });
+            activepaginationControls.appendChild(nextButton);
+        }
+
+        // Create a page button
+        function createPageButton(pageNumber) {
+            const button = document.createElement('button');
+            button.className = `${pageNumber === current_ActiveUser_Page ? 'bg-blue-600 text-white' : ''} px-3 py-1 rounded-lg bg-gray-200 text-gray-700 hover:bg-gray-300`;
+            button.textContent = pageNumber;
+            button.addEventListener('click', () => {
+                current_ActiveUser_Page = pageNumber;
+                renderActiveusers();
+            });
+            return button;
+        }
+
+        // Setup event listeners
+        function setupActiveEventListeners() {
+            activesearchInput.addEventListener('input', () => {
+                searchTerm_Active = activesearchInput.value.trim().toLowerCase();
+                current_ActiveUser_Page = 1;
+
+                if (searchTerm_Active === '') {
+                    filteredActiveusers = [...users];
+                } else {
+                    filteredActiveusers = users.filter(user =>
+                        user.name.toLowerCase().includes(searchTerm_Active)
+                    );
+                }
+
+                renderActiveusers();
+            });
+        }        
+        
 
 
     </script>

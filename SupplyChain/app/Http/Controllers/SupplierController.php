@@ -258,4 +258,9 @@ class SupplierController extends Controller
         $suppliedItems = $query->paginate(10);
         return view('supplier.supplied-items.index', compact('suppliedItems'));
     }
+
+    public function show($id) {
+        $supplyRequest = SupplyRequest::findOrFail($id);
+        return view('manufacturer.Orders.show-supply-request', compact('supplyRequest'));
+    }
 }

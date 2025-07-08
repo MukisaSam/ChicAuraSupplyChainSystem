@@ -274,9 +274,9 @@
                         </div>
                     </div>
                 </div>
-                <section id="supply-request" class="mt-10 dashboard-section hidden">
-                    <div class="max-w-5xl mx-auto px-4">
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <section id="supply-request" class="mt-10 dashboard-section overflow-y-auto max-h-[80vh]">
+                    <div class="w-full px-0 overflow-y-auto">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 w-full">
                             <div class="flex justify-between flex-wrap items-center border-b border-gray-200 dark:border-gray-700 pb-2 mb-3">
                                 <h1 class="text-2xl font-bold">Supply Requests</h1>
                             </div>
@@ -308,112 +308,114 @@
                                 </div>
                             </form>
                             <div class="overflow-x-auto">
-                                <table class="min-w-full divide-y divide-gray-200">
-                                    <thead class="bg-gray-50 dark:bg-gray-900">
-                                        <tr>
-                                            <th class="px-4 py-2">Request ID</th>
-                                            <th class="px-4 py-2">Item</th>
-                                            <th class="px-4 py-2">Quantity</th>
-                                            <th class="px-4 py-2">Due Date</th>
-                                            <th class="px-4 py-2">Status</th>
-                                            <th class="px-4 py-2">Payment Type</th>
-                                            <th class="px-4 py-2">Delivery Method</th>
-                                            <th class="px-4 py-2">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200">
-                                        @forelse($supplyRequests as $request)
-                                        <tr>
-                                            <td class="px-4 py-2">#{{ $request->id }}</td>
-                                            <td class="px-4 py-2">
-                                                <strong>{{ $request->item->name }}</strong>
-                                                <br>
-                                                <span class="text-xs text-gray-500">{{ $request->item->description }}</span>
-                                            </td>
-                                            <td class="px-4 py-2">{{ number_format($request->quantity) }}</td>
-                                            <td class="px-4 py-2">
-                                                <span class="{{ $request->due_date->isPast() ? 'text-red-500' : '' }}">
-                                                    {{ $request->due_date->format('M d, Y') }}
-                                                </span>
-                                            </td>
-                                            <td class="px-4 py-2">
-                                                <span class="inline-block px-2 py-1 rounded text-xs font-semibold
-                                                    @if($request->status === 'pending') bg-yellow-200 text-yellow-800
-                                                    @elseif($request->status === 'accepted' || $request->status === 'approved') bg-green-200 text-green-800
-                                                    @elseif($request->status === 'rejected' || $request->status === 'declined') bg-red-200 text-red-800
-                                                    @elseif($request->status === 'in_progress') bg-blue-200 text-blue-800
-                                                    @elseif($request->status === 'completed') bg-purple-200 text-purple-800
-                                                    @else bg-gray-200 text-gray-800 @endif">
-                                                    {{ ucfirst(str_replace('_', ' ', $request->status)) }}
-                                                </span>
-                                            </td>
-                                            <td class="px-4 py-2">
-                                                <span class="inline-block px-2 py-1 rounded text-xs bg-gray-100 text-gray-800">
-                                                    {{ ucfirst($request->payment_type) }}
-                                                </span>
-                                            </td>
-                                            <td class="px-4 py-2">
-                                                <span class="inline-block px-2 py-1 rounded text-xs bg-gray-100 text-gray-800">
-                                                    {{ ucfirst($request->delivery_method) }}
-                                                </span>
-                                            </td>
-                                            <td class="px-4 py-2">
-                                                <a href="{{ route('supplier.supply-requests.show', $request) }}" class="text-blue-600 hover:underline text-sm"><i class="fas fa-eye"></i> View</a>
-                                            </td>
-                                        </tr>
-                                        @empty
-                                        <tr>
-                                            <td colspan="8" class="text-center py-4 text-gray-500">No supply requests found.</td>
-                                        </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                                @if($supplyRequests->hasPages())
-                                    <div class="flex justify-center mt-4">
-                                        {{ $supplyRequests->links() }}
-                                    </div>
-                                @endif
+                                <div class="overflow-y-auto" style="max-height: 500px;">
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <thead class="bg-gray-50 dark:bg-gray-900">
+                                            <tr>
+                                                <th class="px-4 py-2">Request ID</th>
+                                                <th class="px-4 py-2">Item</th>
+                                                <th class="px-4 py-2">Quantity</th>
+                                                <th class="px-4 py-2">Due Date</th>
+                                                <th class="px-4 py-2">Status</th>
+                                                <th class="px-4 py-2">Payment Type</th>
+                                                <th class="px-4 py-2">Delivery Method</th>
+                                                <th class="px-4 py-2">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200">
+                                            @forelse($supplyRequests as $request)
+                                            <tr>
+                                                <td class="px-4 py-2">#{{ $request->id }}</td>
+                                                <td class="px-4 py-2">
+                                                    <strong>{{ $request->item->name }}</strong>
+                                                    <br>
+                                                    <span class="text-xs text-gray-500">{{ $request->item->description }}</span>
+                                                </td>
+                                                <td class="px-4 py-2">{{ number_format($request->quantity) }}</td>
+                                                <td class="px-4 py-2">
+                                                    <span class="{{ $request->due_date->isPast() ? 'text-red-500' : '' }}">
+                                                        {{ $request->due_date->format('M d, Y') }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-4 py-2">
+                                                    <span class="inline-block px-2 py-1 rounded text-xs font-semibold
+                                                        @if($request->status === 'pending') bg-yellow-200 text-yellow-800
+                                                        @elseif($request->status === 'accepted' || $request->status === 'approved') bg-green-200 text-green-800
+                                                        @elseif($request->status === 'rejected' || $request->status === 'declined') bg-red-200 text-red-800
+                                                        @elseif($request->status === 'in_progress') bg-blue-200 text-blue-800
+                                                        @elseif($request->status === 'completed') bg-purple-200 text-purple-800
+                                                        @else bg-gray-200 text-gray-800 @endif">
+                                                        {{ ucfirst(str_replace('_', ' ', $request->status)) }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-4 py-2">
+                                                    <span class="inline-block px-2 py-1 rounded text-xs bg-gray-100 text-gray-800">
+                                                        {{ ucfirst($request->payment_type) }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-4 py-2">
+                                                    <span class="inline-block px-2 py-1 rounded text-xs bg-gray-100 text-gray-800">
+                                                        {{ ucfirst($request->delivery_method) }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-4 py-2">
+                                                    <a href="{{ route('supplier.supply-requests.show', $request) }}" class="text-blue-600 hover:underline text-sm"><i class="fas fa-eye"></i> View</a>
+                                                </td>
+                                            </tr>
+                                            @empty
+                                            <tr>
+                                                <td colspan="8" class="text-center py-4 text-gray-500">No supply requests found.</td>
+                                            </tr>
+                                            @endforelse
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
+                            @if($supplyRequests->hasPages())
+                                <div class="flex justify-center mt-4">
+                                    {{ $supplyRequests->links() }}
+                                </div>
+                            @endif
                         </div>
                     </div>
                 </section>
-                <section id="analytics" class="mt-10 dashboard-section hidden">
-                    <div class="max-w-5xl mx-auto px-4">
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <section id="analytics" class="mt-10 dashboard-section hidden overflow-y-auto max-h-[80vh]">
+                    <div class="w-full px-0">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 w-full">
                             <h2 class="text-xl font-bold mb-4">Supplier Analytics</h2>
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4 w-full">
+                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 w-full">
                                     <h5 class="font-semibold">Total Supplied</h5>
                                     <p class="text-2xl font-bold">{{ $stats['total_supplied'] ?? 0 }}</p>
                                 </div>
-                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 w-full">
                                     <h5 class="font-semibold">Average Rating</h5>
                                     <p class="text-2xl font-bold">{{ number_format($stats['average_rating'], 1) }}</p>
                                 </div>
-                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 w-full">
                                     <h5 class="font-semibold">Active Requests</h5>
                                     <p class="text-2xl font-bold">{{ $stats['active_requests'] }}</p>
                                 </div>
-                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 w-full">
                                     <h5 class="font-semibold">Total Revenue</h5>
                                     <p class="text-2xl font-bold">${{ number_format($stats['total_revenue'], 2) }}</p>
                                 </div>
                             </div>
                             
                             <!-- Charts Section -->
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 w-full">
+                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 w-full">
                                     <h5 class="font-semibold mb-2">Revenue Trend</h5>
                                     <canvas id="revenueChart" width="400" height="200"></canvas>
                                 </div>
-                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+                                <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 w-full">
                                     <h5 class="font-semibold mb-2">Quality Rating Trend</h5>
                                     <canvas id="ratingChart" width="400" height="200"></canvas>
                                 </div>
                             </div>
                             
                             <!-- Supply Trends Table -->
-                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4">
+                            <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 overflow-y-auto w-full">
                                 <h5 class="mb-0 font-semibold">Supply Trends (Monthly)</h5>
                                 <div class="overflow-x-auto">
                                     <table class="min-w-full divide-y divide-gray-200">
@@ -437,9 +439,9 @@
                         </div>
                     </div>
                 </section>
-                <section id="reports" class="mt-10 dashboard-section hidden">
-                    <div class="max-w-5xl mx-auto px-4">
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <section id="reports" class="mt-10 dashboard-section overflow-y-auto max-h-[80vh]">
+                    <div class="w-full px-0">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 w-full">
                             <div class="flex justify-between flex-wrap items-center border-b border-gray-200 dark:border-gray-700 pb-2 mb-3">
                                 <h1 class="text-2xl font-bold">Reports</h1>
                                 <div class="flex gap-2">
@@ -555,9 +557,7 @@
                                         @endforelse
                                     </tbody>
                                 </table>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                            </div>
+                            </div>                        
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 text-center">
                                     <h3 class="text-primary text-2xl font-bold">{{ number_format($monthlyReport->sum('quantity')) }}</h3>
@@ -632,9 +632,9 @@
                         </div>
                     </div>
                 </section>
-                <section id="chat" class="mt-10 dashboard-section hidden">
-                    <div class="max-w-5xl mx-auto px-4">
-                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
+                <section id="chat" class="mt-10 dashboard-section hidden overflow-y-auto max-h-[80vh]">
+                    <div class="w-full px-0">
+                        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 w-full">
                         <main class="flex-1 p-4">
                 <div class="mb-6">
                     <h2 class="text-2xl font-bold text-white mb-1">Chat</h2>
