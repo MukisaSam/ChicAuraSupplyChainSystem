@@ -279,13 +279,9 @@
                         <i class="fas fa-warehouse w-5"></i>
                         <span class="ml-2 text-sm">Warehouses</span>
                     </a>
-                    <a href="{{route('manufacturer.wholesalers')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                    <a href="{{route('manufacturer.partners.manage')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-users w-5"></i>
-                        <span class="ml-2 text-sm">Wholesalers</span>
-                    </a>
-                    <a href="{{route('manufacturer.suppliers')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-truck-fast w-5"></i>
-                        <span class="ml-2 text-sm">Suppliers</span>
+                        <span class="ml-2 text-sm">Partners</span>
                     </a>
                     <a href="{{route('manufacturer.chat')}}" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-indigo-600 to-indigo-700 rounded-xl shadow-lg">
                         <i class="fas fa-comments w-5"></i>
@@ -298,6 +294,34 @@
                      <a href="{{route('manufacturer.revenue')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-dollar-sign w-5"></i>
                         <span class="ml-2 text-sm">Revenue</span>
+                    </a>
+                    <!-- Production Section Heading -->
+                    <div class="mt-6 mb-2">
+                        <h4 class="text-gray-400 text-xs font-bold uppercase tracking-wider px-3 mb-1">Production</h4>
+                    </div>
+                    <a href="{{ route('manufacturer.work-orders.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-cogs w-5"></i>
+                        <span class="ml-2 text-sm">Work Orders</span>
+                    </a>
+                    <a href="{{ route('manufacturer.bom.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-list-alt w-5"></i>
+                        <span class="ml-2 text-sm">Bill of Materials</span>
+                    </a>
+                    <a href="{{ route('manufacturer.production-schedules.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-calendar-alt w-5"></i>
+                        <span class="ml-2 text-sm">Production Schedules</span>
+                    </a>
+                    <a href="{{ route('manufacturer.quality-checks.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-clipboard-check w-5"></i>
+                        <span class="ml-2 text-sm">Quality Checks</span>
+                    </a>
+                    <a href="{{ route('manufacturer.downtime-logs.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-stopwatch w-5"></i>
+                        <span class="ml-2 text-sm">Downtime Logs</span>
+                    </a>
+                    <a href="{{ route('manufacturer.production-costs.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-coins w-5"></i>
+                        <span class="ml-2 text-sm">Production Costs</span>
                     </a>
                 </nav>
                 <div class="p-3 border-t border-gray-600">
@@ -626,7 +650,7 @@
                 .then(data => {
                     console.log('Send response:', data);
                     if (data.success) {
-                        appendMessage(data.message);
+                        loadMessages(receiverId); // Refresh the chat after sending
                         scrollToBottom();
                     } else {
                         alert('Failed to send message');

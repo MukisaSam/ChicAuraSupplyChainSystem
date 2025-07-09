@@ -122,11 +122,11 @@
                         <i class="fas fa-warehouse w-5"></i>
                         <span class="ml-2 text-sm">Inventory</span>
                     </a>
-                    <a href="{{route('manufacturer.wholesalers')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                    <a href="{{route('manufacturer.partners.manage')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-users w-5"></i>
                         <span class="ml-2 text-sm">Wholesalers</span>
                     </a>
-                    <a href="{{route('manufacturer.suppliers')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                    <a href="{{route('manufacturer.partners.manage')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-truck-fast w-5"></i>
                         <span class="ml-2 text-sm">Suppliers</span>
                     </a>

@@ -95,15 +95,12 @@ class ManufacturerOrdersController extends Controller
     public function createSupplyRequest()
     {
         $user = Auth::user();
-        
         if ($user->role !== 'manufacturer') {
             abort(403, 'Access denied. Manufacturer privileges required.');
         }
-        
-        $suppliers = Supplier::with('user')->get();
-        $items = Item::where('is_active', true)->get();
-        
-        return view('manufacturer.Orders.create-supply-request', compact('suppliers', 'items'));
+        // Only fetch raw materials
+        $rawMaterials = Item::where('type', 'raw_material')->where('is_active', true)->get();
+        return view('manufacturer.Orders.create-supply-request', compact('rawMaterials'));
     }
 
     public function storeSupplyRequest(Request $request)

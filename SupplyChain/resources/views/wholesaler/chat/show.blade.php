@@ -84,7 +84,6 @@
         <!-- Sidebar -->
         <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
             <div class="flex flex-col h-full">
-                <!-- Sidebar Header -->
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
                     <div class="logo-container">
                         <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
@@ -93,7 +92,6 @@
                 <div class="px-4 py-4">
                     <h3 class="text-white text-sm font-semibold mb-3 px-3">WHOLESALER PORTAL</h3>
                 </div>
-                <!-- Sidebar Navigation -->
                 <nav class="flex-1 px-4 py-2 space-y-1">
                     <a href="{{ route('wholesaler.dashboard') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-home w-5"></i>
@@ -110,12 +108,20 @@
                     <a href="{{ route('wholesaler.chat.index') }}" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-purple-600 to-purple-700 rounded-xl shadow-lg">
                         <i class="fas fa-comments w-5"></i>
                         <span class="ml-2 font-medium text-sm">Chat</span>
+                        <span id="unread-count" class="unread-badge ml-auto" style="display: none;"></span>
                     </a>
                     <a href="{{ route('wholesaler.reports.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-file-invoice-dollar w-5"></i>
                         <span class="ml-2 text-sm">Reports</span>
                     </a>
+                    <a href="{{ route('wholesaler.invoices.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-file-invoice w-5"></i><span class="ml-2 text-sm">Invoices</span></a>
                 </nav>
+                <div class="p-3 border-t border-gray-600">
+                    <div class="text-center text-gray-400 text-xs">
+                        <p>ChicAura SCM</p>
+                        <p class="text-xs mt-1">v2.1.0</p>
+                    </div>
+                </div>
             </div>
         </aside>
         <div class="flex flex-col flex-1 w-full">
@@ -219,16 +225,18 @@
             const messageForm = document.getElementById('message-form');
             const messageInput = document.getElementById('message-input');
             const messagesContainer = document.getElementById('messages-container');
+            const receiverId = messageForm.querySelector('input[name="receiver_id"]').value;
+
             messageForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 const content = messageInput.value.trim();
-                const receiverId = this.querySelector('input[name="receiver_id"]').value;
                 if (!content || !receiverId) {
                     return;
                 }
                 sendMessage(receiverId, content);
                 messageInput.value = '';
             });
+
             function sendMessage(receiverId, content) {
                 const formData = new FormData();
                 formData.append('receiver_id', receiverId);
@@ -243,8 +251,9 @@
                 })
                 .then(response => response.json())
                 .then(data => {
+                    console.log('Send response:', data); // Debug log
                     if (data.success) {
-                        appendMessage(data.message);
+                        loadMessages(); // Reload messages after sending
                         scrollToBottom();
                     } else {
                         console.error('Failed to send message:', data);
@@ -254,16 +263,40 @@
                     console.error('Error sending message:', error);
                 });
             }
+
+            function loadMessages() {
+                fetch(`{{ route('wholesaler.chat.messages', ['contactId' => $contact->id]) }}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Loaded messages:', data.messages); // Debug log
+                        messagesContainer.innerHTML = '';
+                        if (data.messages && data.messages.length > 0) {
+                            data.messages.forEach(message => {
+                                appendMessage(message);
+                            });
+                        } else {
+                            messagesContainer.innerHTML = '<div class="text-center text-gray-500 dark:text-gray-400 py-8">No messages yet. Start the conversation!</div>';
+                        }
+                        scrollToBottom();
+                    })
+                    .catch(error => {
+                        console.error('Error loading messages:', error);
+                        messagesContainer.innerHTML = '<div class="text-center text-red-500 py-8">Error loading messages</div>';
+                    });
+            }
+
             function appendMessage(message) {
                 const isOwnMessage = message.sender_id == {{ $user->id }};
+                const avatar = isOwnMessage
+                    ? '{{ asset('images/default-avatar.svg') }}'
+                    : '{{ asset('images/manufacturer.png') }}';
                 const messageHtml = `
-                    <div class=\"flex ${isOwnMessage ? 'justify-end' : 'justify-start'}\">
-                        <div class=\"flex ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'} items-end space-x-3 max-w-xs lg:max-w-md\">
-                            <img src=\"${isOwnMessage ? '{{ asset('images/default-avatar.svg') }}' : '{{ asset('images/manufacturer.png') }}'}\" 
-                                 alt=\"${message.sender.name}\" class=\"w-8 h-8 rounded-full flex-shrink-0 border-2 border-purple-200\">
-                            <div class=\"message-bubble ${isOwnMessage ? 'own' : 'other'}\">
-                                <p class=\"text-sm\">${message.content}</p>
-                                <p class=\"text-xs ${isOwnMessage ? 'text-purple-100' : 'text-gray-500 dark:text-gray-400'} mt-1\">
+                    <div class="flex ${isOwnMessage ? 'justify-end' : 'justify-start'}">
+                        <div class="flex ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'} items-end space-x-3 max-w-xs lg:max-w-md">
+                            <img src="${avatar}" alt="${message.sender.name}" class="w-8 h-8 rounded-full flex-shrink-0 border-2 border-purple-200">
+                            <div class="message-bubble ${isOwnMessage ? 'own' : 'other'}">
+                                <p class="text-sm">${message.content}</p>
+                                <p class="text-xs ${isOwnMessage ? 'text-purple-100' : 'text-gray-500 dark:text-gray-400'} mt-1">
                                     ${new Date(message.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                                 </p>
                             </div>
@@ -272,12 +305,15 @@
                 `;
                 messagesContainer.insertAdjacentHTML('beforeend', messageHtml);
             }
+
             function scrollToBottom() {
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
             scrollToBottom();
+
+            // Auto-refresh messages every 2 seconds
+            setInterval(loadMessages, 2000);
         });
     </script>
-    <x-wholesaler-notification-bell />
 </body>
 </html> 

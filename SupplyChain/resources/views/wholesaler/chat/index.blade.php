@@ -276,6 +276,7 @@
                         <i class="fas fa-file-invoice-dollar w-5"></i>
                         <span class="ml-2 text-sm">Reports</span>
                     </a>
+                    <a href="{{ route('wholesaler.invoices.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-file-invoice w-5"></i><span class="ml-2 text-sm">Invoices</span></a>
                 </nav>
                 <div class="p-3 border-t border-gray-600">
                     <div class="text-center text-gray-400 text-xs">
@@ -582,7 +583,7 @@
                 .then(data => {
                     console.log('Send response:', data);
                     if (data.success) {
-                        appendMessage(data.message);
+                        loadMessages(receiverId); // Refresh the chat after sending
                         scrollToBottom();
                     } else {
                         alert('Failed to send message');
