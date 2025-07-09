@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('business_address');
             $table->string('phone');
             $table->string('license_document');
+            $table->string('document_path');
             $table->integer('production_capacity');
             $table->json('specialization');
             $table->timestamps();

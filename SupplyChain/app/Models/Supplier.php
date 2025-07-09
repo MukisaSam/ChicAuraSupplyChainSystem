@@ -14,6 +14,7 @@ class Supplier extends Model
         'business_address',
         'phone',
         'license_document',
+        'document_path',
         'materials_supplied',
     ];
 
@@ -33,7 +34,7 @@ class Supplier extends Model
 
     public function suppliedItems()
     {
-        return $this->hasMany(SuppliedItem::class);
+        return $this->hasMany(\App\Models\SuppliedItem::class);
     }
 
     public function priceNegotiations()

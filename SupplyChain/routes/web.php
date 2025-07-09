@@ -108,7 +108,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     Route::get('/analytics/user-registrations', [App\Http\Controllers\AdminDashboardController::class, 'userRegistrationsAnalytics'])->name('analytics.user-registrations');
 
-    Route::get('/analytics', [App\Http\Controllers\AdminDashboardController::class, 'analytics'])->name('admin.analytics');
+    Route::get('/analytics', [App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('admin.analytics');
 });
 
 Route::middleware(['auth', 'can:manage-users'])->prefix('admin')->name('admin.')->group(function () {

@@ -14,6 +14,7 @@ class Manufacturer extends Model
         'business_address',
         'phone',
         'license_document',
+        'document_path',
         'production_capacity',
         'specialization',
     ];

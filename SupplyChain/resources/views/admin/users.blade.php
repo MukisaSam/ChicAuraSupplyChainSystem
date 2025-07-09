@@ -1,4 +1,4 @@
-@extends('.layouts.admin')
+@extends('.layouts.app')
 
 @section('inline_css')
 <style>

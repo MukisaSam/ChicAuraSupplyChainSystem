@@ -15,6 +15,7 @@ class Wholesaler extends Model
         'phone',
         'license_document',
         'business_type',
+        'document_path',
         'preferred_categories',
         'monthly_order_volume',
     ];
@@ -27,5 +28,10 @@ class Wholesaler extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(\App\Models\Order::class);
     }
 } 
