@@ -14,6 +14,7 @@ class Supplier extends Model
         'business_address',
         'phone',
         'license_document',
+        'document_path',
         'materials_supplied',
     ];
 

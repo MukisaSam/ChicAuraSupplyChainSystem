@@ -15,6 +15,7 @@ class Wholesaler extends Model
         'phone',
         'license_document',
         'business_type',
+        'document_path',
         'preferred_categories',
         'monthly_order_volume',
     ];
