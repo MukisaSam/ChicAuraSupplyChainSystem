@@ -25,6 +25,7 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
+        Auth::logout();
         return view('auth.register');
     }
 

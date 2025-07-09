@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ChicAura - Manufacturer Registration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         :root {
@@ -141,7 +142,11 @@
                     
                     <div>
                         <label for="license_document" class="form-label block text-sm font-semibold mb-2">Manufacturing License</label>
-                        <input id="license_document" name="license_document" type="file" required class="form-input w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                        <div class="grid grid-cols-1 lg:grid-cols-5 gap-1">
+                            <input id="license_document" name="license_document" type="file" required class="form-input lg:col-span-4 w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                            <a href="{{asset('templates/MANUFACTURER APPLICATION FORM.docx') }}" class="w-full lg:col-span-1 flex justify-center px-4 py-3 mt-1 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 outline-none transition duration-200 transform hover:scale-105 cursor-pointer"><i class="fa-solid fa-file-arrow-down text-3xl"></i></a>
+                        </div>
+
                     </div>
 
                     <div>
@@ -149,17 +154,6 @@
                         <input id="production_capacity" name="production_capacity" type="number" required class="form-input w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200" placeholder="Enter monthly production capacity">
                     </div>
 
-                    <!--<div>
-                        <label for="specialization" class="form-label block text-sm font-semibold mb-2">Specialization</label>
-                        <select id="specialization" name="specialization[]" multiple required class="form-input w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200">
-                            <option value="casual_wear">Casual Wear</option>
-                            <option value="formal_wear">Formal Wear</option>
-                            <option value="sports_wear">Sports Wear</option>
-                            <option value="evening_wear">Evening Wear</option>
-                            <option value="accessories">Accessories</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>-->
                     <div>
                         <label for="specialization" class="form-label block text-sm font-semibold mb-2">Specialization</label>
                         <div id="specialization"multiple required class="form-input2  grid grid-cols-1 lg:grid-cols-2 gap-6 w-full px-4 py-3 rounded-lg hover:ring-2 hover:ring-blue-500 transition duration-200">
