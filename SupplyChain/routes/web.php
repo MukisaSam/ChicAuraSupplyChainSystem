@@ -30,6 +30,8 @@ Route::prefix('register')->group(function () {
     Route::get('/new_user', [RegisteredUserController::class, 'createAdmin'])->name('register.admin');
     Route::post('/new_user', [RegisteredUserController::class, 'storeUser'])->name('register.admin.store');
 
+    Route::post('/user', [RegisteredUserController::class, 'newUser'])->name('register.newUser');
+
     Route::get('/supplier', [RegisteredUserController::class, 'createSupplier'])->name('register.supplier');
     Route::post('/supplier', [RegisteredUserController::class, 'storeSupplier'])->name('register.supplier.store');
 

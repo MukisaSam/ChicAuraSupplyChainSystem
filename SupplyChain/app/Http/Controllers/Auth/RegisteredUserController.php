@@ -71,6 +71,192 @@ class RegisteredUserController extends Controller
         return view('auth.register-wholesaler');
     }
 
+
+    /**
+     * Handle an new registration request.
+     */
+    public function newUser(Request $request): RedirectResponse
+    {
+        $role =  $request->role;
+
+        
+        if($role == 'supplier'){
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
+            'business_address' => ['required', 'string'],
+            'phone' => ['required', 'string'],
+            'license_document' => ['required', 'file', 'mimes:pdf', 'max:2048'],
+            'materials_supplied' => ['required', 'array'],
+        ]);
+                    
+        
+        
+
+        // Validation starts
+        $filePath = $request->file('license_document')->getPathname();
+        $fileName = $request->file('license_document')->getClientOriginalName();
+
+        $response = Http::attach('file',fopen($filePath, 'r'),$fileName)->post('http://localhost:8080/application/validate');
+
+        if ($response->successful()) {
+            $data = $response->json();
+            if (isset($data['status']) && $data['status'] === 'success') {
+                //redirect with success
+                $storePath =$request->file('license_document')->store('uploads', 'public');
+                
+                PendingUsers::create([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'role' => 'supplier',
+                    'password' => Hash::make($request->password),
+                    'business_address' => $request->business_address,
+                    'phone' => $request->phone,
+                    'license_document' => $fileName,
+                    'document_path' => $storePath,
+                    'materials_supplied' => json_encode($request->materials_supplied),
+                    'visitDate' => $data['visitDate'],
+                ]);
+
+                return redirect()->route('register.validation')->with([
+                    'success' => $data['visitDate'], 
+                    'name' => $request->name,
+                ]);
+
+            } else {
+                // Validation error
+                $msg = $data['message'] ?? 'Unknown error';
+                if (isset($data['details'])) {
+                    $msg .= ': ' . $data['details'];
+                }
+                 
+                return redirect()->route('register.validation')->with('error', $msg);
+                
+            }
+        } else {
+            // HTTP-level error
+            return redirect()->route('register.validation')->with('error', 'Failed to contact valgidation server: ' . $response->status());
+        }    
+
+        }else if($role == 'manufacturer'){
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
+            'business_address' => ['required', 'string'],
+            'phone' => ['required', 'string'],
+            'license_document' => ['required', 'file', 'mimes:pdf', 'max:2048'],
+            'production_capacity' => ['required', 'integer', 'min:1'],
+            'specialization' => ['required', 'array'],
+        ]);
+
+        // Validation starts
+        $filePath = $request->file('license_document')->getPathname();
+        $fileName = $request->file('license_document')->getClientOriginalName();
+
+        $response = Http::attach('file',fopen($filePath, 'r'),$fileName)->post('http://localhost:8080/application/validate');
+
+        if ($response->successful()) {
+            $data = $response->json();
+            if (isset($data['status']) && $data['status'] === 'success') {
+                //redirect with success
+                $storePath =$request->file('license_document')->store('uploads', 'public');
+
+                PendingUsers::create([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'role' => 'manufacturer',
+                    'password' => Hash::make($request->password),
+                    'business_address' => $request->business_address,
+                    'phone' => $request->phone,
+                    'license_document' => $fileName,
+                    'document_path' => $storePath,
+                    'production_capacity' =>  $request->production_capacity,                   
+                    'specialization' => json_encode($request->specialization),
+                    'visitDate' => $data['visitDate'],
+                ]);
+
+                return redirect()->route('register.validation')->with([
+                    'success' => $data['visitDate'], 
+                    'name' => $request->name,
+                ]);
+
+            } else {
+                // Validation error
+                $msg = $data['message'] ?? 'Unknown error';
+                if (isset($data['details'])) {
+                    $msg .= ': ' . $data['details'];
+                }
+                 
+                return redirect()->route('register.validation')->with('error', $msg);
+                
+            }
+        } else {
+            // HTTP-level error
+            return redirect()->route('register.validation')->with('error', 'Failed to contact valgidation server: ' . $response->status());
+        }
+        // Validation ends
+            
+        }else{
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
+            'business_address' => ['required', 'string'],
+            'phone' => ['required', 'string'],
+            'license_document' => ['required', 'file', 'mimes:pdf', 'max:2048'],
+            'business_type' => ['required', 'string'],
+            'monthly_order_volume' => ['required', 'integer'],
+            'preferred_categories' => ['required', 'array'],
+        ]);
+
+        // Validation starts
+        $filePath = $request->file('license_document')->getPathname();
+        $fileName = $request->file('license_document')->getClientOriginalName();
+
+        $response = Http::attach('file',fopen($filePath, 'r'),$fileName)->post('http://localhost:8080/application/validate');
+
+        if ($response->successful()) {
+            $data = $response->json();
+            if (isset($data['status']) && $data['status'] === 'success') {
+                //redirect with success
+                $storePath =$request->file('license_document')->store('uploads', 'public');
+
+                PendingUsers::create([
+                    'name' => $request->name,
+                    'email' => $request->email,
+                    'role' => 'wholesaler',
+                    'password' => Hash::make($request->password),
+                    'business_address' => $request->business_address,
+                    'phone' => $request->phone,
+                    'license_document' => $fileName,
+                    'document_path' => $storePath,
+                    'monthly_order_volume' => $request->monthly_order_volume,
+                    'business_type' => $request->business_type,
+                    'preferred_categories' => json_encode($request->preferred_categories),
+                    'visitDate' => $data['visitDate'],
+                ]);
+
+                return redirect()->route('register.validation')->with([
+                    'success' => $data['visitDate'], 
+                    'name' => $request->name,
+                ]);
+
+            } else {
+                // Validation error
+                $msg = $data['message'] ?? 'Unknown error';
+                if (isset($data['details'])) {
+                    $msg .= ': ' . $data['details'];
+                }
+                 
+                return redirect()->route('register.validation')->with('error', $msg);
+                
+            }
+        } else {
+            // HTTP-level error
+            return redirect()->route('register.validation')->with('error', 'Failed to contact valgidation server: ' . $response->status());
+        }
+
+        }
+    }
     /**
      * Handle an admin registration request.
      */
