@@ -468,4 +468,105 @@ class ManufacturerAnalyticsController extends Controller
         $wholesalerData = $this->getCustomerSegmentation();
         return view('manufacturer.analytics.wholesaler-report', compact('wholesalerData'));
     }
+
+    // Forecast API endpoints
+    public function getForecastOptions()
+    {
+        try {
+            $products = Item::select('name', 'base_price')
+                ->where('is_active', true)
+                ->get()
+                ->map(function ($item) {
+                    return [
+                        'name' => $item->name,
+                        'price' => $item->base_price
+                    ];
+                });
+
+            $locations = DB::table('warehouses')
+                ->select('location')
+                ->distinct()
+                ->get()
+                ->pluck('location');
+
+            // Add some default locations if warehouses are empty
+            if ($locations->isEmpty()) {
+                $locations = collect(['Wakiso', 'Kampala', 'Entebbe', 'Jinja', 'Gulu']);
+            }
+
+            return response()->json([
+                'products' => $products,
+                'locations' => $locations
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to fetch options'], 500);
+        }
+    }
+
+    public function generateForecast(Request $request)
+    {
+        try {
+            $request->validate([
+                'product_name' => 'required|string',
+                'unit_price' => 'required|numeric|min:0',
+                'location' => 'required|string'
+            ]);
+
+            $productName = $request->input('product_name');
+            $unitPrice = $request->input('unit_price');
+            $location = $request->input('location');
+
+            // Execute both daily and monthly forecast scripts
+            $baseDir = base_path('../ml_models');
+            
+            // Execute daily forecast
+            $dailyCommand = "cd $baseDir && python3 forecast_and_plot_daily.py --product_name \"$productName\" --unit_price $unitPrice --location \"$location\" 2>&1";
+            $dailyOutput = shell_exec($dailyCommand);
+
+            // Execute monthly forecast
+            $monthlyCommand = "cd $baseDir && python3 forecast_and_plot_monthly.py --product_name \"$productName\" --unit_price $unitPrice --location \"$location\" 2>&1";
+            $monthlyOutput = shell_exec($monthlyCommand);
+
+            if (!$dailyOutput || !$monthlyOutput) {
+                return response()->json(['error' => 'Failed to execute forecast scripts'], 500);
+            }
+
+            // Extract the daily image filename from the output
+            preg_match('/FORECAST_IMAGE:(.+)/', $dailyOutput, $dailyMatches);
+            
+            // Extract the monthly image filename from the output
+            preg_match('/FORECAST_MONTHLY_IMAGE:(.+)/', $monthlyOutput, $monthlyMatches);
+            
+            if (!isset($dailyMatches[1]) || !isset($monthlyMatches[1])) {
+                return response()->json([
+                    'error' => 'Failed to generate forecast images',
+                    'daily_output' => $dailyOutput,
+                    'monthly_output' => $monthlyOutput
+                ], 500);
+            }
+
+            $dailyImageFilename = trim($dailyMatches[1]);
+            $monthlyImageFilename = trim($monthlyMatches[1]);
+            
+            $dailyImageUrl = asset('forecast_plots/' . $dailyImageFilename);
+            $monthlyImageUrl = asset('forecast_plots/' . $monthlyImageFilename);
+
+            return response()->json([
+                'success' => true,
+                'daily_image_url' => $dailyImageUrl,
+                'monthly_image_url' => $monthlyImageUrl,
+                'product_name' => $productName,
+                'location' => $location,
+                'unit_price' => $unitPrice
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error('Forecast Generation Error: ' . $e->getMessage());
+            return response()->json([
+                'error' => 'Failed to generate forecast: ' . $e->getMessage(),
+                'command' => $command ?? 'Command not set',
+                'output' => $output ?? 'No output'
+            ], 500);
+        }
+    }
 }
