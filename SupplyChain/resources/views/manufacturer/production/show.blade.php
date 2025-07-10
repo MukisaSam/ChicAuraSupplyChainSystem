@@ -1,7 +1,7 @@
 @extends('manufacturer.layouts.dashboard')
 @section('content')
 <div class="container mx-auto py-6">
-    <h1 class="text-2xl font-bold mb-4">Work Order Details</h1>
+    <h1 class="text-2xl font-bold text-white mb-4">Work Order Details</h1>
     <div class="bg-white rounded shadow p-6 mb-4">
         <h2 class="text-lg font-semibold mb-2">Product:</h2>
         <p class="mb-2">{{ $workOrder->product->name ?? '-' }}</p>
@@ -59,6 +59,6 @@
             <p class="mb-2 text-gray-500">No production cost recorded.</p>
         @endif
     </div>
-    <a href="{{ route('manufacturer.production.index') }}" class="text-indigo-600 hover:underline">&larr; Back to Work Orders</a>
+    <a href="{{ route('manufacturer.production.index') }}" class="text-white hover:underline">&larr; Back to Work Orders</a>
 </div>
 @endsection 

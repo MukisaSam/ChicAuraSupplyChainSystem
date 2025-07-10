@@ -1,12 +1,12 @@
 @extends('manufacturer.layouts.dashboard')
 @section('content')
 <div class="container mx-auto py-6">
-    <h1 class="text-2xl font-bold mb-4">Downtime Logs</h1>
+    <h1 class="text-2xl font-bold text-white mb-4">Downtime Logs</h1>
     <a href="{{ route('manufacturer.downtime-logs.create') }}" class="bg-indigo-600 text-white px-4 py-2 rounded mb-4 inline-block">Create New Log</a>
     <table class="min-w-full table-auto bg-white rounded shadow">
         <thead>
             <tr>
-                <th class="px-4 py-2">#</th>
+                <th class="px-4 py-2">Number</th>
                 <th class="px-4 py-2">Reason</th>
                 <th class="px-4 py-2">Start Time</th>
                 <th class="px-4 py-2">End Time</th>

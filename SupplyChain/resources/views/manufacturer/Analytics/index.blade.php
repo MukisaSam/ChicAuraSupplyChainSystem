@@ -125,7 +125,7 @@
 </head>
 <body class="font-sans antialiased">
     <div class="background-overlay"></div>
-    <div class="flex h-screen main-content-container">
+    <div class="flex h-full main-content-container">
         <!-- Sidebar -->
         <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
             <div class="flex flex-col h-full">
@@ -428,10 +428,10 @@
                                 <tbody>
                                     @foreach($analytics['suppliers']['suppliers'] as $supplier)
                                         <tr class="border-b">
-                                            <td class="py-2 px-3">{{ $supplier['name'] }}</td>
-                                            <td class="py-2 px-3">{{ $supplier['on_time_delivery_rate'] }}%</td>
-                                            <td class="py-2 px-3">{{ $supplier['avg_delivery_time'] }}</td>
-                                            <td class="py-2 px-3">{{ $supplier['quality_rating'] }}</td>
+                                            <td class="py-2 px-3 text-black">{{ $supplier['name'] }}</td>
+                                            <td class="py-2 px-3 text-black">{{ $supplier['on_time_delivery_rate'] }}%</td>
+                                            <td class="py-2 px-3 text-black">{{ $supplier['avg_delivery_time'] }}</td>
+                                            <td class="py-2 px-3 text-black">{{ $supplier['quality_rating'] }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

@@ -35,8 +35,21 @@ class QualityCheckController extends Controller
         return view('manufacturer.quality.show', compact('qualityCheck'));
     }
     public function edit(QualityCheck $qualityCheck) {
-        return view('manufacturer.quality.edit', compact('qualityCheck'));
+        $workOrders = WorkOrder::with('product')->get();
+        $workforce = Workforce::all();
+        return view('manufacturer.quality.edit', compact('qualityCheck', 'workOrders', 'workforce'));
     }
-    public function update(Request $request, QualityCheck $qualityCheck) { /* ... */ }
+    public function update(Request $request, QualityCheck $qualityCheck) {
+        $validated = $request->validate([
+            'work_order_id' => 'required|exists:work_orders,id',
+            'stage' => 'required|string',
+            'result' => 'required|in:Pass,Fail,Rework',
+            'checked_by' => 'required|exists:workforces,id',
+            'checked_at' => 'required|date',
+            'notes' => 'nullable|string',
+        ]);
+        $qualityCheck->update($validated);
+        return redirect()->route('manufacturer.quality.index')->with('success', 'Quality check updated successfully!');
+    }
     public function destroy(QualityCheck $qualityCheck) { /* ... */ }
 } 

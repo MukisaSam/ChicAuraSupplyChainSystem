@@ -242,7 +242,7 @@
     </style>
 </head>
 <body class="font-sans antialiased">
-    <div class="flex h-screen">
+    <div class="flex h-full">
         <!-- Sidebar -->
         <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
             <div class="flex flex-col h-full">
@@ -398,7 +398,7 @@
                                      data-chat-url="{{ route('manufacturer.chat.show', ['contactId' => $supplier->id]) }}">
                                     <div class="relative">
                                         <img src="{{ asset('images/supplier.jpg') }}" alt="{{ $supplier->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
-                                        <span class="online-indicator absolute -bottom-1 -right-1"></span>
+                                        <span class="online-indicator absolute -bottom-1 -right-1 {{ $supplier->is_online ? 'bg-green-500' : 'bg-gray-400' }}"></span>
                                     </div>
                                     <div class="ml-4 flex-1">
                                         <h5 class="text-sm font-medium text-black">{{ $supplier->name }}</h5>
@@ -423,7 +423,7 @@
                                      data-chat-url="{{ route('manufacturer.chat.show', ['contactId' => $wholesaler->id]) }}">
                                     <div class="relative">
                                         <img src="{{ asset('images/wholesaler.jpg') }}" alt="{{ $wholesaler->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
-                                        <span class="online-indicator absolute -bottom-1 -right-1"></span>
+                                        <span class="online-indicator absolute -bottom-1 -right-1 {{ $wholesaler->is_online ? 'bg-green-500' : 'bg-gray-400' }}"></span>
                                     </div>
                                     <div class="ml-4 flex-1">
                                         <h5 class="text-sm font-medium text-black">{{ $wholesaler->name }}</h5>
@@ -448,7 +448,7 @@
                                      data-chat-url="{{ route('manufacturer.chat.show', ['contactId' => $admin->id]) }}">
                                     <div class="relative">
                                         <img src="{{ asset('images/default-avatar.svg') }}" alt="{{ $admin->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
-                                        <span class="online-indicator absolute -bottom-1 -right-1"></span>
+                                        <span class="online-indicator absolute -bottom-1 -right-1 {{ $admin->is_online ? 'bg-green-500' : 'bg-gray-400' }}"></span>
                                     </div>
                                     <div class="ml-4 flex-1">
                                         <h5 class="text-sm font-medium text-black">{{ $admin->name }}</h5>
@@ -535,6 +535,10 @@
         </div>
     </div>
 
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+    <script type="module">
+        import '../../js/bootstrap.js';
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Chat page loaded');
@@ -564,8 +568,12 @@
             contactItems.forEach(item => {
                 item.addEventListener('click', function() {
                     const chatUrl = this.dataset.chatUrl;
+                    const senderId = this.dataset.contactId;
+                    if (senderId) {
+                        markMessagesAsRead(senderId);
+                    }
                     if (chatUrl) {
-                        window.location.href = chatUrl;
+                        setTimeout(() => { window.location.href = chatUrl; }, 150); // slight delay to allow AJAX
                     }
                 });
             });
@@ -743,6 +751,48 @@
 
             // Auto-refresh unread count every 30 seconds
             setInterval(loadUnreadCount, 30000);
+
+            // Real-time online status with Echo presence channel
+            if (window.Echo) {
+                window.Echo.join('chat-users')
+                    .here((users) => {
+                        updateOnlineIndicators(users);
+                    })
+                    .joining((user) => {
+                        setOnlineIndicator(user.id, true);
+                    })
+                    .leaving((user) => {
+                        setOnlineIndicator(user.id, false);
+                    });
+            }
+
+            function updateOnlineIndicators(users) {
+                // Set all to offline first
+                document.querySelectorAll('.contact-item').forEach(item => {
+                    const dot = item.querySelector('.online-indicator');
+                    if (dot) dot.classList.remove('bg-green-500');
+                    if (dot) dot.classList.add('bg-gray-400');
+                });
+                // Set online for users in the channel
+                users.forEach(user => {
+                    setOnlineIndicator(user.id, true);
+                });
+            }
+            function setOnlineIndicator(userId, isOnline) {
+                const item = document.querySelector(`.contact-item[data-contact-id="${userId}"]`);
+                if (item) {
+                    const dot = item.querySelector('.online-indicator');
+                    if (dot) {
+                        if (isOnline) {
+                            dot.classList.remove('bg-gray-400');
+                            dot.classList.add('bg-green-500');
+                        } else {
+                            dot.classList.remove('bg-green-500');
+                            dot.classList.add('bg-gray-400');
+                        }
+                    }
+                }
+            }
         });
     </script>
 </body>

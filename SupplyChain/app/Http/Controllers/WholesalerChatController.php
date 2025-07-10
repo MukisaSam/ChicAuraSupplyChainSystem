@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Wholesaler;
 use App\Models\Manufacturer;
 use App\Notifications\ChatMessageNotification;
+use App\Events\ChatMessageSent;
 
 class WholesalerChatController extends Controller
 {
@@ -30,6 +31,14 @@ class WholesalerChatController extends Controller
             ->get();
         
         $admins = User::where('role', 'admin')->get();
+
+        // Add online status to each contact
+        foreach ($manufacturers as $manufacturer) {
+            $manufacturer->is_online = $manufacturer->isOnline();
+        }
+        foreach ($admins as $admin) {
+            $admin->is_online = $admin->isOnline();
+        }
         
         // Get recent conversations
         $recentConversations = ChatMessage::where('sender_id', $user->id)
@@ -112,6 +121,9 @@ class WholesalerChatController extends Controller
             'file_url' => $request->file_url,
         ]);
 
+        // Broadcast the new chat message event
+        event(new ChatMessageSent($message));
+
         // Notify the receiver of the new chat message
         $receiver->notify(new ChatMessageNotification($message));
 
@@ -121,8 +133,7 @@ class WholesalerChatController extends Controller
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
-                'message' => $message,
-                'html' => view('wholesaler.chat.partials.message', compact('message', 'user'))->render()
+                'message' => $message
             ]);
         }
 

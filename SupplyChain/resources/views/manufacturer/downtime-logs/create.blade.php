@@ -1,7 +1,7 @@
 @extends('manufacturer.layouts.dashboard')
 @section('content')
 <div class="container mx-auto py-6">
-    <h1 class="text-2xl font-bold mb-4">Create Downtime Log</h1>
+    <h1 class="text-2xl font-bold text-white mb-4">Create Downtime Log</h1>
     <form method="POST" action="{{ route('manufacturer.downtime-logs.store') }}" class="max-w-lg bg-white p-6 rounded shadow">
         @csrf
         <div class="mb-4">

@@ -1,11 +1,11 @@
 @extends('manufacturer.layouts.dashboard')
 @section('content')
 <div class="container mx-auto py-6">
-    <h1 class="text-2xl font-bold mb-4">Create Bill of Materials</h1>
+    <h1 class="text-2xl font-bold text-white mb-4">Create Bill of Materials</h1>
     <form method="POST" action="{{ route('manufacturer.bom.store') }}">
         @csrf
         <div class="mb-4">
-            <label class="block font-semibold mb-1">Product</label>
+            <label class="block font-semibold text-white mb-1">Product</label>
             <select name="product_id" class="w-full border rounded p-2" required>
                 <option value="">Select a product</option>
                 @foreach($products as $product)
@@ -14,7 +14,7 @@
             </select>
         </div>
         <div class="mb-4">
-            <label class="block font-semibold mb-1">Components & Quantities</label>
+            <label class="block font-semibold text-white mb-1">Components & Quantities</label>
             <div id="components-list">
                 <div class="flex mb-2">
                     <select name="components[]" class="border rounded p-2 mr-2" required>
@@ -29,7 +29,7 @@
             <button type="button" onclick="addComponent()" class="bg-green-500 text-white px-2 py-1 rounded">Add Component</button>
         </div>
         <div class="mb-4">
-            <label class="block font-semibold mb-1">Notes</label>
+            <label class="block font-semibold text-white mb-1">Notes</label>
             <textarea name="notes" class="w-full border rounded p-2"></textarea>
         </div>
         <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded">Create BoM</button>

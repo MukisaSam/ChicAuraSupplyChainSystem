@@ -1,7 +1,7 @@
 @extends('manufacturer.layouts.dashboard')
 @section('content')
 <div class="container mx-auto py-6">
-    <h1 class="text-2xl font-bold mb-4">Add Employee</h1>
+    <h1 class="text-2xl text-white font-bold mb-4">Add Employee</h1>
     <form action="{{ route('manufacturer.workforce.store') }}" method="POST" class="bg-white p-6 rounded shadow-md">
         @csrf
         <div class="mb-4">
@@ -22,7 +22,8 @@
         </div>
         <div class="mb-4">
             <label class="block mb-1">Job Role</label>
-            <input type="text" name="job_role" class="w-full border px-3 py-2" required>
+            <input type="hidden" name="job_role" value="" />
+            <p class="text-gray-600 text-sm">Job role will be assigned automatically.</p>
         </div>
         <div class="mb-4">
             <label class="block mb-1">Status</label>

@@ -1,17 +1,17 @@
 @extends('manufacturer.layouts.dashboard')
 @section('content')
 <div class="container mx-auto py-6">
-    <h1 class="text-2xl font-bold mb-4">Downtime Log Details</h1>
-    <div class="mb-4">
+    <h1 class="text-2xl font-bold text-white mb-4">Downtime Log Details</h1>
+    <div class="text-white mb-4">
         <strong>Reason:</strong> {{ $downtimeLog->reason }}
     </div>
-    <div class="mb-4">
+    <div class="text-white mb-4">
         <strong>Start Time:</strong> {{ $downtimeLog->start_time }}
     </div>
-    <div class="mb-4">
+    <div class="text-white mb-4">
         <strong>End Time:</strong> {{ $downtimeLog->end_time }}
     </div>
-    <div class="mb-4">
+    <div class="text-white mb-4">
         <strong>Notes:</strong> {{ $downtimeLog->notes ?? '-' }}
     </div>
     <a href="{{ route('manufacturer.downtime-logs.edit', $downtimeLog->id) }}" class="bg-blue-600 text-white px-4 py-2 rounded">Edit</a>

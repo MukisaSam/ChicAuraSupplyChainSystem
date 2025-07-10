@@ -60,7 +60,7 @@
     </style>
 </head>
 <body class="font-sans antialiased">
-    <div class="flex h-screen">
+    <div class="flex h-full">
         <!-- Sidebar -->
         <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block min-h-screen">
             <div class="flex flex-col h-full">

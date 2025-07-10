@@ -327,7 +327,7 @@
             </header>
 
             <!-- Main Content -->
-            <main class="flex-1 p-4">
+            <main class="flex-1 p-4 h-screen">
                 <div class="mb-6">
                     <h2 class="text-2xl font-bold text-white mb-1">Chat</h2>
                     <p class="text-gray-200 text-sm">Communicate with manufacturers and support team</p>
@@ -352,7 +352,7 @@
                                      data-chat-url="{{ route('wholesaler.chat.show', ['contactId' => $manufacturer->id]) }}">
                                     <div class="relative">
                                         <img src="{{ asset('images/manufacturer.png') }}" alt="{{ $manufacturer->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
-                                        <span class="online-indicator absolute -bottom-1 -right-1"></span>
+                                        <span class="online-indicator absolute -bottom-1 -right-1 {{ $manufacturer->is_online ? 'bg-green-500' : 'bg-gray-400' }}"></span>
                                     </div>
                                     <div class="ml-4 flex-1">
                                         <h5 class="text-sm font-medium text-black">{{ $manufacturer->name }}</h5>
@@ -377,7 +377,7 @@
                                      data-chat-url="{{ route('wholesaler.chat.show', ['contactId' => $admin->id]) }}">
                                     <div class="relative">
                                         <img src="{{ asset('images/default-avatar.svg') }}" alt="{{ $admin->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
-                                        <span class="online-indicator absolute -bottom-1 -right-1"></span>
+                                        <span class="online-indicator absolute -bottom-1 -right-1 {{ $admin->is_online ? 'bg-green-500' : 'bg-gray-400' }}"></span>
                                     </div>
                                     <div class="ml-4 flex-1">
                                         <h5 class="text-sm font-medium text-black">{{ $admin->name }}</h5>
@@ -460,6 +460,10 @@
         </div>
     </div>
 
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+    <script type="module">
+        import '../../../js/bootstrap.js';
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Chat page loaded');
@@ -675,6 +679,48 @@
 
             // Auto-refresh unread count every 30 seconds
             setInterval(loadUnreadCount, 30000);
+
+            // Real-time online status with Echo presence channel
+            if (window.Echo) {
+                window.Echo.join('chat-users')
+                    .here((users) => {
+                        updateOnlineIndicators(users);
+                    })
+                    .joining((user) => {
+                        setOnlineIndicator(user.id, true);
+                    })
+                    .leaving((user) => {
+                        setOnlineIndicator(user.id, false);
+                    });
+            }
+
+            function updateOnlineIndicators(users) {
+                // Set all to offline first
+                document.querySelectorAll('.contact-item').forEach(item => {
+                    const dot = item.querySelector('.online-indicator');
+                    if (dot) dot.classList.remove('bg-green-500');
+                    if (dot) dot.classList.add('bg-gray-400');
+                });
+                // Set online for users in the channel
+                users.forEach(user => {
+                    setOnlineIndicator(user.id, true);
+                });
+            }
+            function setOnlineIndicator(userId, isOnline) {
+                const item = document.querySelector(`.contact-item[data-contact-id="${userId}"]`);
+                if (item) {
+                    const dot = item.querySelector('.online-indicator');
+                    if (dot) {
+                        if (isOnline) {
+                            dot.classList.remove('bg-gray-400');
+                            dot.classList.add('bg-green-500');
+                        } else {
+                            dot.classList.remove('bg-green-500');
+                            dot.classList.add('bg-gray-400');
+                        }
+                    }
+                }
+            }
         });
     </script>
 </body>
