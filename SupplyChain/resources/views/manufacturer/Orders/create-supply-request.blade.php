@@ -138,7 +138,43 @@
                         <i class="fas fa-dollar-sign w-5"></i>
                         <span class="ml-2 text-sm">Revenue</span>
                     </a>
+                    <a href="{{ route('manufacturer.workforce.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-user-tie w-5"></i>
+                        <span class="ml-2 text-sm">Workforce</span>
+                    </a>
+                    <a href="{{ route('manufacturer.warehouse.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-warehouse w-5"></i>
+                        <span class="ml-2 text-sm">Warehouses</span>
+                    </a>
                 </nav>
+                <!-- Production Section -->
+                <div class="mt-6 mb-2">
+                    <h4 class="text-gray-400 text-xs font-bold uppercase tracking-wider px-3 mb-1">Production</h4>
+                </div>
+                <a href="{{ route('manufacturer.work-orders.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white rounded-xl">
+                    <i class="fas fa-cogs w-5"></i>
+                    <span class="ml-2 text-sm">Work Orders</span>
+                </a>
+                <a href="{{ route('manufacturer.bom.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white rounded-xl">
+                    <i class="fas fa-list-alt w-5"></i>
+                    <span class="ml-2 text-sm">Bill of Materials</span>
+                </a>
+                <a href="{{ route('manufacturer.production-schedules.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white rounded-xl">
+                    <i class="fas fa-calendar-alt w-5"></i>
+                    <span class="ml-2 text-sm">Production Schedules</span>
+                </a>
+                <a href="{{ route('manufacturer.quality-checks.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white rounded-xl">
+                    <i class="fas fa-clipboard-check w-5"></i>
+                    <span class="ml-2 text-sm">Quality Checks</span>
+                </a>
+                <a href="{{ route('manufacturer.downtime-logs.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white rounded-xl">
+                    <i class="fas fa-stopwatch w-5"></i>
+                    <span class="ml-2 text-sm">Downtime Logs</span>
+                </a>
+                <a href="{{ route('manufacturer.production-costs.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white rounded-xl">
+                    <i class="fas fa-coins w-5"></i>
+                    <span class="ml-2 text-sm">Production Costs</span>
+                </a>
                 <div class="p-3 border-t border-gray-600">
                     <div class="text-center text-gray-400 text-xs">
                         <p>ChicAura SCM</p>
@@ -217,6 +253,25 @@
                         <form action="{{ route('supply-requests.store') }}" method="POST">
                             @csrf
                             
+                            <!-- Supplier Selection -->
+                            <div class="mb-6">
+                                <label for="supplier_id" class="block text-sm font-medium text-black mb-2">
+                                    Supplier <span class="text-red-500">*</span>
+                                </label>
+                                <select name="supplier_id" id="supplier_id" required
+                                        class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                    <option value="">Select a supplier</option>
+                                    @foreach($suppliers as $supplier)
+                                        <option value="{{ $supplier->id }}" {{ old('supplier_id') == $supplier->id ? 'selected' : '' }}>
+                                            {{ $supplier->user->name ?? 'Supplier #'.$supplier->id }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('supplier_id')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
                             <!-- Item Selection -->
                             <div class="mb-6">
                                 <label for="item_id" class="block text-sm font-medium text-black mb-2">

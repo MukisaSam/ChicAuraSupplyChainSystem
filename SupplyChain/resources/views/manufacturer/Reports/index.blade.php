@@ -259,30 +259,41 @@
 
             <!-- Main Content -->
             <main class="flex-1 overflow-y-auto p-8">
-                <h1 class="text-3xl font-bold mb-6 text-indigo-800 dark:text-white">Manufacturer Portal Reports</h1>
+                <h1 class="text-3xl font-bold mb-2 text-indigo-800 dark:text-white flex items-center gap-3">
+                    <i class="fas fa-file-alt text-indigo-600"></i> Manufacturer Portal Reports
+                </h1>
+                <p class="text-gray-600 dark:text-gray-300 mb-8 text-lg">Access and export detailed reports on sales, inventory, suppliers, and order fulfillment to power your business decisions.</p>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <a href="{{ route('manufacturer.reports.sales') }}" class="stat-card p-6 flex flex-col items-center hover:shadow-xl">
-                        <i class="fas fa-chart-line text-3xl text-indigo-600 mb-2"></i>
-                        <span class="font-semibold text-lg">Sales Report</span>
+                    <a href="{{ route('manufacturer.reports.sales') }}" class="stat-card p-6 flex flex-col items-center hover:shadow-2xl hover:scale-105 transition-transform group">
+                        <i class="fas fa-chart-line text-4xl text-indigo-600 mb-3 group-hover:text-indigo-800 transition-colors"></i>
+                        <span class="font-semibold text-lg mb-1">Sales Report</span>
+                        <span class="text-gray-500 text-sm">Track revenue and sales trends</span>
                     </a>
-                    <a href="{{ route('manufacturer.reports.inventory') }}" class="stat-card p-6 flex flex-col items-center hover:shadow-xl">
-                        <i class="fas fa-boxes text-3xl text-green-600 mb-2"></i>
-                        <span class="font-semibold text-lg">Inventory Report</span>
+                    <a href="{{ route('manufacturer.reports.inventory') }}" class="stat-card p-6 flex flex-col items-center hover:shadow-2xl hover:scale-105 transition-transform group">
+                        <i class="fas fa-boxes text-4xl text-green-600 mb-3 group-hover:text-green-800 transition-colors"></i>
+                        <span class="font-semibold text-lg mb-1">Inventory Report</span>
+                        <span class="text-gray-500 text-sm">Monitor stock levels and movement</span>
                     </a>
-                    <a href="{{ route('manufacturer.reports.suppliers') }}" class="stat-card p-6 flex flex-col items-center hover:shadow-xl">
-                        <i class="fas fa-truck text-3xl text-yellow-600 mb-2"></i>
-                        <span class="font-semibold text-lg">Supplier Performance</span>
+                    <a href="{{ route('manufacturer.reports.suppliers') }}" class="stat-card p-6 flex flex-col items-center hover:shadow-2xl hover:scale-105 transition-transform group">
+                        <i class="fas fa-truck text-4xl text-yellow-600 mb-3 group-hover:text-yellow-800 transition-colors"></i>
+                        <span class="font-semibold text-lg mb-1">Supplier Performance</span>
+                        <span class="text-gray-500 text-sm">Evaluate supplier reliability</span>
                     </a>
-                    <a href="{{ route('manufacturer.reports.fulfillment') }}" class="stat-card p-6 flex flex-col items-center hover:shadow-xl">
-                        <i class="fas fa-shipping-fast text-3xl text-blue-600 mb-2"></i>
-                        <span class="font-semibold text-lg">Order Fulfillment</span>
+                    <a href="{{ route('manufacturer.reports.fulfillment') }}" class="stat-card p-6 flex flex-col items-center hover:shadow-2xl hover:scale-105 transition-transform group">
+                        <i class="fas fa-shipping-fast text-4xl text-blue-600 mb-3 group-hover:text-blue-800 transition-colors"></i>
+                        <span class="font-semibold text-lg mb-1">Order Fulfillment</span>
+                        <span class="text-gray-500 text-sm">Analyze delivery and fulfillment</span>
                     </a>
                 </div>
-                <div class="mt-8">
-                    <h2 class="text-xl font-semibold mb-4">Export Reports</h2>
+                <div class="mt-12">
+                    <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                        <i class="fas fa-file-export text-indigo-500"></i> Export Reports
+                    </h2>
                     <div class="flex flex-wrap gap-4">
-                        <a href="{{ route('manufacturer.reports.export', ['type' => 'sales']) }}" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"><i class="fas fa-file-csv mr-2"></i>Export Sales (CSV)</a>
-                        <!-- Add more export buttons as needed -->
+                        <a href="{{ route('manufacturer.reports.export', ['type' => 'sales']) }}" class="flex items-center gap-2 px-5 py-3 bg-indigo-600 text-white rounded-lg font-semibold shadow hover:bg-indigo-700 transition-colors">
+                            <i class="fas fa-file-csv"></i> Export Sales (CSV)
+                        </a>
+                        <!-- Add more export buttons as needed, following the same style -->
                     </div>
                 </div>
             </main>

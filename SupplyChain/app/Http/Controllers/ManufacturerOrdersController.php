@@ -117,7 +117,8 @@ class ManufacturerOrdersController extends Controller
         }
         // Only fetch raw materials
         $rawMaterials = Item::where('type', 'raw_material')->where('is_active', true)->get();
-        return view('manufacturer.Orders.create-supply-request', compact('rawMaterials'));
+        $suppliers = Supplier::with('user')->get();
+        return view('manufacturer.Orders.create-supply-request', compact('rawMaterials', 'suppliers'));
     }
 
     public function storeSupplyRequest(Request $request)

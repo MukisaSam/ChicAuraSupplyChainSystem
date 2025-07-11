@@ -22,4 +22,12 @@ class WarehousePolicy
     {
         return $user->role === 'manufacturer' && $user->manufacturer && $warehouse->manufacturer_id === $user->manufacturer->id;
     }
+
+    /**
+     * Determine if the given warehouse can be viewed by the user.
+     */
+    public function view(User $user, Warehouse $warehouse)
+    {
+        return $user->role === 'manufacturer' && $user->manufacturer && $warehouse->manufacturer_id === $user->manufacturer->id;
+    }
 } 

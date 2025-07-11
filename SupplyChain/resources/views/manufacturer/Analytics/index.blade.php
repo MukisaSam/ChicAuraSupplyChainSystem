@@ -412,30 +412,43 @@
                 </div>
 
                 <!-- Demand Forecast Section -->
-                <div class="card-gradient p-4 rounded-xl mt-4">
-                    <h3 class="text-lg font-bold text-black mb-3">Demand Forecast</h3>
-                    <div id="forecastContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div class="card-gradient p-6 rounded-xl mt-4 shadow-lg">
+                    <div class="flex items-center mb-4 gap-2">
+                        <span class="text-2xl text-indigo-600"><i class="fas fa-chart-line"></i></span>
+                        <h3 class="text-xl font-bold text-black">Demand Forecast</h3>
+                        <span class="ml-2 text-gray-400 text-xs" title="Predict demand for a product at a location based on price."><i class="fas fa-info-circle"></i></span>
+                    </div>
+                    <div id="forecastContainer" class="flex flex-col gap-8 w-full">
                         <!-- Forecast Form -->
-                        <div class="space-y-4">
-                            <form id="forecastForm" class="space-y-4">
-                                <div>
-                                    <label for="product_name" class="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
-                                    <select id="product_name" name="product_name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
-                                        <option value="">Select Product</option>
-                                    </select>
+                        <div class="space-y-6 w-full">
+                            <form id="forecastForm" class="space-y-5 w-full">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+                                    <div class="w-full">
+                                        <label for="product_name" class="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1">
+                                            <i class="fas fa-box"></i> Product Name
+                                        </label>
+                                        <select id="product_name" name="product_name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                                            <option value="">Select Product</option>
+                                        </select>
+                                    </div>
+                                    <div class="w-full">
+                                        <label for="unit_price" class="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1">
+                                            <i class="fas fa-dollar-sign"></i> Unit Price ($)
+                                            <span class="ml-1 text-gray-400" title="Enter the expected selling price."><i class="fas fa-question-circle"></i></span>
+                                        </label>
+                                        <input type="number" id="unit_price" name="unit_price" step="0.01" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label for="unit_price" class="block text-sm font-medium text-gray-700 mb-1">Unit Price ($)</label>
-                                    <input type="number" id="unit_price" name="unit_price" step="0.01" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
-                                </div>
-                                <div>
-                                    <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                                <div class="w-full">
+                                    <label for="location" class="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1">
+                                        <i class="fas fa-map-marker-alt"></i> Location
+                                    </label>
                                     <select id="location" name="location" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
                                         <option value="">Select Location</option>
                                     </select>
                                 </div>
-                                <button type="submit" id="generateForecastBtn" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors">
-                                    <span id="btnText">Generate Forecast</span>
+                                <button type="submit" id="generateForecastBtn" class="w-full bg-indigo-600 text-white py-3 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all flex items-center justify-center gap-2 text-lg font-semibold">
+                                    <span id="btnText"><i class="fas fa-magic"></i> Generate Forecast</span>
                                     <span id="btnLoader" class="hidden">
                                         <i class="fas fa-spinner fa-spin mr-2"></i>
                                         Generating...
@@ -443,27 +456,24 @@
                                 </button>
                             </form>
                         </div>
-                        
-                        <!-- Forecast Results -->
-                        <div id="forecastResults" class="hidden">
-                            <div class="space-y-4">
+                        <!-- Forecast Results and Error remain unchanged, but ensure they use w-full -->
+                        <div id="forecastResults" class="hidden w-full">
+                            <div class="space-y-4 w-full">
                                 <!-- Forecast Details -->
-                                <div class="border rounded-lg p-4 bg-white">
+                                <div class="border rounded-lg p-4 bg-white w-full">
                                     <h4 class="font-semibold text-gray-800 mb-2">Forecast Details</h4>
                                     <div id="forecastDetails" class="text-sm text-gray-600"></div>
                                 </div>
-                                
                                 <!-- Daily Forecast -->
-                                <div class="border rounded-lg p-4 bg-white">
+                                <div class="border rounded-lg p-4 bg-white w-full">
                                     <h4 class="font-semibold text-gray-800 mb-2">
                                         <i class="fas fa-calendar-day text-blue-600 mr-2"></i>
                                         30-Day Demand Forecast
                                     </h4>
                                     <img id="dailyForecastChart" src="" alt="Daily Demand Forecast Chart" class="w-full h-auto rounded-lg shadow-sm">
                                 </div>
-                                
                                 <!-- Monthly Forecast -->
-                                <div class="border rounded-lg p-4 bg-white">
+                                <div class="border rounded-lg p-4 bg-white w-full">
                                     <h4 class="font-semibold text-gray-800 mb-2">
                                         <i class="fas fa-calendar-alt text-green-600 mr-2"></i>
                                         12-Month Demand Forecast
@@ -472,10 +482,8 @@
                                 </div>
                             </div>
                         </div>
-                        
-                        <!-- Error Message -->
-                        <div id="forecastError" class="hidden col-span-2">
-                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                        <div id="forecastError" class="hidden col-span-2 w-full">
+                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded w-full">
                                 <span id="errorMessage"></span>
                             </div>
                         </div>
@@ -754,7 +762,7 @@
                 // Hide previous results/errors and reset layout
                 forecastResults.classList.add('hidden');
                 forecastError.classList.add('hidden');
-                forecastContainer.className = 'grid grid-cols-1 lg:grid-cols-2 gap-4';
+                forecastContainer.className = 'grid grid-cols-1 lg:grid-cols-2 gap-8';
 
                 const formData = new FormData(forecastForm);
                 

@@ -1,7 +1,6 @@
 @extends('manufacturer.layouts.dashboard')
 @section('content')
 <div class="container mx-auto p-6">
-    <x-notification-bell />
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-gray-800 dark:text-white">Supplier Performance Report</h2>
         <a href="#" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 opacity-50 cursor-not-allowed">

@@ -57,4 +57,39 @@ class ManufacturerWarehouseController extends Controller
         $warehouse->delete();
         return redirect()->route('manufacturer.warehouse.index')->with('success', 'Warehouse deleted successfully.');
     }
+
+    public function show(Warehouse $warehouse)
+    {
+        $this->authorize('view', $warehouse);
+        return view('manufacturer.Warehouse.show', compact('warehouse'));
+    }
+
+    // Show form to assign staff to a warehouse
+    public function showStaffAssignmentForm(Warehouse $warehouse)
+    {
+        $this->authorize('update', $warehouse);
+        // Get all workforce not already assigned to this warehouse
+        $assignedIds = $warehouse->workforce()->pluck('workforces.id');
+        $availableWorkforce = \App\Models\Workforce::whereNotIn('id', $assignedIds)->get();
+        return view('manufacturer.Warehouse.assign-staff', compact('warehouse', 'availableWorkforce'));
+    }
+
+    // Assign staff to a warehouse
+    public function assignStaff(Request $request, Warehouse $warehouse)
+    {
+        $this->authorize('update', $warehouse);
+        $request->validate([
+            'workforce_id' => 'required|exists:workforces,id',
+        ]);
+        $warehouse->workforce()->attach($request->workforce_id);
+        return redirect()->route('manufacturer.warehouse.show', $warehouse)->with('success', 'Staff assigned successfully.');
+    }
+
+    // Remove staff from a warehouse
+    public function removeStaff(Warehouse $warehouse, \App\Models\Workforce $workforce)
+    {
+        $this->authorize('update', $warehouse);
+        $warehouse->workforce()->detach($workforce->id);
+        return redirect()->route('manufacturer.warehouse.show', $warehouse)->with('success', 'Staff removed successfully.');
+    }
 } 

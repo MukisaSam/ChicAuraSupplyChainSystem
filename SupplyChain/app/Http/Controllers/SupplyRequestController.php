@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SupplyRequest;
 use App\Models\Item;
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 
 class SupplyRequestController extends Controller
@@ -27,7 +28,8 @@ class SupplyRequestController extends Controller
     {
         // Only fetch raw materials
         $rawMaterials = Item::where('type', 'raw_material')->get();
-        return view('manufacturer.Orders.create-supply-request', compact('rawMaterials'));
+        $suppliers = Supplier::with('user')->get();
+        return view('manufacturer.Orders.create-supply-request', compact('rawMaterials', 'suppliers'));
     }
 
     /**
@@ -39,8 +41,10 @@ class SupplyRequestController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'supplier_id' => 'required|exists:suppliers,id',
             'item_id' => 'required|exists:items,id',
             'quantity' => 'required|integer|min:1',
+            'due_date' => 'required|date|after:today',
             // Add other fields as needed
         ]);
 
@@ -51,12 +55,14 @@ class SupplyRequestController extends Controller
         }
 
         SupplyRequest::create([
+            'supplier_id' => $request->supplier_id,
             'item_id' => $request->item_id,
             'quantity' => $request->quantity,
+            'due_date' => $request->due_date,
             // Add other fields as needed
         ]);
 
-        return redirect()->route('supply-requests.index')->with('success', 'Supply request created!');
+        return redirect()->route('manufacturer.orders')->with('success', 'Supply request created!');
     }
 
     /**

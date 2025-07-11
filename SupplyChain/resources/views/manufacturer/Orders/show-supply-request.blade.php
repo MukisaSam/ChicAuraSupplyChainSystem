@@ -2,75 +2,72 @@
 
 @section('content')
 <div class="container mx-auto px-4 py-8 max-w-3xl">
-    <div class="mb-8">
-        <div class="flex justify-between items-center">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Supply Request Details</h1>
-                <p class="text-gray-600 dark:text-gray-400 mt-2">Request #{{ $supplyRequest->id }}</p>
-            </div>
-            <div class="flex space-x-3">
-                <a href="{{ route('supplier.dashboard') }}" 
-                   class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
-                    <i class="fas fa-arrow-left"></i>
-                    <span>Back to dashboard</span>
-                </a>
+    <!-- Header -->
+    <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-1">Supply Request #{{ $supplyRequest->id }}</h1>
+            <div class="flex items-center gap-2">
+                <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full
+                    @if($supplyRequest->status === 'pending') bg-yellow-100 text-yellow-800
+                    @elseif($supplyRequest->status === 'approved') bg-blue-100 text-blue-800
+                    @elseif($supplyRequest->status === 'completed') bg-green-100 text-green-800
+                    @else bg-red-100 text-red-800
+                    @endif">
+                    {{ ucfirst($supplyRequest->status) }}
+                </span>
+                <span class="text-xs text-gray-500 ml-2">Created: {{ $supplyRequest->created_at->format('M d, Y H:i') }}</span>
+                <span class="text-xs text-gray-500 ml-2">Updated: {{ $supplyRequest->updated_at->format('M d, Y H:i') }}</span>
             </div>
         </div>
+        <a href="{{ route('manufacturer.orders') }}"
+           class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
+            <i class="fas fa-arrow-left"></i>
+            <span>Back to Orders</span>
+        </a>
     </div>
 
-    <!-- Request Status -->
-    <div class="mb-8">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-            <div class="flex justify-between items-center">
-                <div>
-                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Request Status</h2>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Supply Request #{{ $supplyRequest->id }}</h1>
-                <p class="text-gray-600 dark:text-gray-400 mt-1">Status:
-                    <span class="inline-flex px-3 py-1 text-sm font-semibold rounded-full 
-                        @if($supplyRequest->status === 'pending') bg-yellow-100 text-yellow-800
-                        @elseif($supplyRequest->status === 'approved') bg-blue-100 text-blue-800
-                        @elseif($supplyRequest->status === 'completed') bg-green-100 text-green-800
-                        @else bg-red-100 text-red-800
-                        @endif">
-                        {{ ucfirst($supplyRequest->status) }}
-                    </span>
-                </p>
-            </div>
-            <a href="{{ route('manufacturer.orders') }}" class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
-                <i class="fas fa-arrow-left"></i>
-                <span>Back to Orders</span>
-            </a>
-        </div>
-    </div>
-
+    <!-- Supplier & Item Info -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Supplier & Item</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <i class="fas fa-industry"></i> Supplier & Item
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Supplier Name</p>
-                <p class="text-lg text-gray-900 dark:text-white">{{ $supplyRequest->supplier->user->name ?? 'N/A' }}</p>
+                <p class="text-lg text-gray-900 dark:text-white font-semibold">{{ $supplyRequest->supplier->user->name ?? 'N/A' }}</p>
+                @if($supplyRequest->supplier)
+                    <p class="text-sm text-gray-500 mt-1">Phone: {{ $supplyRequest->supplier->phone ?? 'N/A' }}</p>
+                    <p class="text-sm text-gray-500">Address: {{ $supplyRequest->supplier->business_address ?? 'N/A' }}</p>
+                @endif
             </div>
             <div>
                 <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Item Name</p>
-                <p class="text-lg text-gray-900 dark:text-white">{{ $supplyRequest->item->name ?? 'N/A' }}</p>
+                <p class="text-lg text-gray-900 dark:text-white font-semibold">{{ $supplyRequest->item->name ?? 'N/A' }}</p>
+                @if($supplyRequest->item)
+                    <p class="text-sm text-gray-500 mt-1">Category: {{ $supplyRequest->item->category ?? 'N/A' }}</p>
+                    <p class="text-sm text-gray-500">Description: {{ $supplyRequest->item->description ?? 'N/A' }}</p>
+                @endif
             </div>
         </div>
     </div>
 
+    <!-- Request Details -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
-        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Request Details</h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+            <i class="fas fa-info-circle"></i> Request Details
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
                 <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Quantity Requested</p>
-                <p class="text-lg text-gray-900 dark:text-white">{{ $supplyRequest->quantity }}</p>
+                <p class="text-lg text-gray-900 dark:text-white font-semibold">{{ $supplyRequest->quantity }}</p>
             </div>
             <div>
                 <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Due Date</p>
-                <p class="text-lg text-gray-900 dark:text-white">{{ \Carbon\Carbon::parse($supplyRequest->due_date)->format('M d, Y') }}</p>
+                <p class="text-lg text-gray-900 dark:text-white font-semibold">{{ \Carbon\Carbon::parse($supplyRequest->due_date)->format('M d, Y') }}</p>
             </div>
         </div>
         @if($supplyRequest->notes)
-        <div class="mt-4">
+        <div class="mt-6">
             <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Notes</p>
             <p class="text-gray-900 dark:text-white">{{ $supplyRequest->notes }}</p>
         </div>
