@@ -78,10 +78,14 @@ class SupplierController extends Controller
         ));
     }
 
-    public function showSupplyRequest(SupplyRequest $supplyRequest)
+    public function showSupplyRequest(Request $request, SupplyRequest $supplyRequest)
     {
         $this->authorize('view', $supplyRequest);
-        return view('supplier.supply-request.show', compact('supplyRequest'));
+        if ($request->ajax()) {
+            return view('supplier.supply-request.show', compact('supplyRequest'));
+        }
+        // Optionally, redirect or show a minimal page if not AJAX
+        return redirect()->route('supplier.dashboard');
     }
 
     public function updateSupplyRequest(Request $request, SupplyRequest $supplyRequest)
@@ -259,8 +263,27 @@ class SupplierController extends Controller
         return view('supplier.supplied-items.index', compact('suppliedItems'));
     }
 
-    public function show($id) {
-        $supplyRequest = SupplyRequest::findOrFail($id);
-        return view('manufacturer.Orders.show-supply-request', compact('supplyRequest'));
+    /**
+     * Handle AJAX status update for a supply request (approve, reject, change status).
+     */
+    public function ajaxUpdateSupplyRequestStatus(Request $request, $supplyRequestId)
+    {
+        $user = Auth::user();
+        $supplier = $user->supplier;
+        if (!$supplier) {
+            return response()->json(['success' => false, 'message' => 'Not a supplier'], 403);
+        }
+        $supplyRequest = SupplyRequest::where('id', $supplyRequestId)
+            ->where('supplier_id', $supplier->id)
+            ->first();
+        if (!$supplyRequest) {
+            return response()->json(['success' => false, 'message' => 'Supply request not found'], 404);
+        }
+        $validated = $request->validate([
+            'status' => 'required|string|in:pending,approved,rejected,in_progress,completed',
+        ]);
+        $supplyRequest->status = $validated['status'];
+        $supplyRequest->save();
+        return response()->json(['success' => true, 'status' => $supplyRequest->status]);
     }
 }

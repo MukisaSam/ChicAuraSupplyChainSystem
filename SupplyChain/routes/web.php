@@ -133,10 +133,11 @@ Route::middleware(['auth', 'role:supplier'])
         Route::get('/reports', [\App\Http\Controllers\SupplierController::class, 'reports'])->name('reports.index');
 
         // Supply Requests
-        Route::resource('supply-requests', \App\Http\Controllers\SupplierController::class)->only(['show', 'update']);
+        Route::resource('supply-requests', \App\Http\Controllers\SupplierController::class)->only(['update']);
         Route::post('supply-requests', [\App\Http\Controllers\SupplierController::class, 'store'])->name('supply-requests.store');
         Route::delete('supply-requests/{supplyRequest}', [\App\Http\Controllers\SupplierController::class, 'destroy'])->name('supply-requests.destroy');
         Route::post('supply-requests/{supplyRequest}/negotiate', [\App\Http\Controllers\SupplierController::class, 'submitPriceNegotiation'])->name('supply-requests.negotiate');
+        Route::post('supply-requests/{supplyRequest}/status', [\App\Http\Controllers\SupplierController::class, 'ajaxUpdateSupplyRequestStatus'])->name('supply-requests.ajax-update-status');
         Route::get('supply-requests', [\App\Http\Controllers\SupplierController::class, 'supplyRequestsIndex'])->name('supply-requests.index');
         Route::get('supply-requests/{supplyRequest}', [\App\Http\Controllers\SupplierController::class, 'showSupplyRequest'])->name('supply-requests.show');
 
