@@ -274,7 +274,7 @@
                         </div>
                     </div>
                 </div>
-                <section id="supply-request" class="mt-10 dashboard-section overflow-y-auto max-h-[80vh]">
+                <section id="supply-request" class="mt-10 dashboard-section hidden overflow-y-auto max-h-[80vh]">
                     <div class="w-full px-0 overflow-y-auto">
                         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 w-full">
                             <div class="flex justify-between flex-wrap items-center border-b border-gray-200 dark:border-gray-700 pb-2 mb-3">
@@ -359,7 +359,7 @@
                                                     </span>
                                                 </td>
                                                 <td class="px-4 py-2">
-                                                    <a href="{{ route('supplier.supply-requests.show', $request) }}" class="text-blue-600 hover:underline text-sm"><i class="fas fa-eye"></i> View</a>
+                                                    <a href="#" class="text-blue-600 hover:underline text-sm view-request-btn" data-request-id="{{ $request->id }}"><i class="fas fa-eye"></i> View</a>
                                                 </td>
                                             </tr>
                                             @empty
@@ -439,7 +439,7 @@
                         </div>
                     </div>
                 </section>
-                <section id="reports" class="mt-10 dashboard-section overflow-y-auto max-h-[80vh]">
+                <section id="reports" class="mt-10 dashboard-section hidden overflow-y-auto max-h-[80vh]">
                     <div class="w-full px-0">
                         <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 w-full">
                             <div class="flex justify-between flex-wrap items-center border-b border-gray-200 dark:border-gray-700 pb-2 mb-3">
@@ -675,25 +675,25 @@
                             </div>
                             @endif
 
-                            <!-- Wholesalers -->
-                            @if($wholesalers->count() > 0)
+                            <!-- Manufacturers -->
+                            @if($manufacturers->count() > 0)
                             <div class="mb-6">
-                                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3 px-2">Wholesalers</h4>
-                                @foreach($wholesalers as $wholesaler)
+                                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3 px-2">Manufacturers</h4>
+                                @foreach($manufacturers as $manufacturer)
                                 <div class="contact-item flex items-center p-4 rounded-xl" 
-                                     data-contact-id="{{ $wholesaler->id }}" 
-                                     data-contact-name="{{ $wholesaler->name }}"
-                                     data-chat-url="{{ route('supplier.chat.show', ['contactId' => $wholesaler->id]) }}">
+                                     data-contact-id="{{ $manufacturer->id }}" 
+                                     data-contact-name="{{ $manufacturer->name }}"
+                                     data-chat-url="{{ route('supplier.chat.show', ['contactId' => $manufacturer->id]) }}">
                                     <div class="relative">
-                                        <img src="{{ asset('images/wholesaler.jpg') }}" alt="{{ $wholesaler->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
+                                        <img src="{{ asset('images/manufacturer.jpg') }}" alt="{{ $manufacturer->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
                                         <span class="online-indicator absolute -bottom-1 -right-1"></span>
                                     </div>
                                     <div class="ml-4 flex-1">
-                                        <h5 class="text-sm font-medium text-gray-900 dark:text-white">{{ $wholesaler->name }}</h5>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Wholesaler</p>
+                                        <h5 class="text-sm font-medium text-gray-900 dark:text-white">{{ $manufacturer->name }}</h5>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">Manufacturer</p>
                                     </div>
-                                    @if(isset($unreadCounts[$wholesaler->id]) && $unreadCounts[$wholesaler->id] > 0)
-                                    <span class="unread-badge">{{ $unreadCounts[$wholesaler->id] }}</span>
+                                    @if(isset($unreadCounts[$manufacturer->id]) && $unreadCounts[$manufacturer->id] > 0)
+                                    <span class="unread-badge">{{ $unreadCounts[$manufacturer->id] }}</span>
                                     @endif
                                 </div>
                                 @endforeach
@@ -1042,5 +1042,81 @@
 
     {{-- Profile Editor Modal --}}
     <x-profile-editor-modal />
+
+    <!-- Modal for SPA Supply Request Details -->
+    <div id="supply-request-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg w-full max-w-2xl p-6 relative">
+            <button id="close-modal-btn" class="absolute top-2 right-2 text-gray-500 hover:text-red-600 text-xl">&times;</button>
+            <div id="modal-content">
+                <!-- AJAX-loaded content goes here -->
+                <div class="text-center text-gray-400">Loading...</div>
+            </div>
+        </div>
+    </div>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const modal = document.getElementById('supply-request-modal');
+        const modalContent = document.getElementById('modal-content');
+        const closeModalBtn = document.getElementById('close-modal-btn');
+        // Open modal and load details
+        document.querySelectorAll('.view-request-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const requestId = this.dataset.requestId;
+                modal.classList.remove('hidden');
+                modalContent.innerHTML = '<div class="text-center text-gray-400">Loading...</div>';
+                fetch(`/supplier/supply-requests/${requestId}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                })
+                    .then(res => res.text())
+                    .then(html => {
+                        // Extract only the content section if full HTML is returned
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(html, 'text/html');
+                        const content = doc.querySelector('#supply-request-details') || doc.body;
+                        modalContent.innerHTML = content.innerHTML;
+                        attachStatusFormHandler(requestId);
+                    });
+            });
+        });
+        // Close modal
+        closeModalBtn.addEventListener('click', function() {
+            modal.classList.add('hidden');
+        });
+        // Attach AJAX handler for status form
+        function attachStatusFormHandler(requestId) {
+            const form = modalContent.querySelector('#status-update-form');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const formData = new FormData(form);
+                    fetch(`/supplier/supply-requests/${requestId}/status`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            status: formData.get('status'),
+                            notes: formData.get('notes') || ''
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            modalContent.innerHTML = `<div class='text-green-600 text-center p-4'>Status updated to <b>${data.status}</b>!</div>`;
+                            setTimeout(() => { modal.classList.add('hidden'); window.location.reload(); }, 1200);
+                        } else {
+                            alert('Failed to update status');
+                        }
+                    });
+                });
+            }
+        }
+    });
+    </script>
 </body>
 </html>

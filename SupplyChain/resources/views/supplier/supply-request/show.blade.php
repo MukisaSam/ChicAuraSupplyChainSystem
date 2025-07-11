@@ -1,52 +1,74 @@
-@extends('layouts.app')
-
-@section('content')
-<div class="container">
-    <h2>Supply Request Details</h2>
-    <div class="card mb-3">
-        <div class="card-body">
-            <h5 class="card-title">Item: {{ $supplyRequest->item->name }}</h5>
-            <p class="card-text">Quantity: {{ $supplyRequest->quantity }}</p>
-            <p class="card-text">Due Date: {{ $supplyRequest->due_date->format('M d, Y') }}</p>
-            <p class="card-text">Status: <span class="badge bg-{{ $supplyRequest->status === 'pending' ? 'warning' : ($supplyRequest->status === 'accepted' ? 'success' : 'danger') }}">{{ ucfirst($supplyRequest->status) }}</span></p>
-            <p class="card-text">Notes: {{ $supplyRequest->notes }}</p>
+<div id="supply-request-details" class="space-y-6">
+    <h2 class="text-xl font-bold mb-2">Supply Request Details</h2>
+    <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 shadow">
+        <div class="mb-2">
+            <span class="font-semibold">Item:</span> {{ $supplyRequest->item->name }}
+        </div>
+        <div class="mb-2">
+            <span class="font-semibold">Quantity:</span> {{ $supplyRequest->quantity }}
+        </div>
+        <div class="mb-2">
+            <span class="font-semibold">Due Date:</span> {{ $supplyRequest->due_date->format('M d, Y') }}
+        </div>
+        <div class="mb-2">
+            <span class="font-semibold">Status:</span>
+            <span class="inline-block px-2 py-1 rounded text-xs font-semibold
+                @if($supplyRequest->status === 'pending') bg-yellow-200 text-yellow-800
+                @elseif($supplyRequest->status === 'approved') bg-green-200 text-green-800
+                @elseif($supplyRequest->status === 'rejected') bg-red-200 text-red-800
+                @elseif($supplyRequest->status === 'in_progress') bg-blue-200 text-blue-800
+                @elseif($supplyRequest->status === 'completed') bg-purple-200 text-purple-800
+                @else bg-gray-200 text-gray-800 @endif">
+                {{ ucfirst($supplyRequest->status) }}
+            </span>
+        </div>
+        <div class="mb-2">
+            <span class="font-semibold">Notes:</span> {{ $supplyRequest->notes }}
         </div>
     </div>
-    @if($supplyRequest->status === 'pending')
-    <form method="POST" action="{{ route('supplier.supply-requests.update', $supplyRequest) }}">
-        @csrf
-        @method('PUT')
-        <div class="mb-3">
-            <label for="status" class="form-label">Update Status</label>
-            <select name="status" id="status" class="form-select">
-                <option value="accepted">Accept</option>
-                <option value="declined">Decline</option>
+
+    @if(in_array($supplyRequest->status, ['pending', 'in_progress', 'approved', 'rejected']))
+    <form id="status-update-form" class="space-y-4 mt-4">
+        <div>
+            <label for="status" class="block text-sm font-medium mb-1">Update Status</label>
+            <select name="status" id="status" class="form-select w-full rounded border-gray-300">
+                <option value="approved" {{ $supplyRequest->status == 'approved' ? 'selected' : '' }}>Approve</option>
+                <option value="rejected" {{ $supplyRequest->status == 'rejected' ? 'selected' : '' }}>Reject</option>
+                <option value="pending" {{ $supplyRequest->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                <option value="in_progress" {{ $supplyRequest->status == 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                <option value="completed" {{ $supplyRequest->status == 'completed' ? 'selected' : '' }}>Completed</option>
             </select>
         </div>
-        <div class="mb-3">
-            <label for="notes" class="form-label">Notes</label>
-            <textarea name="notes" id="notes" class="form-control"></textarea>
+        <div>
+            <label for="notes" class="block text-sm font-medium mb-1">Notes</label>
+            <textarea name="notes" id="notes" class="form-textarea w-full rounded border-gray-300"></textarea>
         </div>
-        <button type="submit" class="btn btn-primary">Update Request</button>
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Update Request</button>
     </form>
+    @else
+    <div class="bg-blue-100 text-blue-800 rounded p-3 mt-3">Status changes are not allowed for this request.</div>
     @endif
+
     @if($supplyRequest->priceNegotiation)
-    <hr>
-    <h4>Price Negotiation</h4>
-    <p>Initial Price: ${{ number_format($supplyRequest->priceNegotiation->initial_price, 2) }}</p>
-    <p>Status: {{ ucfirst($supplyRequest->priceNegotiation->status) }}</p>
-    <form method="POST" action="{{ route('supplier.supply-requests.negotiate', $supplyRequest) }}">
+    <hr class="my-4">
+    <h4 class="text-lg font-semibold mb-2">Price Negotiation</h4>
+    <div class="mb-2">
+        <span class="font-semibold">Initial Price:</span> ${{ number_format($supplyRequest->priceNegotiation->initial_price, 2) }}
+    </div>
+    <div class="mb-2">
+        <span class="font-semibold">Status:</span> {{ ucfirst($supplyRequest->priceNegotiation->status) }}
+    </div>
+    <form method="POST" action="{{ route('supplier.supply-requests.negotiate', $supplyRequest) }}" class="space-y-2">
         @csrf
-        <div class="mb-3">
-            <label for="counter_price" class="form-label">Counter Price</label>
-            <input type="number" step="0.01" name="counter_price" id="counter_price" class="form-control" required>
+        <div>
+            <label for="counter_price" class="block text-sm font-medium mb-1">Counter Price</label>
+            <input type="number" step="0.01" name="counter_price" id="counter_price" class="form-input w-full rounded border-gray-300" required>
         </div>
-        <div class="mb-3">
-            <label for="notes" class="form-label">Notes</label>
-            <textarea name="notes" id="notes" class="form-control"></textarea>
+        <div>
+            <label for="notes" class="block text-sm font-medium mb-1">Notes</label>
+            <textarea name="notes" id="notes" class="form-textarea w-full rounded border-gray-300"></textarea>
         </div>
-        <button type="submit" class="btn btn-warning">Submit Counter Offer</button>
+        <button type="submit" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition">Submit Counter Offer</button>
     </form>
     @endif
-</div>
-@endsection 
+</div> 

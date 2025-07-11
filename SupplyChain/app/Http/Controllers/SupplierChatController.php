@@ -18,7 +18,6 @@ class SupplierChatController extends Controller
         $user = Auth::user();
         $admins = User::where('role', 'admin')->get();
         $manufacturers = User::where('role', 'manufacturer')->get();
-        $wholesalers = User::where('role', 'wholesaler')->where('id', '!=', $user->id)->get();
 
         // Get recent conversations
         $recentConversations = ChatMessage::where('sender_id', $user->id)
@@ -41,7 +40,7 @@ class SupplierChatController extends Controller
             'user',
             'admins',
             'manufacturers',
-            'wholesalers',
+            // 'wholesalers',
             'recentConversations',
             'unreadCounts'
         ));
@@ -55,8 +54,8 @@ class SupplierChatController extends Controller
         $user = Auth::user();
         $contact = User::findOrFail($contactId);
 
-        // Ensure supplier can only chat with admins, manufacturers, or wholesalers
-        if (!in_array($contact->role, ['admin', 'manufacturer', 'wholesaler'])) {
+        // Ensure supplier can only chat with admins or manufacturers
+        if (!in_array($contact->role, ['admin', 'manufacturer'])) {
             abort(403, 'Invalid chat contact.');
         }
 
@@ -70,6 +69,10 @@ class SupplierChatController extends Controller
             ->where('receiver_id', $user->id)
             ->where('is_read', false)
             ->update(['is_read' => true, 'read_at' => now()]);
+
+        if (request()->ajax()) {
+            return view('supplier.chat.partials.conversation', compact('user', 'contact', 'messages'));
+        }
 
         return view('supplier.chat.show', compact('user', 'contact', 'messages'));
     }
@@ -89,8 +92,8 @@ class SupplierChatController extends Controller
         $user = Auth::user();
         $receiver = User::findOrFail($request->receiver_id);
 
-        // Ensure supplier can only send messages to admins, manufacturers, or wholesalers
-        if (!in_array($receiver->role, ['admin', 'manufacturer', 'wholesaler'])) {
+        // Ensure supplier can only send messages to admins or manufacturers
+        if (!in_array($receiver->role, ['admin', 'manufacturer'])) {
             abort(403, 'Invalid message recipient.');
         }
 

@@ -1,60 +1,95 @@
+{{-- resources/views/supplier/dashboard.blade.php --}}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Chat - ChicAura SCM</title>
+    <title>Supplier Dashboard - ChicAura SCM</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
-        body { 
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/wholesaler.jpg') }}');
+        body {
+            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/supplier.jpg') }}');
             background-size: cover;
             background-position: center;
-            background-attachment: fixed;
+            background-attachmecnt: fixed;
             min-height: 100vh;
+            overflow: hidden;
         }
-        
+
+        /* Dark mode styles */
         .dark body {
-            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 100%), url('{{ asset('images/wholesaler.jpg') }}');
+            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 100%), url('{{ asset('images/supplier.jpg') }}');
         }
-        
-        .sidebar { 
+
+        .sidebar {
             transition: transform 0.3s ease-in-out;
             background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
             box-shadow: 4px 0 15px rgba(0,0,0,0.1);
         }
-        
+
         .dark .sidebar {
             background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
         }
-        
+
         .logo-container {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 12px;
             padding: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-        
+
         .dark .logo-container {
             background: rgba(255, 255, 255, 0.9);
         }
-        
+
         .card-gradient {
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
             border: 1px solid rgba(255,255,255,0.2);
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             backdrop-filter: blur(10px);
         }
-        
+
         .dark .card-gradient {
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
             border: 1px solid rgba(255,255,255,0.1);
             color: #f1f5f9;
         }
-        
+
+        .stat-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .dark .stat-card {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #f1f5f9;
+        }
+
+        .dark .stat-card p {
+            color: #f1f5f9;
+        }
+
+        .dark .stat-card .text-gray-600 {
+            color: #cbd5e1;
+        }
+
+        .dark .stat-card .text-gray-800 {
+            color: #f1f5f9;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
         .nav-link {
             transition: all 0.3s ease;
             border-radius: 12px;
@@ -67,174 +102,20 @@
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
             box-shadow: 0 2px 20px rgba(0,0,0,0.1);
         }
-        
+
         .dark .header-gradient {
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
             border-color: #475569;
         }
-        
+
         .dark .text-white {
             color: #f1f5f9;
         }
-        
+
         .dark .text-gray-200 {
             color: #cbd5e1;
         }
-        
-        .dark .text-gray-900 {
-            color: #f1f5f9;
-        }
-        
-        .dark .text-gray-600 {
-            color: #cbd5e1;
-        }
-        
-        .dark .text-gray-500 {
-            color: #94a3b8;
-        }
-        
-        .dark .bg-white {
-            background-color: #1e293b;
-        }
-        
-        .dark .border-gray-200 {
-            border-color: #475569;
-        }
-        
-        .dark .hover\:bg-gray-700:hover {
-            background-color: #475569;
-        }
-        
-        .contact-item {
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border-radius: 12px;
-            margin: 4px 0;
-        }
-        
-        .contact-item:hover {
-            background-color: rgba(139, 92, 246, 0.1);
-            transform: translateX(5px);
-        }
-        
-        .contact-item.active {
-            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
-            border: 1px solid rgba(139, 92, 246, 0.3);
-        }
-        
-        .contacts-scroll {
-            overflow-y: scroll;
-            scrollbar-width: thin;
-            scrollbar-color: #8b5cf6 #e5e7eb;
-        }
-        
-        .contacts-scroll::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        .contacts-scroll::-webkit-scrollbar-track {
-            background: #e5e7eb;
-            border-radius: 3px;
-        }
-        
-        .contacts-scroll::-webkit-scrollbar-thumb {
-            background: #8b5cf6;
-            border-radius: 3px;
-        }
-        
-        .contacts-scroll::-webkit-scrollbar-thumb:hover {
-            background: #7c3aed;
-        }
-        
-        .messages-scroll {
-            overflow-y: scroll;
-            scrollbar-width: thin;
-            scrollbar-color: #8b5cf6 #e5e7eb;
-        }
-        
-        .messages-scroll::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        .messages-scroll::-webkit-scrollbar-track {
-            background: #e5e7eb;
-            border-radius: 3px;
-        }
-        
-        .messages-scroll::-webkit-scrollbar-thumb {
-            background: #8b5cf6;
-            border-radius: 3px;
-        }
-        
-        .messages-scroll::-webkit-scrollbar-thumb:hover {
-            background: #7c3aed;
-        }
-        
-        .dark .contacts-scroll::-webkit-scrollbar-track,
-        .dark .messages-scroll::-webkit-scrollbar-track {
-            background: #374151;
-        }
-        
-        .dark .contacts-scroll::-webkit-scrollbar-thumb,
-        .dark .messages-scroll::-webkit-scrollbar-thumb {
-            background: #8b5cf6;
-        }
-        
-        .dark .contacts-scroll::-webkit-scrollbar-thumb:hover,
-        .dark .messages-scroll::-webkit-scrollbar-thumb:hover {
-            background: #7c3aed;
-        }
-        
-        .unread-badge {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            color: white;
-            border-radius: 50%;
-            padding: 2px 6px;
-            font-size: 0.75rem;
-            min-width: 18px;
-            text-align: center;
-            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
-        }
-        
-        .online-indicator {
-            width: 8px;
-            height: 8px;
-            background: #10b981;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 8px;
-            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
-        }
-        
-        .message-bubble {
-            max-width: 70%;
-            border-radius: 18px;
-            padding: 12px 16px;
-            margin: 8px 0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .message-bubble.own {
-            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
-            color: white;
-            margin-left: auto;
-            border-bottom-right-radius: 6px;
-        }
-        
-        .message-bubble.other {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            color: #1f2937;
-            margin-right: auto;
-            border-bottom-left-radius: 6px;
-            border: 1px solid rgba(0,0,0,0.1);
-        }
-        
-        .dark .message-bubble.other {
-            background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
-            color: #f1f5f9;
-            border-color: #6b7280;
-        }
-        
+
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
@@ -248,34 +129,18 @@
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
                     <div class="logo-container">
-                        <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
+                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="h-12 w-auto">
                     </div>
                 </div>
                 <div class="px-4 py-4">
                     <h3 class="text-white text-sm font-semibold mb-3 px-3">SUPPLIER PORTAL</h3>
                 </div>
                 <nav class="flex-1 px-4 py-2 space-y-1">
-                    <a href="{{ route('supplier.dashboard') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-home w-5"></i>
-                        <span class="ml-2 text-sm">Home</span>
-                    </a>
-                   <a href="{{ route('supplier.supply-requests.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-shopping-cart w-5"></i>
-                        <span class="ml-2 text-sm">Supply Requests</span>
-                    </a>
-                    <a href="{{ route('supplier.analytics.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-chart-line w-5"></i>   
-                        <span class="ml-2 text-sm">Analytics</span>
-                    </a>
-                    <a href="{{ route('supplier.chat.index') }}" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-purple-600 to-purple-700 rounded-xl shadow-lg">
-                        <i class="fas fa-comments w-5"></i>
-                        <span class="ml-2 font-medium text-sm">Chat</span>
-                        <span id="unread-count" class="unread-badge ml-auto" style="display: none;"></span>
-                    </a>
-                    <a href="{{ route('supplier.reports.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-file-invoice-dollar w-5"></i>
-                        <span class="ml-2 text-sm">Reports</span>
-                    </a>
+                    <a href="{{ route('supplier.dashboard') }}" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-green-600 to-green-700 rounded-xl shadow-lg"><i class="fas fa-home w-5"></i><span class="ml-2 font-medium text-sm">Home</span></a>
+                    <a href="{{ route('supplier.supply-requests') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-dolly w-5"></i><span class="ml-2 text-sm">Supply Request</span></a>
+                    <a href="{{ route('supplier.analytics.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-chart-bar w-5"></i><span class="ml-2 text-sm">Analytics</span></a>
+                    <a href="{{ route('supplier.chat.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-comments w-5"></i><span class="ml-2 text-sm">Chat</span></a>
+                    <a href="{{ route('supplier.reports.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-file-alt w-5"></i><span class="ml-2 text-sm">Reports</span></a>
                 </nav>
                 <div class="p-3 border-t border-gray-600">
                     <div class="text-center text-gray-400 text-xs">
@@ -390,38 +255,13 @@
                             </div>
                             @endif
 
-                            <!-- Wholesalers -->
-                            @if($wholesalers->count() > 0)
-                            <div class="mb-6">
-                                <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3 px-2">Wholesalers</h4>
-                                @foreach($wholesalers as $wholesaler)
-                                <div class="contact-item flex items-center p-4 rounded-xl" 
-                                     data-contact-id="{{ $wholesaler->id }}" 
-                                     data-contact-name="{{ $wholesaler->name }}"
-                                     data-chat-url="{{ route('supplier.chat.show', ['contactId' => $wholesaler->id]) }}">
-                                    <div class="relative">
-                                        <img src="{{ asset('images/wholesaler.jpg') }}" alt="{{ $wholesaler->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
-                                        <span class="online-indicator absolute -bottom-1 -right-1"></span>
-                                    </div>
-                                    <div class="ml-4 flex-1">
-                                        <h5 class="text-sm font-medium text-gray-900 dark:text-white">{{ $wholesaler->name }}</h5>
-                                        <p class="text-xs text-gray-500 dark:text-gray-400">Wholesaler</p>
-                                    </div>
-                                    @if(isset($unreadCounts[$wholesaler->id]) && $unreadCounts[$wholesaler->id] > 0)
-                                    <span class="unread-badge">{{ $unreadCounts[$wholesaler->id] }}</span>
-                                    @endif
-                                </div>
-                                @endforeach
-                            </div>
-                            @endif
-
                             <!-- No contacts message -->
-                            @if($manufacturers->count() == 0 && $admins->count() == 0 && $wholesalers->count() == 0)
+                            @if($manufacturers->count() == 0 && $admins->count() == 0)
                             <div class="text-center py-12">
                                 <div class="text-gray-500 dark:text-gray-400">
                                     <i class="fas fa-users text-4xl mb-4"></i>
                                     <p class="text-lg font-medium">No contacts available</p>
-                                    <p class="text-sm">Contact support to add manufacturers, admins, or wholesalers</p>
+                                    <p class="text-sm">Contact support to add manufacturers or admins</p>
                                 </div>
                             </div>
                             @endif
@@ -429,7 +269,7 @@
                     </div>
 
                     <!-- Chat Area -->
-                    <div class="flex-1 card-gradient rounded-xl flex flex-col">
+                    <div class="flex-1 card-gradient rounded-xl flex flex-col" id="chat-conversation">
                         <div id="chat-welcome" class="flex-1 flex items-center justify-center">
                             <div class="text-center">
                                 <div class="w-24 h-24 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900 dark:to-purple-800 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -437,45 +277,6 @@
                                 </div>
                                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Welcome to Chat</h3>
                                 <p class="text-gray-600 dark:text-gray-400">Select a contact from the sidebar to start a conversation</p>
-                            </div>
-                        </div>
-
-                        <div id="chat-conversation" class="flex-1 flex flex-col" style="display: none;">
-                            <!-- Conversation Header -->
-                            <div class="p-6 border-b border-gray-200 dark:border-gray-600">
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <img id="contact-avatar" src="" alt="" class="w-12 h-12 rounded-full border-2 border-purple-200">
-                                        <div class="ml-4">
-                                            <h3 id="contact-name" class="text-lg font-semibold text-gray-900 dark:text-white"></h3>
-                                            <p id="contact-role" class="text-sm text-gray-500 dark:text-gray-400"></p>
-                                        </div>
-                                    </div>
-                                    <div class="flex items-center space-x-2">
-                                        <span class="online-indicator"></span>
-                                        <span class="text-sm text-gray-500 dark:text-gray-400">Online</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Messages Area -->
-                            <div id="messages-container" class="flex-1 overflow-y-auto p-6 space-y-4 messages-scroll" style="max-height: 420px; min-height: 200px;">
-                                <!-- Messages will be loaded here -->
-                            </div>
-
-                            <!-- Message Input -->
-                            <div class="p-6 border-t border-gray-200 dark:border-gray-600">
-                                <form id="message-form" class="flex items-center space-x-4">
-                                    <input type="hidden" id="receiver-id" name="receiver_id">
-                                    <div class="flex-1 relative">
-                                        <input type="text" id="message-input" name="content" 
-                                               placeholder="Type your message..." 
-                                               class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
-                                    </div>
-                                    <button type="submit" class="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-6 py-3 rounded-xl hover:from-purple-700 hover:to-purple-800 transition-all duration-300 shadow-lg">
-                                        <i class="fas fa-paper-plane"></i>
-                                    </button>
-                                </form>
                             </div>
                         </div>
                     </div>
@@ -511,10 +312,20 @@
 
             // Handle contact selection
             contactItems.forEach(item => {
-                item.addEventListener('click', function() {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
                     const chatUrl = this.dataset.chatUrl;
                     if (chatUrl) {
-                        window.location.href = chatUrl;
+                        fetch(chatUrl, {
+                            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                            credentials: 'same-origin'
+                        })
+                        .then(response => response.text())
+                        .then(html => {
+                            document.getElementById('chat-conversation').innerHTML = html;
+                            // Re-initialize message form event listener if needed
+                            initMessageForm();
+                        });
                     }
                 });
             });
