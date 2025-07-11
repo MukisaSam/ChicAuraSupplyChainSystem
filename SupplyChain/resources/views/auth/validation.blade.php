@@ -318,13 +318,18 @@ let visit = document.getElementById("visit");
 let time = document.getElementById("time");
 const date = new Date("{{ session('success') }}");
 
+
+const daysList = [ "Sunday", "Monday",  "Tuesday",  "Wednesday",  "Thursday",  "Friday",
+                   "Saturday"];
+  
 const monthsList = [ "January",  "February",  "March",  "April",  "May",
-  "June","July",  "August",  "September",  "October",  "November",
-  "December"];
+                     "June","July",  "August",  "September",  "October",  
+                     "November", "December"];
   
 const day = date.getDate();
 const month = monthsList[date.getMonth()];
 const year = date.getFullYear();
+const dayName = daysList[date.getDay()];
 
 const hours = date.getHours();
 const minutes = date.getMinutes();
@@ -344,7 +349,7 @@ if((hours-12) == -12){
 }else{
     hour = hours-12;
 }
-visit.innerHTML = `${month} ${day} ${year}`;
+visit.innerHTML = `${dayName}, ${month} ${day} ${year}`;
 time.innerHTML = `${hour}:00 ${ampm}`;
 
 </script>

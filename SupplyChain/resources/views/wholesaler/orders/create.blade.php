@@ -165,9 +165,6 @@
                         </button>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <a href="{{ route('user.profile.edit') }}" class="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 dark:text-gray-400 dark:hover:text-purple-400 dark:hover:bg-purple-900/20 rounded-full transition-colors" title="Edit Profile">
-                            <i class="fas fa-user-edit text-lg"></i>
-                        </a>
                         <form method="POST" action="{{ route('logout') }}" class="inline">
                             @csrf
                             <button type="submit" class="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 dark:text-gray-400 dark:hover:text-red-400 dark:hover:bg-red-900/20 rounded-full transition-colors" title="Logout">
@@ -212,9 +209,9 @@
                             <div class="card-gradient rounded-xl p-6">
                                 <h3 class="text-lg font-semibold text-black mb-4">Select Products</h3>
                                 
-                                @if($items->count() > 0)
+                                @if($finishedProducts->count() > 0)
                                     <div class="space-y-4" id="itemsContainer">
-                                        @foreach($items as $item)
+                                        @foreach($finishedProducts as $item)
                                             <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 hover:shadow-md transition-shadow">
                                                 <div class="flex items-center space-x-4">
                                                     <div class="flex-shrink-0">

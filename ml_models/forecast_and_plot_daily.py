@@ -4,21 +4,36 @@ import joblib
 import matplotlib.pyplot as plt
 from pathlib import Path
 import logging
+import argparse
+import sys
 from demand_model import preprocess_df  # Reuse your main preprocessing
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s:%(message)s")
 
+# Parse command line arguments
+parser = argparse.ArgumentParser(description='Generate demand forecast for a specific product')
+parser.add_argument('--product_name', required=True, help='Product name to forecast')
+parser.add_argument('--unit_price', type=float, required=True, help='Unit price of the product')
+parser.add_argument('--location', required=True, help='Location for the forecast')
+parser.add_argument('--output_dir', default='../SupplyChain/public/forecast_plots', help='Output directory for the forecast plot')
+
+args = parser.parse_args()
+
 # Create output directory
-output_dir = Path("forecast_plots")
+output_dir = Path(args.output_dir)
 output_dir.mkdir(exist_ok=True)
 
 # Load model and features
-model = joblib.load('demand_model.pkl')
-feature_columns = joblib.load('model_features.pkl')
+try:
+    model = joblib.load('demand_model.pkl')
+    feature_columns = joblib.load('model_features.pkl')
+except FileNotFoundError as e:
+    logging.error(f"Model files not found: {e}")
+    sys.exit(1)
 
-# Sample products
+# Use command line arguments
 products = [
-    {'product_name': 'T-shirt', 'unit_price': 5.0, 'location': 'Wakiso'}
+    {'product_name': args.product_name, 'unit_price': args.unit_price, 'location': args.location}
 ]
 
 # Generate future dates (next 30 days)
@@ -52,13 +67,6 @@ for prod in products:
         'predicted_demand': predicted.round(2)
     })
     
-    # Save forecast to CSV (safe filenames)
-    # safe_product = prod['product_name'].replace(" ", "_")
-    # safe_location = prod['location'].replace(" ", "_")
-    # csv_path = output_dir / f"forecast_{safe_product}_{safe_location}.csv"
-    # results.to_csv(csv_path, index=False)
-    # logging.info(f"Saved forecast to {csv_path}")
-    
     # Plot
     plt.figure(figsize=(12, 6))
     plt.plot(future_dates, predicted, marker='o', label='Predicted Demand')
@@ -77,7 +85,16 @@ for prod in products:
     plt.xticks(rotation=45)
     plt.tight_layout()
 
-    # Show plot
-    plt.show()
-    logging.info(f"Displayed plot for {prod['product_name']} at {prod['location']}")
+    # Save plot
+    safe_product = prod['product_name'].replace(" ", "_").replace("/", "_")
+    safe_location = prod['location'].replace(" ", "_").replace("/", "_")
+    plot_filename = f"forecast_{safe_product}_{safe_location}_{pd.Timestamp.now().strftime('%Y%m%d_%H%M%S')}.png"
+    plot_path = output_dir / plot_filename
+    
+    plt.savefig(plot_path, dpi=300, bbox_inches='tight')
+    logging.info(f"Saved plot to {plot_path}")
+    
+    # Output the filename for Laravel to read
+    print(f"FORECAST_IMAGE:{plot_filename}")
+    
     plt.close()

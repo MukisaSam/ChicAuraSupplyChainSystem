@@ -84,7 +84,6 @@
         <!-- Sidebar -->
         <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
             <div class="flex flex-col h-full">
-                <!-- Sidebar Header -->
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
                     <div class="logo-container">
                         <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
@@ -93,7 +92,6 @@
                 <div class="px-4 py-4">
                     <h3 class="text-white text-sm font-semibold mb-3 px-3">WHOLESALER PORTAL</h3>
                 </div>
-                <!-- Sidebar Navigation -->
                 <nav class="flex-1 px-4 py-2 space-y-1">
                     <a href="{{ route('wholesaler.dashboard') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-home w-5"></i>
@@ -110,27 +108,35 @@
                     <a href="{{ route('wholesaler.chat.index') }}" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-purple-600 to-purple-700 rounded-xl shadow-lg">
                         <i class="fas fa-comments w-5"></i>
                         <span class="ml-2 font-medium text-sm">Chat</span>
+                        <span id="unread-count" class="unread-badge ml-auto" style="display: none;"></span>
                     </a>
                     <a href="{{ route('wholesaler.reports.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-file-invoice-dollar w-5"></i>
                         <span class="ml-2 text-sm">Reports</span>
                     </a>
+                    <a href="{{ route('wholesaler.invoices.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-file-invoice w-5"></i><span class="ml-2 text-sm">Invoices</span></a>
                 </nav>
+                <div class="p-3 border-t border-gray-600">
+                    <div class="text-center text-gray-400 text-xs">
+                        <p>ChicAura SCM</p>
+                        <p class="text-xs mt-1">v2.1.0</p>
+                    </div>
+                </div>
             </div>
         </aside>
         <div class="flex flex-col flex-1 w-full">
             <!-- Top Navigation Bar -->
             <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b">
                 <div class="flex items-center">
-                    <!-- Mobile Menu Toggle -->
-                    <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-bars text-lg"></i>
-                    </button>
-                    <div class="relative ml-3 hidden md:block">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                            <i class="fas fa-search text-gray-400"></i>
-                        </span>
-                        <input type="text" id="searchInput" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" placeholder="Search...">
+                    <img src="{{ $contact->profile_picture ? Storage::disk('public')->url($contact->profile_picture) : asset('images/default-avatar.svg') }}" alt="{{ $contact->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
+                    <span class="online-indicator ml-2 {{ $contact->isOnline() ? 'bg-green-500' : 'bg-gray-400' }}"></span>
+                    <div class="ml-4">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $contact->name }}</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ ucfirst($contact->role) }}
+                            <span class="ml-2 text-xs {{ $contact->isOnline() ? 'text-green-500' : 'text-gray-400' }}">
+                                {{ $contact->isOnline() ? 'Online' : 'Offline' }}
+                            </span>
+                        </p>
                     </div>
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
@@ -157,14 +163,14 @@
                 </div>
             </header>
             <!-- Main Content -->
-            <main class="flex-1 p-4">
+            <main class="flex-1 p-4 h-full">
                 <div class="mb-6">
                     <h2 class="text-2xl font-bold text-white mb-1">Chat with {{ $contact->name }}</h2>
                     <p class="text-gray-200 text-sm">{{ ucfirst($contact->role) }}</p>
                 </div>
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col" style="height: calc(100vh - 200px);">
                     <!-- Messages Container -->
-                    <div id="messages-container" class="flex-1 overflow-y-auto p-2 space-y-4">
+                    <div id="messages-container" class="flex-1 overflow-y-auto p-2 space-y-4 h-full">
                         @foreach($messages as $message)
                             @php
                                 $isOwnMessage = $message->sender_id == $user->id;
@@ -210,25 +216,42 @@
             </main>
         </div>
     </div>
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+    @vite('resources/js/bootstrap.js')
     <script>
         // Mobile menu toggle
-        document.getElementById('menu-toggle').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('open');
-        });
+        const menuToggle = document.getElementById('menu-toggle');
+        if (menuToggle) {
+            menuToggle.addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('open');
+            });
+        }
         document.addEventListener('DOMContentLoaded', function() {
             const messageForm = document.getElementById('message-form');
             const messageInput = document.getElementById('message-input');
             const messagesContainer = document.getElementById('messages-container');
+            const receiverId = messageForm.querySelector('input[name="receiver_id"]').value;
+
             messageForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 const content = messageInput.value.trim();
-                const receiverId = this.querySelector('input[name="receiver_id"]').value;
                 if (!content || !receiverId) {
                     return;
                 }
+                // Optimistically append the message immediately
+                const tempMessage = {
+                    sender_id: {{ $user->id }},
+                    sender: { name: '{{ $user->name }}' },
+                    content: content,
+                    created_at: new Date().toISOString(),
+                    _optimistic: true // mark as optimistic
+                };
+                appendMessage(tempMessage);
+                scrollToBottom();
                 sendMessage(receiverId, content);
                 messageInput.value = '';
             });
+
             function sendMessage(receiverId, content) {
                 const formData = new FormData();
                 formData.append('receiver_id', receiverId);
@@ -243,27 +266,50 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    if (data.success) {
-                        appendMessage(data.message);
-                        scrollToBottom();
-                    } else {
+                    console.log('Send response:', data); // Debug log
+                    if (!data.success) {
                         console.error('Failed to send message:', data);
                     }
+                    // Do NOT call loadMessages() here!
                 })
                 .catch(error => {
                     console.error('Error sending message:', error);
                 });
             }
+
+            function loadMessages() {
+                fetch(`{{ route('wholesaler.chat.messages', ['contactId' => $contact->id]) }}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Loaded messages:', data.messages); // Debug log
+                        messagesContainer.innerHTML = '';
+                        if (data.messages && data.messages.length > 0) {
+                            data.messages.forEach(message => {
+                                appendMessage(message);
+                            });
+                        } else {
+                            messagesContainer.innerHTML = '<div class="text-center text-gray-500 dark:text-gray-400 py-8">No messages yet. Start the conversation!</div>';
+                        }
+                        scrollToBottom();
+                    })
+                    .catch(error => {
+                        console.error('Error loading messages:', error);
+                        messagesContainer.innerHTML = '<div class="text-center text-red-500 py-8">Error loading messages</div>';
+                    });
+            }
+
             function appendMessage(message) {
                 const isOwnMessage = message.sender_id == {{ $user->id }};
+                const avatar = isOwnMessage
+                    ? '{{ asset('images/default-avatar.svg') }}'
+                    : '{{ asset('images/manufacturer.png') }}';
                 const messageHtml = `
-                    <div class=\"flex ${isOwnMessage ? 'justify-end' : 'justify-start'}\">
-                        <div class=\"flex ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'} items-end space-x-3 max-w-xs lg:max-w-md\">
-                            <img src=\"${isOwnMessage ? '{{ asset('images/default-avatar.svg') }}' : '{{ asset('images/manufacturer.png') }}'}\" 
-                                 alt=\"${message.sender.name}\" class=\"w-8 h-8 rounded-full flex-shrink-0 border-2 border-purple-200\">
-                            <div class=\"message-bubble ${isOwnMessage ? 'own' : 'other'}\">
-                                <p class=\"text-sm\">${message.content}</p>
-                                <p class=\"text-xs ${isOwnMessage ? 'text-purple-100' : 'text-gray-500 dark:text-gray-400'} mt-1\">
+                    <div class="flex ${isOwnMessage ? 'justify-end' : 'justify-start'}">
+                        <div class="flex ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'} items-end space-x-3 max-w-xs lg:max-w-md">
+                            <img src="${avatar}" alt="${message.sender.name}" class="w-8 h-8 rounded-full flex-shrink-0 border-2 border-purple-200">
+                            <div class="message-bubble ${isOwnMessage ? 'own' : 'other'}">
+                                <p class="text-sm">${message.content}</p>
+                                <p class="text-xs ${isOwnMessage ? 'text-purple-100' : 'text-gray-500 dark:text-gray-400'} mt-1">
                                     ${new Date(message.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                                 </p>
                             </div>
@@ -272,12 +318,24 @@
                 `;
                 messagesContainer.insertAdjacentHTML('beforeend', messageHtml);
             }
+
             function scrollToBottom() {
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
             scrollToBottom();
+
+            // Laravel Echo real-time listener
+            if (window.Echo) {
+                window.Echo.private('chat.user.' + {{ $user->id }})
+                    .listen('.ChatMessageSent', (e) => {
+                        // Only append if the message is from the current contact
+                        if (e.sender_id == {{ $contact->id }}) {
+                            appendMessage(e);
+                            scrollToBottom();
+                        }
+                    });
+            }
         });
     </script>
-    <x-wholesaler-notification-bell />
 </body>
 </html> 

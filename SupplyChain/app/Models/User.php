@@ -53,6 +53,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'role' => 'string',
         'is_active' => 'boolean',
+        'last_seen' => 'datetime',
     ];
 
     public function hasRole($role)
@@ -97,5 +98,13 @@ class User extends Authenticatable
     public function unreadMessages()
     {
         return $this->receivedMessages()->where('is_read', false);
+    }
+
+    /**
+     * Determine if the user is considered online (last_seen within 2 minutes).
+     */
+    public function isOnline()
+    {
+        return $this->last_seen && $this->last_seen->gt(now()->subMinutes(2));
     }
 }

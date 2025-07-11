@@ -10,6 +10,7 @@ use App\Models\Item;
 use App\Models\Wholesaler;
 use Illuminate\Support\Str;
 use App\Notifications\OrderPlacedNotification;
+use App\Models\Invoice;
 
 class WholesalerOrderController extends Controller
 {
@@ -33,16 +34,25 @@ class WholesalerOrderController extends Controller
     public function create()
     {
         $user = Auth::user();
-        $items = Item::where('is_active', true)
-            ->where('stock_quantity', '>', 0)
-            ->orderBy('name')
-            ->get();
+        $finishedProducts = Item::where('type', 'finished_product')->where('is_active', true)->get();
         $manufacturers = \App\Models\Manufacturer::orderBy('id')->get();
-        return view('wholesaler.orders.create', compact('items', 'user', 'manufacturers'));
+
+        return view('wholesaler.orders.create', compact('finishedProducts', 'user', 'manufacturers'));
     }
     
     public function store(Request $request)
     {
+        $request->validate([
+            'item_id' => 'required|exists:items,id',
+            'quantity' => 'required|integer|min:1',
+            // Add other fields as needed
+        ]);
+
+        $item = Item::findOrFail($request->item_id);
+        if ($item->type !== 'finished_product') {
+            return back()->withErrors(['item_id' => 'Selected item is not a finished product.']);
+        }
+
         $itemsInput = $request->input('items', []);
         // Filter only selected items
         $selectedItems = array_filter($itemsInput, function($item) {
@@ -102,6 +112,15 @@ class WholesalerOrderController extends Controller
             'delivery_address' => $request->delivery_address,
             'notes' => $request->notes,
             'estimated_delivery' => now()->addDays(14), // Default 2 weeks
+        ]);
+        
+        // Generate invoice for the order
+        $invoice = Invoice::create([
+            'order_id' => $order->id,
+            'invoice_number' => 'INV-' . strtoupper(Str::random(8)),
+            'amount' => $order->total_amount,
+            'status' => 'unpaid',
+            'due_date' => now()->addDays(14),
         ]);
         
         // Notify manufacturer (database notification)

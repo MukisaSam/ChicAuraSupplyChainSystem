@@ -20,6 +20,7 @@ class Item extends Model
         'stock_quantity',
         'image_url',
         'is_active',
+        'type',
     ];
 
     protected $casts = [

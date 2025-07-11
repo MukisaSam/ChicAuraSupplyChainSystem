@@ -87,7 +87,7 @@
     </style>
 </head>
 <body class="font-sans antialiased">
-    <div class="flex h-screen">
+    <div class="flex h-full">
         <!-- Sidebar -->
         <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
             <div class="flex flex-col h-full">
@@ -122,13 +122,9 @@
                         <i class="fas fa-warehouse w-5"></i>
                         <span class="ml-2 text-sm">Inventory</span>
                     </a>
-                    <a href="{{route('manufacturer.wholesalers')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                    <a href="{{route('manufacturer.partners.manage')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-users w-5"></i>
-                        <span class="ml-2 text-sm">Wholesalers</span>
-                    </a>
-                    <a href="{{route('manufacturer.suppliers')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-truck-fast w-5"></i>
-                        <span class="ml-2 text-sm">Suppliers</span>
+                        <span class="ml-2 text-sm">Partners</span>
                     </a>
                     <a href="{{route('manufacturer.chat')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-comments w-5"></i>
@@ -218,37 +214,18 @@
                 <!-- Form -->
                 <div class="max-w-2xl mx-auto">
                     <div class="card-gradient p-6 rounded-xl">
-                        <form action="{{ route('manufacturer.orders.store-supply-request') }}" method="POST">
+                        <form action="{{ route('supply-requests.store') }}" method="POST">
                             @csrf
                             
-                            <!-- Supplier Selection -->
-                            <div class="mb-6">
-                                <label for="supplier_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Supplier <span class="text-red-500">*</span>
-                                </label>
-                                <select name="supplier_id" id="supplier_id" required 
-                                        class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                                    <option value="">Select a supplier</option>
-                                    @foreach($suppliers as $supplier)
-                                        <option value="{{ $supplier->id }}" {{ old('supplier_id') == $supplier->id ? 'selected' : '' }}>
-                                            {{ $supplier->user->name ?? 'N/A' }} - {{ $supplier->business_type ?? 'N/A' }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('supplier_id')
-                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                                @enderror
-                            </div>
-
                             <!-- Item Selection -->
                             <div class="mb-6">
-                                <label for="item_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                                    Item <span class="text-red-500">*</span>
+                                <label for="item_id" class="block text-sm font-medium text-black mb-2">
+                                    Raw Material <span class="text-red-500">*</span>
                                 </label>
                                 <select name="item_id" id="item_id" required 
                                         class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
-                                    <option value="">Select an item</option>
-                                    @foreach($items as $item)
+                                    <option value="">Select a raw material</option>
+                                    @foreach($rawMaterials as $item)
                                         <option value="{{ $item->id }}" {{ old('item_id') == $item->id ? 'selected' : '' }}>
                                             {{ $item->name }} - {{ $item->category ?? 'N/A' }}
                                         </option>
@@ -261,7 +238,7 @@
 
                             <!-- Quantity -->
                             <div class="mb-6">
-                                <label for="quantity" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <label for="quantity" class="block text-sm font-medium text-black mb-2">
                                     Quantity <span class="text-red-500">*</span>
                                 </label>
                                 <input type="number" name="quantity" id="quantity" min="1" required 
@@ -275,7 +252,7 @@
 
                             <!-- Due Date -->
                             <div class="mb-6">
-                                <label for="due_date" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <label for="due_date" class="block text-sm font-medium text-black mb-2">
                                     Due Date <span class="text-red-500">*</span>
                                 </label>
                                 <input type="date" name="due_date" id="due_date" required 
@@ -289,7 +266,7 @@
 
                             <!-- Notes -->
                             <div class="mb-6">
-                                <label for="notes" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                                <label for="notes" class="block text-sm font-medium text-black mb-2">
                                     Notes
                                 </label>
                                 <textarea name="notes" id="notes" rows="4" 

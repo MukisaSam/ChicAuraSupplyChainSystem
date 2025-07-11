@@ -124,7 +124,7 @@
     </style>
 </head>
 <body class="font-sans antialiased">
-    <div class="flex h-screen">
+    <div class="flex h-full">
         <!-- Sidebar -->
         <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
             <div class="flex flex-col h-full">
@@ -163,13 +163,9 @@
                         <i class="fas fa-warehouse w-5"></i>
                         <span class="ml-2 text-sm">Warehouses</span>
                     </a>
-                    <a href="{{route('manufacturer.wholesalers')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                    <a href="{{route('manufacturer.partners.manage')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-users w-5"></i>
-                        <span class="ml-2 text-sm">Wholesalers</span>
-                    </a>
-                    <a href="{{route('manufacturer.suppliers')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-truck-fast w-5"></i>
-                        <span class="ml-2 text-sm">Suppliers</span>
+                        <span class="ml-2 text-sm">Partners</span>
                     </a>
                     <a href="{{route('manufacturer.chat')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-comments w-5"></i>
@@ -183,6 +179,35 @@
                         <i class="fas fa-dollar-sign w-5"></i>
                         <span class="ml-2 text-sm">Revenue</span>
                     </a>
+
+<!-- Production Section -->
+<div class="mt-6 mb-2">
+    <h4 class="text-gray-400 text-xs font-bold uppercase tracking-wider px-3 mb-1">Production</h4>
+</div>
+<a href="{{ route('manufacturer.work-orders.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white rounded-xl">
+    <i class="fas fa-cogs w-5"></i>
+    <span class="ml-2 text-sm">Work Orders</span>
+</a>
+<a href="{{ route('manufacturer.bom.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white rounded-xl">
+    <i class="fas fa-list-alt w-5"></i>
+    <span class="ml-2 text-sm">Bill of Materials</span>
+</a>
+<a href="{{ route('manufacturer.production-schedules.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white rounded-xl">
+    <i class="fas fa-calendar-alt w-5"></i>
+    <span class="ml-2 text-sm">Production Schedules</span>
+</a>
+<a href="{{ route('manufacturer.quality-checks.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white rounded-xl">
+    <i class="fas fa-clipboard-check w-5"></i>
+    <span class="ml-2 text-sm">Quality Checks</span>
+</a>
+<a href="{{ route('manufacturer.downtime-logs.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white rounded-xl">
+    <i class="fas fa-stopwatch w-5"></i>
+    <span class="ml-2 text-sm">Downtime Logs</span>
+</a>
+<a href="{{ route('manufacturer.production-costs.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white rounded-xl">
+    <i class="fas fa-coins w-5"></i>
+    <span class="ml-2 text-sm">Production Costs</span>
+</a>
                 </nav>
                 <div class="p-3 border-t border-gray-600">
                     <div class="text-center text-gray-400 text-xs">
@@ -240,7 +265,7 @@
             </header>
 
             <!-- Main Content -->
-            <main class="flex-1 p-4 overflow-hidden">
+            <main class="flex-1 p-4">
                 <div class="mb-4">
                     <h2 class="text-2xl font-bold text-white mb-1">Manufacturer Portal</h2>
                     <p class="text-gray-200 text-sm">Welcome back! Here's an overview of your supply chain.</p>
@@ -323,6 +348,79 @@
                                 </div>
                             @endforelse
                         </div>
+                    </div>
+                </div>
+
+                <!-- Production Overview Section -->
+                <div class="mt-8">
+                    <h2 class="text-xl font-bold mb-4 text-white">Production Overview</h2>
+                    <!-- Quick Stats -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-white p-4 rounded shadow">
+                            <h3 class="text-lg font-semibold mb-2">Active Work Orders</h3>
+                            <p class="text-3xl">{{ $activeWorkOrders ?? 0 }}</p>
+                        </div>
+                        <div class="bg-white p-4 rounded shadow">
+                            <h3 class="text-lg font-semibold mb-2">In Progress</h3>
+                            <p class="text-3xl">{{ $inProgress ?? 0 }}</p>
+                        </div>
+                        <div class="bg-white p-4 rounded shadow">
+                            <h3 class="text-lg font-semibold mb-2">Completed This Month</h3>
+                            <p class="text-3xl">{{ $completedThisMonth ?? 0 }}</p>
+                        </div>
+                    </div>
+                    <!-- Work Orders Table -->
+                    <div class="bg-white rounded shadow p-4 mb-6">
+                        <h3 class="text-lg font-semibold mb-4">Recent Work Orders</h3>
+                        <table class="min-w-full table-auto">
+                            <thead>
+                                <tr>
+                                    <th class="px-4 py-2">Order</th>
+                                    <th class="px-4 py-2">Product</th>
+                                    <th class="px-4 py-2">Quantity</th>
+                                    <th class="px-4 py-2">Status</th>
+                                    <th class="px-4 py-2">Scheduled</th>
+                                    <th class="px-4 py-2">Progress</th>
+                                    <th class="px-4 py-2">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($workOrders ?? [] as $order)
+                                <tr>
+                                    <td class="border px-4 py-2">{{ $order->id }}</td>
+                                    <td class="border px-4 py-2">{{ $order->product->name ?? '-' }}</td>
+                                    <td class="border px-4 py-2">{{ $order->quantity }}</td>
+                                    <td class="border px-4 py-2">{{ $order->status }}</td>
+                                    <td class="border px-4 py-2">{{ optional($order->scheduled_start)->format('Y-m-d') }}</td>
+                                    <td class="border px-4 py-2">
+                                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                            <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ $order->progress ?? 0 }}%"></div>
+                                        </div>
+                                        <span class="text-xs">{{ $order->progress ?? 0 }}%</span>
+                                    </td>
+                                    <td class="border px-4 py-2">
+                                        <a href="{{ route('manufacturer.production.show', $order->id) }}" class="text-blue-600 hover:underline">Details</a>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="7" class="text-center text-gray-400 py-4">No work orders found.</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Quick Links -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <a href="{{ route('manufacturer.production.create') }}" class="bg-indigo-600 text-white p-4 rounded shadow text-center hover:bg-indigo-700">
+                            <i class="fas fa-plus mr-2"></i> New Work Order
+                        </a>
+                        <a href="{{ route('manufacturer.bom.index') }}" class="bg-green-600 text-white p-4 rounded shadow text-center hover:bg-green-700">
+                            <i class="fas fa-cogs mr-2"></i> Bill of Materials
+                        </a>
+                        <a href="{{ route('manufacturer.quality.index') }}" class="bg-yellow-600 text-white p-4 rounded shadow text-center hover:bg-yellow-700">
+                            <i class="fas fa-clipboard-check mr-2"></i> Quality Checks
+                        </a>
                     </div>
                 </div>
             </main>

@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ChicAura - Supplier Registration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         :root {
@@ -160,24 +161,12 @@
 
                     <div>
                         <label for="license_document" class="form-label block text-sm font-medium">Business License</label>
-                        <div class="mt-1">
-                            <input id="license_document" name="license_document" type="file" required class="form-input w-full px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                        <div class="mt-1 grid grid-cols-1 lg:grid-cols-5 gap-1">
+                            <input id="license_document" name="license_document" type="file" required class="form-input w-full lg:col-span-4 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                            <a href="{{asset('templates/SUPPLIER APPLICATION FORM.docx') }}" class="w-full lg:col-span-1 flex justify-center px-4 py-3 mt-1 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-green-600 hover:bg-green-700 outline-none transition duration-200 transform hover:scale-105 cursor-pointer"><i class="fa-solid fa-file-arrow-down text-3xl"></i></a>
                         </div>
                     </div>
 
-                    <!--<div>
-                        <label for="materials_supplied" class="form-label block text-sm font-medium">Materials Supplied</label>
-                        <div class="mt-1">
-                            <select id="materials_supplied" name="materials_supplied[]" multiple required class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                <option value="fabric">Fabric</option>
-                                <option value="thread">Thread</option>
-                                <option value="buttons">Buttons</option>
-                                <option value="zippers">Zippers</option>
-                                <option value="dyes">Dyes</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-                    </div>-->
 
                     <div>
                         <label for="materials_supplied" class="form-label block text-sm font-medium">Materials Supplied</label>
@@ -194,7 +183,7 @@
                     </div>
 
                     <div>
-                        <button type="submit" class="submit-btn w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                        <button type="submit" class="submit-btn w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-200 transform hover:scale-105">
                             Register as Supplier
                         </button>
                     </div>

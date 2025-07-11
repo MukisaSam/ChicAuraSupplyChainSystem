@@ -89,143 +89,194 @@ class DatabaseSeeder extends Seeder
             'monthly_order_volume' => 500,
         ]);
 
-        // Create sample items
-        $items = [
-            [
-                'name' => 'Silk Evening Dress',
-                'description' => 'Elegant silk evening dress with intricate beading',
-                'category' => 'Dresses',
-                'material' => 'Silk',
-                'base_price' => 299.99,
-                'size_range' => 'XS, S, M, L, XL',
-                'color_options' => 'Black, Red, Navy',
-                'stock_quantity' => 50,
-                'image_url' => '/images/silk-dress.jpg',
-            ],
-            [
-                'name' => 'Cotton Summer Blouse',
-                'description' => 'Lightweight cotton blouse perfect for summer',
-                'category' => 'Tops',
-                'material' => 'Cotton',
-                'base_price' => 89.99,
-                'size_range' => 'XS, S, M, L, XL',
-                'color_options' => 'White, Blue, Pink',
-                'stock_quantity' => 100,
-                'image_url' => '/images/cotton-blouse.jpg',
-            ],
-            [
-                'name' => 'Wool Winter Coat',
-                'description' => 'Warm wool coat for cold weather',
-                'category' => 'Outerwear',
-                'material' => 'Wool',
-                'base_price' => 199.99,
-                'size_range' => 'S, M, L, XL',
-                'color_options' => 'Black, Gray, Brown',
-                'stock_quantity' => 30,
-                'image_url' => '/images/wool-coat.jpg',
-            ],
-            [
-                'name' => 'Denim Jeans',
-                'description' => 'Classic denim jeans with perfect fit',
-                'category' => 'Bottoms',
-                'material' => 'Denim',
-                'base_price' => 79.99,
-                'size_range' => '28-36',
-                'color_options' => 'Blue, Black, Gray',
-                'stock_quantity' => 150,
-                'image_url' => '/images/denim-jeans.jpg',
-            ],
-        ];
+        // --- Manufacturer Test Data ---
+        // Create items needed for manufacturer test data
+        $item1 = \App\Models\Item::create([
+            'name' => 'Silk Evening Dress',
+            'description' => 'Elegant silk evening dress with intricate beading',
+            'category' => 'Dresses',
+            'material' => 'Silk',
+            'base_price' => 299.99,
+            'size_range' => 'XS, S, M, L, XL',
+            'color_options' => 'Black, Red, Navy',
+            'stock_quantity' => 50,
+            'image_url' => '/images/silk-dress.jpg',
+        ]);
+        $item2 = \App\Models\Item::create([
+            'name' => 'Cotton Summer Blouse',
+            'description' => 'Lightweight cotton blouse perfect for summer',
+            'category' => 'Tops',
+            'material' => 'Cotton',
+            'base_price' => 89.99,
+            'size_range' => 'XS, S, M, L, XL',
+            'color_options' => 'White, Blue, Pink',
+            'stock_quantity' => 100,
+            'image_url' => '/images/cotton-blouse.jpg',
+        ]);
+        $item3 = \App\Models\Item::create([
+            'name' => 'Wool Winter Coat',
+            'description' => 'Warm wool coat for cold weather',
+            'category' => 'Outerwear',
+            'material' => 'Wool',
+            'base_price' => 199.99,
+            'size_range' => 'S, M, L, XL',
+            'color_options' => 'Black, Gray, Brown',
+            'stock_quantity' => 30,
+            'image_url' => '/images/wool-coat.jpg',
+        ]);
+        $item4 = \App\Models\Item::create([
+            'name' => 'Denim Jeans',
+            'description' => 'Classic denim jeans with perfect fit',
+            'category' => 'Bottoms',
+            'material' => 'Denim',
+            'base_price' => 79.99,
+            'size_range' => '28-36',
+            'color_options' => 'Blue, Black, Gray',
+            'stock_quantity' => 150,
+            'image_url' => '/images/denim-jeans.jpg',
+        ]);
 
-        foreach ($items as $itemData) {
-            Item::create($itemData);
-        }
+        // Create workforce for manufacturer
+        $workforce1 = \App\Models\Workforce::create([
+            'fullname' => 'Alice Johnson',
+            'email' => 'alice.johnson@chicaura.com',
+            'contact_info' => '555-111-2222',
+            'address' => '123 Worker Lane',
+            'job_role' => 'Line Supervisor',
+            'status' => 'active',
+            'hire_date' => now()->subYears(2),
+            'salary' => 35000,
+            'manufacturer_id' => $manufacturerModel->id,
+        ]);
+        $workforce2 = \App\Models\Workforce::create([
+            'fullname' => 'Bob Smith',
+            'email' => 'bob.smith@chicaura.com',
+            'contact_info' => '555-333-4444',
+            'address' => '456 Worker Ave',
+            'job_role' => 'Quality Inspector',
+            'status' => 'active',
+            'hire_date' => now()->subYear(),
+            'salary' => 30000,
+            'manufacturer_id' => $manufacturerModel->id,
+        ]);
 
-        // Create sample supply requests
-        $supplyRequests = [
-            [
-                'supplier_id' => $supplierModel->id,
-                'item_id' => 1,
-                'quantity' => 25,
-                'due_date' => now()->addDays(14),
-                'status' => 'approved',
-                'payment_type' => 'bank_transfer',
-                'delivery_method' => 'delivery',
-                'notes' => 'Need for upcoming fashion show',
-            ],
-            [
-                'supplier_id' => $supplierModel->id,
-                'item_id' => 2,
-                'quantity' => 50,
-                'due_date' => now()->addDays(7),
-                'status' => 'pending',
-                'payment_type' => 'cash',
-                'delivery_method' => 'pickup',
-                'notes' => 'Summer collection preparation',
-            ],
-            [
-                'supplier_id' => $supplierModel->id,
-                'item_id' => 3,
-                'quantity' => 15,
-                'due_date' => now()->addDays(21),
-                'status' => 'in_progress',
-                'payment_type' => 'credit',
-                'delivery_method' => 'delivery',
-                'notes' => 'Winter season preparation',
-            ],
-        ];
+        // Create warehouse for manufacturer
+        $warehouse = \App\Models\Warehouse::create([
+            'location' => 'Main Industrial Park',
+            'capacity' => 5000,
+            'manufacturer_id' => $manufacturerModel->id,
+        ]);
 
-        foreach ($supplyRequests as $requestData) {
-            SupplyRequest::create($requestData);
-        }
+        // Create work orders for manufacturer
+        $workOrder1 = \App\Models\WorkOrder::create([
+            'product_id' => $item1->id, // Silk Evening Dress
+            'quantity' => 100,
+            'status' => 'InProgress',
+            'scheduled_start' => now()->subDays(10),
+            'scheduled_end' => now()->addDays(5),
+            'actual_start' => now()->subDays(9),
+            'actual_end' => null,
+            'notes' => 'Urgent order for new collection',
+        ]);
+        $workOrder2 = \App\Models\WorkOrder::create([
+            'product_id' => $item2->id, // Cotton Summer Blouse
+            'quantity' => 200,
+            'status' => 'Planned',
+            'scheduled_start' => now()->addDays(2),
+            'scheduled_end' => now()->addDays(12),
+            'actual_start' => null,
+            'actual_end' => null,
+            'notes' => 'Scheduled for next production cycle',
+        ]);
 
-        // Create sample supplied items
-        $suppliedItems = [
-            [
-                'supplier_id' => $supplierModel->id,
-                'item_id' => 1,
-                'price' => 285.00,
-                'delivered_quantity' => 20,
-                'delivery_date' => now()->subDays(5),
-                'quality_rating' => 5,
-                'status' => 'delivered',
-            ],
-            [
-                'supplier_id' => $supplierModel->id,
-                'item_id' => 2,
-                'price' => 85.00,
-                'delivered_quantity' => 40,
-                'delivery_date' => now()->subDays(3),
-                'quality_rating' => 4,
-                'status' => 'delivered',
-            ],
-        ];
+        // Production schedules
+        \App\Models\ProductionSchedule::create([
+            'work_order_id' => $workOrder1->id,
+            'start_date' => now()->subDays(10),
+            'end_date' => now()->addDays(5),
+            'status' => 'InProgress',
+            'notes' => 'Running on time',
+        ]);
+        \App\Models\ProductionSchedule::create([
+            'work_order_id' => $workOrder2->id,
+            'start_date' => now()->addDays(2),
+            'end_date' => now()->addDays(12),
+            'status' => 'Planned',
+            'notes' => 'Awaiting materials',
+        ]);
 
-        foreach ($suppliedItems as $suppliedItemData) {
-            SuppliedItem::create($suppliedItemData);
-        }
+        // Production costs
+        \App\Models\ProductionCost::create([
+            'work_order_id' => $workOrder1->id,
+            'material_cost' => 5000,
+            'labor_cost' => 2000,
+            'overhead_cost' => 1000,
+            'total_cost' => 8000,
+        ]);
+        \App\Models\ProductionCost::create([
+            'work_order_id' => $workOrder2->id,
+            'material_cost' => 7000,
+            'labor_cost' => 2500,
+            'overhead_cost' => 1200,
+            'total_cost' => 10700,
+        ]);
 
-        // Create sample price negotiations
-        $priceNegotiations = [
-            [
-                'supply_request_id' => 1,
-                'proposed_price' => 285.00,
-                'counter_price' => 290.00,
-                'status' => 'accepted',
-                'notes' => 'Bulk order discount applied',
-            ],
-            [
-                'supply_request_id' => 2,
-                'proposed_price' => 85.00,
-                'counter_price' => null,
-                'status' => 'pending',
-                'notes' => 'Awaiting supplier response',
-            ],
-        ];
+        // Bill of Materials for each product
+        $bom1 = \App\Models\BillOfMaterial::create([
+            'product_id' => $item1->id,
+        ]);
+        $bom2 = \App\Models\BillOfMaterial::create([
+            'product_id' => $item2->id,
+        ]);
+        // Components for BOM 1
+        \App\Models\BillOfMaterialComponent::create([
+            'bom_id' => $bom1->id,
+            'raw_item_id' => $item3->id, // Wool Winter Coat as a component (example)
+            'quantity' => 10,
+        ]);
+        \App\Models\BillOfMaterialComponent::create([
+            'bom_id' => $bom1->id,
+            'raw_item_id' => $item4->id, // Denim Jeans as a component (example)
+            'quantity' => 5,
+        ]);
+        // Components for BOM 2
+        \App\Models\BillOfMaterialComponent::create([
+            'bom_id' => $bom2->id,
+            'raw_item_id' => $item1->id, // Silk Evening Dress as a component (example)
+            'quantity' => 8,
+        ]);
+        \App\Models\BillOfMaterialComponent::create([
+            'bom_id' => $bom2->id,
+            'raw_item_id' => $item3->id, // Wool Winter Coat as a component (example)
+            'quantity' => 3,
+        ]);
 
-        foreach ($priceNegotiations as $negotiationData) {
-            PriceNegotiation::create($negotiationData);
-        }
+        // Quality checks for work order 1
+        \App\Models\QualityCheck::create([
+            'work_order_id' => $workOrder1->id,
+            'stage' => 'cutting',
+            'result' => 'pass',
+            'checked_by' => $workforce2->id,
+            'checked_at' => now()->subDays(8),
+            'notes' => 'All pieces cut accurately',
+        ]);
+        \App\Models\QualityCheck::create([
+            'work_order_id' => $workOrder1->id,
+            'stage' => 'sewing',
+            'result' => 'fail',
+            'checked_by' => $workforce2->id,
+            'checked_at' => now()->subDays(5),
+            'notes' => 'Some stitching errors found',
+        ]);
+
+        // Downtime log for work order 1
+        \App\Models\DowntimeLog::create([
+            'work_order_id' => $workOrder1->id,
+            'start_time' => now()->subDays(7)->setTime(10, 0),
+            'end_time' => now()->subDays(7)->setTime(12, 0),
+            'reason' => 'Machine maintenance',
+            'notes' => 'Routine maintenance of sewing machines',
+        ]);
 
         // Call additional seeders
 

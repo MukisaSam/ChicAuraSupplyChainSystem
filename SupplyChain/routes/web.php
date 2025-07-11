@@ -8,7 +8,8 @@ use App\Http\Controllers\{
     ProfileController,
     TypeController,
     UserController,
-    SupplierChatController
+    SupplierChatController,
+    InvoiceController
 };
 
 /*
@@ -28,6 +29,8 @@ Route::post('/logout', [UserController::class, 'logout']);
 Route::prefix('register')->group(function () {
     Route::get('/new_user', [RegisteredUserController::class, 'createAdmin'])->name('register.admin');
     Route::post('/new_user', [RegisteredUserController::class, 'storeUser'])->name('register.admin.store');
+
+    Route::post('/user', [RegisteredUserController::class, 'newUser'])->name('register.newUser');
 
     Route::get('/supplier', [RegisteredUserController::class, 'createSupplier'])->name('register.supplier');
     Route::post('/supplier', [RegisteredUserController::class, 'storeSupplier'])->name('register.supplier.store');
@@ -181,6 +184,10 @@ Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('
     Route::get('/analytics/chart-data', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'getChartData'])->name('analytics.chart-data');
     Route::get('/analytics/supplier-report', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'getSupplierReport'])->name('analytics.supplier-report');
     Route::get('/analytics/wholesaler-report', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'getCustomerReport'])->name('analytics.wholesaler-report');
+    
+    // Forecast API routes
+    Route::get('/analytics/forecast/options', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'getForecastOptions'])->name('analytics.forecast.options');
+    Route::post('/analytics/forecast/generate', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'generateForecast'])->name('analytics.forecast.generate');
 
     //Inventory routes
     Route::get('/inventory', [App\Http\Controllers\ManufacturerInventoryController::class, 'index'])->name('inventory');
@@ -192,12 +199,6 @@ Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('
     Route::post('/inventory/{item}/stock', [App\Http\Controllers\ManufacturerInventoryController::class, 'updateStock'])->name('inventory.update-stock');
     Route::get('/inventory/analytics', [App\Http\Controllers\ManufacturerInventoryController::class, 'analytics'])->name('inventory.analytics');
     Route::get('/inventory/chart-data', [App\Http\Controllers\ManufacturerInventoryController::class, 'getChartData'])->name('inventory.chart-data');
-
-    //Wholesalers routes
-    Route::get('/wholesalers', [App\Http\Controllers\ManufacturerWholesalersController::class, 'index'])->name('wholesalers');
-
-    //Suppliers routes
-    Route::get('/suppliers', [App\Http\Controllers\ManufacturerSuppliersController::class, 'index'])->name('suppliers');
 
     //Chat routes
     Route::get('/chat', [App\Http\Controllers\ManufacturerChatController::class, 'index'])->name('chat');
@@ -235,7 +236,52 @@ Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('
     // Mark notifications as read
     Route::post('/notifications/mark-as-read', [App\Http\Controllers\ManufacturerDashboardController::class, 'markNotificationsAsRead'])->name('notifications.markAsRead');
 
+    // Manage partners (suppliers & wholesalers)
+    Route::get('/partners', [App\Http\Controllers\ManufacturerDashboardController::class, 'managePartners'])->name('partners.manage');
+    //Production routes
+    Route::resource('production', App\Http\Controllers\WorkOrderController::class);
+    Route::resource('bom', App\Http\Controllers\BillOfMaterialController::class)
+        ->parameters(['bom' => 'billOfMaterial']);
+    Route::resource('quality',App\Http\Controllers\QualityCheckController::class);
+
+    Route::post('bom/{billOfMaterial}/add-component', [App\Http\Controllers\BillOfMaterialController::class, 'addComponent'])->name('manufacturer.bom.add-component');
+    Route::put('bom/{billOfMaterial}/update-component/{component}', [App\Http\Controllers\BillOfMaterialController::class, 'updateComponent'])->name('manufacturer.bom.update-component');
 });
+    //manage supplyrequests
+    Route::resource('supply-requests', \App\Http\Controllers\SupplyRequestController::class);
+
+    // Production Management Routes
+Route::get('manufacturer/work-orders', [App\Http\Controllers\WorkOrderController::class, 'index'])->name('manufacturer.work-orders.index');
+Route::get('manufacturer/bom', [App\Http\Controllers\BillOfMaterialController::class, 'index'])->name('manufacturer.bom.index');
+Route::get('manufacturer/production-schedules', [App\Http\Controllers\ProductionScheduleController::class, 'index'])->name('manufacturer.production-schedules.index');
+Route::get('manufacturer/quality-checks', [App\Http\Controllers\QualityCheckController::class, 'index'])->name('manufacturer.quality-checks.index');
+Route::get('manufacturer/downtime-logs', [App\Http\Controllers\DowntimeLogController::class, 'index'])->name('manufacturer.downtime-logs.index');
+Route::get('manufacturer/production-costs', [App\Http\Controllers\ProductionCostController::class, 'index'])->name('manufacturer.production-costs.index');
+
+//Production schedules
+Route::get('manufacturer/production-schedules/create', [App\Http\Controllers\ProductionScheduleController::class, 'create'])->name('manufacturer.production-schedules.create');
+Route::post('manufacturer/production-schedules', [App\Http\Controllers\ProductionScheduleController::class, 'store'])->name('manufacturer.production-schedules.store');
+Route::get('manufacturer/production-schedules/{productionSchedule}', [App\Http\Controllers\ProductionScheduleController::class, 'show'])->name('manufacturer.production-schedules.show');
+Route::get('manufacturer/production-schedules/{productionSchedule}/edit', [App\Http\Controllers\ProductionScheduleController::class, 'edit'])->name('manufacturer.production-schedules.edit');
+Route::put('manufacturer/production-schedules/{productionSchedule}', [App\Http\Controllers\ProductionScheduleController::class, 'update'])->name('manufacturer.production-schedules.update');
+Route::delete('manufacturer/production-schedules/{productionSchedule}', [App\Http\Controllers\ProductionScheduleController::class, 'destroy'])->name('manufacturer.production-schedules.destroy');
+
+// Downtime Logs 
+Route::get('manufacturer/downtime-logs/create', [App\Http\Controllers\DowntimeLogController::class, 'create'])->name('manufacturer.downtime-logs.create');
+Route::post('manufacturer/downtime-logs', [App\Http\Controllers\DowntimeLogController::class, 'store'])->name('manufacturer.downtime-logs.store');
+Route::get('manufacturer/downtime-logs/{downtimeLog}', [App\Http\Controllers\DowntimeLogController::class, 'show'])->name('manufacturer.downtime-logs.show');
+Route::get('manufacturer/downtime-logs/{downtimeLog}/edit', [App\Http\Controllers\DowntimeLogController::class, 'edit'])->name('manufacturer.downtime-logs.edit');
+Route::put('manufacturer/downtime-logs/{downtimeLog}', [App\Http\Controllers\DowntimeLogController::class, 'update'])->name('manufacturer.downtime-logs.update');
+Route::delete('manufacturer/downtime-logs/{downtimeLog}', [App\Http\Controllers\DowntimeLogController::class, 'destroy'])->name('manufacturer.downtime-logs.destroy');
+
+// Production Costs 
+Route::get('manufacturer/production-costs/create', [App\Http\Controllers\ProductionCostController::class, 'create'])->name('manufacturer.production-costs.create');
+Route::post('manufacturer/production-costs', [App\Http\Controllers\ProductionCostController::class, 'store'])->name('manufacturer.production-costs.store');
+Route::get('manufacturer/production-costs/{productionCost}', [App\Http\Controllers\ProductionCostController::class, 'show'])->name('manufacturer.production-costs.show');
+Route::get('manufacturer/production-costs/{productionCost}/edit', [App\Http\Controllers\ProductionCostController::class, 'edit'])->name('manufacturer.production-costs.edit');
+Route::put('manufacturer/production-costs/{productionCost}', [App\Http\Controllers\ProductionCostController::class, 'update'])->name('manufacturer.production-costs.update');
+Route::delete('manufacturer/production-costs/{productionCost}', [App\Http\Controllers\ProductionCostController::class, 'destroy'])->name('manufacturer.production-costs.destroy');
+
 
 // Wholesaler
 Route::middleware(['auth', 'role:wholesaler'])->prefix('wholesaler')->name('wholesaler.')->group(function () {
@@ -259,6 +305,11 @@ Route::middleware(['auth', 'role:wholesaler'])->prefix('wholesaler')->name('whol
         Route::get('/sales', [\App\Http\Controllers\WholesalerReportsController::class, 'salesReport'])->name('reports.sales');
         Route::get('/orders', [\App\Http\Controllers\WholesalerReportsController::class, 'orderReport'])->name('reports.orders');
         Route::get('/export', [\App\Http\Controllers\WholesalerReportsController::class, 'export'])->name('reports.export');
+    });
+
+    Route::middleware(['auth', 'role:wholesaler'])->group(function () {
+        Route::get('/invoices', [InvoiceController::class, 'index'])->name('invoices.index');
+        Route::get('/invoices/{id}', [InvoiceController::class, 'show'])->name('invoices.show');
     });
 });
 
@@ -300,6 +351,11 @@ Route::get('admin/users/{user}/ajax', [App\Http\Controllers\AdminUsersController
 Route::post('admin/users/ajax', [App\Http\Controllers\AdminUsersController::class, 'ajaxStore'])->name('admin.users.ajax-store');
 Route::put('admin/users/{user}/ajax', [App\Http\Controllers\AdminUsersController::class, 'ajaxUpdate'])->name('admin.users.ajax-update');
 Route::delete('admin/users/{user}/ajax', [App\Http\Controllers\AdminUsersController::class, 'ajaxDestroy'])->name('admin.users.ajax-destroy');
+
+// BoM routes outside manufacturer group with simple names
+Route::post('manufacturer/bom/{billOfMaterial}/add-component', [App\Http\Controllers\BillOfMaterialController::class, 'addComponent'])->name('test.add-component');
+Route::put('manufacturer/bom/{billOfMaterial}/update-component/{component}', [App\Http\Controllers\BillOfMaterialController::class, 'updateComponent'])->name('test.update-component');
+Route::delete('manufacturer/bom/{billOfMaterial}/delete-component/{component}', [App\Http\Controllers\BillOfMaterialController::class, 'deleteComponent'])->name('test.delete-component');
 
 
 
