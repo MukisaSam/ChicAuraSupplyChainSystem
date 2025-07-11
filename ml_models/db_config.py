@@ -5,5 +5,5 @@ def get_connector():
     host='localhost',
     user='root',
     password='',
-    database='supplychain',
+    database='mukisa',
     )

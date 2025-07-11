@@ -183,6 +183,10 @@ Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('
     Route::get('/analytics/chart-data', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'getChartData'])->name('analytics.chart-data');
     Route::get('/analytics/supplier-report', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'getSupplierReport'])->name('analytics.supplier-report');
     Route::get('/analytics/wholesaler-report', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'getCustomerReport'])->name('analytics.wholesaler-report');
+    
+    // Forecast API routes
+    Route::get('/analytics/forecast/options', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'getForecastOptions'])->name('analytics.forecast.options');
+    Route::post('/analytics/forecast/generate', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'generateForecast'])->name('analytics.forecast.generate');
 
     //Inventory routes
     Route::get('/inventory', [App\Http\Controllers\ManufacturerInventoryController::class, 'index'])->name('inventory');
@@ -235,13 +239,12 @@ Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('
     Route::get('/partners', [App\Http\Controllers\ManufacturerDashboardController::class, 'managePartners'])->name('partners.manage');
     //Production routes
     Route::resource('production', App\Http\Controllers\WorkOrderController::class);
-    Route::resource('bom', App\Http\Controllers\BillOfMaterialController::class);
+    Route::resource('bom', App\Http\Controllers\BillOfMaterialController::class)
+        ->parameters(['bom' => 'billOfMaterial']);
     Route::resource('quality',App\Http\Controllers\QualityCheckController::class);
 
-    Route::post('manufacturer/bom/{bom}/add-component', [App\Http\Controllers\BillOfMaterialController::class, 'addComponent'])->name('manufacturer.bom.add-component');
-    Route::put('manufacturer/bom/{bom}/update-component/{component}', [App\Http\Controllers\BillOfMaterialController::class, 'updateComponent'])->name('manufacturer.bom.update-component');
-    Route::delete('manufacturer/bom/{bom}/delete-component/{component}', [App\Http\Controllers\BillOfMaterialController::class, 'deleteComponent'])->name('manufacturer.bom.delete-component');
-
+    Route::post('bom/{billOfMaterial}/add-component', [App\Http\Controllers\BillOfMaterialController::class, 'addComponent'])->name('manufacturer.bom.add-component');
+    Route::put('bom/{billOfMaterial}/update-component/{component}', [App\Http\Controllers\BillOfMaterialController::class, 'updateComponent'])->name('manufacturer.bom.update-component');
 });
     //manage supplyrequests
     Route::resource('supply-requests', \App\Http\Controllers\SupplyRequestController::class);
@@ -347,6 +350,11 @@ Route::get('admin/users/{user}/ajax', [App\Http\Controllers\AdminUsersController
 Route::post('admin/users/ajax', [App\Http\Controllers\AdminUsersController::class, 'ajaxStore'])->name('admin.users.ajax-store');
 Route::put('admin/users/{user}/ajax', [App\Http\Controllers\AdminUsersController::class, 'ajaxUpdate'])->name('admin.users.ajax-update');
 Route::delete('admin/users/{user}/ajax', [App\Http\Controllers\AdminUsersController::class, 'ajaxDestroy'])->name('admin.users.ajax-destroy');
+
+// BoM routes outside manufacturer group with simple names
+Route::post('manufacturer/bom/{billOfMaterial}/add-component', [App\Http\Controllers\BillOfMaterialController::class, 'addComponent'])->name('test.add-component');
+Route::put('manufacturer/bom/{billOfMaterial}/update-component/{component}', [App\Http\Controllers\BillOfMaterialController::class, 'updateComponent'])->name('test.update-component');
+Route::delete('manufacturer/bom/{billOfMaterial}/delete-component/{component}', [App\Http\Controllers\BillOfMaterialController::class, 'deleteComponent'])->name('test.delete-component');
 
 
 

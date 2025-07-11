@@ -74,6 +74,7 @@ class ManufacturerOrdersController extends Controller
             'notes' => 'nullable|string|max:500',
         ]);
         
+        $oldStatus = $order->status;
         $order->update([
             'status' => $request->status,
             'notes' => $request->notes,
@@ -83,7 +84,23 @@ class ManufacturerOrdersController extends Controller
         if ($order->wholesaler && $order->wholesaler->user) {
             $order->wholesaler->user->notify(new OrderStatusUpdatedNotification($order, $request->status));
         }
-        
+
+        // Automatic stock update logic
+        if ($oldStatus !== $request->status) {
+            foreach ($order->orderItems as $orderItem) {
+                $item = $orderItem->item;
+                if ($request->status === 'confirmed' && $oldStatus !== 'confirmed') {
+                    // Decrease stock when confirmed
+                    $item->stock_quantity -= $orderItem->quantity;
+                    $item->save();
+                } elseif ($request->status === 'cancelled' && $oldStatus === 'confirmed') {
+                    // Increase stock back if cancelled after being confirmed
+                    $item->stock_quantity += $orderItem->quantity;
+                    $item->save();
+                }
+            }
+        }
+
         // If order is confirmed, check inventory and create supply requests if needed
         if ($request->status === 'confirmed') {
             $this->checkInventoryAndCreateSupplyRequests($order);

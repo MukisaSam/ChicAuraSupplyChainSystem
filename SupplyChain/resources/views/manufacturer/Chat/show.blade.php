@@ -80,7 +80,7 @@
     </style>
 </head>
 <body class="font-sans antialiased">
-    <div class="flex h-screen">
+    <div class="flex h-full">
         <!-- Sidebar -->
         <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
             <div class="flex flex-col h-full">
@@ -174,15 +174,15 @@
             <!-- Top Navigation Bar -->
             <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b">
                 <div class="flex items-center">
-                    <!-- Mobile Menu Toggle -->
-                    <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700">
-                        <i class="fas fa-bars text-lg"></i>
-                    </button>
-                    <div class="relative ml-3 hidden md:block">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                            <i class="fas fa-search text-gray-400"></i>
-                        </span>
-                        <input type="text" id="searchInput" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm" placeholder="Search...">
+                    <img src="{{ $contact->profile_picture ? Storage::disk('public')->url($contact->profile_picture) : asset('images/default-avatar.svg') }}" alt="{{ $contact->name }}" class="w-12 h-12 rounded-full border-2 border-indigo-200">
+                    <span class="online-indicator ml-2 {{ $contact->isOnline() ? 'bg-green-500' : 'bg-gray-400' }}"></span>
+                    <div class="ml-4">
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $contact->name }}</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ ucfirst($contact->role) }}
+                            <span class="ml-2 text-xs {{ $contact->isOnline() ? 'text-green-500' : 'text-gray-400' }}">
+                                {{ $contact->isOnline() ? 'Online' : 'Offline' }}
+                            </span>
+                        </p>
                     </div>
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
@@ -209,14 +209,14 @@
                 </div>
             </header>
             <!-- Main Content -->
-            <main class="flex-1 p-4">
+            <main class="flex-1 p-4 h-full">
                 <div class="mb-6">
                     <h2 class="text-2xl font-bold text-white mb-1">Chat with {{ $contact->name }}</h2>
                     <p class="text-gray-200 text-sm">{{ ucfirst($contact->role) }}</p>
                 </div>
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col" style="height: calc(100vh - 200px);">
                     <!-- Messages Container -->
-                    <div id="messages-container" class="flex-1 overflow-y-auto p-2 space-y-4">
+                    <div id="messages-container" class="flex-1 overflow-y-auto p-2 space-y-4 h-full">
                         @foreach($messages as $message)
                             @php
                                 $isOwnMessage = $message->sender_id == $user->id;
@@ -262,11 +262,16 @@
             </main>
         </div>
     </div>
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+    @vite('resources/js/bootstrap.js')
     <script>
         // Mobile menu toggle
-        document.getElementById('menu-toggle').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('open');
-        });
+        const menuToggle = document.getElementById('menu-toggle');
+        if (menuToggle) {
+            menuToggle.addEventListener('click', function() {
+                document.getElementById('sidebar').classList.toggle('open');
+            });
+        }
         document.addEventListener('DOMContentLoaded', function() {
             const messageForm = document.getElementById('message-form');
             const messageInput = document.getElementById('message-input');
@@ -279,6 +284,16 @@
                 if (!content || !receiverId) {
                     return;
                 }
+                // Optimistically append the message immediately
+                const tempMessage = {
+                    sender_id: {{ $user->id }},
+                    sender: { name: '{{ $user->name }}' },
+                    content: content,
+                    created_at: new Date().toISOString(),
+                    _optimistic: true // mark as optimistic
+                };
+                appendMessage(tempMessage);
+                scrollToBottom();
                 sendMessage(receiverId, content);
                 messageInput.value = '';
             });
@@ -298,12 +313,10 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log('Send response:', data); // Debug log
-                    if (data.success) {
-                        loadMessages(); // Reload messages after sending
-                        scrollToBottom();
-                    } else {
+                    if (!data.success) {
                         console.error('Failed to send message:', data);
                     }
+                    // Do NOT call loadMessages() here!
                 })
                 .catch(error => {
                     console.error('Error sending message:', error);
@@ -331,9 +344,6 @@
                     });
             }
 
-            // Auto-refresh messages every 2 seconds
-            setInterval(loadMessages, 2000);
-
             function appendMessage(message) {
                 const isOwnMessage = message.sender_id == {{ $user->id }};
                 const avatar = isOwnMessage
@@ -359,8 +369,19 @@
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
             scrollToBottom();
+
+            // Laravel Echo real-time listener
+            if (window.Echo) {
+                window.Echo.private('chat.user.' + {{ $user->id }})
+                    .listen('.ChatMessageSent', (e) => {
+                        // Only append if the message is from the current contact
+                        if (e.sender_id == {{ $contact->id }}) {
+                            appendMessage(e);
+                            scrollToBottom();
+                        }
+                    });
+            }
         });
     </script>
-    <x-notification-bell />
 </body>
 </html> 

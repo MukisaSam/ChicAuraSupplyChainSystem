@@ -2,11 +2,11 @@
 
 @section('content')
 <div class="container mx-auto py-8">
-    <h1 class="text-2xl font-bold mb-6">Manage Partners</h1>
+    <h1 class="text-2xl font-bold text-white mb-6">Manage Partners</h1>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <!-- Suppliers Table -->
         <div>
-            <h2 class="text-xl font-semibold mb-4">Suppliers</h2>
+            <h2 class="text-xl font-semibold text-white mb-4">Suppliers</h2>
             <div class="overflow-x-auto">
                 <table class="min-w-full bg-white border border-gray-200">
                     <thead>
@@ -34,7 +34,7 @@
         </div>
         <!-- Wholesalers Table -->
         <div>
-            <h2 class="text-xl font-semibold mb-4">Wholesalers</h2>
+            <h2 class="text-xl font-semibold text-white mb-4">Wholesalers</h2>
             <div class="overflow-x-auto">
                 <table class="min-w-full bg-white border border-gray-200">
                     <thead>

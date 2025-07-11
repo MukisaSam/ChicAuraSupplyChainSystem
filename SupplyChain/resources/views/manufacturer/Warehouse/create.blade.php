@@ -1,7 +1,7 @@
 @extends('manufacturer.layouts.dashboard')
 @section('content')
 <div class="container mx-auto py-6">
-    <h1 class="text-2xl font-bold mb-4">Add Warehouse</h1>
+    <h1 class="text-2xl text-white font-bold mb-4">Add Warehouse</h1>
     <form action="{{ route('manufacturer.warehouse.store') }}" method="POST" class="bg-white p-6 rounded shadow-md">
         @csrf
         <div class="mb-4">

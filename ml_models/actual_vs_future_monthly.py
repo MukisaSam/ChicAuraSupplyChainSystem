@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import joblib
 from datetime import timedelta
-from demand_model import preprocess_df, load_model
+from demand_model import preprocess_df, load_model, ProphetDemandModel
 from db_config import get_connector
 
 # --- CONFIG ---

@@ -53,16 +53,25 @@ class ManufacturerChatController extends Controller
             ]);
         }
 
-        // Get suppliers and wholesalers as potential chat contacts
+        // Get manufacturers and admin users as potential chat contacts
         $suppliers = User::where('role', 'supplier')
             ->with('supplier')
             ->get();
-        
         $wholesalers = User::where('role', 'wholesaler')
             ->with('wholesaler')
             ->get();
-        
         $admins = User::where('role', 'admin')->get();
+
+        // Add online status to each contact
+        foreach ($suppliers as $supplier) {
+            $supplier->is_online = $supplier->isOnline();
+        }
+        foreach ($wholesalers as $wholesaler) {
+            $wholesaler->is_online = $wholesaler->isOnline();
+        }
+        foreach ($admins as $admin) {
+            $admin->is_online = $admin->isOnline();
+        }
         
         // Get recent conversations
         $recentConversations = ChatMessage::where('sender_id', $user->id)
@@ -155,8 +164,7 @@ class ManufacturerChatController extends Controller
         if ($request->ajax()) {
             return response()->json([
                 'success' => true,
-                'message' => $message,
-                'html' => view('manufacturer.chat.partials.message', compact('message', 'user'))->render()
+                'message' => $message
             ]);
         }
 
@@ -224,8 +232,7 @@ class ManufacturerChatController extends Controller
             ->reverse();
 
         return response()->json([
-            'messages' => $messages,
-            'html' => view('manufacturer.chat.partials.messages', compact('messages', 'user'))->render()
+            'messages' => $messages
         ]);
     }
 

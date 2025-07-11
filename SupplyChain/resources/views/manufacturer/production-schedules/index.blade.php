@@ -1,12 +1,12 @@
 @extends('manufacturer.layouts.dashboard')
 @section('content')
 <div class="container mx-auto py-6">
-    <h1 class="text-2xl font-bold mb-4">Production Schedules</h1>
+    <h1 class="text-2xl font-bold text-white mb-4">Production Schedules</h1>
     <a href="{{ route('manufacturer.production-schedules.create') }}" class="bg-indigo-600 text-white px-4 py-2 rounded mb-4 inline-block">Create New Schedule</a>
     <table class="min-w-full table-auto bg-white rounded shadow">
         <thead>
             <tr>
-                <th class="px-4 py-2">#</th>
+                <th class="px-4 py-2">Number</th>
                 <th class="px-4 py-2">Product</th>
                 <th class="px-4 py-2">Start Date</th>
                 <th class="px-4 py-2">End Date</th>

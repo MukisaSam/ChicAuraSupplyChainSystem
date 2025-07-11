@@ -44,9 +44,24 @@ class WorkOrderController extends Controller
         ]);
         return view('manufacturer.production.show', compact('workOrder'));
     }
-    public function edit(WorkOrder $workOrder) {
-        return view('manufacturer.production.edit', compact('workOrder'));
+    public function edit(WorkOrder $production) {
+        $products = Item::all();
+        return view('manufacturer.production.edit', [
+            'workOrder' => $production,
+            'products' => $products
+        ]);
     }
-    public function update(Request $request, WorkOrder $workOrder) { /* ... */ }
+    public function update(Request $request, WorkOrder $production) {
+        $validated = $request->validate([
+            'product_id' => 'required|exists:items,id',
+            'quantity' => 'required|integer|min:1',
+            'scheduled_start' => 'required|date',
+            'scheduled_end' => 'required|date|after:scheduled_start',
+            'status' => 'required|in:Planned,InProgress,Completed,Cancelled',
+            'notes' => 'nullable|string',
+        ]);
+        $production->update($validated);
+        return redirect()->route('manufacturer.production.index')->with('success', 'Work order updated successfully!');
+    }
     public function destroy(WorkOrder $workOrder) { /* ... */ }
 } 

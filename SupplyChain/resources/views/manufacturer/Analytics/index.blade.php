@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Manufacturer Analytics - ChicAura SCM</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
@@ -125,7 +126,7 @@
 </head>
 <body class="font-sans antialiased">
     <div class="background-overlay"></div>
-    <div class="flex h-screen main-content-container">
+    <div class="flex h-full main-content-container">
         <!-- Sidebar -->
         <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
             <div class="flex flex-col h-full">
@@ -410,6 +411,77 @@
                     </div>
                 </div>
 
+                <!-- Demand Forecast Section -->
+                <div class="card-gradient p-4 rounded-xl mt-4">
+                    <h3 class="text-lg font-bold text-black mb-3">Demand Forecast</h3>
+                    <div id="forecastContainer" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <!-- Forecast Form -->
+                        <div class="space-y-4">
+                            <form id="forecastForm" class="space-y-4">
+                                <div>
+                                    <label for="product_name" class="block text-sm font-medium text-gray-700 mb-1">Product Name</label>
+                                    <select id="product_name" name="product_name" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                                        <option value="">Select Product</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="unit_price" class="block text-sm font-medium text-gray-700 mb-1">Unit Price ($)</label>
+                                    <input type="number" id="unit_price" name="unit_price" step="0.01" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                                </div>
+                                <div>
+                                    <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                                    <select id="location" name="location" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                                        <option value="">Select Location</option>
+                                    </select>
+                                </div>
+                                <button type="submit" id="generateForecastBtn" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-colors">
+                                    <span id="btnText">Generate Forecast</span>
+                                    <span id="btnLoader" class="hidden">
+                                        <i class="fas fa-spinner fa-spin mr-2"></i>
+                                        Generating...
+                                    </span>
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <!-- Forecast Results -->
+                        <div id="forecastResults" class="hidden">
+                            <div class="space-y-4">
+                                <!-- Forecast Details -->
+                                <div class="border rounded-lg p-4 bg-white">
+                                    <h4 class="font-semibold text-gray-800 mb-2">Forecast Details</h4>
+                                    <div id="forecastDetails" class="text-sm text-gray-600"></div>
+                                </div>
+                                
+                                <!-- Daily Forecast -->
+                                <div class="border rounded-lg p-4 bg-white">
+                                    <h4 class="font-semibold text-gray-800 mb-2">
+                                        <i class="fas fa-calendar-day text-blue-600 mr-2"></i>
+                                        30-Day Demand Forecast
+                                    </h4>
+                                    <img id="dailyForecastChart" src="" alt="Daily Demand Forecast Chart" class="w-full h-auto rounded-lg shadow-sm">
+                                </div>
+                                
+                                <!-- Monthly Forecast -->
+                                <div class="border rounded-lg p-4 bg-white">
+                                    <h4 class="font-semibold text-gray-800 mb-2">
+                                        <i class="fas fa-calendar-alt text-green-600 mr-2"></i>
+                                        12-Month Demand Forecast
+                                    </h4>
+                                    <img id="monthlyForecastChart" src="" alt="Monthly Demand Forecast Chart" class="w-full h-auto rounded-lg shadow-sm">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Error Message -->
+                        <div id="forecastError" class="hidden col-span-2">
+                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                                <span id="errorMessage"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Tables Section -->
                 <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2">
                     <!-- Supplier Performance Table -->
@@ -428,10 +500,10 @@
                                 <tbody>
                                     @foreach($analytics['suppliers']['suppliers'] as $supplier)
                                         <tr class="border-b">
-                                            <td class="py-2 px-3">{{ $supplier['name'] }}</td>
-                                            <td class="py-2 px-3">{{ $supplier['on_time_delivery_rate'] }}%</td>
-                                            <td class="py-2 px-3">{{ $supplier['avg_delivery_time'] }}</td>
-                                            <td class="py-2 px-3">{{ $supplier['quality_rating'] }}</td>
+                                            <td class="py-2 px-3 text-black">{{ $supplier['name'] }}</td>
+                                            <td class="py-2 px-3 text-black">{{ $supplier['on_time_delivery_rate'] }}%</td>
+                                            <td class="py-2 px-3 text-black">{{ $supplier['avg_delivery_time'] }}</td>
+                                            <td class="py-2 px-3 text-black">{{ $supplier['quality_rating'] }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -608,6 +680,124 @@
                         }
                     }
                 }
+            }
+        });
+
+        // Forecast functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const forecastForm = document.getElementById('forecastForm');
+            const productSelect = document.getElementById('product_name');
+            const unitPriceInput = document.getElementById('unit_price');
+            const locationSelect = document.getElementById('location');
+            const generateBtn = document.getElementById('generateForecastBtn');
+            const btnText = document.getElementById('btnText');
+            const btnLoader = document.getElementById('btnLoader');
+            const forecastResults = document.getElementById('forecastResults');
+            const forecastError = document.getElementById('forecastError');
+            const dailyForecastChart = document.getElementById('dailyForecastChart');
+            const monthlyForecastChart = document.getElementById('monthlyForecastChart');
+            const forecastContainer = document.getElementById('forecastContainer');
+            const forecastDetails = document.getElementById('forecastDetails');
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Load forecast options on page load
+            loadForecastOptions();
+
+            // Handle product selection change
+            productSelect.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                if (selectedOption.dataset.price) {
+                    unitPriceInput.value = selectedOption.dataset.price;
+                }
+            });
+
+            // Handle form submission
+            forecastForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                generateForecast();
+            });
+
+            function loadForecastOptions() {
+                fetch('/manufacturer/analytics/forecast/options')
+                    .then(response => response.json())
+                    .then(data => {
+                        // Populate products
+                        productSelect.innerHTML = '<option value="">Select Product</option>';
+                        data.products.forEach(product => {
+                            const option = document.createElement('option');
+                            option.value = product.name;
+                            option.textContent = product.name;
+                            option.dataset.price = product.price;
+                            productSelect.appendChild(option);
+                        });
+
+                        // Populate locations
+                        locationSelect.innerHTML = '<option value="">Select Location</option>';
+                        data.locations.forEach(location => {
+                            const option = document.createElement('option');
+                            option.value = location;
+                            option.textContent = location;
+                            locationSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error loading forecast options:', error);
+                    });
+            }
+
+            function generateForecast() {
+                // Show loading state
+                btnText.classList.add('hidden');
+                btnLoader.classList.remove('hidden');
+                generateBtn.disabled = true;
+                
+                // Hide previous results/errors and reset layout
+                forecastResults.classList.add('hidden');
+                forecastError.classList.add('hidden');
+                forecastContainer.className = 'grid grid-cols-1 lg:grid-cols-2 gap-4';
+
+                const formData = new FormData(forecastForm);
+                
+                fetch('/manufacturer/analytics/forecast/generate', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show forecast results
+                        dailyForecastChart.src = data.daily_image_url;
+                        monthlyForecastChart.src = data.monthly_image_url;
+                        forecastDetails.innerHTML = `
+                            <strong>Product:</strong> ${data.product_name}<br>
+                            <strong>Location:</strong> ${data.location}<br>
+                            <strong>Unit Price:</strong> $${data.unit_price}<br>
+                            <strong>Generated:</strong> ${new Date().toLocaleString()}
+                        `;
+                        
+                        // Change layout to full width for results
+                        forecastContainer.className = 'grid grid-cols-1 gap-4';
+                        forecastResults.classList.remove('hidden');
+                    } else {
+                        // Show error
+                        errorMessage.textContent = data.error || 'Failed to generate forecast';
+                        forecastError.classList.remove('hidden');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error generating forecast:', error);
+                    errorMessage.textContent = 'An error occurred while generating the forecast';
+                    forecastError.classList.remove('hidden');
+                })
+                .finally(() => {
+                    // Reset button state
+                    btnText.classList.remove('hidden');
+                    btnLoader.classList.add('hidden');
+                    generateBtn.disabled = false;
+                });
             }
         });
     </script>

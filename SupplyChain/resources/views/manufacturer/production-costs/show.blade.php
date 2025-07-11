@@ -1,17 +1,17 @@
 @extends('manufacturer.layouts.dashboard')
 @section('content')
 <div class="container mx-auto py-6">
-    <h1 class="text-2xl font-bold mb-4">Production Cost Details</h1>
-    <div class="mb-4">
+    <h1 class="text-2xl font-bold text-white mb-4">Production Cost Details</h1>
+    <div class="text-white mb-4">
         <strong>Product:</strong> {{ $productionCost->item->name ?? '-' }}
     </div>
-    <div class="mb-4">
+    <div class="text-white mb-4">
         <strong>Amount:</strong> ${{ number_format($productionCost->amount, 2) }}
     </div>
-    <div class="mb-4">
+    <div class="text-white mb-4">
         <strong>Date:</strong> {{ $productionCost->date }}
     </div>
-    <div class="mb-4">
+    <div class="text-white mb-4">
         <strong>Notes:</strong> {{ $productionCost->notes ?? '-' }}
     </div>
     <a href="{{ route('manufacturer.production-costs.edit', $productionCost->id) }}" class="bg-blue-600 text-white px-4 py-2 rounded">Edit</a>

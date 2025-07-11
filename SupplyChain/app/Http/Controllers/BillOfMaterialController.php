@@ -44,7 +44,10 @@ class BillOfMaterialController extends Controller
         return view('manufacturer.bom.show', compact('billOfMaterial'));
     }
     public function edit(BillOfMaterial $billOfMaterial) {
-        return view('manufacturer.bom.edit', compact('billOfMaterial'));
+        $products = Item::where('category', 'finished_product')->get();
+        $rawMaterials = Item::where('category', 'raw_material')->get();
+        $billOfMaterial->load('components');
+        return view('manufacturer.bom.edit', compact('billOfMaterial', 'products', 'rawMaterials'));
     }
     public function update(Request $request, BillOfMaterial $billOfMaterial) { /* ... */ }
     public function destroy(BillOfMaterial $billOfMaterial) { /* ... */ }
