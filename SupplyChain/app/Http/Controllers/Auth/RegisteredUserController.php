@@ -5,18 +5,17 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\PendingUsers;
-use App\Models\Manufacturer;
-use App\Models\Wholesaler;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use App\Mail\userRegistered;
+use Illuminate\Support\Facades\Mail;
+use Carbon\Carbon;
 
 class RegisteredUserController extends Controller
 {
@@ -26,7 +25,23 @@ class RegisteredUserController extends Controller
     public function create(): View
     {
         Auth::logout();
-        return view('auth.register');
+    
+        $serverMessage = '';
+        $url = 'http://localhost:8080';
+    
+        try {
+            $response = Http::timeout(2)->get($url);
+            if (!$response->successful()) {
+                $serverMessage = "Server is down (HTTP {$response->status()})";
+            }else{
+                $serverMessage = "success";
+            }
+        } catch (\Exception $e) {
+            $serverMessage = "Server unavailable: {$e->getMessage()}";
+        }
+
+        return view('auth.register', compact('serverMessage'));
+    
     }
 
     /**
@@ -90,9 +105,6 @@ class RegisteredUserController extends Controller
             'materials_supplied' => ['required', 'array'],
         ]);
                     
-        
-        
-
         // Validation starts
         $filePath = $request->file('license_document')->getPathname();
         $fileName = $request->file('license_document')->getClientOriginalName();
@@ -117,6 +129,9 @@ class RegisteredUserController extends Controller
                     'materials_supplied' => json_encode($request->materials_supplied),
                     'visitDate' => $data['visitDate'],
                 ]);
+
+                $formattedDate = Carbon::parse($data['visitDate'])->format('l, F j, Y \a\t g:i A');
+                Mail::to($request->email)->queue(new userRegistered($request->name, $formattedDate, 'supplier'));
 
                 return redirect()->route('register.validation')->with([
                     'success' => $data['visitDate'], 
@@ -174,6 +189,9 @@ class RegisteredUserController extends Controller
                     'specialization' => json_encode($request->specialization),
                     'visitDate' => $data['visitDate'],
                 ]);
+
+                $formattedDate = Carbon::parse($data['visitDate'])->format('l, F j, Y \a\t g:i A');
+                Mail::to($request->email)->queue(new userRegistered($request->name, $formattedDate, 'manufacturer'));
 
                 return redirect()->route('register.validation')->with([
                     'success' => $data['visitDate'], 
@@ -234,6 +252,9 @@ class RegisteredUserController extends Controller
                     'preferred_categories' => json_encode($request->preferred_categories),
                     'visitDate' => $data['visitDate'],
                 ]);
+
+                $formattedDate = Carbon::parse($data['visitDate'])->format('l, F j, Y \a\t g:i A');
+                Mail::to($request->email)->queue(new userRegistered($request->name, $formattedDate, 'wholesaler'));
 
                 return redirect()->route('register.validation')->with([
                     'success' => $data['visitDate'], 
