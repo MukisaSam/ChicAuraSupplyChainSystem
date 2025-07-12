@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('items', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->enum('type', ['raw_material', 'finished_product'])->default('raw_material')->after('name');
+            $table->enum('type', ['raw_material', 'finished_product'])->default('raw_material');
             $table->text('description');
             $table->string('category');
             $table->string('material');
