@@ -271,57 +271,37 @@
                     <p class="text-gray-200 text-sm">Welcome back! Here's an overview of your supply chain.</p>
                 </div>
 
-                <!-- Stats Cards -->
-                <div class="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <div class="stat-card p-4 rounded-xl">
-                        <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl shadow-lg">
-                                <i class="fas fa-cogs text-white text-xl"></i>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Total Raw Materials</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['raw_materials'] ?? '0' }}</p>
-                                <p class="text-xs text-indigo-600 mt-1">↗ +8% this month</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stat-card p-4 rounded-xl">
-                        <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg">
-                                <i class="fas fa-tshirt text-white text-xl"></i>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Total Products</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['products'] ?? '0' }}</p>
-                                <p class="text-xs text-green-600 mt-1">↗ +12% this month</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stat-card p-4 rounded-xl">
-                        <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl shadow-lg">
-                                <i class="fas fa-truck text-white text-xl"></i>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Total Suppliers</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['suppliers'] ?? '0' }}</p>
-                                <p class="text-xs text-yellow-600 mt-1">↗ +5% this month</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stat-card p-4 rounded-xl">
-                        <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg">
-                                <i class="fas fa-dollar-sign text-white text-xl"></i>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Revenue</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['revenue'] ?? '$0' }}</p>
-                                <p class="text-xs text-purple-600 mt-1">↗ +15% this month</p>
-                            </div>
-                        </div>
+                <!-- Quick Stats Row -->
+            <div class="flex flex-col md:flex-row gap-4 mb-6 mt-8">
+                <div class="flex-1 bg-white rounded-lg shadow p-5 flex items-center gap-4 stat-card">
+                    <span class="text-3xl text-indigo-500"><i class="fas fa-cubes"></i></span>
+                    <div>
+                        <div class="text-gray-500 text-sm">Total Raw Materials</div>
+                        <div class="text-2xl font-bold">{{ $totalRawMaterials ?? 0 }}</div>
                     </div>
                 </div>
+                <div class="flex-1 bg-white rounded-lg shadow p-5 flex items-center gap-4 stat-card">
+                    <span class="text-3xl text-green-500"><i class="fas fa-tshirt"></i></span>
+                    <div>
+                        <div class="text-gray-500 text-sm">Total Products</div>
+                        <div class="text-2xl font-bold">{{ $totalProducts ?? 0 }}</div>
+                    </div>
+                </div>
+                <div class="flex-1 bg-white rounded-lg shadow p-5 flex items-center gap-4 stat-card">
+                    <span class="text-3xl text-yellow-500"><i class="fas fa-users"></i></span>
+                    <div>
+                        <div class="text-gray-500 text-sm">Total Suppliers</div>
+                        <div class="text-2xl font-bold">{{ $totalSuppliers ?? 0 }}</div>
+                    </div>
+                </div>
+                <div class="flex-1 bg-white rounded-lg shadow p-5 flex items-center gap-4 stat-card">
+                    <span class="text-3xl text-purple-500"><i class="fas fa-dollar-sign"></i></span>
+                    <div>
+                        <div class="text-gray-500 text-sm">Revenue</div>
+                        <div class="text-2xl font-bold">{{ $revenue ?? '$0.00' }}</div>
+                    </div>
+                </div>
+            </div>
                 
                 <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-3 h-64">
                     <div class="card-gradient p-4 rounded-xl lg:col-span-2 overflow-hidden">
@@ -354,72 +334,103 @@
                 <!-- Production Overview Section -->
                 <div class="mt-8">
                     <h2 class="text-xl font-bold mb-4 text-white">Production Overview</h2>
-                    <!-- Quick Stats -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                        <div class="bg-white p-4 rounded shadow">
-                            <h3 class="text-lg font-semibold mb-2">Active Work Orders</h3>
-                            <p class="text-3xl">{{ $activeWorkOrders ?? 0 }}</p>
+                    <!-- Modernized Quick Stats Cards -->
+                    <div class="flex flex-col md:flex-row gap-4 mb-6">
+                        <div class="flex-1 bg-white rounded-lg shadow p-5 flex items-center gap-4">
+                            <span class="text-3xl text-blue-500"><i class="fas fa-clipboard-list"></i></span>
+                            <div>
+                                <div class="text-gray-500 text-sm">Active Work Orders</div>
+                                <div class="text-2xl font-bold">{{ $activeWorkOrders ?? 0 }}</div>
+                            </div>
                         </div>
-                        <div class="bg-white p-4 rounded shadow">
-                            <h3 class="text-lg font-semibold mb-2">In Progress</h3>
-                            <p class="text-3xl">{{ $inProgress ?? 0 }}</p>
+                        <div class="flex-1 bg-white rounded-lg shadow p-5 flex items-center gap-4">
+                            <span class="text-3xl text-orange-500"><i class="fas fa-hourglass-half"></i></span>
+                            <div>
+                                <div class="text-gray-500 text-sm">In Progress</div>
+                                <div class="text-2xl font-bold">{{ $inProgress ?? 0 }}</div>
+                            </div>
                         </div>
-                        <div class="bg-white p-4 rounded shadow">
-                            <h3 class="text-lg font-semibold mb-2">Completed This Month</h3>
-                            <p class="text-3xl">{{ $completedThisMonth ?? 0 }}</p>
+                        <div class="flex-1 bg-white rounded-lg shadow p-5 flex items-center gap-4">
+                            <span class="text-3xl text-green-500"><i class="fas fa-check-circle"></i></span>
+                            <div>
+                                <div class="text-gray-500 text-sm">Completed This Month</div>
+                                <div class="text-2xl font-bold">{{ $completedThisMonth ?? 0 }}</div>
+                            </div>
                         </div>
                     </div>
-                    <!-- Work Orders Table -->
-                    <div class="bg-white rounded shadow p-4 mb-6">
-                        <h3 class="text-lg font-semibold mb-4">Recent Work Orders</h3>
-                        <table class="min-w-full table-auto">
-                            <thead>
-                                <tr>
-                                    <th class="px-4 py-2">Order</th>
-                                    <th class="px-4 py-2">Product</th>
-                                    <th class="px-4 py-2">Quantity</th>
-                                    <th class="px-4 py-2">Status</th>
-                                    <th class="px-4 py-2">Scheduled</th>
-                                    <th class="px-4 py-2">Progress</th>
-                                    <th class="px-4 py-2">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($workOrders ?? [] as $order)
-                                <tr>
-                                    <td class="border px-4 py-2">{{ $order->id }}</td>
-                                    <td class="border px-4 py-2">{{ $order->product->name ?? '-' }}</td>
-                                    <td class="border px-4 py-2">{{ $order->quantity }}</td>
-                                    <td class="border px-4 py-2">{{ $order->status }}</td>
-                                    <td class="border px-4 py-2">{{ optional($order->scheduled_start)->format('Y-m-d') }}</td>
-                                    <td class="border px-4 py-2">
-                                        <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                            <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ $order->progress ?? 0 }}%"></div>
-                                        </div>
-                                        <span class="text-xs">{{ $order->progress ?? 0 }}%</span>
-                                    </td>
-                                    <td class="border px-4 py-2">
-                                        <a href="{{ route('manufacturer.production.show', $order->id) }}" class="text-blue-600 hover:underline">Details</a>
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="7" class="text-center text-gray-400 py-4">No work orders found.</td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                    <!-- Modernized Recent Work Orders Table -->
+                    <div class="bg-white rounded-lg shadow p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-semibold">Recent Work Orders</h3>
+                            <a href="{{ route('manufacturer.work-orders.index') }}" class="text-blue-600 hover:underline">View All</a>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full text-sm">
+                                <thead>
+                                    <tr>
+                                        <th class="font-bold">Order</th>
+                                        <th class="font-bold">Product</th>
+                                        <th class="font-bold">Quantity</th>
+                                        <th class="font-bold">Status</th>
+                                        <th class="font-bold">Scheduled</th>
+                                        <th class="font-bold">Progress</th>
+                                        <th class="font-bold">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($workOrders ?? [] as $order)
+                                    <tr class="hover:bg-gray-50 cursor-pointer" onclick="window.location='{{ route('manufacturer.production.show', $order->id) }}'">
+                                        <td>{{ $order->id }}</td>
+                                        <td>{{ $order->product->name ?? '-' }}</td>
+                                        <td>{{ $order->quantity }}</td>
+                                        <td>
+                                            <span class="px-2 py-1 rounded-full text-xs font-semibold
+                                                @if($order->status == 'Planned') bg-blue-100 text-blue-700
+                                                @elseif($order->status == 'InProgress') bg-orange-100 text-orange-700
+                                                @elseif($order->status == 'Completed') bg-green-100 text-green-700
+                                                @else bg-gray-200 text-gray-700
+                                                @endif">
+                                                {{ $order->status }}
+                                            </span>
+                                        </td>
+                                        <td>{{ optional($order->scheduled_start)->format('M d, Y') }}</td>
+                                        <td>
+                                            <div class="w-24 bg-gray-200 rounded-full h-3">
+                                                <div class="h-3 rounded-full
+                                                    @if(($order->progress ?? 0) == 0) bg-gray-400
+                                                    @elseif(($order->progress ?? 0) < 100) bg-blue-500
+                                                    @else bg-green-500
+                                                    @endif"
+                                                    style="width: {{ $order->progress ?? 0 }}%">
+                                                </div>
+                                            </div>
+                                            <span class="text-xs text-gray-600 ml-1">{{ $order->progress ?? 0 }}%</span>
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('manufacturer.production.show', $order->id) }}" class="text-blue-600 hover:underline flex items-center gap-1">
+                                                <i class="fas fa-eye"></i> Details
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    @empty
+                                    <tr>
+                                        <td colspan="7" class="text-center text-gray-400 py-4">No work orders found.</td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                    <!-- Quick Links -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <a href="{{ route('manufacturer.production.create') }}" class="bg-indigo-600 text-white p-4 rounded shadow text-center hover:bg-indigo-700">
-                            <i class="fas fa-plus mr-2"></i> New Work Order
+                    <!-- Modernized Quick Links -->
+                    <div class="flex flex-col md:flex-row gap-4 mt-6">
+                        <a href="{{ route('manufacturer.production.create') }}" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2">
+                            <i class="fas fa-plus"></i> New Work Order
                         </a>
-                        <a href="{{ route('manufacturer.bom.index') }}" class="bg-green-600 text-white p-4 rounded shadow text-center hover:bg-green-700">
-                            <i class="fas fa-cogs mr-2"></i> Bill of Materials
+                        <a href="{{ route('manufacturer.bom.index') }}" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2">
+                            <i class="fas fa-cogs"></i> Bill of Materials
                         </a>
-                        <a href="{{ route('manufacturer.quality.index') }}" class="bg-yellow-600 text-white p-4 rounded shadow text-center hover:bg-yellow-700">
-                            <i class="fas fa-clipboard-check mr-2"></i> Quality Checks
+                        <a href="{{ route('manufacturer.quality.index') }}" class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2">
+                            <i class="fas fa-clipboard-check"></i> Quality Checks
                         </a>
                     </div>
                 </div>

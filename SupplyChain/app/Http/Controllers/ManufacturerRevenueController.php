@@ -49,7 +49,7 @@ class ManufacturerRevenueController extends Controller
                     'time' => $req->created_at ? $req->created_at->diffForHumans() : 'N/A',
                 ];
             });
-        $recentActivities = $recentOrders->merge($recentSupplyRequests)->sortByDesc('time')->take(7)->values();
+        $recentActivities = collect($recentOrders)->merge(collect($recentSupplyRequests))->sortByDesc('time')->take(7)->values();
 
         return view('manufacturer.Revenue.index', compact('stats', 'recentActivities'));
     }

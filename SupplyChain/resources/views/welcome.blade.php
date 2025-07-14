@@ -5,7 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Chicaura SCM System</title>
   <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+  <link rel="preconnect" href="https://fonts.bunny.net">
+  <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+
   <style>
     :root {
       --primary-color: #2563eb;
@@ -19,7 +22,7 @@
     }
 
     body {
-      font-family: 'Open Sans', sans-serif;
+      font-family: 'FigTree', 'Open Sans', sans-serif;
       background-image: url('/images/showroom.png');
       background-size: cover;
       background-position: center;

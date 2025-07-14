@@ -1,7 +1,7 @@
 @extends('manufacturer.layouts.dashboard')
 @section('content')
 <div class="container mx-auto p-6">
-    <h2 class="text-2xl font-bold mb-4">Order Fulfillment Report</h2>
+    <h2 class="text-2xl font-bold text-white mb-4">Order Fulfillment Report</h2>
     <div class="mb-4 flex flex-wrap gap-4">
         <a href="#" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 self-end opacity-50 cursor-not-allowed"><i class="fas fa-file-csv mr-2"></i>Export CSV (Coming Soon)</a>
     </div>
@@ -9,10 +9,10 @@
         <table class="min-w-full bg-white dark:bg-gray-900 rounded shadow">
             <thead>
                 <tr>
-                    <th class="px-4 py-2">Order ID</th>
-                    <th class="px-4 py-2">Date</th>
-                    <th class="px-4 py-2">Status</th>
-                    <th class="px-4 py-2">Items Count</th>
+                    <th class="px-4 py-2 text-white">Order ID</th>
+                    <th class="px-4 py-2 text-white">Date</th>
+                    <th class="px-4 py-2 text-white">Status</th>
+                    <th class="px-4 py-2 text-white">Items Count</th>
                 </tr>
             </thead>
             <tbody>
@@ -28,5 +28,4 @@
         </table>
     </div>
 </div>
-<x-notification-bell />
 @endsection 

@@ -358,6 +358,14 @@ Route::post('manufacturer/bom/{billOfMaterial}/add-component', [App\Http\Control
 Route::put('manufacturer/bom/{billOfMaterial}/update-component/{component}', [App\Http\Controllers\BillOfMaterialController::class, 'updateComponent'])->name('test.update-component');
 Route::delete('manufacturer/bom/{billOfMaterial}/delete-component/{component}', [App\Http\Controllers\BillOfMaterialController::class, 'deleteComponent'])->name('test.delete-component');
 
+// Inventory Items nested under Warehouses
+Route::resource('warehouses.inventory-items', App\Http\Controllers\InventoryItemController::class);
+
+// Staff assignment routes for warehouses
+Route::get('warehouse/{warehouse}/assign-staff', [App\Http\Controllers\ManufacturerWarehouseController::class, 'showStaffAssignmentForm'])->name('manufacturer.warehouse.assign-staff');
+Route::post('warehouse/{warehouse}/assign-staff', [App\Http\Controllers\ManufacturerWarehouseController::class, 'assignStaff'])->name('manufacturer.warehouse.assign-staff.post');
+Route::delete('warehouse/{warehouse}/remove-staff/{workforce}', [App\Http\Controllers\ManufacturerWarehouseController::class, 'removeStaff'])->name('manufacturer.warehouse.remove-staff');
+
 
 
 

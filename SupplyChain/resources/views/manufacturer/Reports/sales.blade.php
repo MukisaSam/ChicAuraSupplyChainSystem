@@ -192,5 +192,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-<x-notification-bell />
 @endsection 

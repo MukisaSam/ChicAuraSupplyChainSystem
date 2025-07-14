@@ -8,6 +8,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
         body {
@@ -19,7 +20,7 @@
             min-height: 100vh;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'FigTree', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         /* Main content container */
@@ -397,7 +398,7 @@
     </style>
 </head>
 
-<body class="font-sans antialiased">
+<body>
     <div class="flex h-screen">
         <!-- Sidebar -->
         <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Warehouse;
 
 class Item extends Model
 {
@@ -36,5 +37,10 @@ class Item extends Model
     public function suppliedItems()
     {
         return $this->hasMany(SuppliedItem::class);
+    }
+
+    public function warehouse()
+    {
+        return $this->belongsTo(Warehouse::class);
     }
 }

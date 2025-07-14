@@ -135,9 +135,9 @@
                 <nav class="flex-1 px-4 py-2 space-y-1">
                     <a href="{{route('manufacturer.dashboard')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-home w-5"></i>
-                        <span class="ml-2 text-sm">Home</span>
+                        <span class="ml-2 font-medium text-sm">Home</span>
                     </a>
-                    <a href="{{route('manufacturer.orders')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                    <a href="{{route('manufacturer.orders')}}" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-indigo-600 to-indigo-700 rounded-xl shadow-lg">
                         <i class="fas fa-box w-5"></i>
                         <span class="ml-2 text-sm">Orders</span>
                     </a>
@@ -145,17 +145,13 @@
                         <i class="fas fa-chart-pie w-5"></i>
                         <span class="ml-2 text-sm">Analytics</span>
                     </a>
+                    <a href="{{ route('manufacturer.orders.analytics') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-chart-line w-5"></i>
+                        <span class="ml-2 text-sm">Order Analytics</span>
+                    </a>
                     <a href="{{route('manufacturer.inventory')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-warehouse w-5"></i>
                         <span class="ml-2 text-sm">Inventory</span>
-                    </a>
-                    <a href="{{route('manufacturer.workforce.index')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-user-tie w-5"></i>
-                        <span class="ml-2 text-sm">Workforce</span>
-                    </a>
-                    <a href="{{route('manufacturer.warehouse.index')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-warehouse w-5"></i>
-                        <span class="ml-2 text-sm">Warehouses</span>
                     </a>
                     <a href="{{route('manufacturer.partners.manage')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-users w-5"></i>
@@ -169,11 +165,47 @@
                         <i class="fas fa-file-alt w-5"></i>
                         <span class="ml-2 text-sm">Reports</span>
                     </a>
-                    <a href="{{route('manufacturer.revenue')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                     <a href="{{route('manufacturer.revenue')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-dollar-sign w-5"></i>
                         <span class="ml-2 text-sm">Revenue</span>
                     </a>
+                    <a href="{{ route('manufacturer.workforce.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-user-tie w-5"></i>
+                        <span class="ml-2 text-sm">Workforce</span>
+                    </a>
+                    <a href="{{ route('manufacturer.warehouse.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-warehouse w-5"></i>
+                        <span class="ml-2 text-sm">Warehouses</span>
+                    </a>
                 </nav>
+                <!-- Production Section -->
+                <div class="mt-6 mb-2">
+                    <h4 class="text-gray-400 text-xs font-bold uppercase tracking-wider px-3 mb-1">Production</h4>
+                </div>
+                <a href="{{ route('manufacturer.work-orders.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white rounded-xl">
+                    <i class="fas fa-cogs w-5"></i>
+                    <span class="ml-2 text-sm">Work Orders</span>
+                </a>
+                <a href="{{ route('manufacturer.bom.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white rounded-xl">
+                    <i class="fas fa-list-alt w-5"></i>
+                    <span class="ml-2 text-sm">Bill of Materials</span>
+                </a>
+                <a href="{{ route('manufacturer.production-schedules.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white rounded-xl">
+                    <i class="fas fa-calendar-alt w-5"></i>
+                    <span class="ml-2 text-sm">Production Schedules</span>
+                </a>
+                <a href="{{ route('manufacturer.quality-checks.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white rounded-xl">
+                    <i class="fas fa-clipboard-check w-5"></i>
+                    <span class="ml-2 text-sm">Quality Checks</span>
+                </a>
+                <a href="{{ route('manufacturer.downtime-logs.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white rounded-xl">
+                    <i class="fas fa-stopwatch w-5"></i>
+                    <span class="ml-2 text-sm">Downtime Logs</span>
+                </a>
+                <a href="{{ route('manufacturer.production-costs.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white rounded-xl">
+                    <i class="fas fa-coins w-5"></i>
+                    <span class="ml-2 text-sm">Production Costs</span>
+                </a>
                 <div class="p-3 border-t border-gray-600">
                     <div class="text-center text-gray-400 text-xs">
                         <p>ChicAura SCM</p>

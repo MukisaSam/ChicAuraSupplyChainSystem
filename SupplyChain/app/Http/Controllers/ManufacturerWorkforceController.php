@@ -77,4 +77,10 @@ class ManufacturerWorkforceController extends Controller
         $workforce->delete();
         return redirect()->route('manufacturer.workforce.index')->with('success', 'Employee deleted successfully.');
     }
+
+    public function show(Workforce $workforce)
+    {
+        $this->authorize('view', $workforce);
+        return view('manufacturer.Workforce.show', compact('workforce'));
+    }
 } 

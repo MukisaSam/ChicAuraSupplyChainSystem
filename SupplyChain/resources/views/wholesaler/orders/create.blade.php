@@ -129,8 +129,9 @@
                     <a href="{{ route('wholesaler.dashboard') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-home w-5"></i><span class="ml-2 text-sm">Home</span></a>
                     <a href="{{ route('wholesaler.orders.index') }}" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-purple-600 to-purple-700 rounded-xl shadow-lg"><i class="fas fa-shopping-cart w-5"></i><span class="ml-2 font-medium text-sm">Orders</span></a>
                     <a href="{{ route('wholesaler.analytics.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-chart-line w-5"></i><span class="ml-2 text-sm">Analytics</span></a>
-                    <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-comments w-5"></i><span class="ml-2 text-sm">Chat</span></a>
-                    <a href="#" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-file-invoice-dollar w-5"></i><span class="ml-2 text-sm">Reports</span></a>
+                    <a href="{{ route('wholesaler.chat.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-comments w-5"></i><span class="ml-2 text-sm">Chat</span></a>
+                    <a href="{{ route('wholesaler.reports.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-file-invoice-dollar w-5"></i><span class="ml-2 text-sm">Reports</span></a>
+                    <a href="{{ route('wholesaler.invoices.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-file-invoice w-5"></i><span class="ml-2 text-sm">Invoices</span></a>
                 </nav>
                 <div class="p-3 border-t border-gray-600">
                     <div class="text-center text-gray-400 text-xs">
@@ -241,8 +242,9 @@
                                                                    max="{{ $item->stock_quantity }}"
                                                                    class="w-20 border border-gray-300 dark:border-gray-600 rounded-lg px-2 py-1 text-sm focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
                                                                    style="display:none;"
+                                                                   disabled
                                                                    onchange="updateTotal()">
-                                                            <input type="hidden" name="items[{{ $item->id }}][item_id]" value="{{ $item->id }}">
+                                                            <input type="hidden" name="items[{{ $item->id }}][item_id]" id="item_id_input_{{ $item->id }}" value="{{ $item->id }}" disabled>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -359,13 +361,18 @@
         function toggleQuantityInput(itemId) {
             const checkbox = document.getElementById('select_item_' + itemId);
             const quantityInput = document.getElementById('quantity_input_' + itemId);
+            const itemIdInput = document.getElementById('item_id_input_' + itemId);
             if (checkbox.checked) {
                 quantityInput.style.display = '';
                 quantityInput.required = true;
+                quantityInput.disabled = false;
+                itemIdInput.disabled = false;
             } else {
                 quantityInput.style.display = 'none';
                 quantityInput.required = false;
                 quantityInput.value = '';
+                quantityInput.disabled = true;
+                itemIdInput.disabled = true;
                 updateTotal();
             }
         }

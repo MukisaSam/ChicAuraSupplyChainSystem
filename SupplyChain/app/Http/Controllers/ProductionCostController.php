@@ -16,9 +16,11 @@ class ProductionCostController extends Controller
     }
     public function store(Request $request) {
         $validated = $request->validate([
-            'item_id' => 'required|exists:items,id',
-            'amount' => 'required|numeric|min:0',
-            'date' => 'required|date',
+            'work_order_id' => 'required|exists:work_orders,id',
+            'material_cost' => 'required|numeric|min:0',
+            'labor_cost' => 'required|numeric|min:0',
+            'overhead_cost' => 'required|numeric|min:0',
+            'total_cost' => 'required|numeric|min:0',
             'notes' => 'nullable|string',
         ]);
         \App\Models\ProductionCost::create($validated);
@@ -32,9 +34,11 @@ class ProductionCostController extends Controller
     }
     public function update(Request $request, \App\Models\ProductionCost $productionCost) {
         $validated = $request->validate([
-            'item_id' => 'required|exists:items,id',
-            'amount' => 'required|numeric|min:0',
-            'date' => 'required|date',
+            'work_order_id' => 'required|exists:work_orders,id',
+            'material_cost' => 'required|numeric|min:0',
+            'labor_cost' => 'required|numeric|min:0',
+            'overhead_cost' => 'required|numeric|min:0',
+            'total_cost' => 'required|numeric|min:0',
             'notes' => 'nullable|string',
         ]);
         $productionCost->update($validated);

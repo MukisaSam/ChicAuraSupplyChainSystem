@@ -193,6 +193,11 @@
                         </form>
                     </div>
 
+                    <div class="flex justify-end mb-4">
+                        <a href="{{ route('wholesaler.invoices.index') }}" class="inline-block px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 font-semibold">
+                            <i class="fas fa-file-invoice mr-2"></i>View Invoices
+                        </a>
+                    </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-8">
                         <!-- Sales Overview Card -->
                         <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
@@ -216,7 +221,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <!-- Order Analytics Card -->
                         <div class="card-gradient p-6 rounded-xl">
                             <h2 class="text-lg font-semibold text-black mb-4">Order Analytics</h2>
@@ -239,7 +243,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <!-- Top Products Card -->
                         <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
                             <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Top Products</h2>
@@ -274,59 +277,6 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                        <!-- Monthly Trends Card -->
-                        <div class="card-gradient p-6 rounded-xl">
-                            <h2 class="text-lg font-semibold text-black mb-4">Monthly Trends (Last 12 Months)</h2>
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full text-xs md:text-sm">
-                                    <thead>
-                                        <tr class="text-black">
-                                            <th class="pr-4 py-2">Month</th>
-                                            <th class="pr-4 py-2">Sales</th>
-                                            <th class="pr-4 py-2">Orders</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach($monthlyTrends as $trend)
-                                        <tr class="border-b border-gray-100 dark:border-gray-700">
-                                            <td class="pr-4 py-2 text-black">{{ $trend->month_name }}</td>
-                                            <td class="pr-4 py-2 text-black">${{ number_format($trend->total_sales, 2) }}</td>
-                                            <td class="pr-4 py-2 text-black">{{ $trend->order_count }}</td>
-                                        </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <!-- Payment Methods Card -->
-                        <div class="card-gradient p-6 rounded-xl">
-                            <h2 class="text-lg font-semibold text-black mb-4">Payment Methods</h2>
-                            <ul class="divide-y divide-gray-100 dark:divide-gray-700">
-                                @foreach($paymentMethods as $method)
-                                <li class="flex justify-between py-2 text-sm">
-                                    <span class="text-black capitalize">{{ $method->payment_method }}</span>
-                                    <span class="font-bold text-black">{{ $method->count }} orders</span>
-                                </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <!-- Order Statuses Card -->
-                        <div class="card-gradient p-6 rounded-xl">
-                            <h2 class="text-lg font-semibold text-black mb-4">Order Statuses</h2>
-                            <ul class="divide-y divide-gray-100 dark:divide-gray-700">
-                                @foreach($orderStatuses as $status)
-                                <li class="flex justify-between py-2 text-sm">
-                                    <span class="text-black capitalize">{{ $status->status }}</span>
-                                    <span class="font-bold text-black">{{ $status->count }} orders</span>
-                                </li>
-                                @endforeach
-                            </ul>
-                        </div>
-
                         <!-- Export Options Card -->
                         <div class="card-gradient p-6 rounded-xl">
                             <h2 class="text-lg font-semibold text-black mb-4">Export Reports</h2>

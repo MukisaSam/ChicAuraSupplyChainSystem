@@ -112,9 +112,6 @@
                         </button>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <button type="button" class="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-full transition-colors" title="Edit Profile" x-data x-on:click="$dispatch('open-modal', 'profile-editor-modal')">
-                            <i class="fas fa-user-edit text-lg"></i>
-                        </button>
                         <form method="POST" action="{{ route('logout') }}" class="inline">
                             @csrf
                             <button type="submit" class="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors" title="Logout">

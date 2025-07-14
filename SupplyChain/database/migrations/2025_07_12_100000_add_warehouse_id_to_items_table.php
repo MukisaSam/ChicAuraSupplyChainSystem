@@ -14,7 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::table('items', function (Blueprint $table) {
-            $table->enum('type', ['raw_material', 'finished_product'])->default('raw_material')->after('name');
+            $table->unsignedBigInteger('warehouse_id')->nullable()->after('id');
+            $table->foreign('warehouse_id')->references('id')->on('warehouses')->onDelete('set null');
         });
     }
 
@@ -26,7 +27,8 @@ return new class extends Migration
     public function down()
     {
         Schema::table('items', function (Blueprint $table) {
-            $table->dropColumn('type');
+            $table->dropForeign(['warehouse_id']);
+            $table->dropColumn('warehouse_id');
         });
     }
-};
+}; 

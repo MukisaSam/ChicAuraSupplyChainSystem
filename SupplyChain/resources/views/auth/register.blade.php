@@ -270,6 +270,7 @@
     </style>
 </head>
 <body class="bg-cover bg-center bg-fixed" style="background-image: linear-gradient(135deg,rgba(0, 0, 0, 0.2),rgba(0, 0, 0, 0.4) 100%), url('{{ asset('images/showroom.png') }}');">
+    @if($serverMessage == 'success')
     <div class="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div class="sm:mx-auto sm:w-full sm:max-w-md">
             <div class="flex justify-center mb-8">
@@ -287,8 +288,6 @@
             <div class="form-container py-8 px-4 shadow-2xl sm:rounded-xl sm:px-10">
                 <form class="space-y-6" action="{{ route('register.newUser') }}" method="POST" enctype="multipart/form-data">
                     @csrf
-                    <input type="hidden" name="role" value="admin">
-
                     <div>
                         <label for="name" class="form-label block text-sm font-medium">Full Name</label>
                         <div class="mt-1">
@@ -314,6 +313,7 @@
                         <label for="admin_code" class="form-label block text-sm font-medium">Role</label>
                         <div class="mt-1">
                             <select id="role" name="role" class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <option value="" disabled selected>Select a role</option>
                                 <option value="supplier">Supplier</option>
                                 <option value="manufacturer">Manufacturer</option>
                                 <option value="wholesaler">Wholesaler</option>
@@ -330,6 +330,38 @@
             </div>
         </div>
     </div>
+    @endif
+    @if($serverMessage != 'success')
+    <div class="min-h-screen flex justify-center items-center text-white overflow-hidden p-5 ">
+    <div class="text-center max-w-2xl w-full p-10 rounded-2xl shadow-xl relative z-10 animate-fadeIn"
+         style="background: rgba(248, 250, 252, 0.95); backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);">
+        <div class="server-icon text-[120px] inline-block text-[#ff6b6b]">
+            <i class="fas fa-server"></i>
+        </div>
+        <h1 class="text-4xl md:text-[42px] font-bold mb-4 animate-slideIn gradient-text text-black">
+            Connection Failed !
+        </h1>
+        <p class="text-lg md:text-xl leading-relaxed mb-8 text-indigo-500 animate-fadeInUp-delay-200">
+            We couldn't establish a connection to the server. This might be due to a temporary issue with your network connection, the website's server, or an incorrect URL.
+        </p>
+        
+        <div class="flex justify-center flex-wrap gap-4 mt-5 animate-fadeInUp-delay-400">
+            <a href="{{route('register')}}" class="flex items-center gap-2.5 px-7 py-3 rounded-full font-semibold transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg bg-indigo-600"
+               style="border: 2px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px);">
+                <i class="fas fa-sync-alt text-lg"></i> Try Again
+            </a>
+            <a href="{{route('welcome')}}" class="flex items-center gap-2.5 px-7 py-3 rounded-full font-semibold transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg bg-indigo-600"
+               style="border: 2px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(5px);">
+                <i class="fas fa-home text-lg"></i> Home Page
+            </a>
+        </div>
+        
+        <div class="mt-8 text-sm text-black animate-fadeIn-delay-600">
+            Error: {{$serverMessage}}
+        </div>
+    </div>
+    </div>
+    @endif
     <script>
     const roleSelect = document.getElementById('role');
     const dynamicFields = document.getElementById('dynamicFields');
@@ -380,7 +412,7 @@
         </div>
         <div>
             <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Register User
+                Register Supplier
             </button>
         </div>
         `,
@@ -421,7 +453,7 @@
         </div>
         <div>
             <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Register User
+                Register Manufacturer
             </button>
         </div>
       `,
@@ -481,7 +513,7 @@
         </div> 
         <div>
             <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                Register User
+                Register Wholesaler
             </button>
         </div>     
       `

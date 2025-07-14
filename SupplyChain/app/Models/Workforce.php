@@ -25,4 +25,9 @@ class Workforce extends Model
     {
         return $this->belongsTo(Manufacturer::class);
     }
+
+    public function warehouses()
+    {
+        return $this->belongsToMany(\App\Models\Warehouse::class, 'warehouse_workforce');
+    }
 } 

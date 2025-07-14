@@ -14,4 +14,14 @@ class Warehouse extends Model
         'capacity',
         'manufacturer_id',
     ];
+
+    public function inventoryItems()
+    {
+        return $this->hasMany(InventoryItem::class);
+    }
+
+    public function workforce()
+    {
+        return $this->belongsToMany(\App\Models\Workforce::class, 'warehouse_workforce');
+    }
 } 

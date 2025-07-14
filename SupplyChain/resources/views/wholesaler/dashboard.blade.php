@@ -243,8 +243,8 @@
                             </div>
                             <div class="ml-3">
                                 <p class="text-sm text-gray-700 dark:text-gray-300">Pending Orders</p>
-                                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $stats['pending_orders'] ?? '0' }}</p>
-                                <p class="text-sm text-orange-600 dark:text-orange-400 mt-1">{{ $stats['pending_orders_change'] ?? '0' }}% from last month</p>
+                                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $stats['pending_orders'] ?? 0 }}</p>
+                                <p class="text-sm text-orange-600 dark:text-orange-400 mt-1">{{ $stats['pending_orders_change'] ?? 0 }}% from last month</p>
                             </div>
                         </div>
                     </div>
