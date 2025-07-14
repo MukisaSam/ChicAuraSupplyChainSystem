@@ -1,46 +1,8 @@
-@extends('layouts.app')
+@extends('layouts.supplier-dashboard')
 
 @section('content')
 <div class="container-fluid">
     <div class="row">
-        <!-- Sidebar -->
-        <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
-            <div class="position-sticky pt-3">
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('supplier.dashboard') }}">
-                            <i class="fas fa-tachometer-alt"></i> Dashboard
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="{{ route('supplier.supply-requests.index') }}">
-                            <i class="fas fa-clipboard-list"></i> Supply Requests
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('supplier.supplied-items.index') }}">
-                            <i class="fas fa-box"></i> Supplied Items
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('supplier.analytics.index') }}">
-                            <i class="fas fa-chart-line"></i> Analytics
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('supplier.chat.index') }}">
-                            <i class="fas fa-comments"></i> Chat
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('supplier.reports.index') }}">
-                            <i class="fas fa-file-alt"></i> Reports
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
         <!-- Main content -->
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -55,7 +17,7 @@
             @endif
 
             <!-- Filters -->
-            <div class="card mb-4">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-4 mb-6">
                 <div class="card-body">
                     <form method="GET" class="row g-3">
                         <div class="col-md-3">
@@ -84,87 +46,49 @@
                 </div>
             </div>
 
-            <!-- Supply Requests Table -->
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">All Supply Requests</h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover">
-                            <thead>
-                                <tr>
-                                    <th>Request ID</th>
-                                    <th>Item</th>
-                                    <th>Quantity</th>
-                                    <th>Due Date</th>
-                                    <th>Status</th>
-                                    <th>Payment Type</th>
-                                    <th>Delivery Method</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($supplyRequests as $request)
-                                <tr>
-                                    <td>#{{ $request->id }}</td>
-                                    <td>
-                                        <strong>{{ $request->item->name }}</strong>
-                                        <br>
-                                        <small class="text-muted">{{ $request->item->description }}</small>
-                                    </td>
-                                    <td>{{ number_format($request->quantity) }}</td>
-                                    <td>
-                                        <span class="{{ $request->due_date->isPast() ? 'text-danger' : '' }}">
-                                            {{ $request->due_date->format('M d, Y') }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-{{ $request->status === 'pending' ? 'warning' : 
-                                            ($request->status === 'accepted' || $request->status === 'approved' ? 'success' : 
-                                            ($request->status === 'rejected' || $request->status === 'declined' ? 'danger' : 
-                                            ($request->status === 'in_progress' ? 'info' : 'secondary'))) }}">
-                                            {{ ucfirst(str_replace('_', ' ', $request->status)) }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-light text-dark">
-                                            {{ ucfirst($request->payment_type) }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-light text-dark">
-                                            {{ ucfirst($request->delivery_method) }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <a href="{{ route('supplier.supply-requests.show', $request) }}" 
-                                           class="btn btn-sm btn-primary">
-                                            <i class="fas fa-eye"></i> View
-                                        </a>
-                                    </td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="8" class="text-center py-4">
-                                        <div class="text-muted">
-                                            <i class="fas fa-inbox fa-3x mb-3"></i>
-                                            <p>No supply requests found.</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Pagination -->
-                    @if($supplyRequests->hasPages())
-                        <div class="d-flex justify-content-center mt-4">
-                            {{ $supplyRequests->links() }}
+            <!-- Supply Requests Card Grid (Tailwind) -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
+                <h5 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">All Supply Requests</h5>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @forelse($supplyRequests as $request)
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-5 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-xs text-gray-400">#{{ $request->id }}</span>
+                                    <span class="px-2 py-1 rounded text-xs font-semibold bg-{{ $request->status === 'pending' ? 'yellow-100 text-yellow-800' : ($request->status === 'accepted' || $request->status === 'approved' ? 'green-100 text-green-800' : ($request->status === 'rejected' || $request->status === 'declined' ? 'red-100 text-red-800' : ($request->status === 'in_progress' ? 'blue-100 text-blue-800' : 'gray-200 text-gray-800'))) }}">
+                                        {{ ucfirst(str_replace('_', ' ', $request->status)) }}
+                                    </span>
+                                </div>
+                                <div class="mb-2">
+                                    <h3 class="text-lg font-bold text-gray-900 dark:text-white">{{ $request->item->name }}</h3>
+                                    <p class="text-sm text-gray-500 dark:text-gray-300">{{ $request->item->description }}</p>
+                                </div>
+                                <ul class="text-sm text-gray-700 dark:text-gray-200 mb-3 space-y-1">
+                                    <li><span class="font-semibold">Quantity:</span> {{ number_format($request->quantity) }}</li>
+                                    <li><span class="font-semibold">Due Date:</span> <span class="{{ $request->due_date->isPast() ? 'text-red-600' : '' }}">{{ $request->due_date->format('M d, Y') }}</span></li>
+                                    <li><span class="font-semibold">Payment:</span> {{ ucfirst($request->payment_type) }}</li>
+                                    <li><span class="font-semibold">Delivery:</span> {{ ucfirst($request->delivery_method) }}</li>
+                                </ul>
+                            </div>
+                            <div class="mt-2 flex justify-end">
+                                <a href="{{ route('supplier.supply-requests.show', $request) }}" class="inline-flex items-center px-3 py-1.5 bg-green-600 text-white text-xs font-semibold rounded hover:bg-green-700 transition">
+                                    <i class="fas fa-eye mr-1"></i> View
+                                </a>
+                            </div>
                         </div>
-                    @endif
+                    @empty
+                        <div class="col-span-3 text-center py-8 text-gray-400">
+                            <i class="fas fa-inbox fa-3x mb-3"></i>
+                            <p>No supply requests found.</p>
+                        </div>
+                    @endforelse
                 </div>
+                <!-- Pagination -->
+                @if($supplyRequests->hasPages())
+                    <div class="flex justify-center mt-6">
+                        {{ $supplyRequests->links() }}
+                    </div>
+                @endif
             </div>
         </main>
     </div>

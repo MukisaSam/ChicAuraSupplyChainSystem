@@ -70,10 +70,6 @@ class SupplierChatController extends Controller
             ->where('is_read', false)
             ->update(['is_read' => true, 'read_at' => now()]);
 
-        if (request()->ajax()) {
-            return view('supplier.chat.partials.conversation', compact('user', 'contact', 'messages'));
-        }
-
         return view('supplier.chat.show', compact('user', 'contact', 'messages'));
     }
 

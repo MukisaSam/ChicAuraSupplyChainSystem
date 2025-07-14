@@ -1,4 +1,11 @@
-<div id="supply-request-details" class="space-y-6">
+@extends('layouts.supplier-dashboard')
+
+@section('content')
+<div class="max-w-2xl mx-auto mt-8">
+  <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 space-y-6 relative">
+    <a href="{{ route('supplier.supply-requests.index') }}" class="absolute top-6 right-6 inline-flex items-center px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition text-sm font-semibold">
+      <i class="fas fa-arrow-left mr-2"></i> Back to Supply Requests
+    </a>
     <h2 class="text-xl font-bold mb-2">Supply Request Details</h2>
     <div class="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 shadow">
         <div class="mb-2">
@@ -71,4 +78,6 @@
         <button type="submit" class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition">Submit Counter Offer</button>
     </form>
     @endif
-</div> 
+  </div>
+</div>
+@endsection 

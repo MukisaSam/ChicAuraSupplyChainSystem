@@ -136,11 +136,24 @@
                     <h3 class="text-white text-sm font-semibold mb-3 px-3">SUPPLIER PORTAL</h3>
                 </div>
                 <nav class="flex-1 px-4 py-2 space-y-1">
-                    <a href="{{ route('supplier.dashboard') }}" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-green-600 to-green-700 rounded-xl shadow-lg"><i class="fas fa-home w-5"></i><span class="ml-2 font-medium text-sm">Home</span></a>
-                    <a href="{{ route('supplier.supply-requests') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-dolly w-5"></i><span class="ml-2 text-sm">Supply Request</span></a>
-                    <a href="{{ route('supplier.analytics.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-chart-bar w-5"></i><span class="ml-2 text-sm">Analytics</span></a>
-                    <a href="{{ route('supplier.chat.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-comments w-5"></i><span class="ml-2 text-sm">Chat</span></a>
-                    <a href="{{ route('supplier.reports.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i class="fas fa-file-alt w-5"></i><span class="ml-2 text-sm">Reports</span></a>
+                    <a href="{{ route('supplier.dashboard') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('supplier.dashboard') ? 'text-white bg-gradient-to-r from-green-600 to-green-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-home w-5"></i><span class="ml-2 font-medium text-sm">Home</span>
+                    </a>
+                    <a href="{{ route('supplier.supply-requests.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('supplier.supply-request.index') ? 'text-white bg-gradient-to-r from-green-600 to-green-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-dolly w-5"></i><span class="ml-2 text-sm">Supply Request</span>
+                    </a>
+                    <a href="{{ route('supplier.supplied-items.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('supplier.supplied-items.index') || request()->routeIs('supplier.supplied-items.show') ? 'text-white bg-gradient-to-r from-green-600 to-green-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-box w-5"></i><span class="ml-2 text-sm">Supplied Items</span>
+                    </a>
+                    <a href="{{ route('supplier.analytics.index') }}" class="nav-links flex items-center px-3 py-2 {{ request()->routeIs('supplier.analytics.index') ? 'text-white bg-gradient-to-r from-green-600 to-green-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-chart-bar w-5"></i><span class="ml-2 text-sm">Analytics</span>
+                    </a>
+                    <a href="{{ route('supplier.chat.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('supplier.chat.index') ? 'text-white bg-gradient-to-r from-green-600 to-green-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-comments w-5"></i><span class="ml-2 text-sm">Chat</span>
+                    </a>
+                    <a href="{{ route('supplier.reports.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('supplier.reports.index') ? 'text-white bg-gradient-to-r from-green-600 to-green-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-file-alt w-5"></i><span class="ml-2 text-sm">Reports</span>
+                    </a>
                 </nav>
                 <div class="p-3 border-t border-gray-600">
                     <div class="text-center text-gray-400 text-xs">
@@ -194,7 +207,7 @@
             <main class="flex-1 p-4">
                 <div class="mb-6">
                     <h2 class="text-2xl font-bold text-white mb-1">Chat</h2>
-                    <p class="text-gray-200 text-sm">Communicate with manufacturers, wholesalers, and support team</p>
+                    <p class="text-gray-200 text-sm">Communicate with manufacturers and support team</p>
                 </div>
 
                 <div class="flex h-full gap-6">
@@ -210,12 +223,9 @@
                             <div class="mb-6">
                                 <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3 px-2">Manufacturers</h4>
                                 @foreach($manufacturers as $manufacturer)
-                                <div class="contact-item flex items-center p-4 rounded-xl" 
-                                     data-contact-id="{{ $manufacturer->id }}" 
-                                     data-contact-name="{{ $manufacturer->name }}"
-                                     data-chat-url="{{ route('supplier.chat.show', ['contactId' => $manufacturer->id]) }}">
+                                <a href="{{ route('supplier.chat.show', ['contactId' => $manufacturer->id]) }}" class="contact-item flex items-center p-4 rounded-xl hover:bg-green-100 dark:hover:bg-green-900/20 transition">
                                     <div class="relative">
-                                        <img src="{{ asset('images/manufacturer.png') }}" alt="{{ $manufacturer->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
+                                        <img src="{{ $manufacturer->profile_picture ? Storage::disk('public')->url($manufacturer->profile_picture) : asset('images/manufacturer.png') }}" alt="{{ $manufacturer->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
                                         <span class="online-indicator absolute -bottom-1 -right-1"></span>
                                     </div>
                                     <div class="ml-4 flex-1">
@@ -225,7 +235,7 @@
                                     @if(isset($unreadCounts[$manufacturer->id]) && $unreadCounts[$manufacturer->id] > 0)
                                     <span class="unread-badge">{{ $unreadCounts[$manufacturer->id] }}</span>
                                     @endif
-                                </div>
+                                </a>
                                 @endforeach
                             </div>
                             @endif
@@ -235,10 +245,7 @@
                             <div class="mb-6">
                                 <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3 px-2">Support Team</h4>
                                 @foreach($admins as $admin)
-                                <div class="contact-item flex items-center p-4 rounded-xl" 
-                                     data-contact-id="{{ $admin->id }}" 
-                                     data-contact-name="{{ $admin->name }}"
-                                     data-chat-url="{{ route('supplier.chat.show', ['contactId' => $admin->id]) }}">
+                                <a href="{{ route('supplier.chat.show', ['contactId' => $admin->id]) }}" class="contact-item flex items-center p-4 rounded-xl hover:bg-green-100 dark:hover:bg-green-900/20 transition">
                                     <div class="relative">
                                         <img src="{{ asset('images/default-avatar.svg') }}" alt="{{ $admin->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
                                         <span class="online-indicator absolute -bottom-1 -right-1"></span>
@@ -250,7 +257,7 @@
                                     @if(isset($unreadCounts[$admin->id]) && $unreadCounts[$admin->id] > 0)
                                     <span class="unread-badge">{{ $unreadCounts[$admin->id] }}</span>
                                     @endif
-                                </div>
+                                </a>
                                 @endforeach
                             </div>
                             @endif
@@ -287,67 +294,9 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Chat page loaded');
-            
-            const contactItems = document.querySelectorAll('.contact-item');
-            const chatWelcome = document.getElementById('chat-welcome');
-            const chatConversation = document.getElementById('chat-conversation');
-            const messagesContainer = document.getElementById('messages-container');
-            const messageForm = document.getElementById('message-form');
-            const messageInput = document.getElementById('message-input');
-            const receiverIdInput = document.getElementById('receiver-id');
-            const contactName = document.getElementById('contact-name');
-            const contactRole = document.getElementById('contact-role');
-            const contactAvatar = document.getElementById('contact-avatar');
+            // Only keep search and mobile menu toggle
             const searchInput = document.getElementById('search-contacts');
-
-            // CSRF token for AJAX requests
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            console.log('CSRF Token:', csrfToken);
-
-            // Mobile menu toggle
-            document.getElementById('menu-toggle').addEventListener('click', function() {
-                document.getElementById('sidebar').classList.toggle('open');
-            });
-
-            // Handle contact selection
-            contactItems.forEach(item => {
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const chatUrl = this.dataset.chatUrl;
-                    if (chatUrl) {
-                        fetch(chatUrl, {
-                            headers: { 'X-Requested-With': 'XMLHttpRequest' },
-                            credentials: 'same-origin'
-                        })
-                        .then(response => response.text())
-                        .then(html => {
-                            document.getElementById('chat-conversation').innerHTML = html;
-                            // Re-initialize message form event listener if needed
-                            initMessageForm();
-                        });
-                    }
-                });
-            });
-
-            // Handle message form submission
-            messageForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                console.log('Message form submitted');
-                
-                const content = messageInput.value.trim();
-                const receiverId = receiverIdInput.value;
-
-                if (!content || !receiverId) {
-                    console.log('No content or receiver ID');
-                    return;
-                }
-
-                sendMessage(receiverId, content);
-                messageInput.value = '';
-            });
-
-            // Search contacts
+            const contactItems = document.querySelectorAll('.contact-item');
             searchInput.addEventListener('input', function() {
                 const searchTerm = this.value.toLowerCase();
                 contactItems.forEach(item => {
@@ -359,153 +308,12 @@
                     }
                 });
             });
-
-            // Load messages for a conversation
-            function loadMessages(contactId) {
-                console.log('Loading messages for contact:', contactId);
-                
-                fetch(`/supplier/chat/${contactId}/messages`, {
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                    .then(response => {
-                        console.log('Response status:', response.status);
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log('Messages loaded:', data);
-                        messagesContainer.innerHTML = '';
-                        if (data.messages && data.messages.length > 0) {
-                            data.messages.forEach(message => {
-                                appendMessage(message);
-                            });
-                        } else {
-                            messagesContainer.innerHTML = '<div class="text-center text-gray-500 dark:text-gray-400 py-8">No messages yet. Start the conversation!</div>';
-                        }
-                        scrollToBottom();
-                    })
-                    .catch(error => {
-                        console.error('Error loading messages:', error);
-                        messagesContainer.innerHTML = '<div class="text-center text-red-500 py-8">Error loading messages</div>';
-                    });
-            }
-
-            // Send a message
-            function sendMessage(receiverId, content) {
-                console.log('Sending message to:', receiverId, 'Content:', content);
-                
-                fetch('/supplier/chat/send', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken,
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify({
-                        receiver_id: receiverId,
-                        content: content
-                    })
-                })
-                .then(response => {
-                    console.log('Send response status:', response.status);
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Send response:', data);
-                    if (data.success) {
-                        appendMessage(data.message);
-                        scrollToBottom();
-                    } else {
-                        alert('Failed to send message');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error sending message:', error);
-                    alert('Error sending message');
+            const menuToggle = document.getElementById('menu-toggle');
+            if (menuToggle) {
+                menuToggle.addEventListener('click', function() {
+                    document.getElementById('sidebar').classList.toggle('open');
                 });
             }
-
-            // Mark messages as read
-            function markMessagesAsRead(senderId) {
-                console.log('Marking messages as read from:', senderId);
-                
-                fetch('/supplier/chat/mark-read', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': csrfToken
-                    },
-                    body: JSON.stringify({
-                        sender_id: senderId
-                    })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log('Mark as read response:', data);
-                    if (data.success) {
-                        // Remove unread badge
-                        const contactItem = document.querySelector(`[data-contact-id="${senderId}"]`);
-                        if (contactItem) {
-                            const badge = contactItem.querySelector('.unread-badge');
-                            if (badge) {
-                                badge.remove();
-                            }
-                        }
-                    }
-                })
-                .catch(error => console.error('Error marking messages as read:', error));
-            }
-
-            // Append a message to the conversation
-            function appendMessage(message) {
-                console.log('Appending message:', message);
-                
-                const isOwnMessage = message.sender_id == {{ $user->id }};
-                const messageHtml = `
-                    <div class="flex ${isOwnMessage ? 'justify-end' : 'justify-start'}">
-                        <div class="flex ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'} items-end space-x-3 max-w-xs lg:max-w-md">
-                            <img src="${isOwnMessage ? '{{ asset('images/default-avatar.svg') }}' : message.sender.role === 'manufacturer' ? '{{ asset('images/manufacturer.png') }}' : '{{ asset('images/default-avatar.svg') }}'}" 
-                                 alt="${message.sender.name}" class="w-8 h-8 rounded-full flex-shrink-0 border-2 border-purple-200">
-                            <div class="message-bubble ${isOwnMessage ? 'own' : 'other'}">
-                                <p class="text-sm">${message.content}</p>
-                                <p class="text-xs ${isOwnMessage ? 'text-purple-100' : 'text-gray-500 dark:text-gray-400'} mt-1">
-                                    ${new Date(message.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                messagesContainer.insertAdjacentHTML('beforeend', messageHtml);
-            }
-
-            // Scroll to bottom of messages
-            function scrollToBottom() {
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }
-
-            // Load unread count on page load
-            loadUnreadCount();
-
-            // Load unread count
-            function loadUnreadCount() {
-                fetch('/supplier/chat/unread-count')
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Unread count:', data);
-                        const badge = document.getElementById('unread-count');
-                        if (data.count > 0) {
-                            badge.textContent = data.count;
-                            badge.style.display = 'inline-block';
-                        } else {
-                            badge.style.display = 'none';
-                        }
-                    })
-                    .catch(error => console.error('Error loading unread count:', error));
-            }
-
-            // Auto-refresh unread count every 30 seconds
-            setInterval(loadUnreadCount, 30000);
         });
     </script>
 </body>

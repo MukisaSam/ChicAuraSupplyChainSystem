@@ -81,11 +81,7 @@ class SupplierController extends Controller
     public function showSupplyRequest(Request $request, SupplyRequest $supplyRequest)
     {
         $this->authorize('view', $supplyRequest);
-        if ($request->ajax()) {
-            return view('supplier.supply-request.show', compact('supplyRequest'));
-        }
-        // Optionally, redirect or show a minimal page if not AJAX
-        return redirect()->route('supplier.dashboard');
+        return view('supplier.supply-requests.show', compact('supplyRequest'));
     }
 
     public function updateSupplyRequest(Request $request, SupplyRequest $supplyRequest)
@@ -238,11 +234,17 @@ class SupplierController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function supplyRequestsIndex()
+    public function supplyRequestsIndex(Request $request)
     {
         $supplier = Auth::user()->supplier;
-        $supplyRequests = $supplier->supplyRequests()->with('item')->latest()->paginate(10);
-
+        $query = $supplier->supplyRequests()->with('item')->latest();
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        if ($request->filled('due_date')) {
+            $query->whereDate('due_date', $request->due_date);
+        }
+        $supplyRequests = $query->paginate(10);
         return view('supplier.supply-requests.index', compact('supplyRequests'));
     }
 

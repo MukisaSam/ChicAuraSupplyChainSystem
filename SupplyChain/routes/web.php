@@ -131,6 +131,7 @@ Route::middleware(['auth', 'role:supplier'])
     ->group(function () {
         // Supplier dashboard etc.
         Route::get('/dashboard', [\App\Http\Controllers\SupplierController::class, 'dashboard'])->name('dashboard');
+        Route::get('/supply-requests', [\App\Http\Controllers\SupplierController::class, 'supply-requests'])->name('supply-requests.index');
         Route::get('/analytics', [\App\Http\Controllers\SupplierController::class, 'analytics'])->name('analytics.index');
         Route::get('/chat', [\App\Http\Controllers\SupplierController::class, 'chat'])->name('chat.index');
         Route::get('/reports', [\App\Http\Controllers\SupplierController::class, 'reports'])->name('reports.index');
