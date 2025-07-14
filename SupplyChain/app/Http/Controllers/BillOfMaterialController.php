@@ -14,8 +14,8 @@ class BillOfMaterialController extends Controller
         return view('manufacturer.bom.index', compact('boms'));
     }
     public function create() {
-        $products = Item::where('category', 'finished_product')->get();
-        $rawMaterials = Item::where('category', 'raw_material')->get();
+        $products = Item::where('type', 'finished_product')->get();
+        $rawMaterials = Item::where('type', 'raw_material')->get();
         return view('manufacturer.bom.create', compact('products', 'rawMaterials'));
     }
     public function store(Request $request) {
@@ -44,8 +44,8 @@ class BillOfMaterialController extends Controller
         return view('manufacturer.bom.show', compact('billOfMaterial'));
     }
     public function edit(BillOfMaterial $billOfMaterial) {
-        $products = Item::where('category', 'finished_product')->get();
-        $rawMaterials = Item::where('category', 'raw_material')->get();
+        $products = Item::where('type', 'finished_product')->get();
+        $rawMaterials = Item::where('type', 'raw_material')->get();
         $billOfMaterial->load('components');
         return view('manufacturer.bom.edit', compact('billOfMaterial', 'products', 'rawMaterials'));
     }

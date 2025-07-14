@@ -8,14 +8,16 @@ use Illuminate\Http\Request;
 class ProductionScheduleController extends Controller
 {
     public function index() {
-        $schedules = \App\Models\ProductionSchedule::latest()->paginate(10);
+        $schedules = \App\Models\ProductionSchedule::with('workOrder.product')->latest()->paginate(10);
         return view('manufacturer.production-schedules.index', compact('schedules'));
     }
     public function create() {
-        return view('manufacturer.production-schedules.create');
+        $workOrders = \App\Models\WorkOrder::all();
+        return view('manufacturer.production-schedules.create', compact('workOrders'));
     }
     public function store(Request $request) {
         $validated = $request->validate([
+            'work_order_id' => 'required|exists:work_orders,id',
             'product_id' => 'required|exists:items,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
@@ -32,6 +34,7 @@ class ProductionScheduleController extends Controller
     }
     public function update(Request $request, \App\Models\ProductionSchedule $productionSchedule) {
         $validated = $request->validate([
+            'work_order_id' => 'required|exists:work_orders,id',
             'product_id' => 'required|exists:items,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',

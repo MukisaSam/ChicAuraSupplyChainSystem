@@ -42,17 +42,6 @@ class WholesalerOrderController extends Controller
     
     public function store(Request $request)
     {
-        $request->validate([
-            'item_id' => 'required|exists:items,id',
-            'quantity' => 'required|integer|min:1',
-            // Add other fields as needed
-        ]);
-
-        $item = Item::findOrFail($request->item_id);
-        if ($item->type !== 'finished_product') {
-            return back()->withErrors(['item_id' => 'Selected item is not a finished product.']);
-        }
-
         $itemsInput = $request->input('items', []);
         // Filter only selected items
         $selectedItems = array_filter($itemsInput, function($item) {

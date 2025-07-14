@@ -23,7 +23,13 @@
                 @forelse($schedules as $schedule)
                 <tr class="even:bg-gray-50 hover:bg-indigo-50 transition">
                     <td class="border-t px-4 py-2">{{ $schedule->id }}</td>
-                    <td class="border-t px-4 py-2">{{ $schedule->product->name ?? '-' }}</td>
+                    <td class="border-t px-4 py-2">
+                        @if($schedule->workOrder && $schedule->workOrder->product)
+                            {{ $schedule->workOrder->product->name }}
+                        @else
+                            <span class="text-red-500">Product not found</span>
+                        @endif
+                    </td>
                     <td class="border-t px-4 py-2">{{ $schedule->start_date }}</td>
                     <td class="border-t px-4 py-2">{{ $schedule->end_date }}</td>
                     <td class="border-t px-4 py-2">{{ ucfirst($schedule->status) }}</td>

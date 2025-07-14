@@ -178,7 +178,6 @@
                         <i class="fas fa-dollar-sign w-5"></i>
                         <span class="ml-2 text-sm">Revenue</span>
                     </a>
-                    <!-- Production Section Heading -->
                     <div class="mt-6 mb-2">
                         <h4 class="text-gray-400 text-xs font-bold uppercase tracking-wider px-3 mb-1">Production</h4>
                     </div>
@@ -374,15 +373,16 @@
                 </div>
                 @endif
                 
-                <!-- Inventory Items Table -->
-                <div class="card-gradient rounded-xl overflow-hidden">
+                <!-- Raw Materials Table -->
+                <div class="card-gradient rounded-xl overflow-hidden mb-8">
                     <div class="p-4 border-b border-gray-200">
-                        <h3 class="text-lg font-bold text-black">Inventory Items</h3>
+                        <h3 class="text-lg font-bold text-black">Raw Materials</h3>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="w-full">
                             <thead class="bg-gray-50">
                                 <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
@@ -392,94 +392,117 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                @forelse($items as $item)
-                                <tr class="hover:bg-gray-50">
+                                @forelse($rawMaterials as $item)
+                                <tr>
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center">
-                                            <div class="flex-shrink-0 h-10 w-10">
                                                 @if($item->image_url)
-                                                    <img class="h-10 w-10 rounded-lg object-cover" src="{{ Storage::disk('public')->url($item->image_url) }}" alt="{{ $item->name }}">
+                                            @if(Str::startsWith($item->image_url, ['http://', 'https://']))
+                                                <img src="{{ $item->image_url }}" alt="{{ $item->name }}" class="w-12 h-12 object-cover rounded-lg">
                                                 @else
-                                                    <div class="h-10 w-10 rounded-lg bg-gray-200 flex items-center justify-center">
-                                                        <i class="fas fa-box text-gray-400"></i>
-                                                    </div>
+                                                <img src="{{ Storage::disk('public')->url($item->image_url) }}" alt="{{ $item->name }}" class="w-12 h-12 object-cover rounded-lg">
                                                 @endif
+                                        @else
+                                            <div class="w-12 h-12 bg-gray-200 flex items-center justify-center rounded-lg">
+                                                <i class="fas fa-image text-gray-400"></i>
                                             </div>
-                                            <div class="ml-4">
-                                                <div class="text-sm font-medium text-gray-900">{{ $item->name }}</div>
-                                                <div class="text-sm text-gray-500">{{ Str::limit($item->description, 50) }}</div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                                            {{ $item->category }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="text-sm text-gray-900">{{ $item->stock_quantity }}</div>
-                                        @if($item->stock_quantity <= 10)
-                                            <div class="text-xs text-yellow-600">Low stock</div>
                                         @endif
                                     </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                        ${{ number_format($item->base_price, 2) }}
-                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ $item->name }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ $item->category }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ $item->stock_quantity }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">${{ number_format($item->price, 2) }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @if($item->is_active)
-                                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                                                Active
-                                            </span>
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
                                         @else
-                                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">
-                                                Inactive
-                                            </span>
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Inactive</span>
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <div class="flex space-x-2">
-                                            <button onclick="openStockModal({{ $item->id }}, '{{ $item->name }}')" 
-                                                    class="text-indigo-600 hover:text-indigo-900" title="Update Stock">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                            <a href="{{ route('manufacturer.inventory.edit', $item) }}" 
-                                               class="text-blue-600 hover:text-blue-900" title="Edit Item">
-                                                <i class="fas fa-pencil-alt"></i>
-                                            </a>
-                                            <form method="POST" action="{{ route('manufacturer.inventory.destroy', $item) }}" 
-                                                  class="inline" onsubmit="return confirm('Are you sure you want to remove this item?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900" title="Remove Item">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        </div>
+                                        <a href="{{ route('manufacturer.inventory.edit', $item->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-2">Edit</a>
+                                        <form action="{{ route('manufacturer.inventory.destroy', $item->id) }}" method="POST" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this item?')">Delete</button>
+                                        </form>
                                     </td>
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="6" class="px-6 py-4 text-center text-gray-500">
-                                        <div class="flex flex-col items-center py-8">
-                                            <i class="fas fa-box-open text-4xl text-gray-300 mb-2"></i>
-                                            <p class="text-lg font-medium text-gray-500">No inventory items found</p>
-                                            <p class="text-sm text-gray-400">Start by adding your first inventory item</p>
-                                            <a href="{{ route('manufacturer.inventory.create') }}" 
-                                               class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
-                                                <i class="fas fa-plus mr-2"></i>Add First Item
-                                            </a>
-                                        </div>
+                                    <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                                        No raw materials found.
                                     </td>
                                 </tr>
                                 @endforelse
                             </tbody>
                         </table>
                     </div>
-                    @if($items->hasPages())
-                    <div class="px-6 py-3 border-t border-gray-200">
-                        {{ $items->links() }}
+                </div>
+
+                <!-- Finished Products Table -->
+                <div class="card-gradient rounded-xl overflow-hidden">
+                    <div class="p-4 border-b border-gray-200">
+                        <h3 class="text-lg font-bold text-black">Finished Products</h3>
                     </div>
-                    @endif
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                @forelse($finishedProducts as $item)
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @if($item->image_url)
+                                            @if(Str::startsWith($item->image_url, ['http://', 'https://']))
+                                                <img src="{{ $item->image_url }}" alt="{{ $item->name }}" class="w-12 h-12 object-cover rounded-lg">
+                                            @else
+                                                <img src="{{ Storage::disk('public')->url($item->image_url) }}" alt="{{ $item->name }}" class="w-12 h-12 object-cover rounded-lg">
+                                            @endif
+                                        @else
+                                            <div class="w-12 h-12 bg-gray-200 flex items-center justify-center rounded-lg">
+                                                <i class="fas fa-image text-gray-400"></i>
+                                            </div>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ $item->name }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ $item->category }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">{{ $item->stock_quantity }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">${{ number_format($item->price, 2) }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @if($item->is_active)
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                        @else
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Inactive</span>
+                                        @endif
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <a href="{{ route('manufacturer.inventory.edit', $item->id) }}" class="text-indigo-600 hover:text-indigo-900 mr-2">Edit</a>
+                                        <form action="{{ route('manufacturer.inventory.destroy', $item->id) }}" method="POST" class="inline">
+                                                @csrf
+                                                @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:text-red-900" onclick="return confirm('Are you sure you want to delete this item?')">Delete</button>
+                                            </form>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                                        No finished products found.
+                                    </td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </main>
         </div>

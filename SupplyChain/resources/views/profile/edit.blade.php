@@ -1,3 +1,4 @@
+@php use Illuminate\Support\Str; @endphp
 <x-app-layout>
     <x-slot name="header">
         <div class="flex justify-between items-center">
@@ -32,7 +33,7 @@
                             <div class="flex-shrink-0">
                                 <img id="profile-preview" 
                                      class="h-24 w-24 rounded-full object-cover border-4 border-white shadow-lg" 
-                                     src="{{ $user->profile_picture ? Storage::disk('public')->url($user->profile_picture) : asset('images/default-avatar.svg') }}" 
+                                     src="{{ $user->profile_picture ? (Str::startsWith($user->profile_picture, ['http://', 'https://']) ? $user->profile_picture : Storage::disk('public')->url($user->profile_picture)) : asset('images/default-avatar.svg') }}" 
                                      alt="Profile Picture">
                             </div>
                             <div class="flex-1">
@@ -46,6 +47,10 @@
                                        class="form-input mt-1 block w-full text-sm text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                                        onchange="previewImage(this)">
                                 <p class="form-description text-xs mt-1">PNG, JPG, GIF up to 2MB</p>
+                                <label for="profile_picture_url" class="form-label block text-sm font-medium mt-2">
+                                    {{ __('Or use an external image URL') }}
+                                </label>
+                                <input type="url" id="profile_picture_url" name="profile_picture_url" class="form-input mt-1 block w-full text-sm" placeholder="https://example.com/image.jpg" value="{{ old('profile_picture_url', (Str::startsWith($user->profile_picture, ['http://', 'https://']) ? $user->profile_picture : '') ) }}" oninput="previewImageUrl(this)">
                             </div>
                         </div>
 
@@ -114,6 +119,13 @@
                     document.getElementById('profile-preview').src = e.target.result;
                 };
                 reader.readAsDataURL(input.files[0]);
+            }
+        }
+        function previewImageUrl(input) {
+            if (input.value) {
+                document.getElementById('profile-preview').src = input.value;
+            } else {
+                // fallback to default or uploaded image
             }
         }
     </script>

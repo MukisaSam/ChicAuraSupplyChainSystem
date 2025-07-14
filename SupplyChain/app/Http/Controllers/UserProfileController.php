@@ -44,27 +44,32 @@ class UserProfileController extends Controller
     public function update(Request $request): RedirectResponse
     {
         $user = Auth::user();
-        
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
             'profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'profile_picture_url' => 'nullable|url',
         ]);
 
         // Update basic user information
         $user->name = $request->name;
         $user->email = $request->email;
 
-        // Handle profile picture upload
+        // Handle profile picture upload or external URL
         if ($request->hasFile('profile_picture')) {
-            // Delete old profile picture if exists
-            if ($user->profile_picture && Storage::disk('public')->exists($user->profile_picture)) {
+            // Delete old profile picture if it was a file
+            if ($user->profile_picture && !str_starts_with($user->profile_picture, 'http') && Storage::disk('public')->exists($user->profile_picture)) {
                 Storage::disk('public')->delete($user->profile_picture);
             }
-            
             // Store new profile picture
             $path = $request->file('profile_picture')->store('profile-pictures', 'public');
             $user->profile_picture = $path;
+        } elseif ($request->filled('profile_picture_url')) {
+            // Delete old profile picture if it was a file
+            if ($user->profile_picture && !str_starts_with($user->profile_picture, 'http') && Storage::disk('public')->exists($user->profile_picture)) {
+                Storage::disk('public')->delete($user->profile_picture);
+            }
+            $user->profile_picture = $request->profile_picture_url;
         }
 
         $user->save();

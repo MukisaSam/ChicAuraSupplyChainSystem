@@ -225,8 +225,8 @@ class WholesalerReportsController extends Controller
             ->join('items', 'order_items.item_id', '=', 'items.id')
             ->where('orders.wholesaler_id', $wholesalerId)
             ->whereBetween('orders.order_date', [$startDate, $endDate])
-            ->selectRaw('items.name, SUM(order_items.quantity) as total_quantity, SUM(order_items.total_price) as total_revenue')
-            ->groupBy('items.id', 'items.name')
+            ->selectRaw('items.name, items.image_url, SUM(order_items.quantity) as total_quantity, SUM(order_items.total_price) as total_revenue')
+            ->groupBy('items.id', 'items.name', 'items.image_url')
             ->orderBy('total_revenue', 'desc')
             ->limit(10)
             ->get();

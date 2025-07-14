@@ -7,21 +7,31 @@
             @csrf
             @method('PUT')
             <div class="mb-5">
-                <label class="block font-semibold text-gray-700 mb-2">Product</label>
-                <select name="item_id" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" required>
-                    <option value="">Select a product</option>
-                    @foreach(App\Models\Item::where('type', 'finished_product')->get() as $product)
-                        <option value="{{ $product->id }}" @if($product->id == $productionCost->item_id) selected @endif>{{ $product->name }}</option>
+                <label class="block font-semibold text-gray-700 mb-2">Work Order</label>
+                <select name="work_order_id" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" required>
+                    <option value="">Select a work order</option>
+                    @foreach(App\Models\WorkOrder::with('product')->get() as $workOrder)
+                        <option value="{{ $workOrder->id }}" @if($workOrder->id == $productionCost->work_order_id) selected @endif>
+                            #{{ $workOrder->id }} - {{ $workOrder->product->name ?? 'Product not found' }}
+                        </option>
                     @endforeach
                 </select>
             </div>
             <div class="mb-5">
-                <label class="block font-semibold text-gray-700 mb-2">Amount</label>
-                <input type="number" name="amount" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" min="0" step="0.01" value="{{ $productionCost->amount }}" required>
+                <label class="block font-semibold text-gray-700 mb-2">Material Cost</label>
+                <input type="number" name="material_cost" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" min="0" step="0.01" value="{{ $productionCost->material_cost }}" required>
             </div>
             <div class="mb-5">
-                <label class="block font-semibold text-gray-700 mb-2">Date</label>
-                <input type="date" name="date" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" value="{{ $productionCost->date }}" required>
+                <label class="block font-semibold text-gray-700 mb-2">Labor Cost</label>
+                <input type="number" name="labor_cost" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" min="0" step="0.01" value="{{ $productionCost->labor_cost }}" required>
+            </div>
+            <div class="mb-5">
+                <label class="block font-semibold text-gray-700 mb-2">Overhead Cost</label>
+                <input type="number" name="overhead_cost" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" min="0" step="0.01" value="{{ $productionCost->overhead_cost }}" required>
+            </div>
+            <div class="mb-5">
+                <label class="block font-semibold text-gray-700 mb-2">Total Cost</label>
+                <input type="number" name="total_cost" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" min="0" step="0.01" value="{{ $productionCost->total_cost }}" required>
             </div>
             <div class="mb-5">
                 <label class="block font-semibold text-gray-700 mb-2">Notes</label>

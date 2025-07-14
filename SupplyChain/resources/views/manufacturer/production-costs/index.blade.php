@@ -22,9 +22,15 @@
                 @forelse($costs as $cost)
                 <tr class="even:bg-gray-50 hover:bg-indigo-50 transition">
                     <td class="border-t px-4 py-2">{{ $cost->id }}</td>
-                    <td class="border-t px-4 py-2">{{ $cost->item->name ?? '-' }}</td>
-                    <td class="border-t px-4 py-2">${{ number_format($cost->amount, 2) }}</td>
-                    <td class="border-t px-4 py-2">{{ $cost->date }}</td>
+                    <td class="border-t px-4 py-2">
+                        @if($cost->workOrder && $cost->workOrder->product)
+                            {{ $cost->workOrder->product->name }}
+                        @else
+                            <span class="text-red-500">Product not found</span>
+                        @endif
+                    </td>
+                    <td class="border-t px-4 py-2">${{ number_format($cost->total_cost, 2) }}</td>
+                    <td class="border-t px-4 py-2">{{ $cost->created_at ? $cost->created_at->format('Y-m-d') : '-' }}</td>
                     <td class="border-t px-4 py-2">
                         <div class="flex flex-wrap gap-2">
                             <a href="{{ route('manufacturer.production-costs.show', $cost->id) }}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-3 rounded-lg shadow transition">View</a>

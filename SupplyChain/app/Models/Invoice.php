@@ -18,6 +18,10 @@ class Invoice extends Model
         'pdf_path',
     ];
 
+    protected $casts = [
+        'due_date' => 'datetime',
+    ];
+
     public function order()
     {
         return $this->belongsTo(Order::class);

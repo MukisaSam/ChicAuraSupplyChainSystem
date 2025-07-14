@@ -5,7 +5,13 @@
         <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Production Schedule Details</h1>
         <div class="mb-4">
             <span class="block text-gray-700 font-semibold mb-1">Product:</span>
-            <span class="text-gray-800">{{ $productionSchedule->product->name ?? '-' }}</span>
+            <span class="text-gray-800">
+                @if($productionSchedule->workOrder && $productionSchedule->workOrder->product)
+                    {{ $productionSchedule->workOrder->product->name }}
+                @else
+                    <span class="text-red-500">Product not found</span>
+                @endif
+            </span>
         </div>
         <div class="mb-4">
             <span class="block text-gray-700 font-semibold mb-1">Start Date:</span>

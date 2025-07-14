@@ -271,57 +271,37 @@
                     <p class="text-gray-200 text-sm">Welcome back! Here's an overview of your supply chain.</p>
                 </div>
 
-                <!-- Stats Cards -->
-                <div class="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <div class="stat-card p-4 rounded-xl">
-                        <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl shadow-lg">
-                                <i class="fas fa-cogs text-white text-xl"></i>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Total Raw Materials</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['raw_materials'] ?? '0' }}</p>
-                                <p class="text-xs text-indigo-600 mt-1">↗ +8% this month</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stat-card p-4 rounded-xl">
-                        <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg">
-                                <i class="fas fa-tshirt text-white text-xl"></i>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Total Products</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['products'] ?? '0' }}</p>
-                                <p class="text-xs text-green-600 mt-1">↗ +12% this month</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stat-card p-4 rounded-xl">
-                        <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl shadow-lg">
-                                <i class="fas fa-truck text-white text-xl"></i>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Total Suppliers</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['suppliers'] ?? '0' }}</p>
-                                <p class="text-xs text-yellow-600 mt-1">↗ +5% this month</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="stat-card p-4 rounded-xl">
-                        <div class="flex items-center">
-                            <div class="p-3 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg">
-                                <i class="fas fa-dollar-sign text-white text-xl"></i>
-                            </div>
-                            <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Revenue</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['revenue'] ?? '$0' }}</p>
-                                <p class="text-xs text-purple-600 mt-1">↗ +15% this month</p>
-                            </div>
-                        </div>
+                <!-- Quick Stats Row -->
+            <div class="flex flex-col md:flex-row gap-4 mb-6 mt-8">
+                <div class="flex-1 bg-white rounded-lg shadow p-5 flex items-center gap-4 stat-card">
+                    <span class="text-3xl text-indigo-500"><i class="fas fa-cubes"></i></span>
+                    <div>
+                        <div class="text-gray-500 text-sm">Total Raw Materials</div>
+                        <div class="text-2xl font-bold">{{ $totalRawMaterials ?? 0 }}</div>
                     </div>
                 </div>
+                <div class="flex-1 bg-white rounded-lg shadow p-5 flex items-center gap-4 stat-card">
+                    <span class="text-3xl text-green-500"><i class="fas fa-tshirt"></i></span>
+                    <div>
+                        <div class="text-gray-500 text-sm">Total Products</div>
+                        <div class="text-2xl font-bold">{{ $totalProducts ?? 0 }}</div>
+                    </div>
+                </div>
+                <div class="flex-1 bg-white rounded-lg shadow p-5 flex items-center gap-4 stat-card">
+                    <span class="text-3xl text-yellow-500"><i class="fas fa-users"></i></span>
+                    <div>
+                        <div class="text-gray-500 text-sm">Total Suppliers</div>
+                        <div class="text-2xl font-bold">{{ $totalSuppliers ?? 0 }}</div>
+                    </div>
+                </div>
+                <div class="flex-1 bg-white rounded-lg shadow p-5 flex items-center gap-4 stat-card">
+                    <span class="text-3xl text-purple-500"><i class="fas fa-dollar-sign"></i></span>
+                    <div>
+                        <div class="text-gray-500 text-sm">Revenue</div>
+                        <div class="text-2xl font-bold">{{ $revenue ?? '$0.00' }}</div>
+                    </div>
+                </div>
+            </div>
                 
                 <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-3 h-64">
                     <div class="card-gradient p-4 rounded-xl lg:col-span-2 overflow-hidden">

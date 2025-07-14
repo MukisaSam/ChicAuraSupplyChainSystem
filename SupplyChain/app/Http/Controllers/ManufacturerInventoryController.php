@@ -38,8 +38,18 @@ class ManufacturerInventoryController extends Controller
         $items = Item::where('is_active', true)
             ->orderBy('created_at', 'desc')
             ->paginate(10);
-        
-        return view('manufacturer.inventory.index', compact('stats', 'recentActivities', 'lowStockItems', 'items'));
+
+        // Separate raw materials and finished products
+        $rawMaterials = Item::where('is_active', true)
+            ->where('type', 'raw_material')
+            ->orderBy('created_at', 'desc')
+            ->get();
+        $finishedProducts = Item::where('is_active', true)
+            ->where('type', 'finished_product')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('manufacturer.inventory.index', compact('stats', 'recentActivities', 'lowStockItems', 'items', 'rawMaterials', 'finishedProducts'));
     }
 
     public function create()

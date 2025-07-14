@@ -5,7 +5,13 @@
         <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Production Cost Details</h1>
         <div class="mb-4">
             <span class="block text-gray-700 font-semibold mb-1">Product:</span>
-            <span class="text-gray-800">{{ $productionCost->item->name ?? '-' }}</span>
+            <span class="text-gray-800">
+                @if($productionCost->workOrder && $productionCost->workOrder->product)
+                    {{ $productionCost->workOrder->product->name }}
+                @else
+                    <span class="text-red-500">Product not found</span>
+                @endif
+            </span>
         </div>
         <div class="mb-4">
             <span class="block text-gray-700 font-semibold mb-1">Amount:</span>
@@ -13,7 +19,7 @@
         </div>
         <div class="mb-4">
             <span class="block text-gray-700 font-semibold mb-1">Date:</span>
-            <span class="text-gray-800">{{ $productionCost->date }}</span>
+            <span class="text-gray-800">{{ $productionCost->created_at ? $productionCost->created_at->format('Y-m-d') : '-' }}</span>
         </div>
         <div class="mb-4">
             <span class="block text-gray-700 font-semibold mb-1">Notes:</span>

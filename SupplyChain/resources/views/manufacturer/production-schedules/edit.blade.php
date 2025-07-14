@@ -8,10 +8,12 @@
             @method('PUT')
             <div class="mb-5">
                 <label class="block font-semibold text-gray-700 mb-2">Product</label>
-                <select name="product_id" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" required>
-                    <option value="">Select a product</option>
-                    @foreach(App\Models\Item::where('type', 'finished_product')->get() as $product)
-                        <option value="{{ $product->id }}" @if($product->id == $productionSchedule->product_id) selected @endif>{{ $product->name }}</option>
+                <select name="work_order_id" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" required>
+                    <option value="">Select a work order (product)</option>
+                    @foreach(App\Models\WorkOrder::with('product')->get() as $workOrder)
+                        <option value="{{ $workOrder->id }}" @if($workOrder->id == $productionSchedule->work_order_id) selected @endif>
+                            #{{ $workOrder->id }} - {{ $workOrder->product->name ?? 'Product not found' }}
+                        </option>
                     @endforeach
                 </select>
             </div>

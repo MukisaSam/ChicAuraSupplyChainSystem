@@ -26,19 +26,34 @@ class WholesalerDashboardController extends Controller
         
         // Get real stats from database
         $totalOrders = Order::where('wholesaler_id', $wholesaler->id)->count();
-        $totalSpent = Order::where('wholesaler_id', $wholesaler->id)->sum('total_amount');
-        $pendingShipments = Order::where('wholesaler_id', $wholesaler->id)
-            ->whereIn('status', ['confirmed', 'in_production', 'shipped'])
+        $totalRevenue = Order::where('wholesaler_id', $wholesaler->id)->sum('total_amount');
+        $avgOrderValue = $totalOrders > 0 ? $totalRevenue / $totalOrders : 0;
+        $pendingOrders = Order::where('wholesaler_id', $wholesaler->id)
+            ->where('status', 'pending')
             ->count();
-        $lastOrder = Order::where('wholesaler_id', $wholesaler->id)
-            ->latest()
-            ->first();
-        
+        // Pending orders change: percent change from last month to this month
+        $currentMonth = now()->month;
+        $currentYear = now()->year;
+        $lastMonth = now()->subMonth()->month;
+        $lastMonthYear = now()->subMonth()->year;
+        $pendingThisMonth = Order::where('wholesaler_id', $wholesaler->id)
+            ->where('status', 'pending')
+            ->whereMonth('order_date', $currentMonth)
+            ->whereYear('order_date', $currentYear)
+            ->count();
+        $pendingLastMonth = Order::where('wholesaler_id', $wholesaler->id)
+            ->where('status', 'pending')
+            ->whereMonth('order_date', $lastMonth)
+            ->whereYear('order_date', $lastMonthYear)
+            ->count();
+        $pendingOrdersChange = $pendingLastMonth > 0 ? round((($pendingThisMonth - $pendingLastMonth) / $pendingLastMonth) * 100, 1) : ($pendingThisMonth > 0 ? 100 : 0);
+
         $stats = [
             'total_orders' => $totalOrders,
-            'total_spent' => '$' . number_format($totalSpent, 2),
-            'pending_shipments' => $pendingShipments,
-            'last_order' => $lastOrder ? $lastOrder->order_date->format('M d, Y') : 'N/A',
+            'total_revenue' => $totalRevenue,
+            'avg_order_value' => $avgOrderValue,
+            'pending_orders' => $pendingOrders,
+            'pending_orders_change' => $pendingOrdersChange,
         ];
 
         // Get recent orders
