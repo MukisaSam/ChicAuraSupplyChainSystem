@@ -529,10 +529,7 @@ def main():
         # Connect and load data
         conn = get_connector()
         query = """
-        SELECT product_name, sales_date, unit_price, location,
-               units_sold AS demand
-        FROM supplied_items
-        WHERE sales_date IS NOT NULL AND units_sold IS NOT NULL
+        SELECT t1.unit_price as unit_price, t1.quantity as demand,t2.order_date as sales_date, t2.delivery_address as location, t3.name as product_name from order_items t1 join orders t2 on t1.order_id = t2.id join items t3 on t1.item_id = t3.id;
         """
         df = pd.read_sql(query, conn)
         conn.close()

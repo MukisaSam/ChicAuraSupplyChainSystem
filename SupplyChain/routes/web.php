@@ -9,7 +9,11 @@ use App\Http\Controllers\{
     TypeController,
     UserController,
     SupplierChatController,
-    InvoiceController
+    InvoiceController,
+    PublicController,
+    CartController,
+    CustomerController,
+    CustomerOrderController
 };
 
 /*
@@ -18,8 +22,55 @@ use App\Http\Controllers\{
 |--------------------------------------------------------------------------
 */
 
-// Public routes
-Route::get('/', fn() => view('welcome'))->name('welcome');
+// Public Storefront Routes
+Route::get('/', [PublicController::class, 'home'])->name('public.home');
+Route::get('/products', [PublicController::class, 'products'])->name('public.products');
+Route::get('/products/{id}', [PublicController::class, 'productDetail'])->name('public.product.detail');
+Route::get('/search', [PublicController::class, 'search'])->name('public.search');
+
+// Shopping Cart Routes
+Route::prefix('cart')->name('cart.')->group(function () {
+    Route::get('/', [CartController::class, 'index'])->name('index');
+    Route::post('/add', [CartController::class, 'add'])->name('add');
+    Route::post('/update', [CartController::class, 'update'])->name('update');
+    Route::post('/remove', [CartController::class, 'remove'])->name('remove');
+    Route::post('/clear', [CartController::class, 'clear'])->name('clear');
+    Route::get('/count', [CartController::class, 'getCartCount'])->name('count');
+    Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout');
+});
+
+// Customer Authentication Routes
+Route::prefix('customer')->name('customer.')->group(function () {
+    // Guest routes
+    Route::middleware('guest:customer')->group(function () {
+        Route::get('/register', [CustomerController::class, 'showRegistrationForm'])->name('register');
+        Route::post('/register', [CustomerController::class, 'register'])->name('register.store');
+        Route::get('/login', [CustomerController::class, 'showLoginForm'])->name('login');
+        Route::post('/login', [CustomerController::class, 'login'])->name('login.store');
+    });
+    
+    // Authenticated customer routes
+    Route::middleware('auth:customer')->group(function () {
+        Route::post('/logout', [CustomerController::class, 'logout'])->name('logout');
+        Route::get('/profile', [CustomerController::class, 'profile'])->name('profile');
+        Route::post('/profile', [CustomerController::class, 'updateProfile'])->name('profile.update');
+        Route::get('/orders', [CustomerController::class, 'orders'])->name('orders');
+        Route::get('/orders/{id}', [CustomerController::class, 'orderDetail'])->name('order.detail');
+        
+        // Order management
+        Route::post('/order', [CustomerOrderController::class, 'store'])->name('order.store');
+        Route::get('/order/{id}/confirmation', [CustomerOrderController::class, 'confirmation'])->name('order.confirmation');
+        Route::post('/order/{id}/cancel', [CustomerOrderController::class, 'cancel'])->name('order.cancel');
+        Route::post('/order/{id}/reorder', [CustomerOrderController::class, 'reorder'])->name('order.reorder');
+        Route::get('/order/{id}/track', [CustomerOrderController::class, 'track'])->name('order.track');
+    });
+});
+
+// Public cart access (for checkout redirect)
+Route::get('/cart', [CartController::class, 'index'])->name('public.cart');
+
+// Welcome route
+Route::get('/welcome', fn() => view('welcome'))->name('welcome');
 
 // Authentication and Registration
 Route::post('/register', [UserController::class, 'register']);
