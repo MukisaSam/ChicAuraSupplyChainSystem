@@ -34,15 +34,17 @@ class WorkOrderController extends Controller
         ]);
         return redirect()->route('manufacturer.production.index')->with('success', 'Work order created successfully!');
     }
-    public function show(WorkOrder $workOrder) {
-        $workOrder->load([
+    public function show(WorkOrder $production) {
+        // Force a fresh reload from the database to avoid stale relationships
+        $production->refresh();
+        $production->load([
             'product',
             'assignments.workforce',
             'qualityChecks.checker',
             'downtimeLogs',
             'productionCost',
         ]);
-        return view('manufacturer.production.show', compact('workOrder'));
+        return view('manufacturer.production.show', ['workOrder' => $production]);
     }
     public function edit(WorkOrder $production) {
         $products = Item::all();

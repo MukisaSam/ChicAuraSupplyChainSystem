@@ -29,7 +29,7 @@
                     <td class="border-t px-4 py-2">{{ $order->scheduled_start ? \Carbon\Carbon::parse($order->scheduled_start)->format('Y-m-d H:i') : '-' }}</td>
                     <td class="border-t px-4 py-2">
                         <div class="flex flex-wrap gap-2">
-                            <a href="{{ route('manufacturer.production.show', $order->id) }}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-3 rounded-lg shadow transition">View</a>
+                            <a href="{{ route('manufacturer.production.show', ['production' => $order->id]) }}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-3 rounded-lg shadow transition">View</a>
                             <a href="{{ route('manufacturer.production.edit', ['production' => $order->id]) }}" class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-1 px-3 rounded-lg shadow transition">Edit</a>
                             <form action="{{ route('manufacturer.production.destroy', $order->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this work order?');">
                                 @csrf

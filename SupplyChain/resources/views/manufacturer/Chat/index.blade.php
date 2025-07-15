@@ -344,7 +344,7 @@
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <i class="fas fa-search text-gray-400"></i>
                         </span>
-                        <input type="text" id="search-contacts" placeholder="Search contacts..." 
+                        <input type="text" id="manufacturerUniversalSearch" placeholder="Search contacts..." 
                                class="w-80 py-2 pl-10 pr-4 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm dark:bg-gray-700 dark:text-white">
                     </div>
                 </div>
@@ -553,7 +553,7 @@
             const contactName = document.getElementById('contact-name');
             const contactRole = document.getElementById('contact-role');
             const contactAvatar = document.getElementById('contact-avatar');
-            const searchInput = document.getElementById('search-contacts');
+            const searchInput = document.getElementById('manufacturerUniversalSearch');
 
             // CSRF token for AJAX requests
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -595,16 +595,15 @@
                 messageInput.value = '';
             });
 
+            // Remove the direct input event handler for searchInput
             // Search contacts
-            searchInput.addEventListener('input', function() {
-                const searchTerm = this.value.toLowerCase();
+            // (Removed: searchInput.addEventListener('input', ...))
+            // Listen for the universal search event instead
+            document.addEventListener('manufacturerUniversalSearch', function(e) {
+                const searchTerm = e.detail.searchTerm;
                 contactItems.forEach(item => {
-                    const name = item.dataset.contactName.toLowerCase();
-                    if (name.includes(searchTerm)) {
-                        item.style.display = 'flex';
-                    } else {
-                        item.style.display = 'none';
-                    }
+                    const name = item.dataset.contactName ? item.dataset.contactName.toLowerCase() : '';
+                    item.style.display = name.includes(searchTerm) ? 'flex' : 'none';
                 });
             });
 
@@ -793,6 +792,39 @@
                     }
                 }
             }
+        });
+    </script>
+    <script>
+        // Universal search event for all manufacturer pages
+        const searchInput = document.getElementById('manufacturerUniversalSearch');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const event = new CustomEvent('manufacturerUniversalSearch', { detail: { searchTerm } });
+                document.dispatchEvent(event);
+                console.log('manufacturerUniversalSearch event dispatched:', searchTerm);
+            });
+        }
+        // Enhanced universal search handler
+        document.addEventListener('manufacturerUniversalSearch', function(e) {
+            const searchTerm = e.detail.searchTerm;
+            // Filter stat cards
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.style.display = card.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+            });
+            // Filter recent activities
+            document.querySelectorAll('.card-gradient .flex.items-start.p-3').forEach(activity => {
+                activity.style.display = activity.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+            });
+            // Filter table rows
+            document.querySelectorAll('table tbody tr').forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+            });
+            // Filter contact items (for chat pages)
+            document.querySelectorAll('.contact-item').forEach(item => {
+                const name = item.dataset.contactName ? item.dataset.contactName.toLowerCase() : '';
+                item.style.display = name.includes(searchTerm) ? 'flex' : 'none';
+            });
         });
     </script>
 </body>

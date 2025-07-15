@@ -3,7 +3,7 @@ import numpy as np
 import joblib
 import matplotlib.pyplot as plt
 import logging
-from demand_model import preprocess_df
+from demand_model import preprocess_df, load_model, ProphetDemandModel
 from db_config import get_connector
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s:%(message)s")
@@ -15,9 +15,8 @@ feature_columns = joblib.load('model_features.pkl')
 # Load historical data with actual demand
 conn = get_connector()
 query = """
-SELECT product_name, sales_date, unit_price, location, units_sold AS demand
-FROM supplied_items
-WHERE units_sold IS NOT NULL
+        SELECT t1.unit_price as unit_price, t1.quantity as demand,t2.order_date as sales_date, t2.delivery_address as location, t3.name as product_name from order_items t1 join orders t2 on t1.order_id = t2.id join items t3 on t1.item_id = t3.id;
+
 """
 df = pd.read_sql(query, conn)
 conn.close()

@@ -42,8 +42,8 @@ class ManufacturerDashboardController extends Controller
         $totalProducts = \App\Models\Item::where('type', 'finished_product')->count();
         $totalSuppliers = Supplier::count();
         $revenue = '$' . number_format(\App\Models\Order::where('status', 'delivered')->sum('total_amount'), 2);
-        
-        return view('manufacturer.dashboard', compact('activeWorkOrders', 'inProgress', 'completedThisMonth', 'workOrders', 'totalRawMaterials', 'totalProducts', 'totalSuppliers', 'revenue'));
+        $recentActivities = $this->getRecentActivities();
+        return view('manufacturer.dashboard', compact('activeWorkOrders', 'inProgress', 'completedThisMonth', 'workOrders', 'totalRawMaterials', 'totalProducts', 'totalSuppliers', 'revenue', 'recentActivities'));
     }
 
     public function markNotificationsAsRead()

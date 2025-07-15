@@ -15,6 +15,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        // Run the TestUsersSeeder first to ensure users exist
+        $this->call(TestUsersSeeder::class);
+        
         // Get users with 'supplier' role
         $supplierUsers = User::where('role', 'supplier')->get();
 

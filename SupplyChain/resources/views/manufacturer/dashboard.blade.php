@@ -231,7 +231,7 @@
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <i class="fas fa-search text-gray-400"></i>
                         </span>
-                        <input type="text" id="dashboardSearchInput" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm" placeholder="Search orders, inventory, suppliers...">
+                        <input type="text" id="manufacturerUniversalSearch" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm" placeholder="Search dashboard, stats, activities...">
                     </div>
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
@@ -379,7 +379,7 @@
                                 </thead>
                                 <tbody>
                                     @forelse($workOrders ?? [] as $order)
-                                    <tr class="hover:bg-gray-50 cursor-pointer" onclick="window.location='{{ route('manufacturer.production.show', $order->id) }}'">
+                                    <tr class="hover:bg-gray-50 cursor-pointer" onclick="window.location='{{ route('manufacturer.production.show', ['production' => $order->id]) }}'">
                                         <td>{{ $order->id }}</td>
                                         <td>{{ $order->product->name ?? '-' }}</td>
                                         <td>{{ $order->quantity }}</td>
@@ -407,7 +407,7 @@
                                             <span class="text-xs text-gray-600 ml-1">{{ $order->progress ?? 0 }}%</span>
                                         </td>
                                         <td>
-                                            <a href="{{ route('manufacturer.production.show', $order->id) }}" class="text-blue-600 hover:underline flex items-center gap-1">
+                                            <a href="{{ route('manufacturer.production.show', ['production' => $order->id]) }}" class="text-blue-600 hover:underline flex items-center gap-1">
                                                 <i class="fas fa-eye"></i> Details
                                             </a>
                                         </td>
@@ -477,25 +477,43 @@
         }
 
         // Search functionality for dashboard stat cards and recent activities
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.getElementById('dashboardSearchInput');
-            if (searchInput) {
-                searchInput.addEventListener('input', function() {
-                    const searchTerm = this.value.toLowerCase();
-                    // Filter stat cards
-                    document.querySelectorAll('.stat-card').forEach(card => {
-                        card.style.display = card.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
-                    });
-                    // Filter recent activities
-                    document.querySelectorAll('.card-gradient .flex.items-start.p-3').forEach(activity => {
-                        activity.style.display = activity.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
-                    });
-                });
-            }
-        });
     </script>
 
     {{-- Profile Editor Modal --}}
     <x-profile-editor-modal />
+
+    <script>
+        // Universal search event for all manufacturer pages
+        const searchInput = document.getElementById('manufacturerUniversalSearch');
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const searchTerm = this.value.toLowerCase();
+                const event = new CustomEvent('manufacturerUniversalSearch', { detail: { searchTerm } });
+                document.dispatchEvent(event);
+                console.log('manufacturerUniversalSearch event dispatched:', searchTerm);
+            });
+        }
+        // Enhanced universal search handler
+        document.addEventListener('manufacturerUniversalSearch', function(e) {
+            const searchTerm = e.detail.searchTerm;
+            // Filter stat cards
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.style.display = card.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+            });
+            // Filter recent activities
+            document.querySelectorAll('.card-gradient .flex.items-start.p-3').forEach(activity => {
+                activity.style.display = activity.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+            });
+            // Filter table rows
+            document.querySelectorAll('table tbody tr').forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+            });
+            // Filter contact items (for chat pages)
+            document.querySelectorAll('.contact-item').forEach(item => {
+                const name = item.dataset.contactName ? item.dataset.contactName.toLowerCase() : '';
+                item.style.display = name.includes(searchTerm) ? 'flex' : 'none';
+            });
+        });
+    </script>
 </body>
 </html>

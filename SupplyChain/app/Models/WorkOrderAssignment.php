@@ -13,6 +13,9 @@ class WorkOrderAssignment extends Model
         'work_order_id', 'workforce_id', 'role', 'assigned_at'
     ];
 
+    protected $table = 'work_order_assignments';
+    protected $primaryKey = 'id';
+
     public function workOrder()
     {
         return $this->belongsTo(WorkOrder::class);

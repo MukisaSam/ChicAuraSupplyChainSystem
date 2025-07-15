@@ -554,6 +554,16 @@
                 }
             });
         }
+
+        document.addEventListener('manufacturerUniversalSearch', function(e) {
+            const searchTerm = e.detail.searchTerm;
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.style.display = card.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+            });
+            document.querySelectorAll('table tbody tr').forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+            });
+        });
     </script>
 </body>
 </html>

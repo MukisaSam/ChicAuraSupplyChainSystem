@@ -13,6 +13,13 @@ class WorkOrder extends Model
         'product_id', 'quantity', 'status', 'scheduled_start', 'scheduled_end', 'actual_start', 'actual_end', 'notes'
     ];
 
+    protected $casts = [
+        'scheduled_start' => 'datetime',
+        'scheduled_end' => 'datetime',
+        'actual_start' => 'datetime',
+        'actual_end' => 'datetime',
+    ];
+
     public function product()
     {
         return $this->belongsTo(Item::class, 'product_id');
