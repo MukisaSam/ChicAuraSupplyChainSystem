@@ -9,6 +9,7 @@ use App\Models\PriceNegotiation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use DateTime;
 
 class SupplierController extends Controller
 {
@@ -36,7 +37,7 @@ class SupplierController extends Controller
 
         $supplyRequests = $supplier->supplyRequests()->with('item')->latest()->paginate(10);
         $suppliedItems = $supplier->suppliedItems()->with('item')->latest()->paginate(10);
-        $items = \App\Models\Item::where('is_active', true)->get();
+        $items = \App\Models\Item::where('is_active', true)->where('type', 'raw_material')->get();
         $paymentTypes = ['cash', 'credit', 'bank_transfer'];
         $deliveryMethods = ['pickup', 'delivery'];
         $stats = [
@@ -59,7 +60,7 @@ class SupplierController extends Controller
         // Item report: group by item, sum quantity, avg price, avg rating
         $itemReport = $supplier->suppliedItems()
             ->selectRaw('item_id, SUM(delivered_quantity) as total_quantity, AVG(price) as avg_price, AVG(quality_rating) as avg_rating')
-            ->with('item')
+            ->with(['item' => function($query) { $query->where('type', 'raw_material'); }])
             ->groupBy('item_id')
             ->get();
 
@@ -166,7 +167,39 @@ class SupplierController extends Controller
             ->groupBy('month')
             ->get();
 
-        return view('supplier/analytics.index', compact('stats', 'supplyTrends'));
+        // Prepare data for supply trends chart
+        $months = [];
+        $totals = [];
+        foreach ($supplyTrends as $trend) {
+            $months[] = DateTime::createFromFormat('!m', $trend->month)->format('F');
+            $totals[] = $trend->total;
+        }
+
+        // Prepare data for revenue chart
+        $revenueTrends = $supplier->suppliedItems()
+            ->selectRaw('MONTH(delivery_date) as month, SUM(price * delivered_quantity) as revenue')
+            ->groupBy('month')
+            ->get();
+        $revenueMonths = [];
+        $revenues = [];
+        foreach ($revenueTrends as $trend) {
+            $revenueMonths[] = DateTime::createFromFormat('!m', $trend->month)->format('F');
+            $revenues[] = $trend->revenue;
+        }
+
+        // Prepare data for ratings chart
+        $ratingTrends = $supplier->suppliedItems()
+            ->selectRaw('MONTH(delivery_date) as month, AVG(quality_rating) as avg_rating')
+            ->groupBy('month')
+            ->get();
+        $ratingMonths = [];
+        $ratings = [];
+        foreach ($ratingTrends as $trend) {
+            $ratingMonths[] = DateTime::createFromFormat('!m', $trend->month)->format('F');
+            $ratings[] = round($trend->avg_rating, 2);
+        }
+
+        return view('supplier/analytics.index', compact('stats', 'supplyTrends', 'months', 'totals', 'revenueMonths', 'revenues', 'ratingMonths', 'ratings'));
     }
 
     public function chat()
@@ -237,7 +270,7 @@ class SupplierController extends Controller
     public function supplyRequestsIndex(Request $request)
     {
         $supplier = Auth::user()->supplier;
-        $query = $supplier->supplyRequests()->with('item')->latest();
+        $query = $supplier->supplyRequests()->with(['item' => function($query) { $query->where('type', 'raw_material'); }])->latest();
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
@@ -254,7 +287,7 @@ class SupplierController extends Controller
         if (!$supplier) {
             abort(403, 'You are not a supplier.');
         }
-        $query = $supplier->suppliedItems()->with('item')->latest();
+        $query = $supplier->suppliedItems()->with(['item' => function($query) { $query->where('type', 'raw_material'); }])->latest();
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }

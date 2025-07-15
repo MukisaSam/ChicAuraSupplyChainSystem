@@ -18,40 +18,34 @@
 
             <!-- Filters -->
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-4 mb-6">
-                <div class="card-body">
-                    <form method="GET" class="row g-3">
-                        <div class="col-md-3">
-                            <label for="status" class="form-label">Status</label>
-                            <select name="status" id="status" class="form-select">
-                                <option value="">All Status</option>
-                                <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
-                                <option value="accepted" {{ request('status') == 'accepted' ? 'selected' : '' }}>Accepted</option>
-                                <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
-                                <option value="in_progress" {{ request('status') == 'in_progress' ? 'selected' : '' }}>In Progress</option>
-                                <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label for="due_date" class="form-label">Due Date</label>
-                            <input type="date" name="due_date" id="due_date" class="form-control" value="{{ request('due_date') }}">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">&nbsp;</label>
-                            <div>
-                                <button type="submit" class="btn btn-primary">Filter</button>
-                                <a href="{{ route('supplier.supply-requests.index') }}" class="btn btn-secondary">Clear</a>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                <form method="GET" class="flex flex-wrap gap-4 items-end">
+                    <div class="flex flex-col">
+                        <label for="status" class="form-label text-gray-700 dark:text-gray-200">Status</label>
+                        <select name="status" id="status" class="form-select rounded-lg border-gray-300 focus:border-green-500 focus:ring-green-500 dark:bg-gray-700 dark:text-white">
+                            <option value="">All Status</option>
+                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="accepted" {{ request('status') == 'accepted' ? 'selected' : '' }}>Accepted</option>
+                            <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                            <option value="in_progress" {{ request('status') == 'in_progress' ? 'selected' : '' }}>In Progress</option>
+                            <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col">
+                        <label for="due_date" class="form-label text-gray-700 dark:text-gray-200">Due Date</label>
+                        <input type="date" name="due_date" id="due_date" class="form-input rounded-lg border-gray-300 focus:border-green-500 focus:ring-green-500 dark:bg-gray-700 dark:text-white" value="{{ request('due_date') }}">
+                    </div>
+                    <div class="flex gap-2 mt-4 sm:mt-0">
+                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg shadow hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition">Filter</button>
+                        <a href="{{ route('supplier.supply-requests.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg shadow hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 transition">Clear</a>
+                    </div>
+                </form>
             </div>
-
             <!-- Supply Requests Card Grid (Tailwind) -->
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
                 <h5 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">All Supply Requests</h5>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     @forelse($supplyRequests as $request)
-                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-5 flex flex-col justify-between">
+                        <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-5 flex flex-col justify-between transform transition duration-200 hover:scale-105 hover:shadow-2xl">
                             <div>
                                 <div class="flex items-center justify-between mb-2">
                                     <span class="text-xs text-gray-400">#{{ $request->id }}</span>

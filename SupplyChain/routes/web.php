@@ -74,55 +74,48 @@ Route::middleware('auth')->group(function () {
     Route::get('/user-profile/picture', [\App\Http\Controllers\UserProfileController::class, 'getProfilePicture'])->name('user.profile.picture');
 });
 
-// Admin
+// Admin Routes (organized)
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Dashboard
     Route::get('/dashboard', [\App\Http\Controllers\AdminDashboardController::class, 'index'])->name('dashboard');
 
-    //User Managemnet
-    Route::get('/users', [App\Http\Controllers\AdminUsersController::class, 'index'])->name('users');
-    Route::get('/users/add', fn() => view('admin.UsersManagement.addUser'))->name('users.add.view');
-    Route::get('/users/edit', fn() => view('admin.UsersManagement.editUser'))->name('users.edit.view');
-    Route::post('/users', [App\Http\Controllers\AdminUsersController::class, 'addUserView'])->name('users.addview');
-    Route::post('/users/edit', [App\Http\Controllers\AdminUsersController::class, 'editUserView'])->name('users.editview');
-    Route::post('/users/add', [App\Http\Controllers\AdminUsersController::class, 'addUser'])->name('users.add');
-    Route::post('/users/remove', [App\Http\Controllers\AdminUsersController::class, 'removeUser'])->name('users.remove');
-    Route::post('/users/update', [App\Http\Controllers\AdminUsersController::class, 'updateUser'])->name('users.update');
-    
-    // User Management Routes
-    /*
-    Route::prefix('users')->name('users.')->group(function () {
-        Route::get('/table', [App\Http\Controllers\AdminUsersController::class, 'ajaxIndex'])->name('table');
-        Route::get('/list', [App\Http\Controllers\AdminUsersController::class, 'getUsers'])->name('list');
-        Route::get('/{user}', [App\Http\Controllers\AdminUsersController::class, 'show'])->name('show');
-        Route::post('/', [App\Http\Controllers\AdminUsersController::class, 'store'])->name('store');
-        Route::put('/{user}', [App\Http\Controllers\AdminUsersController::class, 'update'])->name('update');
-        Route::delete('/{user}', [App\Http\Controllers\AdminUsersController::class, 'destroy'])->name('destroy');
-    });
-    */
+    // Users Management
+    Route::get('/users', [\App\Http\Controllers\AdminUsersController::class, 'index'])->name('users');
 
-    // User Roles Routes
-    Route::prefix('user-roles')->name('user-roles.')->group(function () {
-        Route::get('/ajax', [App\Http\Controllers\Admin\UserRoleController::class, 'ajaxIndex'])->name('ajax');
-        Route::post('/{user}', [App\Http\Controllers\Admin\UserRoleController::class, 'update'])->name('update');
+    // Add missing admin.users.* routes
+    Route::post('/users/editview', [\App\Http\Controllers\AdminUsersController::class, 'editView'])->name('users.editview');
+    Route::post('/users/remove', [\App\Http\Controllers\AdminUsersController::class, 'remove'])->name('users.remove');
+    Route::post('/users/addview', [\App\Http\Controllers\AdminUsersController::class, 'addView'])->name('users.addview');
+    Route::post('/users/update', [\App\Http\Controllers\AdminUsersController::class, 'update'])->name('users.update');
+    Route::post('/users/add', [\App\Http\Controllers\AdminUsersController::class, 'add'])->name('users.add');
+
+    // User Roles
+    Route::get('/user-roles', [\App\Http\Controllers\Admin\UserRoleController::class, 'index'])->name('user-roles.index');
+    Route::get('/user-roles/ajax', [\App\Http\Controllers\Admin\UserRoleController::class, 'ajaxIndex'])->name('user-roles.ajax');
+
+    // Analytics
+    Route::get('/analytics', [\App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('analytics.index');
+
+    // Chat
+    Route::prefix('chat')->name('chat.')->group(function () {
+        Route::get('/', [\App\Http\Controllers\AdminChatController::class, 'index'])->name('index');
+        Route::get('/{contactId}', [\App\Http\Controllers\AdminChatController::class, 'show'])->name('show');
+        Route::post('/send', [\App\Http\Controllers\AdminChatController::class, 'sendMessage'])->name('send');
     });
 
-    Route::get('/users/table', [App\Http\Controllers\AdminUsersController::class, 'ajaxIndex'])->name('users.table');
+    // Notifications
+    Route::get('/notifications', [\App\Http\Controllers\AdminNotificationsController::class, 'index'])->name('notifications.index');
 
-    Route::get('/analytics/user-registrations', [App\Http\Controllers\AdminDashboardController::class, 'userRegistrationsAnalytics'])->name('analytics.user-registrations');
+    // Settings
+    Route::get('/settings', [\App\Http\Controllers\AdminSettingsController::class, 'index'])->name('settings.index');
+    Route::post('/settings', [\App\Http\Controllers\AdminSettingsController::class, 'update'])->name('settings.update');
 
-    Route::get('/analytics', [App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('admin.analytics');
+    // Audit Logs
+    Route::get('/audit-logs', [\App\Http\Controllers\AuditLogsController::class, 'index'])->name('audit-logs.index');
+
+    // System Settings
+    Route::get('/settings', function() { return view('admin.settings.index'); })->name('settings.index');
 });
-
-Route::middleware(['auth', 'can:manage-users'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('user-roles', [App\Http\Controllers\Admin\UserRoleController::class, 'index'])->name('user-roles.index');
-    Route::post('user-roles/{user}', [App\Http\Controllers\Admin\UserRoleController::class, 'update'])->name('user-roles.update');
-});
-Route::post('admin/user-roles/{user}/ajax', [App\Http\Controllers\Admin\UserRoleController::class, 'ajaxUpdate'])->name('admin.user-roles.ajax-update');
-Route::post('admin/users/ajax', [App\Http\Controllers\AdminUsersController::class, 'ajaxStore'])->name('admin.users.ajax-store');
-Route::put('admin/users/{user}/ajax', [App\Http\Controllers\AdminUsersController::class, 'ajaxUpdate'])->name('admin.users.ajax-update');
-Route::delete('admin/users/{user}/ajax', [App\Http\Controllers\AdminUsersController::class, 'ajaxDestroy'])->name('admin.users.ajax-destroy');
-
-Route::get('/admin/analytics/orders', [App\Http\Controllers\AdminDashboardController::class, 'ordersOverTime']);
 
 // Supplier Routes
 Route::middleware(['auth', 'role:supplier'])

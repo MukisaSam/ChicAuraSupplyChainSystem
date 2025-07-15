@@ -21,6 +21,89 @@
             <p class="text-3xl font-bold text-purple-600 dark:text-purple-400">${{ number_format($stats['total_revenue'], 2) }}</p>
         </div>
     </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 mb-8">
+        <h5 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Supply Trends (Monthly)</h5>
+        <canvas id="supplyTrendsChart" height="120"></canvas>
+        <script>
+            const ctx = document.getElementById('supplyTrendsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: @json($months),
+                    datasets: [{
+                        label: 'Total Supplied',
+                        data: @json($totals),
+                        backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                        borderRadius: 8,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        </script>
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 mb-8">
+        <h5 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Monthly Revenue</h5>
+        <canvas id="revenueChart" height="120"></canvas>
+        <script>
+            const ctxRevenue = document.getElementById('revenueChart').getContext('2d');
+            new Chart(ctxRevenue, {
+                type: 'bar',
+                data: {
+                    labels: @json($revenueMonths),
+                    datasets: [{
+                        label: 'Revenue',
+                        data: @json($revenues),
+                        backgroundColor: 'rgba(139, 92, 246, 0.7)',
+                        borderRadius: 8,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        </script>
+    </div>
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 mb-8">
+        <h5 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Average Quality Rating (Monthly)</h5>
+        <canvas id="ratingChart" height="120"></canvas>
+        <script>
+            const ctxRating = document.getElementById('ratingChart').getContext('2d');
+            new Chart(ctxRating, {
+                type: 'line',
+                data: {
+                    labels: @json($ratingMonths),
+                    datasets: [{
+                        label: 'Avg. Rating',
+                        data: @json($ratings),
+                        backgroundColor: 'rgba(253, 224, 71, 0.4)',
+                        borderColor: 'rgba(253, 224, 71, 1)',
+                        borderWidth: 2,
+                        tension: 0.3,
+                        fill: true,
+                        pointBackgroundColor: 'rgba(253, 224, 71, 1)',
+                        pointRadius: 4,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, max: 5 }
+                    }
+                }
+            });
+        </script>
+    </div>
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
         <h5 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Supply Trends (Monthly)</h5>
         <div class="overflow-x-auto">

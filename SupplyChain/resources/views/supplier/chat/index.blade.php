@@ -204,7 +204,7 @@
             </header>
 
             <!-- Main Content -->
-            <main class="flex-1 p-4">
+            <main class="flex-1 p-4 overflow-y-auto min-h-0">
                 <div class="mb-6">
                     <h2 class="text-2xl font-bold text-white mb-1">Chat</h2>
                     <p class="text-gray-200 text-sm">Communicate with manufacturers and support team</p>
@@ -276,7 +276,7 @@
                     </div>
 
                     <!-- Chat Area -->
-                    <div class="flex-1 card-gradient rounded-xl flex flex-col" id="chat-conversation">
+                    <div class="flex-1 card-gradient rounded-xl flex flex-col min-h-0" id="chat-conversation">
                         <div id="chat-welcome" class="flex-1 flex items-center justify-center">
                             <div class="text-center">
                                 <div class="w-24 h-24 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900 dark:to-purple-800 rounded-full flex items-center justify-center mx-auto mb-6">

@@ -412,28 +412,30 @@
                     <h3 class="text-white text-sm font-semibold mb-3 px-3">ADMINISTRATION</h3>
                 </div>
                 <nav class="flex-1 px-4 py-2 space-y-1">
-                    <a href="{{route('admin.dashboard')}}"
-                        class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i
-                            class="fas fa-tachometer-alt w-5"></i><span
-                            class="ml-2 font-medium text-sm">Dashboard</span></a>
-                    <a href="#"
-                        class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i
-                            class="fas fa-shield-alt w-5"></i><span class="ml-2 text-sm">Roles & Permissions</span></a>
-                    <a href="#"
-                        class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i
-                            class="fas fa-cogs w-5"></i><span class="ml-2 text-sm">System Settings</span></a>
-                    <a href="#"
-                        class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i
-                            class="fas fa-chart-pie w-5"></i><span class="ml-2 text-sm">Analytics</span></a>
-                    <a href="#"
-                        class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i
-                            class="fas fa-history w-5"></i><span class="ml-2 text-sm">Audit Logs</span></a>
-                    <a href="#"
-                        class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl"><i
-                            class="fas fa-bell w-5"></i><span class="ml-2 text-sm">Notifications</span></a>
-                    <a href="{{route('admin.users')}}"
-                        class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl shadow-lg"><i
-                            class="fa-solid fa-user"></i><span class="ml-2 text-sm">Users Management</span></a>
+                    <a href="{{ route('admin.dashboard') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.dashboard') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-tachometer-alt w-5"></i><span class="ml-2 font-medium text-sm">Dashboard</span>
+                    </a>
+                    <a href="{{ route('admin.users') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.users') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-users-cog w-5"></i><span class="ml-2 text-sm">Users Management</span>
+                    </a>
+                    <a href="{{ route('admin.user-roles.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.user-roles.index') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-shield-alt w-5"></i><span class="ml-2 text-sm">Roles & Permissions</span>
+                    </a>
+                    <a href="{{ route('admin.analytics.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.analytics') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-chart-pie w-5"></i><span class="ml-2 text-sm">Analytics</span>
+                    </a>
+                    <a href="{{ route('admin.audit-logs.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.audit-logs.index') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-history w-5"></i><span class="ml-2 text-sm">Audit Logs</span>
+                    </a>
+                    <a href="{{ route('admin.notifications.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.notifications.index') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-bell w-5"></i><span class="ml-2 text-sm">Notifications</span>
+                    </a>
+                    <a href="{{ route('admin.settings.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.settings.index') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-cogs w-5"></i><span class="ml-2 text-sm">System Settings</span>
+                    </a>
+                    <a href="{{ route('admin.chat.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.chat.index') || request()->routeIs('admin.chat.show') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-comments w-5"></i><span class="ml-2 text-sm">Chat</span>
+                    </a>
                 </nav>
                 <div class="p-3 border-t border-gray-600">
                     <div class="text-center text-gray-400 text-xs">
@@ -443,7 +445,7 @@
                 </div>
             </div>
         </aside>
-
+        
         <div class="flex flex-col flex-1 w-full">
             <!-- Top Navigation Bar -->
             <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b">
@@ -855,16 +857,16 @@
                     <td class="px-4 py-3 text-sm">${user.created_at}</td>
                     <td class="px-4 py-3 ${isLastRow ? 'rounded-br-xl' : ''}">
                         <div class="flex space-x-2">
-                            <form action="{{route('admin.users.addview')}}" method="POST">
+                            <form id="addUserForm" action="{{ route('admin.users.ajax-store') }}" method="POST">
                                 @csrf
                                 <button type="submit" class="action-btn text-blue-600">
                                     <input type="text" name="id" class="hidden" value="${user.id}">
                                     <i class="fas fa-user-plus"></i>
                                 </button>
                             </form>
-                            <form action="{{route('admin.users.remove')}}" method="POST">
+                            <form class="removeUserForm" data-user-id="${user.id}" method="POST">
                                 @csrf
-                                <button class="action-btn text-red-600 hover:bg-red-50">
+                                <button type="submit" class="action-btn text-red-600 hover:bg-red-50">
                                     <input type="text" name="id" class="hidden" value="${user.id}">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
@@ -1199,6 +1201,60 @@
             });
         }        
         
+        document.addEventListener('DOMContentLoaded', function() {
+    // Add User AJAX (already present)
+    document.querySelectorAll('#addUserForm').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(form);
+            fetch(form.action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value,
+                    'Accept': 'application/json'
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('User added successfully!');
+            })
+            .catch(error => {
+                alert('Error adding user.');
+            });
+        });
+    });
+    // Remove User AJAX
+    document.querySelectorAll('.removeUserForm').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const userId = form.getAttribute('data-user-id');
+            const url = `/admin/users/${userId}/ajax`;
+            const formData = new FormData(form);
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('input[name=_token]').value,
+                    'Accept': 'application/json'
+                },
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('User removed successfully!');
+                const rowToRemove = form.closest('tr');
+                if (rowToRemove) {
+                    rowToRemove.remove();
+                }
+                updatePagination();
+                updateActivepagination();
+            })
+            .catch(error => {
+                alert('Error removing user.');
+            });
+        });
+    });
+});
 
 
     </script>
