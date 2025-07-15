@@ -177,7 +177,7 @@
                     <img src="{{ $contact->profile_picture ? Storage::disk('public')->url($contact->profile_picture) : asset('images/default-avatar.svg') }}" alt="{{ $contact->name }}" class="w-12 h-12 rounded-full border-2 border-indigo-200">
                     <span class="online-indicator ml-2 {{ $contact->isOnline() ? 'bg-green-500' : 'bg-gray-400' }}"></span>
                     <div class="ml-4">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $contact->name }}</h3>
+                        <h3 class="text-lg font-semibold text-black">{{ $contact->name }}</h3>
                         <p class="text-sm text-gray-500 dark:text-gray-400">{{ ucfirst($contact->role) }}
                             <span class="ml-2 text-xs {{ $contact->isOnline() ? 'text-green-500' : 'text-gray-400' }}">
                                 {{ $contact->isOnline() ? 'Online' : 'Offline' }}

@@ -149,7 +149,7 @@
                     <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"><i class="fas fa-bars text-lg"></i></button>
                     <div class="relative ml-3 hidden md:block">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3"><i class="fas fa-search text-gray-400"></i></span>
-                        <input type="text" class="w-80 py-2 pl-10 pr-4 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm dark:bg-gray-700 dark:text-white" placeholder="Search reports...">
+                        <input type="text" id="wholesalerUniversalSearch" class="w-80 py-2 pl-10 pr-4 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm dark:bg-gray-700 dark:text-white" placeholder="Search orders, products, invoices, reports, chat...">
                     </div>
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
@@ -307,5 +307,23 @@
             document.getElementById('sidebar').classList.toggle('open');
         });
     </script>
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('wholesalerUniversalSearch');
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            // Filter report tables
+            document.querySelectorAll('table tbody tr').forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+            });
+            // Filter report cards
+            document.querySelectorAll('.card-gradient').forEach(card => {
+                card.style.display = card.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+            });
+        });
+    }
+});
+</script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 @section('content')
 <div class="container mx-auto py-10">
     <h1 class="text-3xl font-bold text-white mb-10 text-center">Manage Partners</h1>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+    <div class="space-y-10">
         <!-- Suppliers Card -->
         <div class="bg-white rounded-xl shadow-lg p-6 flex flex-col">
             <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Suppliers</h2>

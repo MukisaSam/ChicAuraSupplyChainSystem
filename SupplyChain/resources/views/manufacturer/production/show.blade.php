@@ -20,10 +20,6 @@
                 <h2 class="text-lg font-semibold text-gray-700 mb-1">Scheduled:</h2>
                 <p class="text-gray-800">{{ $workOrder->scheduled_start ? \Carbon\Carbon::parse($workOrder->scheduled_start)->format('Y-m-d H:i') : '-' }} to {{ $workOrder->scheduled_end ? \Carbon\Carbon::parse($workOrder->scheduled_end)->format('Y-m-d H:i') : '-' }}</p>
             </div>
-            <div>
-                <h2 class="text-lg font-semibold text-gray-700 mb-1">Actual:</h2>
-                <p class="text-gray-800">{{ $workOrder->actual_start ? \Carbon\Carbon::parse($workOrder->actual_start)->format('Y-m-d H:i') : '-' }} to {{ $workOrder->actual_end ? \Carbon\Carbon::parse($workOrder->actual_end)->format('Y-m-d H:i') : '-' }}</p>
-            </div>
             @if($workOrder->notes)
             <div>
                 <h2 class="text-lg font-semibold text-gray-700 mb-1">Notes:</h2>

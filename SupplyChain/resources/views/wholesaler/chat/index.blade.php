@@ -298,7 +298,7 @@
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <i class="fas fa-search text-gray-400"></i>
                         </span>
-                        <input type="text" id="search-contacts" placeholder="Search contacts..." 
+                        <input type="text" id="wholesalerUniversalSearch" placeholder="Search orders, products, invoices, reports, chat..." 
                                class="w-80 py-2 pl-10 pr-4 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm dark:bg-gray-700 dark:text-white">
                     </div>
                 </div>
@@ -478,7 +478,7 @@
             const contactName = document.getElementById('contact-name');
             const contactRole = document.getElementById('contact-role');
             const contactAvatar = document.getElementById('contact-avatar');
-            const searchInput = document.getElementById('search-contacts');
+            const searchInput = document.getElementById('wholesalerUniversalSearch');
 
             // CSRF token for AJAX requests
             const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
@@ -720,6 +720,20 @@
                         }
                     }
                 }
+            }
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('wholesalerUniversalSearch');
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.toLowerCase();
+                    document.querySelectorAll('.contact-item').forEach(item => {
+                        const name = item.dataset.contactName ? item.dataset.contactName.toLowerCase() : '';
+                        item.style.display = name.includes(searchTerm) ? 'flex' : 'none';
+                    });
+                });
             }
         });
     </script>

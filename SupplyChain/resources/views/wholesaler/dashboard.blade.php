@@ -157,7 +157,7 @@
                     <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700"><i class="fas fa-bars text-lg"></i></button>
                     <div class="relative ml-3 hidden md:block">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3"><i class="fas fa-search text-gray-400"></i></span>
-                        <input type="text" id="dashboardSearchInput" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" placeholder="Search products, orders...">
+                        <input type="text" id="wholesalerUniversalSearch" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm" placeholder="Search orders, products, invoices, reports, chat...">
                     </div>
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
@@ -197,53 +197,53 @@
                 </div>
                 
                 <div class="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
+                    <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow stat-card">
                         <div class="flex items-center">
                             <div class="p-3 rounded-xl bg-indigo-500 dark:bg-indigo-700">
                                 <i class="fas fa-receipt text-white text-xl"></i>
                             </div>
                             <div class="ml-3">
-                                <p class="text-sm text-gray-700 dark:text-gray-300">Total Orders</p>
-                                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $stats['total_orders'] ?? '0' }}</p>
+                                <p class="text-sm text-black">Total Orders</p>
+                                <p class="text-2xl font-bold text-black">{{ $stats['total_orders'] ?? '0' }}</p>
                                 <p class="text-sm text-indigo-600 dark:text-indigo-400 mt-1">↗ +18% this month</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
+                    <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow stat-card">
                         <div class="flex items-center">
                             <div class="p-3 rounded-xl bg-green-500 dark:bg-green-700">
                                 <i class="fas fa-dollar-sign text-white text-xl"></i>
                             </div>
                             <div class="ml-3">
-                                <p class="text-sm text-gray-700 dark:text-gray-300">Revenue</p>
-                                <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($stats['total_revenue'] ?? '0', 2) }}</p>
+                                <p class="text-sm text-black">Revenue</p>
+                                <p class="text-2xl font-bold text-black">${{ number_format($stats['total_revenue'] ?? '0', 2) }}</p>
                                 <p class="text-sm text-green-600 dark:text-green-400 mt-1">↗ +12% this month</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
+                    <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow stat-card">
                         <div class="flex items-center">
                             <div class="p-3 rounded-xl bg-purple-500 dark:bg-purple-700">
                                 <i class="fas fa-chart-line text-white text-xl"></i>
                             </div>
                             <div class="ml-3">
-                                <p class="text-sm text-gray-700 dark:text-gray-300">Avg Order Value</p>
-                                <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($stats['avg_order_value'] ?? '0', 2) }}</p>
+                                <p class="text-sm text-black">Avg Order Value</p>
+                                <p class="text-2xl font-bold text-black">${{ number_format($stats['avg_order_value'] ?? '0', 2) }}</p>
                                 <p class="text-sm text-purple-600 dark:text-purple-400 mt-1">↗ +5% this month</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
+                    <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow stat-card">
                         <div class="flex items-center">
                             <div class="p-3 rounded-xl bg-orange-500 dark:bg-orange-700">
                                 <i class="fas fa-clock text-white text-xl"></i>
                             </div>
                             <div class="ml-3">
-                                <p class="text-sm text-gray-700 dark:text-gray-300">Pending Orders</p>
-                                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $stats['pending_orders'] ?? 0 }}</p>
+                                <p class="text-sm text-black">Pending Orders</p>
+                                <p class="text-2xl font-bold text-black">{{ $stats['pending_orders'] ?? 0 }}</p>
                                 <p class="text-sm text-orange-600 dark:text-orange-400 mt-1">{{ $stats['pending_orders_change'] ?? 0 }}% from last month</p>
                             </div>
                         </div>
@@ -259,7 +259,7 @@
                         <h3 class="text-lg font-bold text-black mb-3">Recent Orders</h3>
                         <div class="space-y-2 h-48 overflow-y-auto">
                             @forelse ($recentOrders as $order)
-                                <div class="flex items-center p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                                <div class="flex items-center p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow recent-order-row">
                                     <div class="flex-shrink-0">
                                         <div class="w-10 h-10 flex items-center justify-center rounded-full {{ $order['status_color'] }} bg-opacity-10">
                                             <i class="fas {{ $order['icon'] }} {{ $order['status_color'] }} text-sm"></i>
@@ -288,120 +288,136 @@
     </div>
 
     <script>
-        // Mobile menu toggle
-        document.getElementById('menu-toggle').addEventListener('click', function() {
-            document.getElementById('sidebar').classList.toggle('open');
-        });
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const menuToggle = document.getElementById('menu-toggle');
+            if (menuToggle) {
+                menuToggle.addEventListener('click', function() {
+                    document.getElementById('sidebar').classList.toggle('open');
+                });
+            }
 
-        // Purchase History Chart
-        const purchaseCtx = document.getElementById('purchaseChart').getContext('2d');
-        new Chart(purchaseCtx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Purchase Amount',
-                    data: [15000, 25000, 18000, 32000, 28000, 35000],
-                    borderColor: '#8B5CF6',
-                    backgroundColor: 'rgba(139, 92, 246, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
+            // Purchase History Chart
+            const purchaseCtx = document.getElementById('purchaseChart').getContext('2d');
+            new Chart(purchaseCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Purchase Amount',
+                        data: [15000, 25000, 18000, 32000, 28000, 35000],
+                        borderColor: '#8B5CF6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0,0,0,0.1)'
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
                         }
                     },
-                    x: {
-                        grid: {
-                            display: false
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
 
-        // Notification dropdown logic
-        const notificationBtn = document.getElementById('notificationDropdownBtn');
-        const notificationDropdown = document.getElementById('notificationDropdown');
-        const notificationBadge = document.getElementById('notificationBadge');
-        const notificationList = document.getElementById('notificationList');
-        const markAllReadBtn = document.getElementById('markAllReadBtn');
+            // Notification dropdown logic
+            const notificationBtn = document.getElementById('notificationDropdownBtn');
+            const notificationDropdown = document.getElementById('notificationDropdown');
+            const notificationBadge = document.getElementById('notificationBadge');
+            const notificationList = document.getElementById('notificationList');
+            const markAllReadBtn = document.getElementById('markAllReadBtn');
 
-        notificationBtn.addEventListener('click', function(e) {
-            notificationDropdown.classList.toggle('hidden');
-            if (!notificationDropdown.classList.contains('hidden')) {
-                loadNotifications();
-            }
-        });
-        document.addEventListener('click', function(e) {
-            if (!notificationBtn.contains(e.target) && !notificationDropdown.contains(e.target)) {
-                notificationDropdown.classList.add('hidden');
-            }
-        });
-
-        function loadNotifications() {
-            fetch('/wholesaler/notifications')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.notifications && data.notifications.length > 0) {
-                        notificationList.innerHTML = data.notifications.map(n => `
-                            <div class="px-4 py-2 border-b last:border-b-0">
-                                <div class="text-sm">${n.data.message}</div>
-                                <div class="text-xs text-gray-400">${n.created_at_human}</div>
-                            </div>
-                        `).join('');
-                    } else {
-                        notificationList.innerHTML = '<div class="text-center text-gray-400 py-6">No new notifications.</div>';
-                    }
-                    // Update badge
-                    if (data.unread_count > 0) {
-                        notificationBadge.textContent = data.unread_count;
-                        notificationBadge.style.display = 'inline-block';
-                    } else {
-                        notificationBadge.style.display = 'none';
+            if (notificationBtn && notificationDropdown) {
+                notificationBtn.addEventListener('click', function(e) {
+                    notificationDropdown.classList.toggle('hidden');
+                    if (!notificationDropdown.classList.contains('hidden')) {
+                        loadNotifications();
                     }
                 });
-        }
-        // Auto-refresh notifications every 30 seconds
-        setInterval(loadNotifications, 30000);
-        // Mark all as read
-        markAllReadBtn.addEventListener('click', function() {
-            fetch('/wholesaler/notifications/mark-all-read', { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
-                .then(() => {
-                    loadNotifications();
+                document.addEventListener('click', function(e) {
+                    if (!notificationBtn.contains(e.target) && !notificationDropdown.contains(e.target)) {
+                        notificationDropdown.classList.add('hidden');
+                    }
                 });
-        });
-        // Initial load
-        loadNotifications();
+            }
+            if (markAllReadBtn) {
+                markAllReadBtn.addEventListener('click', function() {
+                    fetch('/wholesaler/notifications/mark-all-read', { method: 'POST', headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' } })
+                        .then(() => {
+                            loadNotifications();
+                        });
+                });
+            }
 
-        // Search functionality for dashboard cards and recent orders
-        document.addEventListener('DOMContentLoaded', function() {
-            const searchInput = document.getElementById('dashboardSearchInput');
+            function loadNotifications() {
+                fetch('/wholesaler/notifications')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.notifications && data.notifications.length > 0) {
+                            notificationList.innerHTML = data.notifications.map(n => `
+                                <div class="px-4 py-2 border-b last:border-b-0">
+                                    <div class="text-sm">${n.data.message}</div>
+                                    <div class="text-xs text-gray-400">${n.created_at_human}</div>
+                                </div>
+                            `).join('');
+                        } else {
+                            notificationList.innerHTML = '<div class="text-center text-gray-400 py-6">No new notifications.</div>';
+                        }
+                        // Update badge
+                        if (data.unread_count > 0) {
+                            notificationBadge.textContent = data.unread_count;
+                            notificationBadge.style.display = 'inline-block';
+                        } else {
+                            notificationBadge.style.display = 'none';
+                        }
+                    });
+            }
+            // Auto-refresh notifications every 30 seconds
+            setInterval(loadNotifications, 30000);
+            // Initial load
+            loadNotifications();
+
+            // Universal search
+            const searchInput = document.getElementById('wholesalerUniversalSearch');
+            console.log('Universal search script loaded.');
             if (searchInput) {
+                console.log('Search input found.');
+                // Log the actual elements found
+                const statCards = document.querySelectorAll('.stat-card');
+                const recentOrders = document.querySelectorAll('.recent-order-row');
+                console.log('Stat cards:', statCards);
+                console.log('Recent order rows:', recentOrders);
                 searchInput.addEventListener('input', function() {
                     const searchTerm = this.value.toLowerCase();
+                    console.log('Search term:', searchTerm);
                     // Filter stat cards
-                    document.querySelectorAll('.stat-card').forEach(card => {
+                    statCards.forEach(card => {
                         card.style.display = card.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
                     });
                     // Filter recent orders
-                    document.querySelectorAll('.card-gradient .flex.items-center.p-3').forEach(order => {
+                    recentOrders.forEach(order => {
                         order.style.display = order.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
                     });
                 });
+            } else {
+                console.log('Search input NOT found.');
             }
         });
     </script>

@@ -201,7 +201,7 @@
                     <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"><i class="fas fa-bars text-lg"></i></button>
                     <div class="relative ml-3 hidden md:block">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3"><i class="fas fa-search text-gray-400"></i></span>
-                        <input type="text" class="w-80 py-2 pl-10 pr-4 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm dark:bg-gray-700 dark:text-white" placeholder="Search analytics...">
+                        <input type="text" id="wholesalerUniversalSearch" class="w-80 py-2 pl-10 pr-4 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm dark:bg-gray-700 dark:text-white" placeholder="Search orders, products, invoices, reports, chat...">
                     </div>
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
@@ -239,50 +239,50 @@
 
                     <!-- Summary Cards -->
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                        <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
+                        <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow stat-card">
                             <div class="flex items-center">
                                 <div class="p-3 rounded-xl bg-blue-500 dark:bg-blue-700">
                                     <i class="fas fa-shopping-cart text-white text-xl"></i>
                                 </div>
                                 <div class="ml-4">
                                     <p class="text-sm text-gray-700 dark:text-gray-300">Total Orders</p>
-                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $totalOrders }}</p>
+                                    <p class="text-2xl font-bold text-white">{{ $totalOrders }}</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
+                        <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow stat-card">
                             <div class="flex items-center">
                                 <div class="p-3 rounded-xl bg-green-500 dark:bg-green-700">
                                     <i class="fas fa-dollar-sign text-white text-xl"></i>
                                 </div>
                                 <div class="ml-4">
                                     <p class="text-sm text-gray-700 dark:text-gray-300">Total Spent</p>
-                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($totalSpent, 2) }}</p>
+                                    <p class="text-2xl font-bold text-white">${{ number_format($totalSpent, 2) }}</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
+                        <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow stat-card">
                             <div class="flex items-center">
                                 <div class="p-3 rounded-xl bg-purple-500 dark:bg-purple-700">
                                     <i class="fas fa-chart-line text-white text-xl"></i>
                                 </div>
                                 <div class="ml-4">
                                     <p class="text-sm text-gray-700 dark:text-gray-300">Avg Order Value</p>
-                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($averageOrderValue, 2) }}</p>
+                                    <p class="text-2xl font-bold text-white">${{ number_format($averageOrderValue, 2) }}</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow">
+                        <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow stat-card">
                             <div class="flex items-center">
                                 <div class="p-3 rounded-xl bg-orange-500 dark:bg-orange-700">
                                     <i class="fas fa-clock text-white text-xl"></i>
                                 </div>
                                 <div class="ml-4">
                                     <p class="text-sm text-gray-700 dark:text-gray-300">Pending Orders</p>
-                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $pendingOrders }}</p>
+                                    <p class="text-2xl font-bold text-white">{{ $pendingOrders }}</p>
                                 </div>
                             </div>
                         </div>
@@ -323,7 +323,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach($topProducts as $product)
-                                        <tr class="border-b border-gray-100 dark:border-gray-700">
+                                        <tr class="border-b border-gray-100 dark:border-gray-700 top-product-row">
                                             <td class="py-2 text-sm text-gray-900 dark:text-white">{{ $product->name }}</td>
                                             <td class="py-2 text-sm text-gray-600 dark:text-gray-400">{{ $product->total_quantity }}</td>
                                             <td class="py-2 text-sm text-gray-600 dark:text-gray-400">${{ number_format($product->total_revenue, 2) }}</td>
@@ -363,10 +363,10 @@
                                 </thead>
                                 <tbody>
                                     @foreach($recentActivity as $order)
-                                    <tr class="border-b border-gray-100 dark:border-gray-700">
+                                    <tr class="border-b border-gray-100 dark:border-gray-700 recent-activity-row">
                                         <td class="py-2 text-sm text-gray-900 dark:text-white">#{{ $order->id }}</td>
                                         <td class="py-2 text-sm text-gray-600 dark:text-gray-400">{{ $order->order_date->format('M d, Y') }}</td>
-                                        <td class="py-2 text-sm">
+                                        <td class="py-2 text-sm text-white">
                                             <span class="status-badge {{ $order->status === 'completed' ? 'status-badge-completed' : ($order->status === 'pending' ? 'status-badge-pending' : ($order->status === 'cancelled' ? 'status-badge-cancelled' : '')) }}">
                                                 {{ ucfirst($order->status) }}
                                             </span>
@@ -514,5 +514,29 @@
             }, 100);
         });
     </script>
+    <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('wholesalerUniversalSearch');
+    if (searchInput) {
+        console.log('Universal search script loaded.');
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            console.log('Search term:', searchTerm);
+            // Filter stat cards
+            document.querySelectorAll('.stat-card').forEach(card => {
+                card.style.display = card.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+            });
+            // Filter top products table
+            document.querySelectorAll('.top-product-row').forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+            });
+            // Filter recent activity table
+            document.querySelectorAll('.recent-activity-row').forEach(row => {
+                row.style.display = row.textContent.toLowerCase().includes(searchTerm) ? '' : 'none';
+            });
+        });
+    }
+});
+</script>
 </body>
 </html> 
