@@ -31,12 +31,22 @@
                 @if($workOrder->assignments->count())
                     <ul class="list-disc list-inside text-gray-800">
                         @foreach($workOrder->assignments as $assignment)
-                            <li class="mb-1">{{ $assignment->workforce->fullname ?? '-' }} ({{ $assignment->role }}) <span class="text-gray-500">[Assigned: {{ $assignment->assigned_at ? \Carbon\Carbon::parse($assignment->assigned_at)->format('Y-m-d H:i') : '-' }}]</span></li>
+                            <li class="mb-1 flex items-center justify-between">
+                                <span>{{ $assignment->workforce->fullname ?? '-' }} ({{ $assignment->role }}) <span class="text-gray-500">[Assigned: {{ $assignment->assigned_at ? \Carbon\Carbon::parse($assignment->assigned_at)->format('Y-m-d H:i') : '-' }}]</span></span>
+                                <form action="{{ route('manufacturer.production.assignment.destroy', $assignment->id) }}" method="POST" onsubmit="return confirm('Remove this assignment?');" class="ml-4 inline">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded shadow">Remove</button>
+                                </form>
+                            </li>
                         @endforeach
                     </ul>
                 @else
                     <p class="text-gray-500">No assignments.</p>
                 @endif
+                <div class="mt-3">
+                    <a href="{{ route('manufacturer.production.assign-workforce', $workOrder->id) }}" class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition">Assign Workforce</a>
+                </div>
             </div>
             <div>
                 <h2 class="text-lg font-semibold text-gray-700 mt-4 mb-1">Quality Checks:</h2>

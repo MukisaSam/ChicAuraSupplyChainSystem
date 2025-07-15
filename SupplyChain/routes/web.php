@@ -366,6 +366,10 @@ Route::get('warehouse/{warehouse}/assign-staff', [App\Http\Controllers\Manufactu
 Route::post('warehouse/{warehouse}/assign-staff', [App\Http\Controllers\ManufacturerWarehouseController::class, 'assignStaff'])->name('manufacturer.warehouse.assign-staff.post');
 Route::delete('warehouse/{warehouse}/remove-staff/{workforce}', [App\Http\Controllers\ManufacturerWarehouseController::class, 'removeStaff'])->name('manufacturer.warehouse.remove-staff');
 
+Route::get('manufacturer/production/{workOrder}/assign-workforce', [App\Http\Controllers\WorkOrderAssignmentController::class, 'create'])->name('manufacturer.production.assign-workforce');
+Route::post('manufacturer/production/{workOrder}/assign-workforce', [App\Http\Controllers\WorkOrderAssignmentController::class, 'store'])->name('manufacturer.production.assign-workforce.store');
+Route::delete('manufacturer/production/assignment/{workOrderAssignment}', [App\Http\Controllers\WorkOrderAssignmentController::class, 'destroy'])->name('manufacturer.production.assignment.destroy');
+
 
 
 

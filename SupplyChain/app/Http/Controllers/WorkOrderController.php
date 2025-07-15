@@ -35,6 +35,8 @@ class WorkOrderController extends Controller
         return redirect()->route('manufacturer.production.index')->with('success', 'Work order created successfully!');
     }
     public function show(WorkOrder $production) {
+        // Force a fresh reload from the database to avoid stale relationships
+        $production->refresh();
         $production->load([
             'product',
             'assignments.workforce',

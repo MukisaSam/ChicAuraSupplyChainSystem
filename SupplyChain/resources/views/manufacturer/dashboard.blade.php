@@ -379,7 +379,7 @@
                                 </thead>
                                 <tbody>
                                     @forelse($workOrders ?? [] as $order)
-                                    <tr class="hover:bg-gray-50 cursor-pointer" onclick="window.location='{{ route('manufacturer.production.show', $order->id) }}'">
+                                    <tr class="hover:bg-gray-50 cursor-pointer" onclick="window.location='{{ route('manufacturer.production.show', ['production' => $order->id]) }}'">
                                         <td>{{ $order->id }}</td>
                                         <td>{{ $order->product->name ?? '-' }}</td>
                                         <td>{{ $order->quantity }}</td>
@@ -407,7 +407,7 @@
                                             <span class="text-xs text-gray-600 ml-1">{{ $order->progress ?? 0 }}%</span>
                                         </td>
                                         <td>
-                                            <a href="{{ route('manufacturer.production.show', $order->id) }}" class="text-blue-600 hover:underline flex items-center gap-1">
+                                            <a href="{{ route('manufacturer.production.show', ['production' => $order->id]) }}" class="text-blue-600 hover:underline flex items-center gap-1">
                                                 <i class="fas fa-eye"></i> Details
                                             </a>
                                         </td>

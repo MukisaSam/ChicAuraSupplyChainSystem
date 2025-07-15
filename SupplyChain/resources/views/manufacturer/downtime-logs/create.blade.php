@@ -6,6 +6,17 @@
         <form method="POST" action="{{ route('manufacturer.downtime-logs.store') }}">
             @csrf
             <div class="mb-5">
+                <label class="block font-semibold text-gray-700 mb-2">Work Order</label>
+                <select name="work_order_id" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" required>
+                    <option value="">Select Work Order</option>
+                    @foreach($workOrders as $workOrder)
+                        <option value="{{ $workOrder->id }}">
+                            Work Order #{{ $workOrder->id }} - {{ $workOrder->product ? $workOrder->product->name : 'No Product' }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="mb-5">
                 <label class="block font-semibold text-gray-700 mb-2">Reason</label>
                 <input type="text" name="reason" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" required>
             </div>

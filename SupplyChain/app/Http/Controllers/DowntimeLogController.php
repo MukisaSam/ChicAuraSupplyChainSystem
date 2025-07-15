@@ -12,10 +12,12 @@ class DowntimeLogController extends Controller
         return view('manufacturer.downtime-logs.index', compact('logs'));
     }
     public function create() {
-        return view('manufacturer.downtime-logs.create');
+        $workOrders = \App\Models\WorkOrder::all();
+        return view('manufacturer.downtime-logs.create', compact('workOrders'));
     }
     public function store(Request $request) {
         $validated = $request->validate([
+            'work_order_id' => 'required|exists:work_orders,id',
             'reason' => 'required|string|max:255',
             'start_time' => 'required|date',
             'end_time' => 'required|date|after_or_equal:start_time',

@@ -10,7 +10,7 @@
                 <select name="workforce_id" id="workforce_id" class="w-full border px-3 py-2 rounded" required>
                     <option value="" disabled selected>Select a staff member</option>
                     @foreach($availableWorkforce as $staff)
-                        <option value="{{ $staff->id }}">{{ $staff->name }} ({{ $staff->role ?? 'Staff' }})</option>
+                        <option value="{{ $staff->id }}">{{ $staff->fullname }} ({{ $staff->role ?? 'Staff' }})</option>
                     @endforeach
                 </select>
             </div>
