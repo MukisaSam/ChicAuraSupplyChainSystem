@@ -157,8 +157,8 @@ class ManufacturerAnalyticsController extends Controller
     private function getBasicStats()
     {
         return [
-            'raw_materials' => Item::where('category', 'raw_material')->count(),
-            'products' => Item::where('category', 'finished_product')->count(),
+            'raw_materials' => Item::where('type', 'raw_material')->count(),
+            'products' => Item::where('type', 'finished_product')->count(),
             'suppliers' => Supplier::count(),
             'wholesalers' => Wholesaler::count(),
             'revenue' => '$' . number_format(Order::where('status', 'delivered')->sum('total_amount'), 2),
