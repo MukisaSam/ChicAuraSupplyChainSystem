@@ -13,7 +13,7 @@
       --primary-dark: #1d4ed8;
       --text-color: #1f2937;
       --text-light: #ffffff;
-      --bg-overlay-color: rgba(158, 216, 243, 0.7);
+      --bg-overlay-color: rgba(158, 216, 243, 0.7); 
       --container-bg-start: rgba(255, 255, 255, 0.95);
       --container-bg-end: rgba(255, 255, 255, 0.95);
       --shadow-color: rgba(0, 0, 0, 0.15);

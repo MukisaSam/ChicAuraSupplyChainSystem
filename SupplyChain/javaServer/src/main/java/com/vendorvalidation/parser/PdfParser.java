@@ -18,25 +18,41 @@ public class PdfParser {
          PDFTextStripper stripper = new PDFTextStripper();
          String text = stripper.getText(document);
          
-         //vendor info
-         app.setVendorName(extractString(text, "COMPANY / FIRM NAME\\s+(.+)"));
+         //vendor  and contact info
+         app.setCompanyName(extractString(text, "COMPANY / FIRM NAME\\s+(.+)\\s+BUSINESS EMAIL"));
          app.setVendorType(extractString(text, "(.+)\\s*APPLICATION FORM").toLowerCase());
+         app.setCompanyEmail(extractString(text, "BUSINESS EMAIL\\s+(.+)\\s+ADDRESS"));
+         app.setCompanyAddress(extractString(text, "ADDRESS\\s+(.+)\\s+PHONE NUMBER"));
+         app.setCompanyPhone(extractString(text, "PHONE NUMBER\\s+(.+)\\s+DATE ESTABLISHED"));
+         app.setDateEstablished(extractString(text, "DATE ESTABLISHED\\s+(.+)"));
+         app.setURSBNo(extractString(text, "URSB REGISTRATION NUMBER\\s+(.+)\\s+TAX IDENTIFICATION NUMBER"));
+         app.setTIN(extractString(text, "TAX IDENTIFICATION NUMBER \\(TIN\\)\\s+(.+)\\s+TRADING LICENSE NUMBER"));
+         app.setLicenseNo(extractString(text, "TRADING LICENSE NUMBER\\s+(.+)\\s+CHICAURA CLOTHING"));
+         app.setContactTitle(extractString(text, "TITLE\\s+(.+)\\s+EMAIL ADDRESS"));
+         app.setContactName(extractString(text, "FULL NAME\\s+(.+)\\s+TITLE"));
+         app.setContactNo(extractString(text, "CONTACT NUMBER\\s+(.+)\\s+SECTION C"));
+         app.setContactEmail(extractString(text, "EMAIL ADDRESS\\s+(.+)\\s+CONTACT NUMBER"));
+         app.setInventoryCapacity(extractInteger(text, "INVENTORY CAPACITY \\(warehouse sq. ft\\)\\s+(.+)\\s+URSB REGISTRATION NUMBER"));
          
          //financial info
-         app.setTotalAssets(extractInteger(text, "TOTAL ASSETS\\s*([\\d,]+)"));
-         app.setRevenue(extractDouble(text, "REVENUE\\s+([\\d,]+)"));
-         app.setProfit(extractDouble(text, "PROFIT\\s*([\\d,]+)"));
-         app.setCreditScore(extractInteger(text, "CREDIT SCORE\\s+(\\d+)"));
-         app.setBankReference(extractString(text, "BANK REFERENCE\\s+(.+)"));
+         app.setTotalAssets(extractDouble(text, "NET ASSETS\\s*([\\d,]+)\\s*ANNUAL TURNOVER"));
+         app.setMinOrderVolume(extractInteger(text, "MINIMUM ORDER VALUE \\(units\\)\\s*([\\d,]+)\\s*NUMBER OF EMPLOYEES"));
+         app.setMinSupplyQuality(extractInteger(text, "MINIMUM SUPPLY QUANTITY\\s*([\\d,]+)\\s*NUMBER OF EMPLOYEES"));
+         app.setSalesVolume(extractInteger(text, "ANNUAL SALES VOLUME\\s*([\\d,]+)\\s*NUMBER OF RETAIL OUTLETS"));
+         app.setRetailerOutletNo(extractInteger(text, "NUMBER OF RETAIL OUTLETS\\s*([\\d,]+)\\s*MINIMUM ORDER VALUE"));
+         app.setBankReference(extractString(text, "BANK REFERENCE\\s+(.+)\\s+SECTION E: REPUTATION AND REGULATORY COMPLAINCE"));
+         app.setAnnualTurnover(extractDouble(text, "ANNUAL TURNOVER\\s*([\\d,]+)\\s*BANK REFERENCE"));
          
          //reputation
-         app.setBusinessYears(extractInteger(text, "YEARS IN BUSINESS\\s+(.+)"));
-         app.setNumComplaints(extractInteger(text, "NUMBER OF COMPLAINTS\\s+(\\d+)"));
+         app.setDateEstablished(extractString(text, "DATE ESTABLISHED\\s+(.+)"));
+         app.setNumComplaints(extractInteger(text, "COMPLAINTS\\s+(\\d+)\\s+SECTION F"));
+         app.setAwards(extractString(text, "AWARDS\\s+(.+)\\s+COMPLAINTS"));
+         app.setEmployeeNo(extractInteger(text, "NUMBER OF EMPLOYEES\\s+(.+)\\s+QUALITY STANDARDS & CERTIFICATIONS"));
          
          //regulatory compliance
-         app.setHasValidLicenses(extractString(text, "LICENSES\\s+(.+)"));
-         app.setLastAuditDate(extractString(text, "LAST AUDIT DATE\\s+(\\d{4}-\\d{2}-\\d{2})"));
-         app.setHasPenalties(extractString(text, "PENALTIES\\s+(\\w+)"));
+         app.setQualityLicenses(extractString(text, "QUALITY STANDARDS & CERTIFICATIONS\\s+([\\s\\S]+?)\\s+CHICAURA CLOTHING"));
+         app.setMaterialSupplied(extractString(text, "MATERIAL SUPPLIED\\s+([\\s\\S]+?)\\s+LEAD TIME"));
+         app.setLeadTimes(extractString(text, "LEAD TIME \\(days\\)\\s+(\\w+)\\s+MINIMUM SUPPLY QUANTITY"));
      }
      
      return app;
@@ -53,11 +69,19 @@ private String extractString(String text, String pattern) {
 
 private Double extractDouble(String text, String pattern) {
 	String value = extractString(text, pattern);
+	if(value == null) {
+		return Double.parseDouble("0");
+	}
+	value = value.replaceAll(",", "");
     return Double.parseDouble(value);
 }
 
 private Integer extractInteger(String text, String pattern) {
 	String value = extractString(text, pattern);
+	if(value == null) {
+		return Integer.parseInt("0");
+	}
+	value = value.replaceAll(",", "");
     return Integer.parseInt(value);
 }
 

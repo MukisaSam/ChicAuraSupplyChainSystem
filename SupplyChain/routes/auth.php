@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::get('register', [RegisteredUserController::class, 'create'])->name('register');
+Route::get('register/online', [RegisteredUserController::class, 'createOnline'])->name('register_online');
 Route::middleware('guest')->group(function () {
     // Role selection page
     

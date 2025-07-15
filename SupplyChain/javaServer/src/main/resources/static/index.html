@@ -1,301 +1,761 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Chicaura Java Server</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary-color: #2563eb;
-      --primary-dark: #1d4ed8;
-      --text-color: #1f2937;	
-      --text-light: #ffffff;
-      --bg-overlay-color: rgba(158, 216, 243, 0.7);
-      --container-bg-start: rgba(255, 255, 255, 0.95);
-      --container-bg-end: rgba(255, 255, 255, 0.95);
-      --shadow-color: rgba(0, 0, 0, 0.15);
-    }
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="csrf-token" content="{{ csrf_token() }}">
+	
+    <title>ChicAura</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 
-    body {
-      font-family: 'Open Sans', sans-serif;
-      background-image: url('showroom.png');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      margin: 0;
-      padding: 20px;
-      color: var(--text-color);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
-    .container {
-      background: rgba(255, 255, 255, 0.1);
-      max-width: 90vw;
-      max-height: 90vh;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 20px 40px var(--shadow-color);
-      text-align: center;
-      border: 2px solid rgba(37, 99, 235, 0.2);
-      backdrop-filter: blur(10px);
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
+    <style>
+        .form-container {
+            background: rgba(248, 250, 252, 0.95) !important;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
 
-    .logo-container {
-      position: relative;
-      margin-bottom: 20px;
-      opacity: 1;
-      transform: scale(1);
-      animation: logoAppear 1.5s ease-out forwards;
-      display: inline-block;
-      background-image: url('/images/silk.jpeg');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      padding: 18px 32px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      border: 1px solid rgba(37, 99, 235, 0.1);
-      z-index: 1;
-    }
-    .logo-container::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(255,255,255,0.7); /* White overlay for contrast */
-      border-radius: 12px;
-      z-index: 2;
-    }
-    .logo {
-      position: relative;
-      z-index: 3;
-      height: auto;
-	  max-width: 400px;
-      filter: none;
-      border-radius: 0;
-      display: block;
-      margin: 0 auto;
-    }
+        .form-input {
+            background: rgba(0, 0, 0, 0.1) !important;
+            border: 2px solid rgb(0, 0, 0) !important;
+            color: #1e293b !important;
+            backdrop-filter: blur(5px);
+        }
 
-    h1 {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 2.5em;
-      color: var(--text-light);
-      margin-bottom: 10px;
-      line-height: 1.1;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-      /* Static - no animation */
-    }
+        .form-input::placeholder {
+            color: #1e293b !important;
+        }
 
-    .subtitle {
-      font-size: 1.1em;
-      color: var(--text-light);
-      margin-bottom: 25px;
-      font-weight: 500;
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-      /* Static - no animation */
-    }
+        .form-input:focus {
+            background: rgba(255, 255, 255, 0.2) !important;
+            border-color: #615fff !important;
+            color: rgb(0, 0, 0) !important;
+        }
 
-    .buttons-container {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-    }
+        .form-input2 {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border: 2px solid rgb(0, 0, 0) !important;
+            color: #1e293b !important;
+            backdrop-filter: blur(5px);
+        }
 
-    .btn {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-      color: var(--text-light);
-      padding: 12px 25px;
-      text-decoration: none;
-      border-radius: 50px;
-      font-size: 0.95em;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3);
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      opacity: 0;
-      transform: translateY(30px);
-      animation: slideInButton 0.8s ease-out forwards;
-    }
+        .form-input2::placeholder {
+            color: #1e293b !important;
+        }
 
-    .btn.login {
-      animation-delay: 0.5s;
-    }
+        .form-input2:hover {
+            background: rgba(255, 255, 255, 0.2) !important;
+            border-color: #615fff !important;
+            color: #1e293b !important;
+        }
 
-    .btn.register {
-      animation-delay: 0.8s;
-    }
+        select.form-input option {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: rgb(255, 255, 255);
+        }
 
-    .btn:hover {
-      background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
-      transform: translateY(-5px);
-      box-shadow: 0 12px 25px rgba(37, 99, 235, 0.4);
-      border-color: rgba(255, 255, 255, 0.4);
-    }
+        .form-label {
+            color: #1e293b !important;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
 
-    .features {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-      margin-top: 20px;
-      opacity: 0;
-      animation: fadeInFeatures 1s ease-out forwards;
-      animation-delay: 1.2s;
-      width: 100%;
-      max-width: 600px;
-    }
+        .divider-text {
+            background: rgba(255, 255, 255, 0.1) !important;
+            color: var(--text-light) !important;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
 
-    .feature {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 15px;
-      border-radius: 15px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      backdrop-filter: blur(5px);
-    }
+        .login-btn {
+            background: transparent !important;
+            color: var(--text-light) !important;
+            border: 2px solid rgba(255, 255, 255, 0.3) !important;
+        }
 
-    .feature h3 {
-      color: var(--text-light);
-      margin-bottom: 8px;
-      font-size: 0.95em;
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-    }
+        .login-btn:hover {
+            background: rgba(255, 255, 255, 0.1) !important;
+            border-color: var(--primary-color) !important;
+        }
 
-    .feature p {
-      color: var(--text-light);
-      font-size: 0.8em;
-      margin: 0;
-      line-height: 1.3;
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-    }
+        .step-transition {
+            transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out;
+        }
 
-    @keyframes logoAppear {
-      0% {
-        opacity: 0;
-        transform: scale(0.8) rotate(-5deg);
-      }
-      50% {
-        opacity: 0.8;
-        transform: scale(1.1) rotate(2deg);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1) rotate(0deg);
-      }
-    }
+        .step-hidden-left {
+            transform: translateX(-100%);
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
 
-    @keyframes slideInButton {
-      0% {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
+        .step-hidden-right {
+            transform: translateX(100%);
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
 
-    @keyframes fadeInFeatures {
-      0% {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @media (max-width: 768px) {
-      body {
-        padding: 10px;
-      }
-
-      .container {
-        margin: 0;
-        padding: 20px;
-        max-width: 95vw;
-        max-height: 95vh;
-      }
-
-      .logo {
-        max-width: 400px;
-      }
-
-      .logo-container {
-        padding: 8px 15px;
-        margin-bottom: 15px;
-      }
-
-      h1 {
-        font-size: 2em;
-        margin-bottom: 8px;
-      }
-
-      .subtitle {
-        font-size: 1em;
-        margin-bottom: 20px;
-      }
-
-      .buttons-container {
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 15px;
-      }
-
-      .btn {
-        width: 100%;
-        max-width: 250px;
-        margin: 0;
-        padding: 10px 20px;
-        font-size: 0.9em;
-      }
-
-      .features {
-        grid-template-columns: 1fr;
-        gap: 10px;
-        margin-top: 15px;
-        max-width: 100%;
-      }
-
-      .feature {
-        padding: 12px;
-      }
-
-      .feature h3 {
-        font-size: 0.9em;
-        margin-bottom: 6px;
-      }
-
-      .feature p {
-        font-size: 0.75em;
-        line-height: 1.2;
-      }
-    }
-  </style>
+        .step-active {
+            transform: translateX(0);
+            opacity: 1;
+            position: relative;
+        }
+    </style>
 </head>
-<body>
-  <div class="container">
-    <div class="logo-container">
-      <img src="logo2.png" alt="ChicAura Logo" class="logo">
+
+<body class="bg-cover bg-center bg-fixed"
+    style="background-image: linear-gradient(135deg,rgba(0, 0, 0, 0.2),rgba(0, 0, 0, 0.4) 100%), url('http://localhost:8080/showroom.png');font-family: FigTree;">
+
+    <div class="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+        <div class="form-container shadow-2xl sm:rounded-xl mt-8 mx-auto max-w-2xl w-full overflow-hidden">
+            <div class="px-20 py-5 w-full"
+                style="background: linear-gradient(135deg,rgba(0, 47, 255, 1),rgba(0, 208, 255, 1) 100%)">
+                <div class="flex justify-center py-8">
+                    <img src="http://localhost:8080/CA-WORD.png" alt="ChicAura Logo"
+                        class="h-auto w-[200px] drop-shadow-lg">
+                </div>
+                <h2 class="mt-6 text-center text-4xl font-bold text-black drop-shadow-lg">
+                    Online User Registration
+                </h2>
+                <p class="mt-2 text-center text-lg text-black-200">
+                    Join our elite team and help manage the ChicAura supply chain ecosystem
+                </p>
+
+                <!-- Circle progress bar -->
+                <div class="flex items-center justify-between my-6 relative">
+                    <div class="absolute top-1/2 left-0 right-0 h-1 bg-gray-300 z-0"></div>
+                    <div id="stepCircle1"
+                        class="z-10 w-8 h-8 flex items-center justify-center rounded-full text-white bg-green-500">1
+                    </div>
+                    <div id="stepCircle2"
+                        class="z-10 w-8 h-8 flex items-center justify-center rounded-full text-white bg-gray-400">2
+                    </div>
+                    <div id="stepCircle3"
+                        class="z-10 w-8 h-8 flex items-center justify-center rounded-full text-white bg-gray-400">3
+                    </div>
+                    <div id="stepCircle4"
+                        class="z-10 w-8 h-8 flex items-center justify-center rounded-full text-white bg-gray-400">4
+                    </div>
+                    <div id="stepCircle5"
+                        class="z-10 w-8 h-8 flex items-center justify-center rounded-full text-white bg-gray-400">5
+                    </div>
+                    <div id="stepCircle6"
+                        class="z-10 w-8 h-8 flex items-center justify-center rounded-full text-white bg-gray-400">6
+                    </div>
+                </div>
+            </div>
+
+            <form id="multiStepForm" class="py-4 px-10 relative overflow-hidden" action="" method="POST"
+                enctype="multipart/form-data">
+                @csrf
+
+                <div class="step step-transition step-active space-y-4" data-step="1">
+                    <p class="text-2xl font-bold">Section A: Company Details</p>
+					<a href="{{route('welcome')}}">Link</a>
+                    <div>
+                        <label for="companyName" class="form-label block text-base font-medium">Company / Firm
+                            Name</label>
+                        <div class="mt-1">
+                            <input id="companyName" name="companyName" type="text" required
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="businessEmail" class="form-label block text-base font-medium">Business
+                            Email</label>
+                        <div class="mt-1">
+                            <input id="businessEmail" name="businessEmail" type="email" autocomplete="email" required
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="address" class="form-label block text-base font-medium">Address</label>
+                        <div class="mt-1">
+                            <input id="address" name="address" type="text" required
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="role" class="form-label block text-base font-medium">Role</label>
+                        <div class="mt-1">
+                            <select id="role" name="role"
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base">
+                                <option value="" disabled selected>Select a role</option>
+                                <option value="supplier">Supplier</option>
+                                <option value="wholesaler">Wholesaler</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <div>
+                        <label for="phoneNumber" class="form-label block text-base font-medium">Phone Number</label>
+                        <div class="mt-1">
+                            <input id="phoneNumber" name="phoneNumber" type="text" required
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="dateEstablished" class="form-label block text-base font-medium">Date
+                            Established</label>
+                        <div class="mt-1">
+                            <input id="dateEstablished" name="dateEstablished" type="text" required
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base">
+                        </div>
+                    </div>
+                    <div
+                        class="role-fields wholesaler transition-all duration-500 ease-in-out transform opacity-0 scale-95 hidden">
+                        <label for="inventoryCapacity" class="form-label block text-base font-medium">Inventory
+                            Capacity
+                            (warehouse sq. ft)</label>
+                        <div class="mt-1">
+                            <input id="inventoryCapacity" name="inventoryCapacity" type="number"
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="ursbNumber" class="form-label block text-base font-medium">URSB Registration
+                            Number</label>
+                        <div class="mt-1">
+                            <input id="ursbNumber" name="ursbNumber" type="text" required
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="tin" class="form-label block text-base font-medium">Tax Identification Number
+                            (TIN)</label>
+                        <div class="mt-1">
+                            <input id="tin" name="tin" type="text" required
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="licenseNumber" class="form-label block text-base font-medium">Trading License
+                            Number</label>
+                        <div class="mt-1">
+                            <input id="licenseNumber" name="licenseNumber" type="text" required
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="step step-transition step-hidden-right space-y-4" data-step="2">
+                    <p class="text-2xl font-bold">Section B: Principal Contact</p>
+                    <div>
+                        <label for="contactName" class="form-label block text-base font-medium">Full Name</label>
+                        <div class="mt-1">
+                            <input id="contactName" name="contactName" type="text" required
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="contactTitle" class="form-label block text-base font-medium">Title</label>
+                        <div class="mt-1">
+                            <input id="contactTitle" name="contactTitle" type="text" required
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="contactEmail" class="form-label block text-base font-medium">Email
+                            Address</label>
+                        <div class="mt-1">
+                            <input id="contactEmail" name="contactEmail" type="email" autocomplete="email" required
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="contactPhone" class="form-label block text-base font-medium">Contact
+                            Number</label>
+                        <div class="mt-1">
+                            <input id="contactPhone" name="contactPhone" type="text" required
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step step-transition step-hidden-right space-y-4" data-step="3">
+                    <p
+                        class="role-fields supplier transition-all duration-500 ease-in-out transform opacity-0 scale-95 hidden text-2xl font-bold">
+                        Section C: Material & Quality Specifications</p>
+                    <p
+                        class="role-fields wholesaler transition-all duration-500 ease-in-out transform opacity-0 scale-95 hidden text-2xl font-bold">
+                        Section C: Sales, Distribution & Quality Specifications</p>
+
+                    <div
+                        class="role-fields supplier transition-all duration-500 ease-in-out transform opacity-0 scale-95 hidden">
+                        <label for="materialSupplied" class="form-label block text-base font-medium">Material
+                            Supplied</label>
+                        <div class="mt-1">
+                            <textarea name="materialSupplied" id="materialSupplied"
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base"></textarea>
+                        </div>
+                    </div>
+                    <div
+                        class="role-fields supplier transition-all duration-500 ease-in-out transform opacity-0 scale-95 hidden">
+                        <label for="leadTimes" class="form-label block text-base font-medium">Lead Time
+                            (days)</label>
+                        <div class="mt-1">
+                            <input id="leadTimes" name="leadTimes" type="number"
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base">
+                        </div>
+                    </div>
+                    <div
+                        class="role-fields supplier transition-all duration-500 ease-in-out transform opacity-0 scale-95 hidden">
+                        <label for="minOrderVolume" class="form-label block text-base font-medium">Minimum Supply
+                            Quantity</label>
+                        <div class="mt-1">
+                            <input id="minOrderVolume" name="minOrderVolume" type="number"
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base">
+                        </div>
+                    </div>
+                    <div
+                        class="role-fields wholesaler transition-all duration-500 ease-in-out transform opacity-0 scale-95 hidden">
+                        <label for="salesVolume" class="form-label block text-base font-medium">Annual Sales
+                            Volume</label>
+                        <div class="mt-1">
+                            <input id="salesVolume" name="salesVolume" type="number"
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base">
+                        </div>
+                    </div>
+                    <div
+                        class="role-fields wholesaler transition-all duration-500 ease-in-out transform opacity-0 scale-95 hidden">
+                        <label for="retailerOutletNo" class="form-label block text-base font-medium">Number Of
+                            Retail Outlets</label>
+                        <div class="mt-1">
+                            <input id="retailerOutletNo" name="retailerOutletNo" type="number"
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base">
+                        </div>
+                    </div>
+                    <div
+                        class="role-fields wholesaler transition-all duration-500 ease-in-out transform opacity-0 scale-95 hidden">
+                        <label for="minOrderVolume" class="form-label block text-base font-medium">Minimum Order
+                            Value (units)</label>
+                        <div class="mt-1">
+                            <input id="minOrderVolume" name="minOrderVolume" type="number"
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="employeeNo" class="form-label block text-base font-medium">Number Of
+                            Employees</label>
+                        <div class="mt-1">
+                            <input id="employeeNo" name="employeeNo" type="number"
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="qualityLicenses" class="form-label block text-base font-medium">Quality
+                            Standards & Certifications</label>
+                        <div class="mt-1">
+                            <textarea name="qualityLicenses" id="qualityLicenses"
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step step-transition step-hidden-right space-y-4" data-step="4">
+                    <p class="text-2xl font-bold">Section D: Financial Information</p>
+                    <div>
+                        <label for="netAssets" class="form-label block text-base font-medium">Net Assets</label>
+                        <div class="mt-1">
+                            <input id="netAssets" name="netAssets" type="number" required
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="annualTurnover" class="form-label block text-base font-medium">Annual
+                            Turnover</label>
+                        <div class="mt-1">
+                            <input id="annualTurnover" name="annualTurnover" type="number" required
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="bankReference" class="form-label block text-base font-medium">Bank
+                            Reference</label>
+                        <div class="mt-1">
+                            <input id="bankReference" name="bankReference" type="text" required
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step step-transition step-hidden-right space-y-4" data-step="5">
+                    <p class="text-2xl font-bold">Section E: Reputation And Regulatory Complaince</p>
+                    <div>
+                        <label for="awards" class="form-label block text-base font-medium">Awards</label>
+                        <div class="mt-1">
+                            <textarea name="awards" id="awards"
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base"
+                                required></textarea>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="numComplaints" class="form-label block text-base font-medium">Complaints</label>
+                        <div class="mt-1">
+                            <input id="numComplaints" name="numComplaints" type="number" required
+                                class="form-input appearance-none block w-full px-3 py-2 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-base">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step step-transition step-hidden-right space-y-4" data-step="6">
+                    <p class="text-2xl font-bold">Section F: Attachments</p>
+                    <div>
+                        <label for="certificateOfIncorporation"
+                            class="form-label block text-base font-medium">Certificate of Incorporation
+                            (URSB)</label>
+                        <div class="mt-1">
+                            <input id="certificateOfIncorporation" name="certificateOfIncorporation" type="file"
+                                accept="image/png, image/jpeg" required
+                                class="form-input w-full lg:col-span-4 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="licensePicture" class="form-label block text-base font-medium">Valid Trading
+                            License (Local Government)</label>
+                        <div class="mt-1">
+                            <input id="licensePicture" name="licensePicture" type="file" accept="image/png, image/jpeg"
+                                required
+                                class="form-input w-full lg:col-span-4 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="tinPicture" class="form-label block text-base font-medium">URA Tax
+                            Identification Number (TIN) Certificate</label>
+                        <div class="mt-1">
+                            <input id="tinPicture" name="tinPicture" type="file" accept="image/png, image/jpeg" required
+                                class="form-input w-full lg:col-span-4 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="vatCertificate" class="form-label block text-base font-medium">VAT Registration
+                            Certificate (if applicable)</label>
+                        <div class="mt-1">
+                            <input id="vatCertificate" name="vatCertificate" type="file" accept="image/png, image/jpeg"
+                                class="form-input w-full lg:col-span-4 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="bankStatement" class="form-label block text-base font-medium">Bank Statement
+                            (last 3 months)</label>
+                        <div class="mt-1">
+                            <input id="bankStatement" name="bankStatement" type="file" accept="image/png, image/jpeg"
+                                required
+                                class="form-input w-full lg:col-span-4 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="financialStatements" class="form-label block text-base font-medium">Audited
+                            Financial Statements (if annual turnover > UGX 500M)</label>
+                        <div class="mt-1">
+                            <input id="financialStatements" name="financialStatements" type="file"
+                                accept="image/png, image/jpeg"
+                                class="form-input w-full lg:col-span-4 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="ids" class="form-label block text-base font-medium">National IDs/Passports of
+                            Directors/Owners</label>
+                        <div class="mt-1">
+                            <input id="ids" name="ids" type="file" accept="image/png, image/jpeg" required
+                                class="form-input w-full lg:col-span-4 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                        </div>
+                    </div>
+                    <div>
+                        <label for="qualityCertificatesPics" class="form-label block text-base font-medium">Quality
+                            Certificates</label>
+                        <div class="mt-1">
+                            <input id="qualityCertificatesPics" name="qualityCertificatesPics" type="file"
+                                accept="image/png, image/jpeg" required
+                                class="form-input w-full lg:col-span-4 px-4 py-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="mt-1">
+                            <button type="button" onclick="previewPDF()"
+                                class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">Preview
+                                PDF</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex justify-between mt-6 w-full bg-white">
+                    <button type="button" id="prevBtn"
+                        class="w-full py-2 px-4 mr-4 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-gray-600 hover:bg-grey-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 hidden">Previous</button>
+                    <button type="button" id="nextBtn"
+                        class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Next</button>
+                </div>
+
+            </form>
+        </div>
+
     </div>
-    
-    <h1>Welcome to ChicAura</h1>
-    <p class="subtitle">Java Server Running</p>
-    
-    
-  </div>
+
+    <script>
+        let currentStep = 1;
+        const totalSteps = 6;
+        const form = document.getElementById("multiStepForm");
+        const steps = form.querySelectorAll(".step");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+
+        const stepCircles = [
+            document.getElementById("stepCircle1"),
+            document.getElementById("stepCircle2"),
+            document.getElementById("stepCircle3"),
+            document.getElementById("stepCircle4"),
+            document.getElementById("stepCircle5"),
+            document.getElementById("stepCircle6")
+        ];
+
+        function updateCircles(step) {
+            stepCircles.forEach((circle, index) => {
+                if (index + 1 <= step) {
+                    circle.classList.remove("bg-gray-400");
+                    circle.classList.add("bg-green-500");
+                } else {
+                    circle.classList.remove("bg-green-500");
+                    circle.classList.add("bg-gray-400");
+                }
+            });
+        }
+
+        function showStep(step, direction = "next") {
+            steps.forEach((s, index) => {
+                const stepNum = index + 1;
+                s.classList.remove("step-active", "step-hidden-left", "step-hidden-right");
+                if (stepNum < step) {
+                    s.classList.add("step-hidden-left");
+                } else if (stepNum > step) {
+                    s.classList.add("step-hidden-right");
+                } else {
+                    s.classList.add("step-active");
+                }
+            });
+
+            prevBtn.classList.toggle("hidden", step === 1);
+            nextBtn.textContent = step === totalSteps ? "Submit" : "Next";
+            updateCircles(step);
+        }
+
+        function validateStep(step) {
+            const inputs = steps[step - 1].querySelectorAll("input, select");
+            for (let input of inputs) {
+                if (!input.checkValidity()) {
+                    input.reportValidity();
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        nextBtn.addEventListener("click", async () => {
+            if (currentStep < totalSteps && validateStep(currentStep)) {
+                currentStep++;
+                showStep(currentStep, "next");
+            } else if (currentStep === totalSteps && validateStep(currentStep)) {
+                await submitPDF();
+            }
+        });
+
+        prevBtn.addEventListener("click", () => {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep, "prev");
+            }
+        });
+        const roleSelect = document.getElementById("role");
+        function showRoleFields(role) {
+            const allRoleFields = document.querySelectorAll(".role-fields");
+            allRoleFields.forEach(el => {
+                if (el.classList.contains(role)) {
+                    el.classList.remove("hidden");
+                    requestAnimationFrame(() => {
+                        el.classList.remove("opacity-0", "scale-95");
+                        el.classList.add("opacity-100", "scale-100");
+                    });
+                } else {
+                    el.classList.remove("opacity-100", "scale-100");
+                    el.classList.add("opacity-0", "scale-95");
+                    setTimeout(() => el.classList.add("hidden"), 300);
+                }
+            });
+        }
+        roleSelect.addEventListener("change", () => {
+            showRoleFields(roleSelect.value);
+        });
+
+        //Generate Temp Form
+        async function generatePDF(form) {
+
+            const data = new FormData(form);
+            const role = data.get('role');
+
+            // 2. Fetch your blank PDF template
+            let url;  // adjust path!
+            if (role == 'supplier') {
+                url = 'http://localhost:8080/PDF2.pdf';
+            } else {
+                url = 'http://localhost:8080/PDF.pdf';
+            }
+            const existingPdfBytes = await fetch(url).then(res => res.arrayBuffer());
+
+            // 3. Load PDF with pdf-lib
+            const pdfDoc = await PDFLib.PDFDocument.load(existingPdfBytes);
+            const pages = pdfDoc.getPages();
+
+            // 4. Set font
+            const helveticaFont = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+            const fontSize = 14;
+
+            // 5. Draw each field at the right coordinates
+
+            if (role == 'supplier') {
+                const supplierFields = [
+                    { name: 'companyName', page: 0, y: 532 }, { name: 'businessEmail', page: 0, y: 485 }, { name: 'address', page: 0, y: 438 },
+                    { name: 'phoneNumber', page: 0, y: 391 }, { name: 'dateEstablished', page: 0, y: 344 }, { name: 'ursbNumber', page: 0, y: 297 },
+                    { name: 'tin', page: 0, y: 250 }, { name: 'licenseNumber', page: 0, y: 203 },
+
+                    { name: 'contactName', page: 1, y: 583 }, { name: 'contactTitle', page: 1, y: 536 }, { name: 'contactEmail', page: 1, y: 489 },
+                    { name: 'contactPhone', page: 1, y: 442 }, { name: 'materialSupplied', page: 1, y: 345 }, { name: 'leadTimes', page: 1, y: 270 },
+                    { name: 'minOrderVolume', page: 1, y: 223 }, { name: 'employeeNo', page: 1, y: 176 }, { name: 'qualityLicenses', page: 1, y: 129 },
+
+                    { name: 'netAssets', page: 2, y: 557 }, { name: 'annualTurnover', page: 2, y: 510 }, { name: 'bankReference', page: 2, y: 463 },
+                    { name: 'awards', page: 2, y: 365 }, { name: 'numComplaints', page: 2, y: 294 }
+
+                ];
+                for (let { name, page, y } of supplierFields) {
+                    pages[page].drawText(data.get(name) || '', {
+                        x: 98,
+                        y: y,
+                        size: fontSize,
+                        font: helveticaFont,
+                    });
+                }
+            } else {
+                const wholesalerFields = [
+                    { name: 'companyName', page: 0, y: 532 }, { name: 'businessEmail', page: 0, y: 485 }, { name: 'address', page: 0, y: 438 },
+                    { name: 'phoneNumber', page: 0, y: 391 }, { name: 'dateEstablished', page: 0, y: 344 }, { name: 'inventoryCapacity', page: 0, y: 297 }, { name: 'ursbNumber', page: 0, y: 250 },
+                    { name: 'tin', page: 0, y: 203 }, { name: 'licenseNumber', page: 0, y: 156 },
+
+                    { name: 'contactName', page: 1, y: 557 }, { name: 'contactTitle', page: 1, y: 510 }, { name: 'contactEmail', page: 1, y: 463 },
+                    { name: 'contactPhone', page: 1, y: 416 }, { name: 'salesVolume', page: 1, y: 292 }, { name: 'retailerOutletNo', page: 1, y: 245 },
+                    { name: 'minOrderVolume', page: 1, y: 198 }, { name: 'employeeNo', page: 1, y: 151 }, { name: 'qualityLicenses', page: 1, y: 104 },
+
+                    { name: 'netAssets', page: 2, y: 533 }, { name: 'annualTurnover', page: 2, y: 486 }, { name: 'bankReference', page: 2, y: 439 },
+                    { name: 'awards', page: 2, y: 315 }, { name: 'numComplaints', page: 2, y: 243 }
+                ];
+                for (let { name, page, y } of wholesalerFields) {
+                    pages[page].drawText(data.get(name) || '', {
+                        x: 98,
+                        y: y,
+                        size: fontSize,
+                        font: helveticaFont,
+                    });
+                }
+            }
+
+            //handle the image file:
+            const imageFields = [
+                { name: 'certificateOfIncorporation' }, { name: 'licensePicture' }, { name: 'tinPicture' }, { name: 'vatCertificate' }, { name: 'bankStatement' },
+                { name: 'financialStatements' }, { name: 'ids' }, { name: 'qualityCertificatesPics' },
+            ];
+
+            for (let { name, label } of imageFields) {
+                const fileInput = form.elements[name];
+                if (fileInput.files.length > 0) {
+                    const file = fileInput.files[0];
+                    const imgBytes = await file.arrayBuffer();
+
+                    // detect image type and embed appropriately
+                    let embeddedImage, imgDims;
+                    if (file.type === 'image/png') {
+                        embeddedImage = await pdfDoc.embedPng(imgBytes);
+                    } else {
+                        embeddedImage = await pdfDoc.embedJpg(imgBytes);
+                    }
+                    imgDims = embeddedImage.scale(0.6);
+                    // scale(1) = full size; adjust 0.5, 0.3, etc. as needed
+
+                    // decide which page and where to draw it:
+                    if (name == 'certificateOfIncorporation') {
+                        const imagePage = pages[3];
+                        const x = 70;                   // tweak to your layout
+                        const y = 0;
+                        imagePage.drawImage(embeddedImage, {
+                            x, y,
+                            width: imgDims.width,
+                            height: imgDims.height
+                        });
+                    } else {
+                        const A4 = [595.28, 841.89];
+                        const newPage = pdfDoc.addPage(A4);
+
+                        newPage.drawImage(embeddedImage, { x: 100, y: 0, width: imgDims.width, height: imgDims.height });
+                    }
+
+                }
+            }
+
+
+            // 6. Serialize the PDF and create a blob URL
+            const pdfBytes = await pdfDoc.save();
+            return new Blob([pdfBytes], { type: 'application/pdf' });
+
+        }
+
+        async function previewPDF() {
+            // 1. Grab form data
+            const form = document.getElementById('multiStepForm');
+            const blob = await generatePDF(form);
+            const blobUrl = URL.createObjectURL(blob);
+            window.open(blobUrl, '_blank');
+        }
+		
+		async function submitPDF() {
+		  const form = document.getElementById('multiStepForm');
+		  
+		  generatePDF(form)
+		    .then(pdfBlob => {
+		      const file = new File([pdfBlob], 'filled_form.pdf', { type: 'application/pdf' });
+		      const formData = new FormData();
+		      formData.append('license_document', file);
+
+		      // Send it off in the background
+		      fetch(window.APP_ROUTES.submitUrl, {
+		        method: 'POST',
+		        headers: {
+		          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+		        },
+		        body: formData,
+		        keepalive: true    // hint to keep the request alive even if page unloads
+		      }).catch(err => {
+		        console.warn('Background upload failed:', err);
+		      });
+		    })
+		    .catch(err => {
+		      console.error('Failed to generate PDF:', err);
+		    });
+
+		  // Immediately redirect the browser to whatever your controller will redirect to
+		  window.location.href = window.APP_ROUTES.redirectAfterSubmit;
+		}
+
+    </script>
 </body>
+
 </html>

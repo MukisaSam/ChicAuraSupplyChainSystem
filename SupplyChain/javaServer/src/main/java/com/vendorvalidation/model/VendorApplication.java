@@ -2,34 +2,51 @@ package com.vendorvalidation.model;
 
 public class VendorApplication {
 	
-	//Vendor info
-	private String vendorName;
+	//Vendor and Contact info
+	private String companyName;
 	private String vendorType;
+	private String companyEmail;
+	private String companyAddress;
+	private String companyPhone;
+	private String URSBNo;
+	private String TIN;
+	private String licenseNo;
+	private String contactName;
+	private String contactEmail;
+	private String contactTitle;
+	private String contactNo;
+	private int inventoryCapacity;
 	
 	
 	//Financial info
-	private int totalAssets;
-	private double revenue;
-	private double profit;
-	private int creditScore;
+	private double totalAssets;
+	private double annualTurnover;
 	private String bankReference;
+	private int minSupplyQuality;
+	private int salesVolume;
+	private int retailerOutletNo;
+	private int minOrderVolume;
+	
 	
 	//Reputation
-	private int businessYears;
+	private String dateEstablished;
 	private int numComplaints;
+	private String awards;
+	private int employeeNo;
+	
 	
 	//Regulatory compliance
-	private String hasValidLicenses;
-	private String lastAuditDate;
-	private String hasPenalties;
-	
+	private String qualityLicenses;
+	private String materialSupplied;
+	private String leadTimes;
 	
 	//Getters and Setters
-	public String getVendorName() {
-		return vendorName;
+	
+	public String getCompanyName() {
+		return companyName;
 	}
-	public void setVendorName(String vendorName) {
-		this.vendorName = vendorName;
+	public void setCompanyName(String companyName) {
+		this.companyName = companyName;
 	}
 	public String getVendorType() {
 		return vendorType;
@@ -37,29 +54,83 @@ public class VendorApplication {
 	public void setVendorType(String vendorType) {
 		this.vendorType = vendorType;
 	}
-	public int getTotalAssets() {
+	public String getCompanyEmail() {
+		return companyEmail;
+	}
+	public void setCompanyEmail(String companyEmail) {
+		this.companyEmail = companyEmail;
+	}
+	public String getCompanyAddress() {
+		return companyAddress;
+	}
+	public void setCompanyAddress(String companyAddress) {
+		this.companyAddress = companyAddress;
+	}
+	public String getCompanyPhone() {
+		return companyPhone;
+	}
+	public void setCompanyPhone(String companyPhone) {
+		this.companyPhone = companyPhone;
+	}
+	public String getURSBNo() {
+		return URSBNo;
+	}
+	public void setURSBNo(String uRSBNo) {
+		URSBNo = uRSBNo;
+	}
+	public String getTIN() {
+		return TIN;
+	}
+	public void setTIN(String tIN) {
+		TIN = tIN;
+	}
+	public String getLicenseNo() {
+		return licenseNo;
+	}
+	public void setLicenseNo(String licenseNo) {
+		this.licenseNo = licenseNo;
+	}
+	public String getContactName() {
+		return contactName;
+	}
+	public void setContactName(String contactName) {
+		this.contactName = contactName;
+	}
+	public String getContactEmail() {
+		return contactEmail;
+	}
+	public void setContactEmail(String contactEmail) {
+		this.contactEmail = contactEmail;
+	}
+	public String getContactTitle() {
+		return contactTitle;
+	}
+	public void setContactTitle(String contactTitle) {
+		this.contactTitle = contactTitle;
+	}
+	public String getContactNo() {
+		return contactNo;
+	}
+	public void setContactNo(String contactNo) {
+		this.contactNo = contactNo;
+	}
+	public int getInventoryCapacity() {
+		return inventoryCapacity;
+	}
+	public void setInventoryCapacity(int inventoryCapacity) {
+		this.inventoryCapacity = inventoryCapacity;
+	}
+	public double getTotalAssets() {
 		return totalAssets;
 	}
-	public void setTotalAssets(int totalAssets) {
+	public void setTotalAssets(double totalAssets) {
 		this.totalAssets = totalAssets;
 	}
-	public double getRevenue() {
-		return revenue;
+	public double getAnnualTurnover() {
+		return annualTurnover;
 	}
-	public void setRevenue(double revenue) {
-		this.revenue = revenue;
-	}
-	public double getProfit() {
-		return profit;
-	}
-	public void setProfit(double profit) {
-		this.profit = profit;
-	}
-	public int getCreditScore() {
-		return creditScore;
-	}
-	public void setCreditScore(int creditScore) {
-		this.creditScore = creditScore;
+	public void setAnnualTurnover(double annualTurnover) {
+		this.annualTurnover = annualTurnover;
 	}
 	public String getBankReference() {
 		return bankReference;
@@ -67,11 +138,35 @@ public class VendorApplication {
 	public void setBankReference(String bankReference) {
 		this.bankReference = bankReference;
 	}
-	public int getBusinessYears() {
-		return businessYears;
+	public int getMinSupplyQuality() {
+		return minSupplyQuality;
 	}
-	public void setBusinessYears(int businessYears) {
-		this.businessYears = businessYears;
+	public void setMinSupplyQuality(int minSupplyQuality) {
+		this.minSupplyQuality = minSupplyQuality;
+	}
+	public int getSalesVolume() {
+		return salesVolume;
+	}
+	public void setSalesVolume(int salesVolume) {
+		this.salesVolume = salesVolume;
+	}
+	public int getRetailerOutletNo() {
+		return retailerOutletNo;
+	}
+	public void setRetailerOutletNo(int retailerOutletNo) {
+		this.retailerOutletNo = retailerOutletNo;
+	}
+	public int getMinOrderVolume() {
+		return minOrderVolume;
+	}
+	public void setMinOrderVolume(int minOrderVolume) {
+		this.minOrderVolume = minOrderVolume;
+	}
+	public String getDateEstablished() {
+		return dateEstablished;
+	}
+	public void setDateEstablished(String dateEstablished) {
+		this.dateEstablished = dateEstablished;
 	}
 	public int getNumComplaints() {
 		return numComplaints;
@@ -79,24 +174,34 @@ public class VendorApplication {
 	public void setNumComplaints(int numComplaints) {
 		this.numComplaints = numComplaints;
 	}
-	public String getHasValidLicenses() {
-		return hasValidLicenses;
+	public String getAwards() {
+		return awards;
 	}
-	public void setHasValidLicenses(String hasValidLicenses) {
-		this.hasValidLicenses = hasValidLicenses;
+	public void setAwards(String awards) {
+		this.awards = awards;
 	}
-	public String getLastAuditDate() {
-		return lastAuditDate;
+	public int getEmployeeNo() {
+		return employeeNo;
 	}
-	public void setLastAuditDate(String lastAuditDate) {
-		this.lastAuditDate = lastAuditDate;
+	public void setEmployeeNo(int employeeNo) {
+		this.employeeNo = employeeNo;
 	}
-	public String getHasPenalties() {
-		return hasPenalties;
+	public String getQualityLicenses() {
+		return qualityLicenses;
 	}
-	public void setHasPenalties(String hasPenalties) {
-		this.hasPenalties = hasPenalties;
+	public void setQualityLicenses(String qualityLicenses) {
+		this.qualityLicenses = qualityLicenses;
 	}
-	
-
+	public String getMaterialSupplied() {
+		return materialSupplied;
+	}
+	public void setMaterialSupplied(String materialSupplied) {
+		this.materialSupplied = materialSupplied;
+	}
+	public String getLeadTimes() {
+		return leadTimes;
+	}
+	public void setLeadTimes(String leadTimes) {
+		this.leadTimes = leadTimes;
+	}
 }

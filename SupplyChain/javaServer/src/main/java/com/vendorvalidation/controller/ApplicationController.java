@@ -35,13 +35,7 @@ public class ApplicationController {
      try (InputStream is = file.getInputStream()) {
          VendorApplication app = pdfParser.parse(is);
 
-         // Basic checks: ensure mandatory fields are present:
-         if (app.getVendorName() == null || app.getVendorType() == null) {
-             response.put("status", "error");
-             response.put("message", "Missing vendorName or vendorType in PDF");
-             return ResponseEntity.badRequest().body(response);
-         }
-
+         
          // Validate:
          ValidationReport report = validationService.validateAll(app);
          if (!report.isValid()) {
@@ -56,7 +50,7 @@ public class ApplicationController {
          response.put("status", "success");
          response.put("message", "Valid. Facility visit scheduled.");
          response.put("visitDate", scheduledDate);
-         response.put("CompanyName", app.getVendorName());
+         response.putAll(report.getRecords());
          return ResponseEntity.ok(response);
 
      } catch (Exception e) {
