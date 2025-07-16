@@ -3,27 +3,339 @@ import numpy as np
 import joblib
 from prophet import Prophet
 from prophet.diagnostics import cross_validation, performance_metrics
-from db_config import get_connector
+from db_config import get_connector, get_demand_data
 import logging
 import warnings
 from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
-from sklearn.metrics import mean_absolute_percentage_error
+import seaborn as sns
+from sklearn.metrics import mean_absolute_percentage_error, mean_squared_error, mean_absolute_error, r2_score
+import optuna
+import pickle
+import os
+from typing import Dict, List, Tuple, Optional, Union
+
+# Enhanced imports
+from enhanced_features import AdvancedFeatureEngineer, SeasonalityDetector
+import plotly.graph_objects as go
+import plotly.express as px
+from plotly.subplots import make_subplots
+
 warnings.filterwarnings('ignore')
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s:%(message)s")
 
-class ProphetDemandModel:
+class EnhancedProphetDemandModel:
     """
-    A wrapper class that mimics the sklearn interface but uses Prophet internally
-    Enhanced with proper train/test split and evaluation methodology
+    Enhanced Prophet-based demand forecasting model with advanced features:
+    - Hyperparameter optimization with Optuna
+    - External factor integration (holidays, weather, promotions)
+    - Model monitoring and drift detection
+    - Advanced feature engineering
+    - Interactive visualizations
     """
-    def __init__(self, prediction_frequency='D'):
+    def __init__(self, prediction_frequency='D', optimize_hyperparams=True):
         self.models = {}  # Store models for different product-location combinations
         self.feature_columns = ['product_name', 'location', 'unit_price', 'sales_date']
         self.prediction_frequency = prediction_frequency  # 'D' for daily, 'M' for monthly
         self.model_metadata = {}  # Store metadata about each model
         self.evaluation_results = {}  # Store evaluation results
+        self.optimize_hyperparams = optimize_hyperparams
+        
+        # Enhanced features
+        self.feature_engineer = AdvancedFeatureEngineer()
+        self.seasonality_detector = SeasonalityDetector()
+        
+        # Hyperparameter optimization
+        self.best_params = {}
+        self.optimization_study = None
+        
+        # External factors
+        self.holidays_df = self._create_holidays_dataframe()
+        self.external_regressors = ['unit_price', 'is_weekend', 'is_holiday', 'month_sin', 'month_cos']
+        
+        # Model monitoring
+        self.drift_threshold = 0.15  # MAPE threshold for drift detection
+        self.retraining_needed = {}
+        
+        # Performance tracking
+        self.performance_history = []
+    
+    def _create_holidays_dataframe(self) -> pd.DataFrame:
+        """Create holidays dataframe for Prophet"""
+        holidays = []
+        current_year = datetime.now().year
+        
+        # Define major holidays that affect shopping patterns
+        for year in range(current_year - 2, current_year + 3):
+            holidays.extend([
+                {'holiday': 'New Year', 'ds': f'{year}-01-01', 'lower_window': -1, 'upper_window': 1},
+                {'holiday': 'Valentine', 'ds': f'{year}-02-14', 'lower_window': -3, 'upper_window': 1},
+                {'holiday': 'Easter', 'ds': f'{year}-04-01', 'lower_window': -7, 'upper_window': 1},  # Approximate
+                {'holiday': 'Mother_Day', 'ds': f'{year}-05-10', 'lower_window': -7, 'upper_window': 1},  # Approximate
+                {'holiday': 'Father_Day', 'ds': f'{year}-06-15', 'lower_window': -7, 'upper_window': 1},  # Approximate
+                {'holiday': 'Independence', 'ds': f'{year}-07-04', 'lower_window': -3, 'upper_window': 1},
+                {'holiday': 'Back_to_School', 'ds': f'{year}-08-15', 'lower_window': -14, 'upper_window': 7},
+                {'holiday': 'Halloween', 'ds': f'{year}-10-31', 'lower_window': -7, 'upper_window': 1},
+                {'holiday': 'Black_Friday', 'ds': f'{year}-11-24', 'lower_window': -7, 'upper_window': 3},
+                {'holiday': 'Christmas', 'ds': f'{year}-12-25', 'lower_window': -14, 'upper_window': 1},
+            ])
+        
+        return pd.DataFrame(holidays)
+    
+    def _optimize_hyperparameters(self, train_data: pd.DataFrame) -> Dict:
+        """Optimize Prophet hyperparameters using Optuna"""
+        
+        def objective(trial):
+            # Define hyperparameters to optimize
+            changepoint_prior_scale = trial.suggest_float('changepoint_prior_scale', 0.001, 0.5, log=True)
+            seasonality_prior_scale = trial.suggest_float('seasonality_prior_scale', 0.01, 10, log=True)
+            holidays_prior_scale = trial.suggest_float('holidays_prior_scale', 0.01, 10, log=True)
+            
+            # Create model with trial parameters
+            model = Prophet(
+                changepoint_prior_scale=changepoint_prior_scale,
+                seasonality_prior_scale=seasonality_prior_scale,
+                holidays_prior_scale=holidays_prior_scale,
+                daily_seasonality=True,
+                weekly_seasonality=True,
+                yearly_seasonality=True,
+                seasonality_mode='multiplicative',
+                interval_width=0.8,
+                holidays=self.holidays_df
+            )
+            
+            # Add regressors
+            for regressor in self.external_regressors:
+                if regressor in train_data.columns:
+                    model.add_regressor(regressor)
+            
+            try:
+                # Fit model
+                model.fit(train_data)
+                
+                # Cross-validation for performance estimation
+                cv_results = cross_validation(
+                    model, 
+                    initial='30 days' if self.prediction_frequency == 'D' else '90 days',
+                    period='7 days' if self.prediction_frequency == 'D' else '30 days',
+                    horizon='14 days' if self.prediction_frequency == 'D' else '60 days',
+                    parallel="processes"
+                )
+                
+                metrics = performance_metrics(cv_results)
+                return metrics['mape'].mean()
+                
+            except Exception as e:
+                logging.warning(f"Trial failed: {e}")
+                return float('inf')
+        
+        # Run optimization
+        study = optuna.create_study(direction='minimize')
+        study.optimize(objective, n_trials=20, timeout=300)  # 5 minutes max
+        
+        self.optimization_study = study
+        return study.best_params
+    
+    def _add_external_features(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Add external features and regressors"""
+        df = df.copy()
+        
+        # Time-based features
+        df = self.feature_engineer.create_time_features(df, 'ds')
+        
+        # Holiday indicator
+        df['ds_date'] = df['ds'].dt.date
+        holiday_dates = set(pd.to_datetime(self.holidays_df['ds']).dt.date)
+        df['is_holiday'] = df['ds_date'].isin(holiday_dates).astype(int)
+        
+        # Price elasticity features
+        if 'unit_price' in df.columns:
+            df['price_change'] = df['unit_price'].pct_change().fillna(0)
+            df['price_log'] = np.log1p(df['unit_price'])
+        
+        # Lag features for demand
+        if 'y' in df.columns:
+            df = self.feature_engineer.create_lag_features(df, 'y', [1, 7, 14])
+            df = self.feature_engineer.create_rolling_features(df, 'y', [7, 14, 30])
+        
+        return df
+    
+    def _detect_model_drift(self, model_key: str, recent_predictions: np.ndarray, 
+                           actual_values: np.ndarray) -> bool:
+        """Detect if model performance has degraded (concept drift)"""
+        try:
+            # Calculate recent performance
+            recent_mape = mean_absolute_percentage_error(actual_values, recent_predictions)
+            
+            # Compare with historical performance
+            if model_key in self.evaluation_results:
+                historical_mape = self.evaluation_results[model_key].get('mape', 0.2)
+                drift_ratio = recent_mape / (historical_mape + 1e-8)
+                
+                # Check if performance degraded significantly
+                if drift_ratio > (1 + self.drift_threshold):
+                    logging.warning(f"Drift detected for {model_key}: {recent_mape:.3f} vs {historical_mape:.3f}")
+                    return True
+            
+            return False
+            
+        except Exception as e:
+            logging.error(f"Drift detection failed: {e}")
+            return False
+    
+    def _create_enhanced_visualizations(self, model, forecast, actual_data, model_key: str):
+        """Create interactive visualizations using Plotly"""
+        try:
+            # Create subplots
+            fig = make_subplots(
+                rows=2, cols=2,
+                subplot_titles=('Forecast vs Actual', 'Residuals', 'Components', 'Performance Metrics'),
+                specs=[[{"secondary_y": True}, {"secondary_y": False}],
+                       [{"secondary_y": False}, {"secondary_y": False}]]
+            )
+            
+            # Main forecast plot
+            fig.add_trace(
+                go.Scatter(x=actual_data['ds'], y=actual_data['y'], 
+                          mode='markers', name='Actual', marker=dict(color='blue')),
+                row=1, col=1
+            )
+            
+            fig.add_trace(
+                go.Scatter(x=forecast['ds'], y=forecast['yhat'], 
+                          mode='lines', name='Forecast', line=dict(color='red')),
+                row=1, col=1
+            )
+            
+            # Confidence intervals
+            fig.add_trace(
+                go.Scatter(x=forecast['ds'], y=forecast['yhat_upper'], 
+                          fill=None, mode='lines', line=dict(color='rgba(0,0,0,0)'), 
+                          showlegend=False),
+                row=1, col=1
+            )
+            
+            fig.add_trace(
+                go.Scatter(x=forecast['ds'], y=forecast['yhat_lower'], 
+                          fill='tonexty', mode='lines', line=dict(color='rgba(0,0,0,0)'), 
+                          name='Confidence Interval', fillcolor='rgba(255,0,0,0.2)'),
+                row=1, col=1
+            )
+            
+            # Residuals plot
+            if len(actual_data) > 0 and len(forecast) > 0:
+                # Align data for residuals
+                merged = pd.merge(actual_data[['ds', 'y']], forecast[['ds', 'yhat']], on='ds', how='inner')
+                if len(merged) > 0:
+                    residuals = merged['y'] - merged['yhat']
+                    fig.add_trace(
+                        go.Scatter(x=merged['ds'], y=residuals, 
+                                  mode='markers', name='Residuals', marker=dict(color='green')),
+                        row=1, col=2
+                    )
+            
+            # Components plot
+            if 'trend' in forecast.columns:
+                fig.add_trace(
+                    go.Scatter(x=forecast['ds'], y=forecast['trend'], 
+                              mode='lines', name='Trend', line=dict(color='purple')),
+                    row=2, col=1
+                )
+            
+            # Performance metrics text
+            if model_key in self.evaluation_results:
+                metrics = self.evaluation_results[model_key]
+                metrics_text = f"""
+                RMSE: {metrics.get('rmse', 'N/A'):.3f}<br>
+                MAE: {metrics.get('mae', 'N/A'):.3f}<br>
+                MAPE: {metrics.get('mape', 'N/A'):.3f}<br>
+                R²: {metrics.get('r2', 'N/A'):.3f}
+                """
+                
+                fig.add_annotation(
+                    text=metrics_text,
+                    x=0.5, y=0.5,
+                    xref="x domain", yref="y domain",
+                    showarrow=False,
+                    row=2, col=2
+                )
+            
+            # Update layout
+            fig.update_layout(
+                title=f'Demand Forecast Analysis - {model_key}',
+                height=800,
+                showlegend=True
+            )
+            
+            # Save interactive plot
+            output_dir = '../SupplyChain/public/forecast_plots/'
+            os.makedirs(output_dir, exist_ok=True)
+            
+            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+            filename = f'enhanced_forecast_{model_key.replace(" ", "_")}_{timestamp}.html'
+            fig.write_html(os.path.join(output_dir, filename))
+            
+            logging.info(f"Enhanced visualization saved: {filename}")
+            
+        except Exception as e:
+            logging.error(f"Visualization creation failed: {e}")
+    
+    def save_model_state(self, filepath: str = 'enhanced_demand_models/'):
+        """Save complete model state including metadata and optimization results"""
+        os.makedirs(filepath, exist_ok=True)
+        
+        # Save models
+        with open(os.path.join(filepath, 'models.pkl'), 'wb') as f:
+            pickle.dump(self.models, f)
+        
+        # Save metadata
+        with open(os.path.join(filepath, 'metadata.pkl'), 'wb') as f:
+            pickle.dump({
+                'model_metadata': self.model_metadata,
+                'evaluation_results': self.evaluation_results,
+                'best_params': self.best_params,
+                'external_regressors': self.external_regressors,
+                'prediction_frequency': self.prediction_frequency,
+                'performance_history': self.performance_history
+            }, f)
+        
+        # Save optimization study
+        if self.optimization_study:
+            with open(os.path.join(filepath, 'optimization_study.pkl'), 'wb') as f:
+                pickle.dump(self.optimization_study, f)
+        
+        logging.info(f"Enhanced model state saved to {filepath}")
+    
+    def load_model_state(self, filepath: str = 'enhanced_demand_models/'):
+        """Load complete model state"""
+        try:
+            # Load models
+            with open(os.path.join(filepath, 'models.pkl'), 'rb') as f:
+                self.models = pickle.load(f)
+            
+            # Load metadata
+            with open(os.path.join(filepath, 'metadata.pkl'), 'rb') as f:
+                metadata = pickle.load(f)
+                self.model_metadata = metadata['model_metadata']
+                self.evaluation_results = metadata['evaluation_results']
+                self.best_params = metadata.get('best_params', {})
+                self.external_regressors = metadata.get('external_regressors', self.external_regressors)
+                self.prediction_frequency = metadata.get('prediction_frequency', self.prediction_frequency)
+                self.performance_history = metadata.get('performance_history', [])
+            
+            # Load optimization study
+            study_path = os.path.join(filepath, 'optimization_study.pkl')
+            if os.path.exists(study_path):
+                with open(study_path, 'rb') as f:
+                    self.optimization_study = pickle.load(f)
+            
+            logging.info(f"Enhanced model state loaded from {filepath}")
+            return True
+            
+        except Exception as e:
+            logging.error(f"Failed to load model state: {e}")
+            return False
         
     def _validate_data(self, df, min_data_points=30):
         """
@@ -104,29 +416,46 @@ class ProphetDemandModel:
         
         return train_df, test_df
     
-    def _create_prophet_model(self):
+    def _create_prophet_model(self, best_params: Optional[Dict] = None):
         """
-        Create Prophet model with optimized configuration
+        Create enhanced Prophet model with optimized configuration
         """
+        # Use optimized parameters if available
+        if best_params:
+            params = best_params
+        else:
+            params = {
+                'changepoint_prior_scale': 0.05,
+                'seasonality_prior_scale': 10.0,
+                'holidays_prior_scale': 10.0
+            }
+        
         model = Prophet(
-            daily_seasonality=True,    # Important for daily predictions
-            weekly_seasonality=True,   # Critical for retail patterns
-            yearly_seasonality=True,   # Seasonal clothing patterns
-            changepoint_prior_scale=0.05,
-            seasonality_prior_scale=10.0,
-            holidays_prior_scale=10.0,
-            seasonality_mode='multiplicative',  # Better for retail modeling
-            interval_width=0.8,  # 80% confidence intervals
-            uncertainty_samples=1000
+            daily_seasonality=True,
+            weekly_seasonality=True,
+            yearly_seasonality=True,
+            changepoint_prior_scale=params.get('changepoint_prior_scale', 0.05),
+            seasonality_prior_scale=params.get('seasonality_prior_scale', 10.0),
+            holidays_prior_scale=params.get('holidays_prior_scale', 10.0),
+            seasonality_mode='multiplicative',
+            interval_width=0.8,
+            uncertainty_samples=1000,
+            holidays=self.holidays_df  # Add holidays
         )
         
-        # Add custom regressors
-        model.add_regressor('unit_price')
-        model.add_regressor('is_weekend')
+        # Add enhanced regressors
+        for regressor in self.external_regressors:
+            try:
+                model.add_regressor(regressor)
+            except:
+                pass  # Skip if regressor not available
         
-        # Add monthly seasonality for better monthly patterns
+        # Add custom seasonalities
         if self.prediction_frequency == 'M':
             model.add_seasonality(name='monthly', period=30.5, fourier_order=5)
+        
+        # Add quarterly seasonality for business cycles
+        model.add_seasonality(name='quarterly', period=91.25, fourier_order=3)
         
         return model
     
@@ -161,6 +490,9 @@ class ProphetDemandModel:
                 continue
             
             try:
+                # Add enhanced features
+                prophet_df = self._add_external_features(prophet_df)
+                
                 # CRITICAL: Implement proper train/test split
                 train_df, test_df = self._train_test_split(prophet_df, test_size=0.2)
                 
@@ -168,9 +500,26 @@ class ProphetDemandModel:
                     logging.warning(f"Insufficient training data for {product_name} at {location}")
                     continue
                 
-                # Create and train model on training data ONLY
-                model = self._create_prophet_model()
-                model.fit(train_df[['ds', 'y', 'unit_price', 'is_weekend']])
+                # Optimize hyperparameters if enabled
+                best_params = {}
+                if self.optimize_hyperparams and len(train_df) > 50:
+                    try:
+                        logging.info(f"Optimizing hyperparameters for {product_name} at {location}")
+                        best_params = self._optimize_hyperparameters(train_df)
+                        self.best_params[f"{product_name}_{location}"] = best_params
+                    except Exception as e:
+                        logging.warning(f"Hyperparameter optimization failed: {e}")
+                
+                # Create and train enhanced model on training data ONLY
+                model = self._create_prophet_model(best_params)
+                
+                # Select available columns for training
+                training_cols = ['ds', 'y']
+                for col in self.external_regressors:
+                    if col in train_df.columns:
+                        training_cols.append(col)
+                
+                model.fit(train_df[training_cols])
                 
                 # Evaluate on test data ONLY
                 if len(test_df) > 0:
@@ -542,7 +891,7 @@ def main():
         
         if len(df) == 0:
             logging.warning("No data available for training. Creating a dummy model...")
-            model = ProphetDemandModel()
+            model = EnhancedProphetDemandModel()
             joblib.dump(model, 'demand_model.pkl')
             joblib.dump(['product_name', 'location', 'unit_price', 'sales_date'], 'model_features.pkl')
             logging.info("Dummy model saved as demand_model.pkl")
@@ -571,8 +920,8 @@ def main():
         X = df[['product_name', 'location', 'unit_price', 'sales_date']]
         y = df['demand']
         
-        # Train model with proper evaluation
-        model = ProphetDemandModel(prediction_frequency=frequency)
+        # Train enhanced model with proper evaluation
+        model = EnhancedProphetDemandModel(prediction_frequency=frequency, optimize_hyperparams=True)
         model.fit(X, y)
         
         # Get comprehensive evaluation results
@@ -589,11 +938,15 @@ def main():
         logging.info(f"  Total models trained: {summary['total_models']}")
         logging.info(f"  Prediction frequency: {summary['prediction_frequency']}")
         
-        # Save model and features
+        # Save model and features (legacy format)
         joblib.dump(model, 'demand_model.pkl')
         joblib.dump(['product_name', 'location', 'unit_price', 'sales_date'], 'model_features.pkl')
         
+        # Save enhanced model state
+        model.save_model_state()
+        
         logging.info(f"Enhanced Prophet model saved as demand_model.pkl")
+        logging.info("Enhanced model state saved with optimization results")
         logging.info("Model training completed successfully!")
         
         return model
@@ -601,7 +954,7 @@ def main():
     except Exception as e:
         logging.error(f"Training failed: {e}")
         # Create fallback model
-        model = ProphetDemandModel()
+        model = EnhancedProphetDemandModel()
         joblib.dump(model, 'demand_model.pkl')
         joblib.dump(['product_name', 'location', 'unit_price', 'sales_date'], 'model_features.pkl')
         return model

@@ -13,7 +13,8 @@ use App\Http\Controllers\{
     PublicController,
     CartController,
     CustomerController,
-    CustomerOrderController
+    CustomerOrderController,
+    CustomerRecommendationController
 };
 
 /*
@@ -52,6 +53,7 @@ Route::prefix('customer')->name('customer.')->group(function () {
     // Authenticated customer routes
     Route::middleware('auth:customer')->group(function () {
         Route::post('/logout', [CustomerController::class, 'logout'])->name('logout');
+        Route::get('/dashboard', [CustomerController::class, 'dashboard'])->name('dashboard');
         Route::get('/profile', [CustomerController::class, 'profile'])->name('profile');
         Route::post('/profile', [CustomerController::class, 'updateProfile'])->name('profile.update');
         Route::get('/orders', [CustomerController::class, 'orders'])->name('orders');
@@ -63,6 +65,12 @@ Route::prefix('customer')->name('customer.')->group(function () {
         Route::post('/order/{id}/cancel', [CustomerOrderController::class, 'cancel'])->name('order.cancel');
         Route::post('/order/{id}/reorder', [CustomerOrderController::class, 'reorder'])->name('order.reorder');
         Route::get('/order/{id}/track', [CustomerOrderController::class, 'track'])->name('order.track');
+        
+        // Recommendations
+        Route::get('/recommendations', [CustomerRecommendationController::class, 'getRecommendations'])->name('recommendations');
+        Route::post('/recommendations/refresh', [CustomerRecommendationController::class, 'refreshRecommendations'])->name('recommendations.refresh');
+        Route::post('/recommendations/add-to-cart', [CustomerRecommendationController::class, 'addToCart'])->name('recommendations.add-to-cart');
+        Route::post('/recommendations/track', [CustomerRecommendationController::class, 'trackInteraction'])->name('recommendations.track');
     });
 });
 

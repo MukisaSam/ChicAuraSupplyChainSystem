@@ -304,6 +304,12 @@
     
     @auth('customer')
             <div>
+                <a class="btn btn-outline-primary me-2" href="{{ route('customer.dashboard') }}">
+                    <i class="bi bi-house"></i> Dashboard
+                </a>
+            </div>
+
+            <div>
                 <a class="btn btn-outline-primary me-2" href="{{ route('customer.profile') }}">
                     <i class="bi bi-person"></i> Profile
                 </a>

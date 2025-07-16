@@ -73,7 +73,7 @@ class CustomerController extends Controller
         if (Auth::guard('customer')->attempt($request->only('email', 'password'), $request->boolean('remember'))) {
             $request->session()->regenerate();
 
-            $intendedUrl = $request->session()->get('url.intended', route('cart.checkout'));
+            $intendedUrl = $request->session()->get('url.intended', route('customer.dashboard'));
             
             return redirect()->to($intendedUrl)->with('success', 'Login successful!');
         }
@@ -91,6 +91,31 @@ class CustomerController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('public.home')->with('success', 'Logged out successfully!');
+    }
+
+    public function dashboard()
+    {
+        $customer = Auth::guard('customer')->user();
+        
+        // Get recent orders
+        $recentOrders = $customer->customerOrders()
+            ->with('customerOrderItems.item')
+            ->orderBy('created_at', 'desc')
+            ->limit(3)
+            ->get();
+        
+        // Get order statistics
+        $totalOrders = $customer->customerOrders()->count();
+        $totalSpent = $customer->customerOrders()
+            ->where('status', '!=', 'cancelled')
+            ->sum('total_amount');
+        
+        return view('public.customer-dashboard', [
+            'customer' => $customer,
+            'recentOrders' => $recentOrders,
+            'totalOrders' => $totalOrders,
+            'totalSpent' => $totalSpent,
+        ]);
     }
 
     public function profile()
