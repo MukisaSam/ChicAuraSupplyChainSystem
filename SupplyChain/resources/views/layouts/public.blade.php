@@ -17,7 +17,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
 
     <!-- Scripts -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <!-- @vite(['resources/css/app.css', 'resources/js/app.js']) -->
 
     <style>
         .navbar-brand {
@@ -269,15 +269,15 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container">
             <a class="navbar-brand text-primary" href="{{ route('public.home') }}">
-                <i class="bi bi-gem"></i> ChicAura
+                <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura" class="img-fluid" style="max-width: 150px;"/>
             </a>
         </div>
 
             <!-- Right-aligned buttons for desktop -->
-            <div class="d-flex gap-3 mb-2 mt-2 ">
+            <div class="d-flex gap-3 mt-2 ">
                 <div>
-                    <a class="nav-link position-relative" href="{{ route('public.cart') }}">
-                        <i class="bi bi-cart3"></i>
+                    <a class=" position-relative btn btn-outline-primary me-2" href="{{ route('public.cart') }}">
+                        <i class="bi bi-cart3"></i> Cart
                         <span class="cart-badge" id="cart-count">0</span>
                     </a>
                 </div>
@@ -291,13 +291,13 @@
 
                 <div>
                     <a class="btn btn-outline-primary me-2" href="{{ route('customer.register') }}">
-                        <i class="bi bi-person-plus me-1"></i>Sign Up
+                        <i class="bi bi-person-plus me-1"></i>SignUp
                     </a>
                 </div>
 
                 <div>
                     <a class="btn btn-outline-primary me-2" href="{{ route('welcome') }}">
-                        <i class="bi bi-people"></i> Business Account
+                        <i class="bi bi-people"></i> Business
                     </a>
                 </div>
                 @endguest
@@ -309,11 +309,11 @@
                 </a>
             </div>
 
-            <div>
+            <!-- <div>
                 <a class="btn btn-outline-primary me-2" href="{{ route('customer.profile') }}">
                     <i class="bi bi-person"></i> Profile
                 </a>
-            </div>
+            </div> -->
 
             <div>
                 <a class="btn btn-outline-primary me-2" href="{{ route('customer.orders') }}">
@@ -323,7 +323,7 @@
 
             <div>
                 <a class="btn btn-outline-primary me-2" href="{{ route('welcome') }}">
-                    <i class="bi bi-people"></i> Business Account
+                    <i class="bi bi-people"></i> Business
                 </a>
             </div>
 
@@ -335,17 +335,6 @@
             </form>
     @endauth
 </div>
-
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('public.home') ? 'active' : '' }}" href="{{ route('public.home') }}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('public.products*') ? 'active' : '' }}" href="{{ route('public.products') }}">Products</a>
-                    </li>
-                </ul>
-            </div>
         </div>
     </nav>
 
@@ -379,7 +368,9 @@
             <div class="row">
                 <div class="col-lg-4 mb-4">
                     <h5 class="text-primary">
-                        <i class="bi bi-gem"></i> ChicAura
+                        <a class="navbar-brand text-primary" href="{{ route('public.home') }}">
+                <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura" class="img-fluid" style="max-width: 150px;"/>
+            </a>
                     </h5>
                     <p class="text-muted">Your premier destination for fashion and style. Connecting suppliers, manufacturers, and customers in one seamless platform.</p>
                 </div>

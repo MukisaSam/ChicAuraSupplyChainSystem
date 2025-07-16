@@ -124,9 +124,9 @@
 
     <!-- Quick Actions -->
     <div class="card shadow-sm border-0 mt-5">
-        <div class="card-body">
+        <div class="card-body ">
             <h3 class="card-title h5 mb-4">Quick Actions</h3>
-            <div class="row g-3">
+            <div class="row g-3 ">
                 <div class="col-6 col-md-3">
                     <a href="{{ route('public.products') }}" 
                        class="btn btn-outline-primary w-100 d-flex flex-column align-items-center p-3 text-decoration-none">

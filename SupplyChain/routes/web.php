@@ -55,7 +55,8 @@ Route::prefix('customer')->name('customer.')->group(function () {
         Route::post('/logout', [CustomerController::class, 'logout'])->name('logout');
         Route::get('/dashboard', [CustomerController::class, 'dashboard'])->name('dashboard');
         Route::get('/profile', [CustomerController::class, 'profile'])->name('profile');
-        Route::post('/profile', [CustomerController::class, 'updateProfile'])->name('profile.update');
+        Route::put('/profile', [CustomerController::class, 'updateProfile'])->name('profile.update');
+        Route::put('/password', [CustomerController::class, 'updatePassword'])->name('password.update');
         Route::get('/orders', [CustomerController::class, 'orders'])->name('orders');
         Route::get('/orders/{id}', [CustomerController::class, 'orderDetail'])->name('order.detail');
         
