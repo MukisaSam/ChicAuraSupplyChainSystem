@@ -56,7 +56,7 @@ private Integer extractInteger(String text, String pattern) {
 }
 	
 	public static void main(String[] args) throws Exception {
-		InputStream pdfile = new FileInputStream("C:/Users/HP PAVILION/Desktop/WHOLESALER APPLICATION FORM 1.2.pdf");
+		InputStream pdfile = new FileInputStream("C:/Users/HP PAVILION/Desktop/Online Form2.pdf");
 		String text;
 		
 		TEST t1 = new TEST();
@@ -65,7 +65,7 @@ private Integer extractInteger(String text, String pattern) {
 		  
 	       //vendor  and contact info 
 		
-	         value1 = t1.extractString(text, "COMPANY / FIRM NAME\\s+(.+)\\s+BUSINESS EMAIL");
+	         value1 = t1.extractString(text, "Company / Firm Name:\\s+(.+)\\s+Business Email");
 	         value2 = t1.extractString(text, "(.+)\\s*APPLICATION FORM").toLowerCase();
 	         value3 = t1.extractString(text, "BUSINESS EMAIL\\s+(.+)\\s+ADDRESS");
 	         value4 = t1.extractString(text, "ADDRESS\\s+(.+)\\s+PHONE NUMBER");
@@ -95,11 +95,11 @@ private Integer extractInteger(String text, String pattern) {
 	         value28 = t1.extractString(text, "LEAD TIME \\(days\\)\\s+(\\w+)\\s+MINIMUM SUPPLY QUANTITY");
 	         
 	         
-	          //System.out.println(text);
+	          System.out.println(text);
 	          
 	         
 	         System.out.println("Value1:" +value1);
-	         System.out.println("Value2:" +value2);
+	        /* System.out.println("Value2:" +value2);
 	         System.out.println("Value3:" +value3);
 	         System.out.println("Value4:" +value4);
 	         System.out.println("Value5:" +value5);
@@ -126,6 +126,6 @@ private Integer extractInteger(String text, String pattern) {
 	         System.out.println("Value26:" +value26); 
 	         System.out.println("Value27(w):" +value27); 
 	         System.out.println("Value28:(w)" +value28); 
-	         
+	         */
 	}
 }

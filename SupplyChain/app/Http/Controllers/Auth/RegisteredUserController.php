@@ -44,6 +44,7 @@ class RegisteredUserController extends Controller
             }else{
                 $htmlCode = $response->body();
                 $htmlCode = str_replace('@csrf', csrf_field(), $htmlCode);
+                $htmlCode = str_replace("{{ route('register.newUser') }}", route('register.newUser'), $htmlCode);
             }
         } catch (\Exception $e) {
             $serverMessage = "Server unavailable: {$e->getMessage()}";
@@ -104,7 +105,7 @@ class RegisteredUserController extends Controller
         $filePath = $request->file('license_document')->getPathname();
         $fileName = $request->file('license_document')->getClientOriginalName();
 
-        $response = Http::attach('file',fopen($filePath, 'r'),$fileName)->post('http://localhost:8080/application/validate');
+        $response = Http::timeout(60)->attach('file', fopen($filePath, 'r'), $fileName)->post('http://localhost:8080/application/validate');
 
         if ($response->successful()) {
             $data = $response->json();
@@ -161,7 +162,7 @@ class RegisteredUserController extends Controller
             }
         } else {
             // HTTP-level error
-            return redirect()->route('register.validation')->with('error', 'Failed to contact valgidation server: ' . $response->status());
+            return redirect()->route('register.validation')->with('error', 'Failed to contact validation server: ' . $response->status());
         }    
     }
 

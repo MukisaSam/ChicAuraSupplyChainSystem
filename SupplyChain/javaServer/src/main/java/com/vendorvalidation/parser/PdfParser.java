@@ -1,22 +1,49 @@
 package com.vendorvalidation.parser;
 
 import com.vendorvalidation.model.VendorApplication;
+import net.sourceforge.tess4j.Tesseract;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
+import org.apache.pdfbox.rendering.PDFRenderer;
 
+import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PdfParser {
+	
+	//OCR
+	private final Tesseract tesseract;
+	public PdfParser() {
+        tesseract = new Tesseract();
+        tesseract.setLanguage("eng");
+        tesseract.setDatapath("C:/Program Files/Tesseract-OCR/tessdata");
+        
+    }
 
  public VendorApplication parse(InputStream pdfInputStream) throws Exception {
 	 VendorApplication app = new VendorApplication();
 	 
      // Load PDF from InputStream
      try (PDDocument document = PDDocument.load(pdfInputStream)) {
-         PDFTextStripper stripper = new PDFTextStripper();
+    	 
+    	 
+    	 //Apache Box
+    	 /*PDFTextStripper stripper = new PDFTextStripper();
          String text = stripper.getText(document);
+    	 */
+    	 
+    	 
+    	 PDFRenderer renderer = new PDFRenderer(document);
+         StringBuilder textBuilder = new StringBuilder();
+
+         for (int i = 0; i < document.getNumberOfPages(); i++) {
+             BufferedImage image = renderer.renderImageWithDPI(i, 300);
+             textBuilder.append(tesseract.doOCR(image)).append("\n");
+         }
+
+         String text = textBuilder.toString();
+
          
          //vendor  and contact info
          app.setCompanyName(extractString(text, "COMPANY / FIRM NAME\\s+(.+)\\s+BUSINESS EMAIL"));
