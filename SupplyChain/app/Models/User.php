@@ -101,10 +101,10 @@ class User extends Authenticatable
     }
 
     /**
-     * Determine if the user is considered online (last_seen within 2 minutes).
+     * Determine if the user is considered online (last_seen within 1 minutes).
      */
     public function isOnline()
     {
-        return $this->last_seen && $this->last_seen->gt(now()->subMinutes(2));
+        return $this->last_seen && $this->last_seen->gt(now()->subMinutes(1));
     }
 }

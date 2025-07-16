@@ -40,7 +40,7 @@ class TestUsersSeeder extends Seeder
         // Create Manufacturer
         $manufacturer = User::create([
             'name' => 'Manufacturer User',
-            'email' => 'manufacturer@chicaura.com',
+            'email' => 'divinepraise699@gmail.com',
             'password' => Hash::make('password123'),
             'role' => 'manufacturer',
         ]);
@@ -57,7 +57,7 @@ class TestUsersSeeder extends Seeder
         // Create Wholesaler
         $wholesaler = User::create([
             'name' => 'Wholesaler User',
-            'email' => 'wholesaler@chicaura.com',
+            'email' => 'praised854@gmail.com',
             'password' => Hash::make('password123'),
             'role' => 'wholesaler',
         ]);

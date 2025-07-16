@@ -410,7 +410,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $item->name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $item->category }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $item->stock_quantity }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">${{ number_format($item->price, 2) }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">${{ number_format($item->base_price, 2) }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @if($item->is_active)
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
@@ -476,7 +476,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $item->name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $item->category }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $item->stock_quantity }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">${{ number_format($item->price, 2) }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">${{ number_format($item->base_price, 2) }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @if($item->is_active)
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
