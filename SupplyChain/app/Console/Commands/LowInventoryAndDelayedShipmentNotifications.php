@@ -18,23 +18,29 @@ class LowInventoryAndDelayedShipmentNotifications extends Command
     public function handle()
     {
         // Low inventory notifications
-        $lowStockItems = Item::where('stock_quantity', '<=', 10)->get();
-        foreach ($lowStockItems as $item) {
+        $lowInventoryItems = Item::where('stock_quantity', '<=', 10)->get();
+        foreach ($lowInventoryItems as $item) {
             // Notify all manufacturers (or responsible users)
             $manufacturers = User::where('role', 'manufacturer')->get();
             foreach ($manufacturers as $user) {
                 $user->notify(new LowInventoryNotification($item));
             }
+            // Notify all admins
+            $adminUsers = \App\Models\User::where('role', 'admin')->get();
+            \Illuminate\Support\Facades\Notification::send($adminUsers, new \App\Notifications\LowInventoryNotification($item));
         }
 
         // Delayed shipment notifications
-        $delayedOrders = Order::whereIn('status', ['shipped'])
+        $delayedShipments = Order::whereIn('status', ['shipped'])
             ->where('estimated_delivery', '<', Carbon::now())
             ->get();
-        foreach ($delayedOrders as $order) {
+        foreach ($delayedShipments as $order) {
             if ($order->wholesaler && $order->wholesaler->user) {
                 $order->wholesaler->user->notify(new DelayedShipmentNotification($order));
             }
+            // Notify all admins
+            $adminUsers = \App\Models\User::where('role', 'admin')->get();
+            \Illuminate\Support\Facades\Notification::send($adminUsers, new \App\Notifications\DelayedShipmentNotification($order));
         }
 
         $this->info('Low inventory and delayed shipment notifications sent.');

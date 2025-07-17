@@ -22,6 +22,8 @@ class AdminDashboardController extends Controller
             abort(403, 'Access denied. Admin privileges required.');
         }
 
+        $unreadCount = $user->unreadNotifications()->count();
+
         // Stats focused on system administration
         $stats = [
             'total_users' => 68, // Manufacturers, Suppliers, Wholesalers
@@ -42,6 +44,7 @@ class AdminDashboardController extends Controller
             'user' => $user,
             'stats' => $stats,
             'recentActivities' => $recentActivities,
+            'unreadCount' => $unreadCount,
         ]);
     }
 

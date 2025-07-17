@@ -117,6 +117,9 @@ class WholesalerOrderController extends Controller
         if ($manufacturer && $manufacturer->user) {
             $manufacturer->user->notify(new OrderPlacedNotification($order));
         }
+        // Notify all admins
+        $admins = \App\Models\User::where('role', 'admin')->get();
+        \Illuminate\Support\Facades\Notification::send($admins, new OrderPlacedNotification($order));
         
         // Create order items
         foreach ($orderItems as $itemData) {

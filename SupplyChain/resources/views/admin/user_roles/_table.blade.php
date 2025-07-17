@@ -1,37 +1,32 @@
-<div id="user-roles-table">
-    @if(session('success'))
-        <div class="bg-green-100 text-green-800 p-2 rounded mb-4">{{ session('success') }}</div>
-    @endif
-    <table class="min-w-full bg-white rounded shadow">
-        <thead>
-            <tr>
-                <th class="py-2 px-4">Name</th>
-                <th class="py-2 px-4">Email</th>
-                <th class="py-2 px-4">Role</th>
-                <th class="py-2 px-4">Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($users as $user)
-            <tr>
-                <form class="role-update-form" data-user-id="{{ $user->id }}">
+<table class="w-full bg-white rounded-2xl shadow text-sm">
+    <thead>
+        <tr class="bg-gray-100 text-left">
+            <th class="p-3">Name</th>
+            <th class="p-3">Email</th>
+            <th class="p-3">Role</th>
+            <th class="p-3">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($users as $user)
+        <tr class="border-t">
+            <td class="p-3">{{ $user->name }}</td>
+            <td class="p-3">{{ $user->email }}</td>
+            <td class="p-3">{{ ucfirst($user->role) }}</td>
+            <td class="p-3">
+                <form action="{{ route('admin.user_roles.update', $user) }}" method="POST" class="flex items-center gap-2">
                     @csrf
-                    <td class="py-2 px-4">{{ $user->name }}</td>
-                    <td class="py-2 px-4">{{ $user->email }}</td>
-                    <td class="py-2 px-4">
-                        <select name="role" class="border rounded p-1">
-                            <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin</option>
-                            <option value="supplier" {{ $user->role == 'supplier' ? 'selected' : '' }}>Supplier</option>
-                            <option value="manufacturer" {{ $user->role == 'manufacturer' ? 'selected' : '' }}>Manufacturer</option>
-                            <option value="wholesaler" {{ $user->role == 'wholesaler' ? 'selected' : '' }}>Wholesaler</option>
-                        </select>
-                    </td>
-                    <td class="py-2 px-4">
-                        <button type="submit" class="bg-blue-500 text-white px-3 py-1 rounded">Update</button>
-                    </td>
+                    <select name="role" class="rounded border-gray-300">
+                        @foreach($roles as $role)
+                            <option value="{{ $role }}" @if($user->role === $role) selected @endif>
+                                {{ ucfirst($role) }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700">Update</button>
                 </form>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
-</div>
+            </td>
+        </tr>
+        @endforeach
+    </tbody>
+</table> 
