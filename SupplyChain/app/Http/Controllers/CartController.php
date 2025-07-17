@@ -131,6 +131,34 @@ class CartController extends Controller
         $cart = Session::get('cart', []);
         
         if (isset($cart[$request->cart_key])) {
+            // Get the product to check stock
+            $cartItem = $cart[$request->cart_key];
+            $product = Item::find($cartItem['product_id']);
+            
+            if (!$product) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Product not found'
+                ], 404);
+            }
+
+            // Check if requested quantity exceeds stock
+            if ($request->quantity > $product->stock_quantity) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Cannot add {$request->quantity} items. Only {$product->stock_quantity} in stock.",
+                    'max_quantity' => $product->stock_quantity
+                ], 400);
+            }
+
+            // Check if product is still active and available
+            if (!$product->is_active || $product->type !== 'finished_product') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Product is no longer available'
+                ], 400);
+            }
+
             $cart[$request->cart_key]['quantity'] = $request->quantity;
             Session::put('cart', $cart);
 
@@ -159,7 +187,8 @@ class CartController extends Controller
                     'message' => 'Cart updated successfully',
                     'item_total' => $cartItems['updated_item']['total_price'],
                     'cart_total' => $total,
-                    'cart_count' => array_sum(array_column($cart, 'quantity'))
+                    'cart_count' => array_sum(array_column($cart, 'quantity')),
+                    'stock_quantity' => $product->stock_quantity
                 ]);
             }
         }

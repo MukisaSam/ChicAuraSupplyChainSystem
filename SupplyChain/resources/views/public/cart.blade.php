@@ -37,12 +37,15 @@
                         </div>
                         <div class="col-md-2">
                             <div class="input-group input-group-sm">
-                                <button class="btn btn-outline-secondary" type="button" onclick="updateQuantity('{{ $item['id'] }}', {{ $item['quantity'] - 1 }})">-</button>
+                                <button class="btn btn-outline-secondary decrease-btn" type="button" data-cart-key="{{ $item['id'] }}">-</button>
                                 <input type="number" class="form-control text-center quantity-input" 
-                                       value="{{ $item['quantity'] }}" min="1" 
-                                       onchange="updateQuantity('{{ $item['id'] }}', this.value)">
-                                <button class="btn btn-outline-secondary" type="button" onclick="updateQuantity('{{ $item['id'] }}', {{ $item['quantity'] + 1 }})">+</button>
+                                       value="{{ $item['quantity'] }}" min="1" max="{{ $item['product']->stock_quantity }}"
+                                       data-cart-key="{{ $item['id'] }}" data-stock="{{ $item['product']->stock_quantity }}" 
+                                       style="min-width: 45px;" readonly>
+                                <button class="btn btn-outline-secondary increase-btn" type="button" 
+                                        data-cart-key="{{ $item['id'] }}" data-stock="{{ $item['product']->stock_quantity }}">+</button>
                             </div>
+                            <small class="text-muted d-block mt-1">{{ $item['product']->stock_quantity }} in stock</small>
                         </div>
                         <div class="col-md-1">
                             <span class="fw-bold item-total">${{ number_format($item['total_price'], 2) }}</span>
@@ -83,7 +86,7 @@
                     </div>
                     <div class="d-flex justify-content-between mb-2">
                         <span>Tax:</span>
-                        <span>${{ number_format($total * 0.1, 2) }}</span>
+                        <span id="cart-tax">${{ number_format($total * 0.1, 2) }}</span>
                     </div>
                     <hr>
                     <div class="d-flex justify-content-between fw-bold">
@@ -99,7 +102,7 @@
             </div>
 
             <!-- Promo Code (Future Feature) -->
-            <div class="card mt-3">
+            <!-- <div class="card mt-3">
                 <div class="card-body">
                     <h6>Have a promo code?</h6>
                     <div class="input-group">
@@ -107,7 +110,7 @@
                         <button class="btn btn-outline-secondary" type="button">Apply</button>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     </div>
 
@@ -127,11 +130,57 @@
 
 @push('scripts')
 <script>
-function updateQuantity(cartKey, quantity) {
+document.addEventListener('DOMContentLoaded', function() {
+    // Add event listeners for quantity buttons
+    document.querySelectorAll('.increase-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const cartKey = this.getAttribute('data-cart-key');
+            const stockQuantity = parseInt(this.getAttribute('data-stock'));
+            const quantityInput = document.querySelector(`input.quantity-input[data-cart-key="${cartKey}"]`);
+            const currentQuantity = parseInt(quantityInput.value);
+            
+            // Check if we can increase quantity
+            if (currentQuantity >= stockQuantity) {
+                showToast('warning', `Cannot add more items. Only ${stockQuantity} in stock.`, 3000);
+                return;
+            }
+            
+            updateQuantity(cartKey, currentQuantity + 1, this);
+        });
+    });
+
+    document.querySelectorAll('.decrease-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const cartKey = this.getAttribute('data-cart-key');
+            const quantityInput = document.querySelector(`input.quantity-input[data-cart-key="${cartKey}"]`);
+            const currentQuantity = parseInt(quantityInput.value);
+            if (currentQuantity > 1) {
+                updateQuantity(cartKey, currentQuantity - 1, this);
+            } else {
+                removeFromCart(cartKey);
+            }
+        });
+    });
+});
+
+function updateQuantity(cartKey, quantity, buttonElement = null) {
     if (quantity < 1) {
         removeFromCart(cartKey);
         return;
     }
+
+    // Show loading state
+    if (buttonElement) {
+        const originalText = buttonElement.innerHTML;
+        buttonElement.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span>';
+        buttonElement.disabled = true;
+    }
+
+    // Optimistically update the UI
+    const cartItem = document.querySelector(`[data-cart-key="${cartKey}"]`);
+    const quantityInput = cartItem.querySelector('.quantity-input');
+    const oldQuantity = parseInt(quantityInput.value);
+    quantityInput.value = quantity;
 
     const formData = new FormData();
     formData.append('cart_key', cartKey);
@@ -148,30 +197,164 @@ function updateQuantity(cartKey, quantity) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Update item total
-            const cartItem = document.querySelector(`[data-cart-key="${cartKey}"]`);
-            cartItem.querySelector('.item-total').textContent = `$${data.item_total.toFixed(2)}`;
+            // Update item total with animation
+            const itemTotalElement = cartItem.querySelector('.item-total');
+            itemTotalElement.style.transition = 'color 0.3s ease';
+            itemTotalElement.style.color = '#28a745';
+            itemTotalElement.textContent = `$${data.item_total.toFixed(2)}`;
             
-            // Update cart totals
-            document.getElementById('cart-subtotal').textContent = `$${data.cart_total.toFixed(2)}`;
-            document.getElementById('cart-total').textContent = `$${(data.cart_total * 1.1).toFixed(2)}`;
+            // Update cart totals with animation
+            updateCartTotals(data.cart_total);
             
-            // Update cart count
+            // Update cart count in header
             updateCartCount();
             
-            showAlert('success', data.message);
+            // Update stock quantity if provided
+            if (data.stock_quantity) {
+                const increaseBtn = cartItem.querySelector('.increase-btn');
+                const quantityInput = cartItem.querySelector('.quantity-input');
+                increaseBtn.setAttribute('data-stock', data.stock_quantity);
+                quantityInput.setAttribute('data-stock', data.stock_quantity);
+                quantityInput.setAttribute('max', data.stock_quantity);
+            }
+            
+            // Reset color after animation
+            setTimeout(() => {
+                itemTotalElement.style.color = '';
+            }, 500);
+            
+            showToast('success', 'Cart updated successfully', 2000);
         } else {
-            showAlert('danger', 'Failed to update cart');
+            // Revert optimistic update
+            quantityInput.value = oldQuantity;
+            
+            // Show specific error message with stock limit if available
+            if (data.max_quantity) {
+                showToast('warning', data.message, 4000);
+                // Update the max quantity in case stock changed
+                const increaseBtn = cartItem.querySelector('.increase-btn');
+                const stockDisplay = cartItem.querySelector('small');
+                increaseBtn.setAttribute('data-stock', data.max_quantity);
+                quantityInput.setAttribute('data-stock', data.max_quantity);
+                quantityInput.setAttribute('max', data.max_quantity);
+                if (stockDisplay) {
+                    stockDisplay.textContent = `${data.max_quantity} in stock`;
+                }
+            } else {
+                showToast('danger', data.message || 'Failed to update cart');
+            }
         }
     })
     .catch(error => {
         console.error('Error updating cart:', error);
-        showAlert('danger', 'Error updating cart');
+        // Revert optimistic update
+        quantityInput.value = oldQuantity;
+        showToast('danger', 'Error updating cart');
+    })
+    .finally(() => {
+        // Reset button state
+        if (buttonElement) {
+            const isIncrease = buttonElement.classList.contains('increase-btn');
+            buttonElement.innerHTML = isIncrease ? '+' : '-';
+            buttonElement.disabled = false;
+        }
     });
+}
+
+function updateCartTotals(subtotal) {
+    const subtotalElement = document.getElementById('cart-subtotal');
+    const taxElement = document.getElementById('cart-tax');
+    const totalElement = document.getElementById('cart-total');
+    const tax = subtotal * 0.1;
+    const total = subtotal + tax;
+
+    // Add animation to all elements
+    const elements = [subtotalElement, taxElement, totalElement];
+    elements.forEach(element => {
+        element.style.transition = 'all 0.3s ease';
+        element.style.transform = 'scale(1.05)';
+    });
+    
+    // Update values
+    subtotalElement.textContent = `$${subtotal.toFixed(2)}`;
+    taxElement.textContent = `$${tax.toFixed(2)}`;
+    totalElement.textContent = `$${total.toFixed(2)}`;
+    
+    // Reset animation
+    setTimeout(() => {
+        elements.forEach(element => {
+            element.style.transform = 'scale(1)';
+        });
+    }, 200);
+}
+
+function showToast(type, message, duration = 3000) {
+    // Remove existing toasts
+    const existingToasts = document.querySelectorAll('.toast-notification');
+    existingToasts.forEach(toast => toast.remove());
+
+    // Create toast element
+    const toast = document.createElement('div');
+    toast.className = `toast-notification alert alert-${type} position-fixed`;
+    toast.style.cssText = `
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+        animation: slideInRight 0.3s ease-out;
+    `;
+    const getIcon = (type) => {
+        switch(type) {
+            case 'success': return 'check-circle';
+            case 'warning': return 'exclamation-triangle';
+            case 'danger': return 'x-circle';
+            default: return 'info-circle';
+        }
+    };
+
+    toast.innerHTML = `
+        <div class="d-flex align-items-center">
+            <i class="bi bi-${getIcon(type)} me-2"></i>
+            <span>${message}</span>
+            <button type="button" class="btn-close ms-auto" onclick="this.parentElement.parentElement.remove()"></button>
+        </div>
+    `;
+
+    // Add CSS for animation
+    if (!document.getElementById('toast-styles')) {
+        const style = document.createElement('style');
+        style.id = 'toast-styles';
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+
+    document.body.appendChild(toast);
+
+    // Auto remove after duration
+    setTimeout(() => {
+        toast.style.animation = 'slideOutRight 0.3s ease-in';
+        setTimeout(() => toast.remove(), 300);
+    }, duration);
 }
 
 function removeFromCart(cartKey) {
     if (!confirm('Remove this item from cart?')) return;
+
+    const cartItem = document.querySelector(`[data-cart-key="${cartKey}"]`);
+    
+    // Add removing animation
+    cartItem.style.transition = 'all 0.3s ease';
+    cartItem.style.opacity = '0.5';
+    cartItem.style.transform = 'scale(0.95)';
 
     const formData = new FormData();
     formData.append('cart_key', cartKey);
@@ -187,26 +370,47 @@ function removeFromCart(cartKey) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Remove item from DOM
-            const cartItem = document.querySelector(`[data-cart-key="${cartKey}"]`);
-            cartItem.remove();
+            // Animate item removal
+            cartItem.style.height = cartItem.offsetHeight + 'px';
+            cartItem.style.overflow = 'hidden';
+            
+            setTimeout(() => {
+                cartItem.style.height = '0';
+                cartItem.style.marginTop = '0';
+                cartItem.style.marginBottom = '0';
+                cartItem.style.paddingTop = '0';
+                cartItem.style.paddingBottom = '0';
+                
+                setTimeout(() => {
+                    cartItem.remove();
+                    
+                    // Reload page if cart is empty
+                    if (data.cart_count === 0) {
+                        location.reload();
+                    } else {
+                        // Recalculate and update totals
+                        recalculateCartTotals();
+                    }
+                }, 300);
+            }, 100);
             
             // Update cart count
             updateCartCount();
             
-            // Reload page if cart is empty
-            if (data.cart_count === 0) {
-                location.reload();
-            }
-            
-            showAlert('success', data.message);
+            showToast('success', 'Item removed from cart');
         } else {
-            showAlert('danger', 'Failed to remove item');
+            // Reset animation
+            cartItem.style.opacity = '1';
+            cartItem.style.transform = 'scale(1)';
+            showToast('danger', 'Failed to remove item');
         }
     })
     .catch(error => {
         console.error('Error removing from cart:', error);
-        showAlert('danger', 'Error removing item from cart');
+        // Reset animation
+        cartItem.style.opacity = '1';
+        cartItem.style.transform = 'scale(1)';
+        showToast('danger', 'Error removing item from cart');
     });
 }
 
@@ -225,13 +429,55 @@ function clearCart() {
         if (data.success) {
             location.reload();
         } else {
-            showAlert('danger', 'Failed to clear cart');
+            showToast('danger', 'Failed to clear cart');
         }
     })
     .catch(error => {
         console.error('Error clearing cart:', error);
-        showAlert('danger', 'Error clearing cart');
+        showToast('danger', 'Error clearing cart');
     });
+}
+
+function updateCartCount() {
+    fetch('/cart/count', {
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Update cart count in navigation if element exists
+        const cartCountElements = document.querySelectorAll('.cart-count, #cart-count');
+        cartCountElements.forEach(element => {
+            element.textContent = data.count;
+            
+            // Add bounce animation
+            element.style.transition = 'transform 0.2s ease';
+            element.style.transform = 'scale(1.2)';
+            setTimeout(() => {
+                element.style.transform = 'scale(1)';
+            }, 200);
+        });
+    })
+    .catch(error => {
+        console.error('Error updating cart count:', error);
+    });
+}
+
+function recalculateCartTotals() {
+    let subtotal = 0;
+    document.querySelectorAll('.cart-item').forEach(item => {
+        const itemTotalText = item.querySelector('.item-total').textContent;
+        const itemTotal = parseFloat(itemTotalText.replace('$', ''));
+        subtotal += itemTotal;
+    });
+    
+    updateCartTotals(subtotal);
+}
+
+// Legacy function for compatibility
+function showAlert(type, message) {
+    showToast(type, message);
 }
 </script>
 @endpush

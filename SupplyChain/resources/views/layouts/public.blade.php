@@ -305,7 +305,7 @@
     @auth('customer')
             <div>
                 <a class="btn btn-outline-primary me-2" href="{{ route('customer.dashboard') }}">
-                    <i class="bi bi-house"></i> Dashboard
+                    <i class="bi bi-house"></i> Home
                 </a>
             </div>
 
