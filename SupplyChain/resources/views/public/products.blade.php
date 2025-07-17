@@ -176,9 +176,9 @@
             </div>
 
             <!-- Pagination -->
-            <div class="d-flex justify-content-center mt-5">
+            <!-- <div class="d-flex justify-content-center mt-5">
                 {{ $products->withQueryString()->links() }}
-            </div>
+            </div> -->
 
             @else
             <!-- No Products Found -->
