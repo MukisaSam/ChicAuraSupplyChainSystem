@@ -41,39 +41,39 @@
             transform: translateY(-8px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
         }
-        
+
         .product-card:hover .card-title {
             color: #0d6efd;
         }
-        
+
         .product-card:hover .btn {
             transform: scale(1.05);
         }
-        
+
         .product-card .btn {
             transition: transform 0.2s ease-in-out;
         }
-        
+
         /* Enhanced Navbar Styles */
         .navbar {
             padding: 0.75rem 0;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
-        
+
         .navbar-brand {
             font-size: 1.75rem;
             font-weight: 700;
         }
-        
+
         .navbar-toggler {
             border: none;
             padding: 0.25rem 0.5rem;
         }
-        
+
         .navbar-toggler:focus {
             box-shadow: none;
         }
-        
+
         /* Header Button Styles */
         .navbar-nav .nav-link {
             display: flex;
@@ -82,12 +82,12 @@
             transition: all 0.3s ease;
             font-weight: 500;
         }
-        
+
         .navbar-nav .nav-link:hover {
             color: #0d6efd !important;
             transform: translateY(-1px);
         }
-        
+
         .navbar-nav .btn {
             padding: 0.375rem 0.75rem;
             border-radius: 6px;
@@ -97,50 +97,50 @@
             border-width: 1px;
             white-space: nowrap;
         }
-        
+
         .navbar-nav .btn:hover {
             transform: translateY(-1px);
             box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
-        
+
         .navbar-nav .btn-outline-primary {
             border-color: #0d6efd;
             color: #0d6efd;
         }
-        
+
         .navbar-nav .btn-outline-primary:hover {
             background-color: #0d6efd;
             border-color: #0d6efd;
             color: white;
         }
-        
+
         .navbar-nav .btn-primary {
             background-color: #0d6efd;
             border-color: #0d6efd;
             color: white;
         }
-        
+
         .navbar-nav .btn-primary:hover {
             background-color: #0b5ed7;
             border-color: #0b5ed7;
         }
-        
+
         .navbar-nav .btn-secondary {
             background-color: #6c757d;
             border-color: #6c757d;
             color: white;
         }
-        
+
         .navbar-nav .btn-secondary:hover {
             background-color: #5c636a;
             border-color: #5c636a;
         }
-        
+
         /* Desktop right-aligned buttons */
         .navbar .d-lg-flex {
             margin-left: auto;
         }
-        
+
         .navbar .d-lg-flex .nav-link {
             padding: 0.5rem 1rem;
             color: #6c757d;
@@ -148,37 +148,37 @@
             display: flex;
             align-items: center;
         }
-        
+
         .navbar .d-lg-flex .nav-link:hover {
             color: #0d6efd;
         }
-        
+
         .navbar .d-lg-flex .btn {
             padding: 0.375rem 0.75rem;
             font-size: 0.875rem;
             border-radius: 6px;
             font-weight: 500;
         }
-        
+
         .navbar .d-lg-flex .btn:hover {
             transform: translateY(-1px);
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        
-        
+
+
         /* Desktop button alignment */
         @media (min-width: 992px) {
             .navbar-nav {
                 align-items: center;
             }
         }
-        
+
         /* Mobile-first responsive design */
         @media (max-width: 991.98px) {
             .navbar {
                 padding: 0.5rem 0;
             }
-            
+
             .navbar-collapse {
                 margin-top: 1rem;
                 padding: 1rem;
@@ -186,15 +186,15 @@
                 border-radius: 8px;
                 border: 1px solid #dee2e6;
             }
-            
+
             .navbar-nav {
                 gap: 0.5rem;
             }
-            
+
             .navbar-nav .nav-item {
                 margin-bottom: 0.5rem;
             }
-            
+
             .navbar-nav .nav-link {
                 padding: 0.75rem 1rem;
                 border-radius: 6px;
@@ -202,12 +202,12 @@
                 background: white;
                 border: 1px solid #dee2e6;
             }
-            
+
             .navbar-nav .nav-link:hover {
                 background-color: #e9ecef;
                 transform: translateY(0);
             }
-            
+
             .navbar-nav .btn {
                 width: 100%;
                 margin: 0.25rem 0;
@@ -215,7 +215,7 @@
                 padding: 0.75rem 1rem;
                 font-size: 0.95rem;
             }
-            
+
             /* Mobile search form styling */
             .d-lg-none.mb-3 {
                 background: white;
@@ -225,28 +225,28 @@
                 border: 1px solid #dee2e6;
             }
         }
-        
+
         @media (max-width: 575.98px) {
             .navbar-brand {
                 font-size: 1.5rem;
             }
-            
+
             .navbar-collapse {
                 margin: 0.75rem 0 0;
                 padding: 1rem;
             }
-            
+
             .navbar-nav .btn {
                 font-size: 0.9rem;
                 padding: 0.65rem 1rem;
             }
-            
+
             .navbar-nav .nav-link {
                 font-size: 0.9rem;
                 padding: 0.65rem 1rem;
             }
         }
-        
+
         .footer {
             background-color: #f8f9fa;
             margin-top: auto;
@@ -301,7 +301,7 @@
                     </a>
                 </div>
                 @endguest
-    
+
     @auth('customer')
             <div>
                 <a class="btn btn-outline-primary me-2" href="{{ route('customer.dashboard') }}">
@@ -375,7 +375,7 @@
                     <p class="text-muted">Your premier destination for fashion and style. Connecting suppliers, manufacturers, and customers in one seamless platform.</p>
                 </div>
                 <div class="col-lg-2 mb-4">
-                    
+
                 </div>
                 <div class="col-lg-2 mb-4">
                     <h6>Customer Care</h6>
@@ -424,7 +424,7 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <!-- Custom Scripts -->
     <script>
         // Update cart count on page load

@@ -101,13 +101,13 @@
             <!-- Top Navigation Bar -->
             <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b">
                 <div class="flex items-center">
-                    <img src="{{ Auth::user()->profile_picture ? Storage::disk('public')->url(Auth::user()->profile_picture) : asset('images/default-avatar.svg') }}" alt="{{ Auth::user()->name }}" class="w-12 h-12 rounded-full border-2 border-blue-200">
-                    <span class="online-indicator ml-2 {{ Auth::user()->isOnline() ? 'bg-green-500' : 'bg-gray-400' }}"></span>
+                    <img src="{{ $contact->profile_picture ? Storage::disk('public')->url($contact->profile_picture) : asset('images/default-avatar.svg') }}" alt="{{ $contact->name }}" class="w-12 h-12 rounded-full border-2 border-green-200">
+                    <span class="online-indicator ml-2 {{ $contact->isOnline() ? 'bg-green-500' : 'bg-gray-400' }}"></span>
                     <div class="ml-4">
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ Auth::user()->name }}</h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ ucfirst(Auth::user()->role) }}
-                            <span class="ml-2 text-xs {{ Auth::user()->isOnline() ? 'text-green-500' : 'text-gray-400' }}">
-                                {{ Auth::user()->isOnline() ? 'Online' : 'Offline' }}
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ $contact->name }}</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ ucfirst($contact->role) }}
+                            <span class="ml-2 text-xs {{ $contact->isOnline() ? 'text-green-500' : 'text-gray-400' }}">
+                                {{ $contact->isOnline() ? 'Online' : 'Offline' }}
                             </span>
                         </p>
                     </div>
@@ -119,8 +119,8 @@
                     <div class="relative">
                         <button class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
                             <span class="mr-2 text-gray-700 font-medium text-sm">{{ Auth::user()->name ?? 'Admin User' }}</span>
-                            <img class="w-7 h-7 rounded-full border-2 border-blue-200 object-cover" 
-                                 src="{{ Auth::user()->profile_picture ? Storage::disk('public')->url(Auth::user()->profile_picture) : asset('images/default-avatar.svg') }}" 
+                            <img class="w-7 h-7 rounded-full border-2 border-blue-200 object-cover"
+                                 src="{{ Auth::user()->profile_picture ? Storage::disk('public')->url(Auth::user()->profile_picture) : asset('images/default-avatar.svg') }}"
                                  alt="User Avatar">
                         </button>
                     </div>
@@ -141,4 +141,4 @@
         </div>
     </div>
 </body>
-</html> 
+</html>

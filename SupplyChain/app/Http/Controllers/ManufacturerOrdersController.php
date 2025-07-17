@@ -84,6 +84,9 @@ class ManufacturerOrdersController extends Controller
         if ($order->wholesaler && $order->wholesaler->user) {
             $order->wholesaler->user->notify(new OrderStatusUpdatedNotification($order, $request->status));
         }
+        // Notify all admins
+        $admins = \App\Models\User::where('role', 'admin')->get();
+        \Illuminate\Support\Facades\Notification::send($admins, new OrderStatusUpdatedNotification($order, $request->status));
 
         // Automatic stock update logic
         if ($oldStatus !== $request->status) {

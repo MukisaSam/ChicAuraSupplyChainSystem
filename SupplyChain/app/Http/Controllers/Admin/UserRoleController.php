@@ -3,42 +3,28 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class UserRoleController extends Controller
 {
+    // List all users and their roles
     public function index()
     {
-        $users = User::all();
-        return view('admin.user_roles.index', compact('users'));
+        $users = User::orderBy('name')->get();
+        $roles = ['admin', 'manager', 'supplier', 'manufacturer', 'wholesaler']; // Define your roles here
+        return view('admin.user_roles.index', compact('users', 'roles'));
     }
 
+    // Update a user's role
     public function update(Request $request, User $user)
     {
         $request->validate([
-            'role' => 'required|string',
-        ]);
-
-        $user->role = $request->role;
-        $user->save();
-
-        return redirect()->route('admin.user-roles.index')->with('success', 'Role updated successfully.');
-    }
-
-    public function ajaxIndex()
-    {
-        $users = \App\Models\User::all();
-        return view('admin.user_roles._table', compact('users'));
-    }
-
-    public function ajaxUpdate(Request $request, User $user)
-    {
-        $request->validate([
-            'role' => 'required|string',
+            'role' => 'required|string|in:admin,manager,supplier,manufacturer,wholesaler', // Update as needed
         ]);
         $user->role = $request->role;
         $user->save();
-        return response()->json(['success' => true, 'message' => 'Role updated successfully.']);
+
+        return redirect()->route('admin.user_roles.index')->with('success', 'User role updated!');
     }
 }

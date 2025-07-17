@@ -1,80 +1,112 @@
 @extends('layouts.admin-dashboard')
 
-@section('title', 'Admin Analytics')
+@section('title', 'Analytics')
 
 @section('content')
-<div class="flex-1 p-4">
-    <div class="mb-4">
-        <h2 class="text-2xl font-bold text-white mb-1">Analytics Dashboard</h2>
-        <p class="text-gray-200 text-sm">Key metrics and trends for your supply chain operations.</p>
-    </div>
-    <div class="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2 lg:grid-cols-3">
-        <div class="stat-card p-4 rounded-xl">
-            <div class="flex items-center">
-                <div class="p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg">
-                    <i class="fas fa-boxes text-white text-xl"></i>
-                </div>
-                <div class="ml-3">
-                    <p class="text-xs font-medium text-gray-600">Orders Processed</p>
-                    <p class="text-2xl font-bold text-gray-800">{{ $ordersCount }}</p>
-                </div>
-            </div>
+<div class="p-6">
+    <h1 class="text-2xl font-bold mb-6">Admin Analytics</h1>
+
+    <!-- Metrics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="stat-card p-6 rounded-xl shadow text-center">
+            <div class="text-gray-500 text-sm mb-2">Total Users</div>
+            <div class="text-3xl font-bold">{{ $totalUsers ?? 0 }}</div>
         </div>
-        <div class="stat-card p-4 rounded-xl">
-            <div class="flex items-center">
-                <div class="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg">
-                    <i class="fas fa-users text-white text-xl"></i>
-                </div>
-                <div class="ml-3">
-                    <p class="text-xs font-medium text-gray-600">Vendors Registered</p>
-                    <p class="text-2xl font-bold text-gray-800">{{ $vendorsCount }}</p>
-                </div>
-            </div>
+        <div class="stat-card p-6 rounded-xl shadow text-center">
+            <div class="text-gray-500 text-sm mb-2">Total Orders</div>
+            <div class="text-3xl font-bold">{{ $totalOrders ?? 0 }}</div>
         </div>
-        <div class="stat-card p-4 rounded-xl">
-            <div class="flex items-center">
-                <div class="p-3 bg-gradient-to-br from-yellow-500 to-yellow-600 rounded-xl shadow-lg">
-                    <i class="fas fa-dollar-sign text-white text-xl"></i>
-                </div>
-                <div class="ml-3">
-                    <p class="text-xs font-medium text-gray-600">Revenue (This Month)</p>
-                    <p class="text-2xl font-bold text-gray-800">${{ number_format($monthlyRevenue, 2) }}</p>
-                </div>
-            </div>
+        <div class="stat-card p-6 rounded-xl shadow text-center">
+            <div class="text-gray-500 text-sm mb-2">Revenue</div>
+            <div class="text-3xl font-bold">${{ number_format($totalRevenue ?? 0, 2) }}</div>
+        </div>
+        <div class="stat-card p-6 rounded-xl shadow text-center">
+            <div class="text-gray-500 text-sm mb-2">Active Suppliers</div>
+            <div class="text-3xl font-bold">{{ $activeSuppliers ?? 0 }}</div>
         </div>
     </div>
-    <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-3">
-        <div class="card-gradient p-4 rounded-xl lg:col-span-3 overflow-hidden">
-            <h3 class="text-lg font-bold text-gray-800 mb-3">Recent Orders Overview</h3>
-            <canvas id="ordersChart" class="w-full h-64"></canvas>
+
+    <!-- Charts -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="card-gradient p-6 rounded-xl shadow">
+            <h2 class="text-lg font-semibold mb-4">Orders Over Time</h2>
+            <canvas id="ordersChart" height="120"></canvas>
         </div>
+        <div class="card-gradient p-6 rounded-xl shadow">
+            <h2 class="text-lg font-semibold mb-4">User Registrations</h2>
+            <canvas id="usersChart" height="120"></canvas>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="card-gradient p-6 rounded-xl shadow mb-8">
+        <h2 class="text-lg font-semibold mb-4">Recent Orders</h2>
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="p-2">Order #</th>
+                    <th class="p-2">Customer</th>
+                    <th class="p-2">Amount</th>
+                    <th class="p-2">Status</th>
+                    <th class="p-2">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($recentOrders ?? [] as $order)
+                <tr>
+                    <td class="p-2">{{ $order->id }}</td>
+                    <td class="p-2">{{ $order->customer->name ?? 'N/A' }}</td>
+                    <td class="p-2">${{ number_format($order->total, 2) }}</td>
+                    <td class="p-2">{{ ucfirst($order->status) }}</td>
+                    <td class="p-2">{{ $order->created_at->format('Y-m-d') }}</td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="5" class="p-2 text-center text-gray-400">No recent orders.</td>
+                </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 </div>
-@push('scripts')
+
+<!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-const ctx = document.getElementById('ordersChart').getContext('2d');
-new Chart(ctx, {
-    type: 'line',
-    data: {!! json_encode($chartData) !!},
-    options: {
-        responsive: true,
-        plugins: {
-            legend: {
-                display: true,
-                position: 'bottom',
-                labels: {
-                    usePointStyle: true,
-                    font: { size: 12 }
-                }
-            }
+document.addEventListener('DOMContentLoaded', function () {
+    // Orders Chart
+    var ctxOrders = document.getElementById('ordersChart').getContext('2d');
+    new Chart(ctxOrders, {
+        type: 'line',
+        data: {
+            labels: {!! json_encode($ordersChartLabels ?? []) !!},
+            datasets: [{
+                label: 'Orders',
+                data: {!! json_encode($ordersChartData ?? []) !!},
+                backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                borderColor: 'rgba(59, 130, 246, 1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4
+            }]
         },
-        scales: {
-            x: { title: { display: true, text: 'Date' } },
-            y: { title: { display: true, text: 'Orders' }, beginAtZero: true }
-        }
-    }
+        options: { responsive: true, plugins: { legend: { display: false } } }
+    });
+
+    // Users Chart
+    var ctxUsers = document.getElementById('usersChart').getContext('2d');
+    new Chart(ctxUsers, {
+        type: 'bar',
+        data: {
+            labels: {!! json_encode($usersChartLabels ?? []) !!},
+            datasets: [{
+                label: 'Users',
+                data: {!! json_encode($usersChartData ?? []) !!},
+                backgroundColor: 'rgba(16, 185, 129, 0.7)'
+            }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+    });
 });
 </script>
-@endpush
 @endsection

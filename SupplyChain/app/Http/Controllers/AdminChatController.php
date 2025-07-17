@@ -86,6 +86,9 @@ class AdminChatController extends Controller
             'file_url' => $request->file_url,
         ]);
         $receiver->notify(new ChatMessageNotification($message));
+        // Notify all other admins besides the sender
+        $otherAdmins = \App\Models\User::where('role', 'admin')->where('id', '!=', $user->id)->get();
+        \Illuminate\Support\Facades\Notification::send($otherAdmins, new ChatMessageNotification($message));
         $message->load(['sender', 'receiver']);
         if ($request->ajax()) {
             return response()->json([

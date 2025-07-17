@@ -183,21 +183,21 @@
                     <a href="{{ route('admin.users') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.users') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
                         <i class="fas fa-users-cog w-5"></i><span class="ml-2 text-sm">Users Management</span>
                     </a>
-                    <a href="{{ route('admin.user-roles.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.user-roles.index') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                    <a href="{{ route('admin.user_roles.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.user_roles.*') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
                         <i class="fas fa-shield-alt w-5"></i><span class="ml-2 text-sm">Roles & Permissions</span>
                     </a>
-                    <a href="{{ route('admin.analytics.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.analytics') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                    <a href="{{ route('admin.analytics.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.analytics.*') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
                         <i class="fas fa-chart-pie w-5"></i><span class="ml-2 text-sm">Analytics</span>
                     </a>
-                    <a href="{{ route('admin.audit-logs.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.audit-logs.index') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                    <a href="{{ route('admin.audit-logs.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.audit-logs.*') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
                         <i class="fas fa-history w-5"></i><span class="ml-2 text-sm">Audit Logs</span>
                     </a>
-                    <a href="{{ route('admin.notifications.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.notifications.index') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                    <a href="{{ route('admin.notifications.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.notifications.*') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
                         <i class="fas fa-bell w-5"></i><span class="ml-2 text-sm">Notifications</span>
                     </a>
-                    <a href="{{ route('admin.settings.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.settings.index') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                    <!--<a href="{{ route('admin.settings.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.settings.*') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
                         <i class="fas fa-cogs w-5"></i><span class="ml-2 text-sm">System Settings</span>
-                    </a>
+                    </a>-->
                     <a href="{{ route('admin.chat.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.chat.index') || request()->routeIs('admin.chat.show') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
                         <i class="fas fa-comments w-5"></i><span class="ml-2 text-sm">Chat</span>
                     </a>
@@ -221,7 +221,19 @@
                     </div>
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
-                    <i class="fas fa-bell"></i>
+                    <div class="relative">
+                        <a href="{{ route('admin.notifications.index') }}">
+                            <i class="fas fa-bell"></i>
+                            @php
+                                $unreadCount = isset($unreadCount) ? $unreadCount : (Auth::check() ? Auth::user()->unreadNotifications()->count() : 0);
+                            @endphp
+                            @if($unreadCount > 0)
+                                <span class="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5">
+                                    {{ $unreadCount }}
+                                </span>
+                            @endif
+                        </a>
+                    </div>
                     <button data-theme-toggle class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors" title="Switch Theme">
                         <i class="fas fa-moon text-lg"></i>
                     </button>
@@ -259,6 +271,21 @@
                     document.getElementById('sidebar').classList.toggle('open');
                 });
             }
+        });
+    </script>
+    <script>
+        // Highlight active sidebar link if not handled by Blade
+        document.addEventListener('DOMContentLoaded', function () {
+            const links = document.querySelectorAll('.sidebar .nav-link');
+            const currentUrl = window.location.pathname;
+            links.forEach(link => {
+                // Compare the href without query params
+                const linkUrl = link.getAttribute('href').split('?')[0];
+                if (currentUrl === linkUrl) {
+                    link.classList.add('text-white', 'bg-gradient-to-r', 'from-blue-600', 'to-blue-700', 'shadow-lg');
+                    link.classList.remove('text-gray-300', 'hover:bg-gray-700', 'hover:text-white');
+                }
+            });
         });
     </script>
 </body>
