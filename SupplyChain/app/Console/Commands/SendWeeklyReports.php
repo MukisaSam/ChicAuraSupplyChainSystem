@@ -47,7 +47,7 @@ class SendWeeklyReports extends Command
     private function sendSupplierReports()
     {
         $supplier = User::where('role', 'supplier')->get();
-        foreach ($suppler as $user) {
+        foreach ($supplier as $user) {
             $csv = $this->generateSupplierReport($user);
             Mail::to($user->email)->send(new WeeklyReportMail($user, $csv, 'supplier'));
         }
@@ -58,7 +58,6 @@ class SendWeeklyReports extends Command
         $orders = Order::where('manufacturer_id', $user->manufacturer->id ?? null)
             ->where('created_at', '>=', Carbon::now()->subWeek())
             ->get();
-        $items = Item::where('is_active', true)->get();
         $header = ['Order #', 'Status', 'Total Amount', 'Order Date'];
         $records = $orders->map(function($order) {
             return [
@@ -68,10 +67,16 @@ class SendWeeklyReports extends Command
                 $order->order_date,
             ];
         })->toArray();
-        $csv = Writer::createFromString('');
-        $csv->insertOne($header);
-        $csv->insertAll($records);
-        return $csv->getContent();
+        // Native PHP CSV generation
+        $handle = fopen('php://temp', 'r+');
+        fputcsv($handle, $header);
+        foreach ($records as $record) {
+            fputcsv($handle, $record);
+        }
+        rewind($handle);
+        $csv = stream_get_contents($handle);
+        fclose($handle);
+        return $csv;
     }
 
     private function generateWholesalerReport($user)
@@ -88,14 +93,24 @@ class SendWeeklyReports extends Command
                 $order->order_date,
             ];
         })->toArray();
-        $csv = Writer::createFromString('');
-        $csv->insertOne($header);
-        $csv->insertAll($records);
-        return $csv->getContent();
+        // Native PHP CSV generation
+        $handle = fopen('php://temp', 'r+');
+        fputcsv($handle, $header);
+        foreach ($records as $record) {
+            fputcsv($handle, $record);
+        }
+        rewind($handle);
+        $csv = stream_get_contents($handle);
+        fclose($handle);
+        return $csv;
     }
+
     private function generateSupplierReport($user)
     {
-        $orders = Order::where('supplier_id', $user->supplier->id ?? null)
+        $supplier = $user->supplier;
+        $itemIds = $supplier ? $supplier->suppliedItems()->pluck('item_id') : collect();
+        $orderIds = \App\Models\OrderItem::whereIn('item_id', $itemIds)->pluck('order_id');
+        $orders = \App\Models\Order::whereIn('id', $orderIds)
             ->where('created_at', '>=', Carbon::now()->subWeek())
             ->get();
         $header = ['Order #', 'Status', 'Total Amount', 'Order Date'];
@@ -107,9 +122,15 @@ class SendWeeklyReports extends Command
                 $order->order_date,
             ];
         })->toArray();
-        $csv = Writer::createFromString('');
-        $csv->insertOne($header);
-        $csv->insertAll($records);
-        return $csv->getContent();
+        // Native PHP CSV generation
+        $handle = fopen('php://temp', 'r+');
+        fputcsv($handle, $header);
+        foreach ($records as $record) {
+            fputcsv($handle, $record);
+        }
+        rewind($handle);
+        $csv = stream_get_contents($handle);
+        fclose($handle);
+        return $csv;
     }
 } 
