@@ -88,7 +88,7 @@
         
         <div class="flex flex-col flex-1 w-full">
             <!-- Top Navigation Bar -->
-            <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b">
+        <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b">
                 <div class="flex items-center">
                     <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700"><i class="fas fa-bars text-lg"></i></button>
                     <div class="relative ml-3 hidden md:block">
@@ -139,7 +139,7 @@
                                 <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Action</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        <tbody class="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-gray-700 text-white">
                             @forelse($invoices as $invoice)
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $invoice->invoice_number }}</td>

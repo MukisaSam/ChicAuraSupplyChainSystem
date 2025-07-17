@@ -10,7 +10,7 @@
                 <select name="workforce_id" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" required>
                     <option value="">Select a member</option>
                     @foreach($workforce as $member)
-                        <option value="{{ $member->id }}">{{ $member->fullname }} ({{ $member->role ?? 'Staff' }})</option>
+                        <option value="{{ $member->id }}">{{ $member->fullname }} ({{ $member->job_role ?? 'Staff' }})</option>
                     @endforeach
                 </select>
             </div>

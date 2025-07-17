@@ -262,7 +262,7 @@
                 <h1 class="text-3xl font-bold mb-2 text-indigo-800 dark:text-white flex items-center gap-3">
                     <i class="fas fa-file-alt text-indigo-600"></i> Manufacturer Portal Reports
                 </h1>
-                <p class="text-gray-600 dark:text-gray-300 mb-8 text-lg">Access and export detailed reports on sales, inventory, suppliers, and order fulfillment to power your business decisions.</p>
+                <p class="text-white mb-8 text-lg">Access and export detailed reports on sales, inventory, suppliers, and order fulfillment to power your business decisions.</p>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                     <a href="{{ route('manufacturer.reports.sales') }}" class="stat-card p-6 flex flex-col items-center hover:shadow-2xl hover:scale-105 transition-transform group">
                         <i class="fas fa-chart-line text-4xl text-indigo-600 mb-3 group-hover:text-indigo-800 transition-colors"></i>

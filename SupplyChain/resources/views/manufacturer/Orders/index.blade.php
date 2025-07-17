@@ -192,7 +192,6 @@
                         <i class="fas fa-warehouse w-5"></i>
                         <span class="ml-2 text-sm">Warehouses</span>
                     </a>
-                </nav>
                 <!-- Production Section -->
                 <div class="mt-6 mb-2">
                     <h4 class="text-gray-400 text-xs font-bold uppercase tracking-wider px-3 mb-1">Production</h4>
@@ -221,6 +220,7 @@
                     <i class="fas fa-coins w-5"></i>
                     <span class="ml-2 text-sm">Production Costs</span>
                 </a>
+                </nav>
                 <div class="p-3 border-t border-gray-600">
                     <div class="text-center text-gray-400 text-xs">
                         <p>ChicAura SCM</p>
@@ -277,8 +277,8 @@
                 <div class="mb-8">
                     <div class="flex justify-between items-center">
                         <div>
-                            <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Orders Management</h1>
-                            <p class="text-gray-600 dark:text-gray-400 mt-2">Manage wholesaler orders and supplier requests</p>
+                            <h1 class="text-3xl font-bold text-white">Orders Management</h1>
+                            <p class="text-white mt-2">Manage wholesaler orders and supplier requests</p>
                         </div>
                         <div class="flex space-x-3">
                             <a href="{{ route('manufacturer.orders.create-supply-request') }}" 

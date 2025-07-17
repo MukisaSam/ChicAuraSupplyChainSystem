@@ -15,15 +15,6 @@
                 </select>
             </div>
             <div class="mb-5">
-                <label class="block font-semibold text-gray-700 mb-2">Product</label>
-                <select name="product_id" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" required>
-                    <option value="">Select a product</option>
-                    @foreach(App\Models\Item::where('type', 'finished_product')->get() as $product)
-                        <option value="{{ $product->id }}">{{ $product->name }}</option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="mb-5">
                 <label class="block font-semibold text-gray-700 mb-2">Start Date</label>
                 <input type="date" name="start_date" class="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition" required>
             </div>

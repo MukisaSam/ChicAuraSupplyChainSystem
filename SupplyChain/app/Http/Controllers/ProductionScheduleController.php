@@ -18,7 +18,6 @@ class ProductionScheduleController extends Controller
     public function store(Request $request) {
         $validated = $request->validate([
             'work_order_id' => 'required|exists:work_orders,id',
-            'product_id' => 'required|exists:items,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'status' => 'required|in:planned,in_progress,completed',
@@ -35,7 +34,6 @@ class ProductionScheduleController extends Controller
     public function update(Request $request, \App\Models\ProductionSchedule $productionSchedule) {
         $validated = $request->validate([
             'work_order_id' => 'required|exists:work_orders,id',
-            'product_id' => 'required|exists:items,id',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'status' => 'required|in:planned,in_progress,completed',

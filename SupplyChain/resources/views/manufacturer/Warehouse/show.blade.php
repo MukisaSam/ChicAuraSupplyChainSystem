@@ -40,8 +40,8 @@
                 <tbody>
                     @foreach($warehouse->workforce as $staff)
                     <tr class="hover:bg-gray-50">
-                        <td class="px-4 py-2 border-b">{{ $staff->name }}</td>
-                        <td class="px-4 py-2 border-b">{{ $staff->role ?? 'Staff' }}</td>
+                        <td class="px-4 py-2 border-b">{{ $staff->fullname }}</td>
+                        <td class="px-4 py-2 border-b">{{ $staff->job_role ?? 'Staff' }}</td>
                         <td class="px-4 py-2 border-b">
                             <form action="{{ route('manufacturer.warehouse.remove-staff', [$warehouse, $staff]) }}" method="POST" onsubmit="return confirm('Remove this staff member from the warehouse?');" class="inline">
                                 @csrf
