@@ -9,7 +9,7 @@
     @auth('customer')
     <div class="row">
         <div class="col-lg-8">
-            <form method="POST" action="{{ route('customer.order.store') }}" id="checkout-form">
+            <form method="POST" action="{{ route('payment.process') }}" id="checkout-form">
                 @csrf
                 
                 <!-- Shipping Information -->
@@ -311,6 +311,50 @@ function toggleBillingFields() {
 // Initialize billing fields state
 document.addEventListener('DOMContentLoaded', function() {
     toggleBillingFields();
+
+document.getElementById('checkout-form').addEventListener('submit', function(e) {
+    const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+    
+    if (paymentMethod === 'cash_on_delivery') {
+        return true; // Proceed with normal form submission
+    }
+    
+    if (paymentMethod === 'credit_card' || paymentMethod === 'debit_card') {
+        e.preventDefault(); // We'll handle with Stripe
+        // Show loading state
+        const submitBtn = this.querySelector('[type="submit"]');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Processing...';
+        
+        // Submit form via AJAX to get Stripe session
+        fetch(this.action, {
+            method: 'POST',
+            body: new FormData(this),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.redirect) {
+                window.location = data.redirect;
+            } else {
+                showToast('danger', data.message || 'Payment processing failed');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="bi bi-lock"></i> Place Order';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            showToast('danger', 'An error occurred during payment processing');
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="bi bi-lock"></i> Place Order';
+        });
+    } else {
+        showToast('warning', 'This payment method is not yet implemented');
+        e.preventDefault();
+    }
 });
 </script>
 @endpush
