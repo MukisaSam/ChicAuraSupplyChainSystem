@@ -63,7 +63,7 @@
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
                     <div class="logo-container">
-                        <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
+                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
                 <div class="px-4 py-4">
@@ -107,7 +107,7 @@
                         <button class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
                             <span class="mr-2 text-gray-700 font-medium text-sm">{{ Auth::user()->name ?? 'Wholesaler User' }}</span>
                             <img class="w-7 h-7 rounded-full border-2 border-purple-200 object-cover" 
-                                 src="{{ Auth::user()->profile_picture ? Storage::disk('public')->url(Auth::user()->profile_picture) : asset('images/default-avatar.svg') }}" 
+                                 src="{{ Auth::user()->profile_picture ? asset('storage/profile-pictures/' . basename(Auth::user()->profile_picture)) : asset('images/default-avatar.svg') }}" 
                                  alt="User Avatar">
                         </button>
                     </div>
@@ -131,15 +131,15 @@
                     <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                         <thead class="bg-gray-50 dark:bg-slate-700">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Invoice Number</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Order Number</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Amount</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Status</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Due Date</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Action</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Invoice Number</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Order Number</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Amount</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Due Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Action</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-gray-700 text-white">
+                        <tbody class="bg-white dark:bg-slate-800 divide-y divide-gray-200 dark:divide-gray-700 text-black">
                             @forelse($invoices as $invoice)
                                 <tr>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $invoice->invoice_number }}</td>

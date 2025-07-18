@@ -63,7 +63,7 @@
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
                     <div class="logo-container">
-                        <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
+                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
                 <div class="px-4 py-4">
@@ -106,7 +106,7 @@
                         <button class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
                             <span class="mr-2 text-gray-700 font-medium text-sm">{{ Auth::user()->name ?? 'Wholesaler User' }}</span>
                             <img class="w-7 h-7 rounded-full border-2 border-purple-200 object-cover" 
-                                 src="{{ Auth::user()->profile_picture ? Storage::disk('public')->url(Auth::user()->profile_picture) : asset('images/default-avatar.svg') }}" 
+                                 src="{{ Auth::user()->profile_picture ? asset('storage/profile-pictures/' . basename(Auth::user()->profile_picture)) : asset('images/default-avatar.svg') }}" 
                                  alt="User Avatar">
                         </button>
                     </div>

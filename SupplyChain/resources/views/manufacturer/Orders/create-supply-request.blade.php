@@ -209,8 +209,8 @@
                     <div class="relative">
                         <button class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
                             <span class="mr-2 text-gray-700 font-medium text-sm">{{ Auth::user()->name ?? 'Manufacturer User' }}</span>
-                            <img class="w-7 h-7 rounded-full border-2 border-indigo-200 object-cover" 
-                                 src="{{ Auth::user()->profile_picture ? Storage::disk('public')->url(Auth::user()->profile_picture) : asset('images/default-avatar.svg') }}" 
+                            <img class="w-7 h-7 rounded-full border-2 border-purple-200 object-cover" 
+                                 src="{{ Auth::user()->profile_picture ? asset('storage/profile-pictures/' . basename(Auth::user()->profile_picture)) : asset('images/default-avatar.svg') }}" 
                                  alt="User Avatar">
                         </button>
                     </div>

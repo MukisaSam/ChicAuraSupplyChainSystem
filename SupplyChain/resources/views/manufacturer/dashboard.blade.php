@@ -245,8 +245,8 @@
                     <div class="relative">
                         <button class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
                             <span class="mr-2 text-gray-700 font-medium text-sm">{{ Auth::user()->name ?? 'Admin User' }}</span>
-                            <img class="w-7 h-7 rounded-full border-2 border-indigo-200 object-cover" 
-                                 src="{{ Auth::user()->profile_picture ? Storage::disk('public')->url(Auth::user()->profile_picture) : asset('images/default-avatar.svg') }}" 
+                            <img class="w-7 h-7 rounded-full border-2 border-purple-200 object-cover" 
+                                 src="{{ Auth::user()->profile_picture ? asset('storage/profile-pictures/' . basename(Auth::user()->profile_picture)) : asset('images/default-avatar.svg') }}" 
                                  alt="User Avatar">
                         </button>
                     </div>
@@ -304,11 +304,7 @@
             </div>
                 
                 <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-3 h-64">
-                    <div class="card-gradient p-4 rounded-xl lg:col-span-2 overflow-hidden">
-                        <h3 class="text-lg font-bold text-black mb-3">Production Overview</h3>
-                        <canvas id="productionChart" class="w-full h-48"></canvas>
-                    </div>
-                    <div class="card-gradient p-4 rounded-xl overflow-hidden">
+                    <div class="card-gradient p-4 rounded-xl overflow-hidden lg:col-span-3">
                         <h3 class="text-lg font-bold text-black mb-3">Recent Activities</h3>
                         <div class="space-y-2 h-48 overflow-y-auto">
                             @forelse ($recentActivities ?? [] as $activity)
@@ -444,37 +440,7 @@
             document.getElementById('sidebar').classList.toggle('open');
         });
 
-        // Production Chart
-        const productionCtx = document.getElementById('productionChart');
-        if (productionCtx) {
-            new Chart(productionCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [{
-                        label: 'Production Volume',
-                        data: [65, 59, 80, 81, 56, 55],
-                        borderColor: 'rgb(59, 130, 246)',
-                        backgroundColor: 'rgba(99, 102, 241, 0.1)',
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
+        // Removed Production Chart JS
 
         // Search functionality for dashboard stat cards and recent activities
     </script>

@@ -191,10 +191,43 @@
                                 @endforelse
                             </ul>
                             @if(auth()->user()->unreadNotifications->count() > 0)
-                                <form method="POST" action="{{ route('manufacturer.notifications.markAsRead') }}" class="p-2 text-center">
+                                <form id="markAllReadForm" class="p-2 text-center">
                                     @csrf
                                     <button type="submit" class="text-xs text-indigo-600 hover:underline">Mark all as read</button>
                                 </form>
+                                <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    const form = document.getElementById('markAllReadForm');
+                                    if (form) {
+                                        form.addEventListener('submit', function(e) {
+                                            e.preventDefault();
+                                            fetch('{{ route('manufacturer.notifications.markAsRead') }}', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                                    'X-Requested-With': 'XMLHttpRequest'
+                                                }
+                                            })
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                if (data.success) {
+                                                    form.innerHTML = '<span class="text-xs text-green-600">All marked as read!</span>';
+                                                    // Hide the red badge
+                                                    const bellBtn = document.getElementById('notificationDropdownBtn');
+                                                    const badge = bellBtn.querySelector('span.bg-red-600');
+                                                    if (badge) badge.style.display = 'none';
+                                                    // Optionally clear the notifications list
+                                                    const dropdown = document.getElementById('notificationDropdown');
+                                                    if (dropdown) {
+                                                        const ul = dropdown.querySelector('ul');
+                                                        if (ul) ul.innerHTML = '<li class="px-4 py-2 text-gray-500 text-sm">No new notifications.</li>';
+                                                    }
+                                                }
+                                            });
+                                        });
+                                    }
+                                });
+                                </script>
                             @endif
                         </div>
                     </div>
@@ -205,8 +238,8 @@
                     <div class="relative">
                         <button class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
                             <span class="mr-2 text-gray-700 font-medium text-sm">{{ Auth::user()->name ?? 'Manufacturer User' }}</span>
-                            <img class="w-7 h-7 rounded-full border-2 border-indigo-200 object-cover" 
-                                 src="{{ Auth::user()->profile_picture ? Storage::disk('public')->url(Auth::user()->profile_picture) : asset('images/default-avatar.svg') }}" 
+                            <img class="w-7 h-7 rounded-full border-2 border-purple-200 object-cover" 
+                                 src="{{ Auth::user()->profile_picture ? asset('storage/profile-pictures/' . basename(Auth::user()->profile_picture)) : asset('images/default-avatar.svg') }}" 
                                  alt="User Avatar">
                         </button>
                     </div>

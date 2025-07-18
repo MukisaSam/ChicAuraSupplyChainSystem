@@ -50,6 +50,9 @@ class ManufacturerDashboardController extends Controller
     {
         $user = auth()->user();
         $user->unreadNotifications->markAsRead();
+        if (request()->ajax()) {
+            return response()->json(['success' => true]);
+        }
         return back();
     }
 
