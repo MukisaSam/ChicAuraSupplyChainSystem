@@ -9,11 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
-        body { 
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/wholesaler.jpg') }}');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+        body {
+            background: #f5f7fa;
             min-height: 100vh;
         }
         
@@ -22,10 +19,14 @@
             background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 100%), url('{{ asset('images/wholesaler.jpg') }}');
         }
         
-        .sidebar { 
+        .sidebar {
             transition: transform 0.3s ease-in-out;
-            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
-            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            background: #1a237e;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.08);
+        }
+        
+        .sidebar .sidebar-logo-blend {
+            background: #fff;
         }
         
         .dark .sidebar {
@@ -65,8 +66,8 @@
             transform: translateX(5px);
         }
         .header-gradient {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            background: #fff;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
         }
         
         .dark .header-gradient {
@@ -106,6 +107,17 @@
             background-color: #475569;
         }
         
+        .card-gradient, .bg-white.card, .order-card, .summary-card {
+            background: #fff;
+            border: 1.5px solid #e0e7ef;
+            box-shadow: 0 8px 32px rgba(80, 80, 160, 0.12), 0 1.5px 8px rgba(80,80,160,0.08);
+        }
+        .dark .card-gradient, .dark .bg-white.card, .dark .order-card, .dark .summary-card {
+            background: #232e3c;
+            border: 1.5px solid #3b4860;
+            box-shadow: 0 8px 32px rgba(40, 60, 120, 0.18), 0 1.5px 8px rgba(40,60,120,0.12);
+        }
+        
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
@@ -118,8 +130,8 @@
         <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
-                    <div class="logo-container">
-                        <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
+                    <div class="sidebar-logo-blend w-full h-16 flex items-center justify-center p-0 m-0" style="background:#fff;">
+                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
                 <div class="px-4 py-4">
@@ -158,8 +170,8 @@
                         <i class="fas fa-moon text-lg"></i>
                     </button>
                     <div class="relative">
-                        <button class="flex items-center focus:outline-none bg-white dark:bg-gray-700 rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
-                            <span class="mr-2 text-gray-700 dark:text-gray-200 font-medium text-sm">{{ $user->name ?? 'Wholesaler User' }}</span>
+                        <button class="flex items-center focus:outline-none bg-white dark:bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
+                            <span class="mr-2 text-gray-700 dark:text-black font-medium text-sm">{{ $user->name ?? 'Wholesaler User' }}</span>
                             <img class="w-7 h-7 rounded-full border-2 border-purple-200 object-cover" 
                                  src="{{ $user->profile_picture ? asset('storage/profile-pictures/' . basename($user->profile_picture)) : asset('images/default-avatar.svg') }}" 
                                  alt="User Avatar">
@@ -181,10 +193,10 @@
                 <div class="mb-6">
                     <div class="flex items-center justify-between">
                         <div>
-                            <h2 class="text-2xl font-bold text-white mb-1">My Orders</h2>
-                            <p class="text-gray-200 text-sm">Manage and track your clothing orders</p>
+                            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">My Orders</h2>
+                            <p class="text-gray-700 dark:text-gray-300 text-sm">Manage and track your clothing orders</p>
                         </div>
-                        <a href="{{ route('wholesaler.orders.create') }}" class="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-6 py-3 rounded-xl shadow-lg hover:from-purple-700 hover:to-purple-800 transition-all duration-300 flex items-center">
+                        <a href="{{ route('wholesaler.orders.create') }}" class="bg-purple-600 text-white px-6 py-2 rounded-xl shadow hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800 transition-all duration-300 flex items-center font-semibold">
                             <i class="fas fa-plus mr-2"></i>
                             Place New Order
                         </a>

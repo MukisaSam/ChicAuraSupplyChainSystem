@@ -9,11 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
-        body { 
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/wholesaler.jpg') }}');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+        body {
+            background: #f5f7fa;
             min-height: 100vh;
         }
         
@@ -21,21 +18,20 @@
             background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 100%), url('{{ asset('images/wholesaler.jpg') }}');
         }
         
-        .sidebar { 
+        .sidebar {
             transition: transform 0.3s ease-in-out;
-            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
-            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            background: #1a237e;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.08);
         }
-        
-        .dark .sidebar {
-            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+        .sidebar .sidebar-logo-blend {
+            background: #fff;
         }
         
         .logo-container {
-            background: rgba(255, 255, 255, 0.95);
+            background: #fff;
             border-radius: 12px;
             padding: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
         }
         
         .dark .logo-container {
@@ -64,8 +60,8 @@
             transform: translateX(5px);
         }
         .header-gradient {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            background: #fff;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
         }
         
         .dark .header-gradient {
@@ -248,7 +244,7 @@
     <aside id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 z-20">
         <div class="flex flex-col h-full">
             <div class="flex items-center justify-center h-16 border-b border-gray-600">
-                <div class="logo-container">
+                <div class="sidebar-logo-blend w-full h-16 flex items-center justify-center p-0 m-0" style="background:#fff;">
                     <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                 </div>
             </div>
@@ -329,15 +325,15 @@
     <!-- Main Content -->
     <main class="ml-64 mt-16 p-4" style="min-height: calc(100vh - 4rem);">
         <div class="mb-6">
-            <h2 class="text-2xl font-bold text-white mb-1">Chat</h2>
-            <p class="text-gray-200 text-sm">Communicate with manufacturers and support team</p>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">Chat</h2>
+            <p class="text-gray-900 dark:text-white text-sm">Communicate with manufacturers and support team</p>
         </div>
 
         <div class="flex h-full gap-6">
             <!-- Contacts Sidebar -->
             <div class="w-80 card-gradient rounded-xl flex flex-col">
                 <div class="p-6 border-b border-gray-200 dark:border-gray-600">
-                    <h3 class="text-lg font-semibold text-black mb-4">Contacts</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Contacts</h3>
                 </div>
 
                 <div class="flex-1 overflow-y-auto p-4 contacts-scroll" style="height: calc(100vh - 300px); max-height: 420px;">
@@ -355,7 +351,7 @@
                                 <span class="online-indicator absolute -bottom-1 -right-1 {{ $manufacturer->is_online ? 'bg-green-500' : 'bg-gray-400' }}"></span>
                             </div>
                             <div class="ml-4 flex-1">
-                                <h5 class="text-sm font-medium text-black">{{ $manufacturer->name }}</h5>
+                                <h5 class="text-sm font-medium text-gray-900 dark:text-white">{{ $manufacturer->name }}</h5>
                                 <p class="text-xs text-gray-500 dark:text-gray-400">Manufacturer</p>
                             </div>
                             @if(isset($unreadCounts[$manufacturer->id]) && $unreadCounts[$manufacturer->id] > 0)
@@ -380,7 +376,7 @@
                                 <span class="online-indicator absolute -bottom-1 -right-1 {{ $admin->is_online ? 'bg-green-500' : 'bg-gray-400' }}"></span>
                             </div>
                             <div class="ml-4 flex-1">
-                                <h5 class="text-sm font-medium text-black">{{ $admin->name }}</h5>
+                                <h5 class="text-sm font-medium text-gray-900 dark:text-white">{{ $admin->name }}</h5>
                                 <p class="text-xs text-gray-500 dark:text-gray-400">Support Team</p>
                             </div>
                             @if(isset($unreadCounts[$admin->id]) && $unreadCounts[$admin->id] > 0)
@@ -411,7 +407,7 @@
                         <div class="w-24 h-24 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900 dark:to-purple-800 rounded-full flex items-center justify-center mx-auto mb-6">
                             <i class="fas fa-comments text-4xl text-purple-600 dark:text-purple-300"></i>
                         </div>
-                        <h3 class="text-xl font-semibold text-black mb-2">Welcome to Chat</h3>
+                        <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Welcome to Chat</h3>
                         <p class="text-gray-600 dark:text-gray-400">Select a contact from the sidebar to start a conversation</p>
                     </div>
                 </div>
@@ -639,7 +635,7 @@
                             <img src="${isOwnMessage ? '{{ asset('images/default-avatar.svg') }}' : message.sender.role === 'manufacturer' ? '{{ asset('images/manufacturer.png') }}' : '{{ asset('images/default-avatar.svg') }}'}" 
                                  alt="${message.sender.name}" class="w-8 h-8 rounded-full flex-shrink-0 border-2 border-purple-200">
                             <div class="message-bubble ${isOwnMessage ? 'own' : 'other'}">
-                                <p class="text-sm">${message.content}</p>
+                                <p class="text-base font-semibold text-gray-900 dark:text-white">${message.content}</p>
                                 <p class="text-xs ${isOwnMessage ? 'text-purple-100' : 'text-gray-500 dark:text-gray-400'} mt-1">
                                     ${new Date(message.created_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
                                 </p>

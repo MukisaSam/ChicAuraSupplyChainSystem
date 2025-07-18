@@ -8,29 +8,29 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
-        body { 
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/wholesaler.jpg') }}');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+        body {
+            background: #f5f7fa;
             min-height: 100vh;
         }
         .dark body {
             background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 100%), url('{{ asset('images/wholesaler.jpg') }}');
         }
-        .sidebar { 
+        .sidebar {
             transition: transform 0.3s ease-in-out;
-            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
-            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            background: #1a237e;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.08);
+        }
+        .sidebar .sidebar-logo-blend {
+            background: #fff;
         }
         .dark .sidebar {
             background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
         }
         .logo-container {
-            background: rgba(255, 255, 255, 0.95);
+            background: #fff;
             border-radius: 12px;
             padding: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
         }
         .dark .logo-container {
             background: rgba(255, 255, 255, 0.9);
@@ -44,8 +44,8 @@
             transform: translateX(5px);
         }
         .header-gradient {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            background: #fff;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
         }
         .dark .header-gradient {
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
@@ -89,7 +89,7 @@
     <aside id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 z-20">
         <div class="flex flex-col h-full">
             <div class="flex items-center justify-center h-16 border-b border-gray-600">
-                <div class="logo-container">
+                <div class="sidebar-logo-blend w-full h-16 flex items-center justify-center p-0 m-0" style="background:#fff;">
                     <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                 </div>
             </div>
@@ -131,16 +131,6 @@
     <!-- Top Navigation Bar -->
     <header class="header-gradient fixed top-0 left-64 right-0 h-16 z-10 flex items-center justify-between border-b">
         <div class="flex items-center">
-            <img src="{{ $contact->profile_picture ? Storage::disk('public')->url($contact->profile_picture) : asset('images/default-avatar.svg') }}" alt="{{ $contact->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
-            <span class="online-indicator ml-2 {{ $contact->isOnline() ? 'bg-green-500' : 'bg-gray-400' }}"></span>
-            <div class="ml-4">
-                <h3 class="text-lg font-semibold text-black">{{ $contact->name }}</h3>
-                <p class="text-sm text-gray-500 dark:text-gray-400">{{ ucfirst($contact->role) }}
-                    <span class="ml-2 text-xs {{ $contact->isOnline() ? 'text-green-500' : 'text-gray-400' }}">
-                        {{ $contact->isOnline() ? 'Online' : 'Offline' }}
-                    </span>
-                </p>
-            </div>
         </div>
         <div class="flex items-center pr-4 space-x-3">
             <x-wholesaler-notification-bell />
@@ -167,10 +157,19 @@
     </header>
     <!-- Main Content -->
     <main class="ml-64 mt-16 p-4" style="min-height: calc(100vh - 4rem);">
-                <div class="mb-6">
-                    <h2 class="text-2xl font-bold text-white mb-1">Chat with {{ $contact->name }}</h2>
-                    <p class="text-gray-200 text-sm">{{ ucfirst($contact->role) }}</p>
+        <div class="mb-6 flex items-center space-x-4">
+            <img src="{{ $contact->profile_picture ? Storage::disk('public')->url($contact->profile_picture) : asset('images/default-avatar.svg') }}" alt="{{ $contact->name }}" class="w-16 h-16 rounded-full border-2 border-purple-200">
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-1"> {{ $contact->name }}</h2>
+                <div class="flex items-center space-x-2">
+                    <p class="text-gray-900 dark:text-white text-sm mb-0">{{ ucfirst($contact->role) }}</p>
+                    <span class="ml-2 text-xs {{ $contact->isOnline() ? 'text-green-500' : 'text-gray-400' }}">
+                        <span class="inline-block w-2 h-2 rounded-full mr-1 align-middle {{ $contact->isOnline() ? 'bg-green-500' : 'bg-gray-400' }}"></span>
+                        {{ $contact->isOnline() ? 'Online' : 'Offline' }}
+                    </span>
                 </div>
+            </div>
+        </div>
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col" style="height: calc(100vh - 200px);">
                     <!-- Messages Container -->
                     <div id="messages-container" class="flex-1 overflow-y-auto p-2 space-y-4 h-full">
@@ -180,10 +179,8 @@
                                 $senderRole = $message->sender->role ?? null;
                                 $senderName = $message->sender->name ?? '';
                                 $avatar = $isOwnMessage
-                                    ? asset('images/default-avatar.svg')
-                                    : ($senderRole === 'manufacturer'
-                                        ? asset('images/manufacturer.png')
-                                        : asset('images/default-avatar.svg'));
+                                    ? ($user->profile_picture ? asset('storage/profile-pictures/' . basename($user->profile_picture)) : asset('images/default-avatar.svg'))
+                                    : ($message->sender->profile_picture ? Storage::disk('public')->url($message->sender->profile_picture) : asset('images/default-avatar.svg'));
                             @endphp
                             <div class="flex {{ $isOwnMessage ? 'justify-end' : 'justify-start' }}">
                                 <div class="flex {{ $isOwnMessage ? 'flex-row-reverse' : 'flex-row' }} items-end space-x-3 max-w-xs lg:max-w-md">

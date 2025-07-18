@@ -9,53 +9,34 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
-        body { 
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/wholesaler.jpg') }}');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+        body {
+            background: #f5f7fa;
             min-height: 100vh;
         }
-        
-        /* Dark mode styles */
-        .dark body {
-            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 100%), url('{{ asset('images/wholesaler.jpg') }}');
-        }
-        
-        .sidebar { 
+        .sidebar {
             transition: transform 0.3s ease-in-out;
-            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
-            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            background: #1a237e;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.08);
         }
-        
-        .dark .sidebar {
-            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+        .sidebar .sidebar-logo-blend {
+            background: #fff;
         }
-        
         .logo-container {
-            background: rgba(255, 255, 255, 0.98);
+            background: #fff;
             border-radius: 12px;
             padding: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
         }
-        
-        .dark .logo-container {
-            background: rgba(255, 255, 255, 0.95);
+        .card-gradient, .bg-white.card, .order-card, .summary-card {
+            background: #fff;
+            border: 1.5px solid #e0e7ef;
+            box-shadow: 0 8px 32px rgba(80, 80, 160, 0.12), 0 1.5px 8px rgba(80,80,160,0.08);
         }
-        
-        .card-gradient {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            backdrop-filter: blur(10px);
+        .dark .card-gradient, .dark .bg-white.card, .dark .order-card, .dark .summary-card {
+            background: #232e3c;
+            border: 1.5px solid #3b4860;
+            box-shadow: 0 8px 32px rgba(40, 60, 120, 0.18), 0 1.5px 8px rgba(40,60,120,0.12);
         }
-        
-        .dark .card-gradient {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #f8fafc;
-        }
-        
         .nav-link {
             transition: all 0.3s ease;
             border-radius: 12px;
@@ -65,52 +46,41 @@
             transform: translateX(5px);
         }
         .header-gradient {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            background: #fff;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
         }
-        
         .dark .header-gradient {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-            border-color: #475569;
+            background: #232e3c;
+            border-color: #232e3c;
         }
-        
         .dark .text-white {
             color: #f1f5f9;
         }
-        
         .dark .text-gray-200 {
             color: #cbd5e1;
         }
-        
         .dark .text-gray-900 {
             color: #f1f5f9;
         }
-        
         .dark .text-gray-600 {
             color: #cbd5e1;
         }
-        
         .dark .text-gray-500 {
             color: #94a3b8;
         }
-        
         .dark .bg-white {
             background-color: #1e293b;
         }
-        
         .dark .border-gray-200 {
             border-color: #475569;
         }
-        
         .dark .hover\:bg-gray-700:hover {
             background-color: #475569;
         }
-        
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
         }
-        
         /* Chart container styles */
         .chart-container {
             position: relative;
@@ -118,47 +88,37 @@
             width: 100%;
             @apply bg-white/5 dark:bg-black/5 rounded-lg p-4;
         }
-        
         /* Dark mode chart adjustments */
         .dark .chart-container canvas {
             filter: brightness(1.1) contrast(1.2);
         }
-        
         /* Enhanced card content visibility */
         .card-gradient .text-gray-600 {
             @apply text-gray-700 dark:text-gray-300;
         }
-        
         .card-gradient .text-gray-900 {
             @apply text-gray-900 dark:text-gray-100;
         }
-        
         /* Status badges with enhanced visibility */
         .status-badge {
             @apply px-2 py-1 text-xs rounded-full font-medium;
         }
-        
         .status-badge-completed {
             @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200;
         }
-        
         .status-badge-pending {
             @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200;
         }
-        
         .status-badge-cancelled {
             @apply bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200;
         }
-        
         /* Enhanced table styles for better visibility */
         table thead tr {
             @apply bg-gray-50 dark:bg-gray-800;
         }
-        
         table th {
             @apply text-gray-700 dark:text-gray-200 font-semibold;
         }
-        
         table td {
             @apply text-gray-800 dark:text-gray-300;
         }
@@ -170,8 +130,8 @@
         <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
-                    <div class="logo-container">
-                        <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
+                    <div class="sidebar-logo-blend w-full h-16 flex items-center justify-center p-0 m-0" style="background:#fff;">
+                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
                 <div class="px-4 py-4">
@@ -233,8 +193,8 @@
                 <div class="container mx-auto px-2 sm:px-4 md:px-8 py-6">
                     <!-- Header -->
                     <div class="mb-6">
-                        <h1 class="text-3xl font-bold text-white mb-2">Analytics Dashboard</h1>
-                        <p class="text-gray-200">Track your order performance and business insights</p>
+                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Analytics Dashboard</h1>
+                        <p class="text-gray-700 dark:text-gray-300">Track your order performance and business insights</p>
                     </div>
 
                     <!-- Summary Cards -->
@@ -245,8 +205,8 @@
                                     <i class="fas fa-shopping-cart text-white text-xl"></i>
                                 </div>
                                 <div class="ml-4">
-                                    <p class="text-sm text-gray-700 dark:text-gray-300">Total Orders</p>
-                                    <p class="text-2xl font-bold text-white">{{ $totalOrders }}</p>
+                                    <p class="text-sm text-gray-900 dark:text-white">Total Orders</p>
+                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $totalOrders }}</p>
                                 </div>
                             </div>
                         </div>
@@ -257,8 +217,8 @@
                                     <i class="fas fa-dollar-sign text-white text-xl"></i>
                                 </div>
                                 <div class="ml-4">
-                                    <p class="text-sm text-gray-700 dark:text-gray-300">Total Spent</p>
-                                    <p class="text-2xl font-bold text-white">${{ number_format($totalSpent, 2) }}</p>
+                                    <p class="text-sm text-gray-900 dark:text-white">Total Spent</p>
+                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($totalSpent, 2) }}</p>
                                 </div>
                             </div>
                         </div>
@@ -269,8 +229,8 @@
                                     <i class="fas fa-chart-line text-white text-xl"></i>
                                 </div>
                                 <div class="ml-4">
-                                    <p class="text-sm text-gray-700 dark:text-gray-300">Avg Order Value</p>
-                                    <p class="text-2xl font-bold text-white">${{ number_format($averageOrderValue, 2) }}</p>
+                                    <p class="text-sm text-gray-900 dark:text-white">Avg Order Value</p>
+                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($averageOrderValue, 2) }}</p>
                                 </div>
                             </div>
                         </div>
@@ -281,8 +241,8 @@
                                     <i class="fas fa-clock text-white text-xl"></i>
                                 </div>
                                 <div class="ml-4">
-                                    <p class="text-sm text-gray-700 dark:text-gray-300">Pending Orders</p>
-                                    <p class="text-2xl font-bold text-white">{{ $pendingOrders }}</p>
+                                    <p class="text-sm text-gray-900 dark:text-white">Pending Orders</p>
+                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $pendingOrders }}</p>
                                 </div>
                             </div>
                         </div>
@@ -325,8 +285,8 @@
                                         @foreach($topProducts as $product)
                                         <tr class="border-b border-gray-100 dark:border-gray-700 top-product-row">
                                             <td class="py-2 text-sm text-gray-900 dark:text-white">{{ $product->name }}</td>
-                                            <td class="py-2 text-sm text-gray-600 dark:text-gray-400">{{ $product->total_quantity }}</td>
-                                            <td class="py-2 text-sm text-gray-600 dark:text-gray-400">${{ number_format($product->total_revenue, 2) }}</td>
+                                            <td class="py-2 text-sm text-gray-700 dark:text-gray-300">{{ $product->total_quantity }}</td>
+                                            <td class="py-2 text-sm text-gray-700 dark:text-gray-300">${{ number_format($product->total_revenue, 2) }}</td>
                                         </tr>
                                         @endforeach
                                     </tbody>
@@ -365,13 +325,13 @@
                                     @foreach($recentActivity as $order)
                                     <tr class="border-b border-gray-100 dark:border-gray-700 recent-activity-row">
                                         <td class="py-2 text-sm text-gray-900 dark:text-white">#{{ $order->id }}</td>
-                                        <td class="py-2 text-sm text-gray-600 dark:text-gray-400">{{ $order->order_date->format('M d, Y') }}</td>
-                                        <td class="py-2 text-sm text-white">
+                                        <td class="py-2 text-sm text-gray-700 dark:text-gray-300">{{ $order->order_date->format('M d, Y') }}</td>
+                                        <td class="py-2 text-sm text-gray-700 dark:text-gray-300">
                                             <span class="status-badge {{ $order->status === 'completed' ? 'status-badge-completed' : ($order->status === 'pending' ? 'status-badge-pending' : ($order->status === 'cancelled' ? 'status-badge-cancelled' : '')) }}">
                                                 {{ ucfirst($order->status) }}
                                             </span>
                                         </td>
-                                        <td class="py-2 text-sm text-gray-600 dark:text-gray-400">${{ number_format($order->total_amount, 2) }}</td>
+                                        <td class="py-2 text-sm text-gray-700 dark:text-gray-300">${{ number_format($order->total_amount, 2) }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>

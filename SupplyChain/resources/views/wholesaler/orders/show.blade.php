@@ -9,25 +9,29 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
-        body { 
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/wholesaler.jpg') }}');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+        body {
+            background: #f5f7fa;
             min-height: 100vh;
         }
         
-        .sidebar { 
+        .sidebar {
             transition: transform 0.3s ease-in-out;
-            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
-            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            background: #1a237e;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.08);
+        }
+        .sidebar .sidebar-logo-blend {
+            background: #fff;
         }
         
-        .card-gradient {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            backdrop-filter: blur(10px);
+        .card-gradient, .bg-white.card, .order-card, .summary-card {
+            background: #fff;
+            border: 1.5px solid #e0e7ef;
+            box-shadow: 0 8px 32px rgba(80, 80, 160, 0.12), 0 1.5px 8px rgba(80,80,160,0.08);
+        }
+        .dark .card-gradient, .dark .bg-white.card, .dark .order-card, .dark .summary-card {
+            background: #232e3c;
+            border: 1.5px solid #3b4860;
+            box-shadow: 0 8px 32px rgba(40, 60, 120, 0.18), 0 1.5px 8px rgba(40,60,120,0.12);
         }
         
         .nav-link {
@@ -39,8 +43,8 @@
             transform: translateX(5px);
         }
         .header-gradient {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            background: #fff;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
         }
         
         .logo-container {
@@ -65,8 +69,8 @@
         <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
-                    <div class="logo-container">
-                        <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
+                    <div class="sidebar-logo-blend w-full h-16 flex items-center justify-center p-0 m-0" style="background:#fff;">
+                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
                 <div class="px-4 py-4">
@@ -129,17 +133,17 @@
                     <div class="mb-6">
                         <div class="flex items-center justify-between">
                             <div>
-                                <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Order Details</h2>
-                                <p class="text-gray-600 dark:text-gray-400">Order #{{ $order->order_number }}</p>
+                                <h2 class="text-2xl font-bold text-gray-900 dark:text-white">Order Details</h2>
+                                <p class="text-gray-700 dark:text-gray-300">Order #{{ $order->order_number }}</p>
                             </div>
                             <div class="flex space-x-3">
-                                <a href="{{ route('wholesaler.orders.index') }}" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-600">
+                                <a href="{{ route('wholesaler.orders.index') }}" class="bg-purple-600 text-white px-6 py-2 rounded-xl shadow hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800 font-semibold">
                                     Back to Orders
                                 </a>
                                 @if(in_array($order->status, ['pending', 'confirmed']))
                                     <form method="POST" action="{{ route('wholesaler.orders.cancel', $order) }}" class="inline">
                                         @csrf
-                                        <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-600">
+                                        <button type="submit" class="bg-red-600 text-white px-6 py-2 rounded-xl shadow hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800 font-semibold">
                                             Cancel Order
                                         </button>
                                     </form>

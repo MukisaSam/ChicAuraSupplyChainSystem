@@ -12,108 +12,73 @@
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
         body { 
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/wholesaler.jpg') }}');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background: #f5f7fa; 
             min-height: 100vh;
         }
-        
-        /* Dark mode styles */
-        .dark body {
-            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 100%), url('{{ asset('images/wholesaler.jpg') }}');
-        }
-        
         .sidebar { 
             transition: transform 0.3s ease-in-out;
-            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
-            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            background: #1a237e; /* Solid blue for most of the sidebar */
+            box-shadow: 4px 0 15px rgba(0,0,0,0.08);
         }
-        
+        .sidebar .sidebar-logo-blend {
+            background: #fff; /* Solid white for logo area */
+        }
         .dark .sidebar {
             background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
         }
-        
         .logo-container {
-            background: rgba(255, 255, 255, 0.95);
+            background: #fff;
             border-radius: 12px;
             padding: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
         }
-        
-        .dark .logo-container {
-            background: rgba(255, 255, 255, 0.9);
-        }
-        
         .card-gradient {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            backdrop-filter: blur(10px);
+            background: #fff;
+            border: 1px solid #e3e8ee;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.06);
         }
-        
         .dark .card-gradient {
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #f1f5f9;
+            border: 1px solid #475569;
         }
-        
         .stat-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
-            border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background: #f5f7fa;
+            border: 1px solid #e3e8ee;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+            transition: transform 0.3s, box-shadow 0.3s;
         }
-        
         .dark .stat-card {
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #f1f5f9;
+            border: 1px solid #475569;
         }
-        
-        .dark .stat-card p {
-            color: #f1f5f9;
-        }
-        
-        .dark .stat-card .text-gray-600 {
-            color: #cbd5e1;
-        }
-        
-        .dark .stat-card .text-gray-800 {
-            color: #f1f5f9;
-        }
-        
         .stat-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.10);
         }
-        
         .nav-link {
             transition: all 0.3s ease;
             border-radius: 12px;
             margin: 4px 0;
         }
         .nav-link:hover {
+            background: #ede7f6; /* Light purple accent on hover */
+            color: #512da8;
             transform: translateX(5px);
         }
         .header-gradient {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            background: #fff;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
         }
-        
         .dark .header-gradient {
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
             border-color: #475569;
         }
-        
         .dark .text-white {
             color: #f1f5f9;
         }
-        
         .dark .text-gray-200 {
             color: #cbd5e1;
         }
-        
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
@@ -126,8 +91,8 @@
         <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
-                    <div class="logo-container">
-                        <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
+                    <div class="sidebar-logo-blend w-full h-16 flex items-center justify-center p-0 m-0" style="background:#fff;">
+                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
                 <div class="px-4 py-4">
@@ -164,7 +129,8 @@
                     <div class="relative">
                         <x-wholesaler-notification-bell />
                     </div>
-                    <button data-theme-toggle class="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 rounded-full transition-colors" title="Switch Theme">
+                    <!-- Theme Toggle -->
+                    <button data-theme-toggle class="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 dark:text-gray-400 dark:hover:text-purple-400 dark:hover:bg-purple-900/20 rounded-full transition-colors" title="Switch Theme">
                         <i class="fas fa-moon text-lg"></i>
                     </button>
                     <div class="relative">
@@ -192,92 +158,89 @@
             <!-- Main Content -->
             <main class="flex-1 p-4">
                 <div class="mb-4">
-                    <h2 class="text-2xl font-bold text-white mb-1">Wholesaler Dashboard</h2>
-                    <p class="text-gray-200 text-sm">Track your orders and manage your wholesale operations.</p>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-1">Wholesaler Dashboard</h2>
+                    <p class="text-gray-700 text-sm">Track your orders and manage your wholesale operations.</p>
                 </div>
                 
                 <div class="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2 lg:grid-cols-4">
-                    <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow stat-card">
+                    <div class="p-6 rounded-xl bg-white border border-gray-200 shadow stat-card dark:bg-gray-800 dark:border-gray-700">
                         <div class="flex items-center">
-                            <div class="p-3 rounded-xl bg-indigo-500 dark:bg-indigo-700">
-                                <i class="fas fa-receipt text-white text-xl"></i>
+                            <div class="p-3 rounded-xl bg-purple-600">
+                                <i class="fas fa-shopping-cart text-white text-xl"></i>
                             </div>
                             <div class="ml-3">
-                                <p class="text-sm text-black">Total Orders</p>
-                                <p class="text-2xl font-bold text-black">{{ $stats['total_orders'] ?? '0' }}</p>
-                                <p class="text-sm text-indigo-600 dark:text-indigo-400 mt-1">↗ +18% this month</p>
+                                <p class="text-sm text-gray-900 dark:text-white">Total Orders</p>
+                                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $stats['total_orders'] ?? 0 }}</p>
+                                <p class="text-sm text-purple-600 dark:text-purple-300 mt-1">↗ +10% this month</p>
                             </div>
                         </div>
                     </div>
-
-                    <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow stat-card">
+                    <div class="p-6 rounded-xl bg-white border border-gray-200 shadow stat-card dark:bg-gray-800 dark:border-gray-700">
                         <div class="flex items-center">
-                            <div class="p-3 rounded-xl bg-green-500 dark:bg-green-700">
+                            <div class="p-3 rounded-xl bg-green-600">
                                 <i class="fas fa-dollar-sign text-white text-xl"></i>
                             </div>
                             <div class="ml-3">
-                                <p class="text-sm text-black">Revenue</p>
-                                <p class="text-2xl font-bold text-black">${{ number_format($stats['total_revenue'] ?? '0', 2) }}</p>
-                                <p class="text-sm text-green-600 dark:text-green-400 mt-1">↗ +12% this month</p>
+                                <p class="text-sm text-gray-900 dark:text-white">Revenue</p>
+                                <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($stats['revenue'] ?? '0', 2) }}</p>
+                                <p class="text-sm text-green-600 dark:text-green-300 mt-1">↗ +8% this month</p>
                             </div>
                         </div>
                     </div>
-
-                    <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow stat-card">
+                    <div class="p-6 rounded-xl bg-white border border-gray-200 shadow stat-card dark:bg-gray-800 dark:border-gray-700">
                         <div class="flex items-center">
-                            <div class="p-3 rounded-xl bg-purple-500 dark:bg-purple-700">
+                            <div class="p-3 rounded-xl bg-blue-600">
                                 <i class="fas fa-chart-line text-white text-xl"></i>
                             </div>
                             <div class="ml-3">
-                                <p class="text-sm text-black">Avg Order Value</p>
-                                <p class="text-2xl font-bold text-black">${{ number_format($stats['avg_order_value'] ?? '0', 2) }}</p>
-                                <p class="text-sm text-purple-600 dark:text-purple-400 mt-1">↗ +5% this month</p>
+                                <p class="text-sm text-gray-900 dark:text-white">Avg Order Value</p>
+                                <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($stats['avg_order_value'] ?? '0', 2) }}</p>
+                                <p class="text-sm text-blue-600 dark:text-blue-300 mt-1">↗ +5% this month</p>
                             </div>
                         </div>
                     </div>
-
-                    <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow stat-card">
+                    <div class="p-6 rounded-xl bg-white border border-gray-200 shadow stat-card dark:bg-gray-800 dark:border-gray-700">
                         <div class="flex items-center">
-                            <div class="p-3 rounded-xl bg-orange-500 dark:bg-orange-700">
+                            <div class="p-3 rounded-xl bg-orange-500">
                                 <i class="fas fa-clock text-white text-xl"></i>
                             </div>
                             <div class="ml-3">
-                                <p class="text-sm text-black">Pending Orders</p>
-                                <p class="text-2xl font-bold text-black">{{ $stats['pending_orders'] ?? 0 }}</p>
-                                <p class="text-sm text-orange-600 dark:text-orange-400 mt-1">{{ $stats['pending_orders_change'] ?? 0 }}% from last month</p>
+                                <p class="text-sm text-gray-900 dark:text-white">Pending Orders</p>
+                                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ $stats['pending_orders'] ?? 0 }}</p>
+                                <p class="text-sm text-orange-600 dark:text-orange-300 mt-1">{{ $stats['pending_orders_change'] ?? 0 }}% from last month</p>
                             </div>
                         </div>
                     </div>
                 </div>
                 
                 <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-3 h-64">
-                    <div class="card-gradient p-4 rounded-xl lg:col-span-2 overflow-hidden">
-                        <h3 class="text-lg font-bold text-black mb-3">Purchase History ($)</h3>
+                    <div class="card-gradient p-4 rounded-xl lg:col-span-2 overflow-hidden bg-white border border-gray-200 shadow dark:bg-gray-800 dark:border-gray-700">
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3">Purchase History ($)</h3>
                         <canvas id="purchaseChart" class="w-full h-48"></canvas>
                     </div>
-                    <div class="card-gradient p-4 rounded-xl">
-                        <h3 class="text-lg font-bold text-black mb-3">Recent Orders</h3>
+                    <div class="card-gradient p-4 rounded-xl bg-white border border-gray-200 shadow dark:bg-gray-800 dark:border-gray-700">
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3">Recent Orders</h3>
                         <div class="space-y-2 h-48 overflow-y-auto">
                             @forelse ($recentOrders as $order)
-                                <div class="flex items-center p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow recent-order-row">
+                                <div class="flex items-center p-3 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow recent-order-row border border-gray-100 dark:bg-gray-900 dark:border-gray-800">
                                     <div class="flex-shrink-0">
                                         <div class="w-10 h-10 flex items-center justify-center rounded-full {{ $order['status_color'] }} bg-opacity-10">
                                             <i class="fas {{ $order['icon'] }} {{ $order['status_color'] }} text-sm"></i>
                                         </div>
                                     </div>
                                     <div class="ml-3 flex-1">
-                                        <p class="text-xs font-medium text-gray-900">{{ $order['item_summary'] }}</p>
-                                        <p class="text-xs text-gray-500">Order #{{ $order['id'] }}</p>
+                                        <p class="text-xs font-medium text-gray-900 dark:text-white">{{ $order['item_summary'] }}</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-300">Order #{{ $order['id'] }}</p>
                                     </div>
                                     <div class="text-right">
-                                        <p class="text-xs font-semibold text-gray-900">${{ number_format($order['amount'], 2) }}</p>
+                                        <p class="text-xs font-semibold text-gray-900 dark:text-white">${{ number_format($order['amount'], 2) }}</p>
                                         <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {{ $order['status_color'] }} text-white">{{ $order['status'] }}</span>
                                     </div>
                                 </div>
                             @empty 
                                 <div class="text-center py-6">
-                                    <i class="fas fa-inbox text-gray-400 text-2xl mb-2"></i>
-                                    <p class="text-gray-500 text-sm">No recent orders.</p>
+                                    <i class="fas fa-inbox text-gray-400 dark:text-gray-600 text-2xl mb-2"></i>
+                                    <p class="text-gray-500 dark:text-gray-300 text-sm">No recent orders.</p>
                                 </div>
                             @endforelse
                         </div>

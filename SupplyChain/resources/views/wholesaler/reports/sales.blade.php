@@ -9,11 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
-        body { 
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/wholesaler.jpg') }}');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+        body {
+            background: #f5f7fa;
             min-height: 100vh;
         }
         
@@ -21,21 +18,19 @@
             background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 100%), url('{{ asset('images/wholesaler.jpg') }}');
         }
         
-        .sidebar { 
+        .sidebar {
             transition: transform 0.3s ease-in-out;
-            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
-            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            background: #1a237e;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.08);
         }
-        
-        .dark .sidebar {
-            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+        .sidebar .sidebar-logo-blend {
+            background: #fff;
         }
-        
         .logo-container {
-            background: rgba(255, 255, 255, 0.95);
+            background: #fff;
             border-radius: 12px;
             padding: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
         }
         
         .dark .logo-container {
@@ -64,8 +59,8 @@
             transform: translateX(5px);
         }
         .header-gradient {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            background: #fff;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
         }
         
         .dark .header-gradient {
@@ -117,8 +112,8 @@
         <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
-                    <div class="logo-container">
-                        <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
+                    <div class="sidebar-logo-blend w-full h-16 flex items-center justify-center p-0 m-0" style="background:#fff;">
+                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
                 <div class="px-4 py-4">
@@ -180,8 +175,8 @@
                     <!-- Header -->
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
                         <div>
-                            <h1 class="text-3xl font-bold text-white mb-2">Sales Report</h1>
-                            <p class="text-gray-200">Detailed sales analysis from {{ $startDate }} to {{ $endDate }}</p>
+                            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Sales Report</h1>
+                            <p class="text-gray-700 dark:text-gray-300">Detailed sales analysis from {{ $startDate }} to {{ $endDate }}</p>
                         </div>
                         <div class="flex space-x-2 mt-4 md:mt-0">
                             <a href="{{ route('wholesaler.reports.index') }}" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">

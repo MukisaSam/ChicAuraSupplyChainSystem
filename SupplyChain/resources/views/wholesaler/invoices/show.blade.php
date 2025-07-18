@@ -9,33 +9,30 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
-        body { 
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/wholesaler.jpg') }}');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+        body {
+            background: #f5f7fa;
             min-height: 100vh;
         }
-        .sidebar { 
+        .sidebar {
             transition: transform 0.3s ease-in-out;
-            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
-            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            background: #1a237e;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.08);
+        }
+        .sidebar .sidebar-logo-blend {
+            background: #fff;
+        }
+        .logo-container {
+            background: #fff;
+            border-radius: 12px;
+            padding: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
         }
         .dark .sidebar {
             background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
         }
-        .logo-container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
-            padding: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        .dark .logo-container {
-            background: rgba(255, 255, 255, 0.9);
-        }
         .header-gradient {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            background: #fff;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
         }
         .dark .header-gradient {
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
@@ -62,7 +59,7 @@
         <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
-                    <div class="logo-container">
+                    <div class="sidebar-logo-blend w-full h-16 flex items-center justify-center p-0 m-0" style="background:#fff;">
                         <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
@@ -135,20 +132,20 @@
                             <div class="flex flex-col items-center mb-8">
                                 <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="h-14 mb-2">
                                 <h2 class="text-2xl font-bold text-gray-800">INVOICE</h2>
-                                <p class="text-gray-500">ChicAura Supply Chain Management</p>
+                                <p class="text-gray-700 dark:text-gray-300">ChicAura Supply Chain Management</p>
                             </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                                 <div>
                                     <h4 class="font-semibold text-gray-700 mb-1">Billed To:</h4>
-                                    <p class="text-gray-800">{{ $invoice->order->wholesaler->user->name ?? '-' }}</p>
-                                    <p class="text-gray-500 text-sm">{{ $invoice->order->delivery_address ?? '-' }}</p>
+                                    <p class="text-gray-900 dark:text-white">{{ $invoice->order->wholesaler->user->name ?? '-' }}</p>
+                                    <p class="text-gray-700 dark:text-gray-300 text-sm">{{ $invoice->order->delivery_address ?? '-' }}</p>
                                 </div>
                                 <div class="md:text-right">
                                     <h4 class="font-semibold text-gray-700 mb-1">Invoice Info:</h4>
-                                    <p><span class="text-gray-500">Invoice #:</span> <span class="font-medium text-gray-800">{{ $invoice->invoice_number }}</span></p>
-                                    <p><span class="text-gray-500">Order #:</span> <span class="font-medium text-gray-800">{{ $invoice->order->order_number ?? '-' }}</span></p>
-                                    <p><span class="text-gray-500">Status:</span> <span class="font-medium text-gray-800">{{ ucfirst($invoice->status) }}</span></p>
-                                    <p><span class="text-gray-500">Due Date:</span> <span class="font-medium text-gray-800">{{ $invoice->due_date->format('M d, Y') }}</span></p>
+                                    <p><span class="text-gray-700 dark:text-gray-300">Invoice #:</span> <span class="font-medium text-gray-900 dark:text-white">{{ $invoice->invoice_number }}</span></p>
+                                    <p><span class="text-gray-700 dark:text-gray-300">Order #:</span> <span class="font-medium text-gray-900 dark:text-white">{{ $invoice->order->order_number ?? '-' }}</span></p>
+                                    <p><span class="text-gray-700 dark:text-gray-300">Status:</span> <span class="font-medium text-gray-900 dark:text-white">{{ ucfirst($invoice->status) }}</span></p>
+                                    <p><span class="text-gray-700 dark:text-gray-300">Due Date:</span> <span class="font-medium text-gray-900 dark:text-white">{{ $invoice->due_date->format('M d, Y') }}</span></p>
                                 </div>
                             </div>
                             <div class="mb-8">
@@ -157,21 +154,21 @@
                                     <table class="min-w-full text-sm border rounded-lg">
                                         <thead class="bg-gray-50">
                                             <tr>
-                                                <th class="px-4 py-2 text-left font-semibold text-gray-600">Product</th>
-                                                <th class="px-4 py-2 text-left font-semibold text-gray-600">Description</th>
-                                                <th class="px-4 py-2 text-center font-semibold text-gray-600">Qty</th>
-                                                <th class="px-4 py-2 text-right font-semibold text-gray-600">Unit Price</th>
-                                                <th class="px-4 py-2 text-right font-semibold text-gray-600">Total</th>
+                                                <th class="px-4 py-2 text-left font-semibold text-gray-900 dark:text-white">Product</th>
+                                                <th class="px-4 py-2 text-left font-semibold text-gray-900 dark:text-white">Description</th>
+                                                <th class="px-4 py-2 text-center font-semibold text-gray-900 dark:text-white">Qty</th>
+                                                <th class="px-4 py-2 text-right font-semibold text-gray-900 dark:text-white">Unit Price</th>
+                                                <th class="px-4 py-2 text-right font-semibold text-gray-900 dark:text-white">Total</th>
                                             </tr>
                                         </thead>
                                         <tbody class="bg-white">
                                             @foreach($invoice->order->orderItems as $item)
                                             <tr class="border-b last:border-b-0">
-                                                <td class="px-4 py-2">{{ $item->item->name }}</td>
-                                                <td class="px-4 py-2 text-gray-500">{{ $item->item->description }}</td>
-                                                <td class="px-4 py-2 text-center">{{ $item->quantity }}</td>
-                                                <td class="px-4 py-2 text-right">${{ number_format($item->unit_price, 2) }}</td>
-                                                <td class="px-4 py-2 text-right font-semibold">${{ number_format($item->total_price, 2) }}</td>
+                                                <td class="px-4 py-2 text-gray-900 dark:text-white">{{ $item->item->name }}</td>
+                                                <td class="px-4 py-2 text-gray-700 dark:text-gray-300">{{ $item->item->description }}</td>
+                                                <td class="px-4 py-2 text-center text-gray-900 dark:text-white">{{ $item->quantity }}</td>
+                                                <td class="px-4 py-2 text-right text-gray-900 dark:text-white">${{ number_format($item->unit_price, 2) }}</td>
+                                                <td class="px-4 py-2 text-right font-semibold text-gray-900 dark:text-white">${{ number_format($item->total_price, 2) }}</td>
                                             </tr>
                                             @endforeach
                                         </tbody>
@@ -181,20 +178,20 @@
                             <div class="flex flex-col md:flex-row justify-between items-end mb-8">
                                 <div class="mb-4 md:mb-0">
                                     <h4 class="font-semibold text-gray-700 mb-1">Payment Method</h4>
-                                    <p class="text-gray-800">{{ ucfirst($invoice->order->payment_method) }}</p>
+                                    <p class="text-gray-900 dark:text-white">{{ ucfirst($invoice->order->payment_method) }}</p>
                                 </div>
                                 <div class="w-full md:w-1/3">
                                     <div class="flex justify-between text-gray-600 mb-2">
-                                        <span>Subtotal:</span>
-                                        <span>${{ number_format($invoice->amount, 2) }}</span>
+                                        <span class="text-gray-700 dark:text-gray-300">Subtotal:</span>
+                                        <span class="text-gray-900 dark:text-white">${{ number_format($invoice->amount, 2) }}</span>
                                     </div>
                                     <div class="flex justify-between text-gray-600 mb-2">
-                                        <span>Tax (0%):</span>
-                                        <span>$0.00</span>
+                                        <span class="text-gray-700 dark:text-gray-300">Tax (0%):</span>
+                                        <span class="text-gray-900 dark:text-white">$0.00</span>
                                     </div>
                                     <div class="flex justify-between text-lg font-bold border-t pt-2">
-                                        <span>Total:</span>
-                                        <span>${{ number_format($invoice->amount, 2) }}</span>
+                                        <span class="text-gray-900 dark:text-white">Total:</span>
+                                        <span class="text-gray-900 dark:text-white">${{ number_format($invoice->amount, 2) }}</span>
                                     </div>
                                 </div>
                             </div>

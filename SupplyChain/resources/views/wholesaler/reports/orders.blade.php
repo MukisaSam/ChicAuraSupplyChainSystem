@@ -9,11 +9,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
-        body { 
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/wholesaler.jpg') }}');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+        body {
+            background: #f5f7fa;
             min-height: 100vh;
         }
         
@@ -21,21 +18,19 @@
             background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 100%), url('{{ asset('images/wholesaler.jpg') }}');
         }
         
-        .sidebar { 
+        .sidebar {
             transition: transform 0.3s ease-in-out;
-            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
-            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            background: #1a237e;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.08);
         }
-        
-        .dark .sidebar {
-            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+        .sidebar .sidebar-logo-blend {
+            background: #fff;
         }
-        
         .logo-container {
-            background: rgba(255, 255, 255, 0.95);
+            background: #fff;
             border-radius: 12px;
             padding: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
         }
         
         .dark .logo-container {
@@ -64,8 +59,8 @@
             transform: translateX(5px);
         }
         .header-gradient {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            background: #fff;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.06);
         }
         
         .dark .header-gradient {
@@ -117,8 +112,8 @@
         <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
-                    <div class="logo-container">
-                        <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
+                    <div class="sidebar-logo-blend w-full h-16 flex items-center justify-center p-0 m-0" style="background:#fff;">
+                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
                 <div class="px-4 py-4">
@@ -180,8 +175,8 @@
                     <!-- Header -->
                     <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
                         <div>
-                            <h1 class="text-3xl font-bold text-white mb-2">Order Report</h1>
-                            <p class="text-gray-200">Comprehensive order analysis from {{ $startDate }} to {{ $endDate }}</p>
+                            <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">Order Report</h1>
+                            <p class="text-gray-700 dark:text-gray-300">Comprehensive order analysis from {{ $startDate }} to {{ $endDate }}</p>
                         </div>
                         <div class="flex space-x-2 mt-4 md:mt-0">
                             <a href="{{ route('wholesaler.reports.index') }}" class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700">
@@ -280,20 +275,20 @@
                             <table class="min-w-full">
                                 <thead>
                                     <tr class="border-b border-gray-200 dark:border-gray-600">
-                                        <th class="text-left py-3 px-4 text-sm font-medium text-black">Order ID</th>
-                                        <th class="text-left py-3 px-4 text-sm font-medium text-black">Date</th>
-                                        <th class="text-left py-3 px-4 text-sm font-medium text-black">Status</th>
-                                        <th class="text-left py-3 px-4 text-sm font-medium text-black">Items</th>
-                                        <th class="text-left py-3 px-4 text-sm font-medium text-black">Payment Method</th>
-                                        <th class="text-left py-3 px-4 text-sm font-medium text-black">Amount</th>
-                                        <th class="text-left py-3 px-4 text-sm font-medium text-black">Actions</th>
+                                        <th class="text-left py-3 px-4 text-sm font-medium text-gray-900 dark:text-white">Order ID</th>
+                                        <th class="text-left py-3 px-4 text-sm font-medium text-gray-900 dark:text-white">Date</th>
+                                        <th class="text-left py-3 px-4 text-sm font-medium text-gray-900 dark:text-white">Status</th>
+                                        <th class="text-left py-3 px-4 text-sm font-medium text-gray-900 dark:text-white">Items</th>
+                                        <th class="text-left py-3 px-4 text-sm font-medium text-gray-900 dark:text-white">Payment Method</th>
+                                        <th class="text-left py-3 px-4 text-sm font-medium text-gray-900 dark:text-white">Amount</th>
+                                        <th class="text-left py-3 px-4 text-sm font-medium text-gray-900 dark:text-white">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse($orders as $order)
                                     <tr class="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                                        <td class="py-3 px-4 text-sm text-black font-medium">#{{ $order->id }}</td>
-                                        <td class="py-3 px-4 text-sm text-black">{{ $order->order_date->format('M d, Y') }}</td>
+                                        <td class="py-3 px-4 text-sm text-gray-900 dark:text-white font-medium">#{{ $order->id }}</td>
+                                        <td class="py-3 px-4 text-sm text-gray-900 dark:text-white">{{ $order->order_date->format('M d, Y') }}</td>
                                         <td class="py-3 px-4 text-sm">
                                             <span class="px-3 py-1 text-xs rounded-full font-medium
                                                 @if($order->status === 'delivered') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
@@ -306,11 +301,11 @@
                                                 {{ ucfirst(str_replace('_', ' ', $order->status)) }}
                                             </span>
                                         </td>
-                                        <td class="py-3 px-4 text-sm text-black">
+                                        <td class="py-3 px-4 text-sm text-gray-900 dark:text-white">
                                             {{ $order->orderItems->count() }} items
                                         </td>
-                                        <td class="py-3 px-4 text-sm text-black capitalize">{{ $order->payment_method }}</td>
-                                        <td class="py-3 px-4 text-sm text-black font-medium">${{ number_format($order->total_amount, 2) }}</td>
+                                        <td class="py-3 px-4 text-sm text-gray-900 dark:text-white capitalize">{{ $order->payment_method }}</td>
+                                        <td class="py-3 px-4 text-sm text-gray-900 dark:text-white font-medium">${{ number_format($order->total_amount, 2) }}</td>
                                         <td class="py-3 px-4 text-sm">
                                             <a href="{{ route('wholesaler.orders.show', $order->id) }}" class="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300">
                                                 <i class="fas fa-eye mr-1"></i>View
@@ -357,11 +352,11 @@
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center">
                                         <div class="w-3 h-3 rounded-full {{ $statusColors[$status] ?? 'bg-gray-500' }} mr-3"></div>
-                                        <span class="text-sm text-black capitalize">{{ str_replace('_', ' ', $status) }}</span>
+                                        <span class="text-sm text-gray-900 dark:text-white capitalize">{{ str_replace('_', ' ', $status) }}</span>
                                     </div>
                                     <div class="flex items-center space-x-2">
-                                        <span class="text-sm font-medium text-black">{{ $statusOrders->count() }}</span>
-                                        <span class="text-xs text-black">({{ number_format(($statusOrders->count() / $orders->count()) * 100, 1) }}%)</span>
+                                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $statusOrders->count() }}</span>
+                                        <span class="text-xs text-gray-700 dark:text-gray-300">({{ number_format(($statusOrders->count() / $orders->count()) * 100, 1) }}%)</span>
                                     </div>
                                 </div>
                                 @endforeach
@@ -376,11 +371,11 @@
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center">
                                         <div class="w-3 h-3 rounded-full bg-purple-500 mr-3"></div>
-                                        <span class="text-sm text-black capitalize">{{ $method }}</span>
+                                        <span class="text-sm text-gray-900 dark:text-white capitalize">{{ $method }}</span>
                                     </div>
                                     <div class="flex items-center space-x-2">
-                                        <span class="text-sm font-medium text-black">{{ $methodOrders->count() }}</span>
-                                        <span class="text-xs text-black">({{ number_format(($methodOrders->count() / $orders->count()) * 100, 1) }}%)</span>
+                                        <span class="text-sm font-medium text-gray-900 dark:text-white">{{ $methodOrders->count() }}</span>
+                                        <span class="text-xs text-gray-700 dark:text-gray-300">({{ number_format(($methodOrders->count() / $orders->count()) * 100, 1) }}%)</span>
                                     </div>
                                 </div>
                                 @endforeach
