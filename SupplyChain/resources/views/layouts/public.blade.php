@@ -284,7 +284,7 @@
 
                 @guest('customer')
                 <div>
-                    <a class="btn btn-outline-primary me-2" href="{{ route('customer.login') }}">
+                    <a class="btn btn-outline-primary me-2" href="{{ route('login') }}">
                         <i class="bi bi-box-arrow-in-right me-1"></i>Login
                     </a>
                 </div>

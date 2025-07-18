@@ -25,6 +25,13 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        if (Auth::guard('customer')->attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+            $request->session()->regenerate();
+
+            $intendedUrl = $request->session()->get('url.intended', route('customer.dashboard'));
+            
+            return redirect()->to($intendedUrl)->with('success', 'Login successful!');
+        }else{
         $request->authenticate();
 
         $request->session()->regenerate();
@@ -41,6 +48,7 @@ class AuthenticatedSessionController extends Controller
         };
 
         return redirect()->intended($route);
+    }
     }
 
     /**

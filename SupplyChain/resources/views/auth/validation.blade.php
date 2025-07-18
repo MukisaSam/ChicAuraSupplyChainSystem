@@ -287,7 +287,7 @@
 <body>
   <div class="container">
     <div class="logo-container">
-      <img src="/images/CA-WORD.png" alt="ChicAura Logo" class="logo">
+      <img src="/images/logo.png" alt="ChicAura Logo" class="logo">
     </div>
         
     <!--if validation fails--> 
