@@ -280,6 +280,7 @@ Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('
 
     //Revenue routes
     Route::get('/revenue', [App\Http\Controllers\ManufacturerRevenueController::class, 'index'])->name('revenue');
+    Route::get('/revenue/chart-data', [App\Http\Controllers\ManufacturerRevenueController::class, 'getMonthlyRevenueData'])->name('revenue.chart-data');
 
     // Workforce routes
     Route::resource('workforce', App\Http\Controllers\ManufacturerWorkforceController::class)

@@ -233,32 +233,7 @@
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
                     <div class="relative">
-                        <button id="notificationDropdownBtn" class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors focus:outline-none relative">
-                            <i class="fas fa-bell text-lg"></i>
-                            @php $unreadCount = auth()->user()->unreadNotifications->count(); @endphp
-                            @if($unreadCount > 0)
-                                <span class="absolute -top-1 -right-1 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-bold leading-none text-white bg-red-600 rounded-full min-w-[18px] min-h-[18px]">{{ $unreadCount }}</span>
-                            @endif
-                        </button>
-                        <div id="notificationDropdown" class="hidden absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-                            <div class="p-4 border-b font-semibold">Notifications</div>
-                            <ul class="max-h-64 overflow-y-auto">
-                                @forelse(auth()->user()->unreadNotifications as $notification)
-                                    <li class="px-4 py-2 border-b hover:bg-gray-50">
-                                        <div class="text-sm">{{ $notification->data['message'] ?? 'You have a new notification.' }}</div>
-                                        <div class="text-xs text-gray-400">{{ $notification->created_at ? \Carbon\Carbon::parse($notification->created_at)->diffForHumans() : 'N/A' }}</div>
-                                    </li>
-                                @empty
-                                    <li class="px-4 py-2 text-gray-500 text-sm">No new notifications.</li>
-                                @endforelse
-                            </ul>
-                            @if(auth()->user()->unreadNotifications->count() > 0)
-                                <form method="POST" action="{{ route('manufacturer.notifications.markAsRead') }}" class="p-2 text-center">
-                                    @csrf
-                                    <button type="submit" class="text-xs text-indigo-600 hover:underline">Mark all as read</button>
-                                </form>
-                            @endif
-                        </div>
+                        <x-notification-bell />
                     </div>
                     <button data-theme-toggle class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors" title="Switch Theme">
                         <i class="fas fa-moon text-lg"></i>
@@ -267,8 +242,8 @@
                     <div class="relative">
                         <button class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
                             <span class="mr-2 text-gray-700 font-medium text-sm">{{ Auth::user()->name ?? 'Manufacturer User' }}</span>
-                            <img class="w-7 h-7 rounded-full border-2 border-indigo-200 object-cover" 
-                                 src="{{ Auth::user()->profile_picture ? Storage::disk('public')->url(Auth::user()->profile_picture) : asset('images/default-avatar.svg') }}" 
+                            <img class="w-7 h-7 rounded-full border-2 border-purple-200 object-cover" 
+                                 src="{{ Auth::user()->profile_picture ? asset('storage/profile-pictures/' . basename(Auth::user()->profile_picture)) : asset('images/default-avatar.svg') }}" 
                                  alt="User Avatar">
                         </button>
                     </div>

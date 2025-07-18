@@ -20,7 +20,7 @@ class ManufacturerRevenueController extends Controller
         $stats = [
             'revenue' => '$' . number_format(\App\Models\Order::where('status', 'delivered')->sum('total_amount'), 2),
             'products' => \App\Models\Item::count(),
-            'raw_materials' => \App\Models\SupplyRequest::sum('quantity'),
+            'raw_materials' => \App\Models\Item::where('type', 'raw_material')->sum('stock_quantity'),
             'suppliers' => \App\Models\Supplier::count(),
         ];
 
@@ -52,5 +52,18 @@ class ManufacturerRevenueController extends Controller
         $recentActivities = collect($recentOrders)->merge(collect($recentSupplyRequests))->sortByDesc('time')->take(7)->values();
 
         return view('manufacturer.Revenue.index', compact('stats', 'recentActivities'));
+    }
+
+    public function getMonthlyRevenueData()
+    {
+        $monthly = \App\Models\Order::selectRaw('MONTH(created_at) as month, SUM(total_amount) as revenue')
+            ->where('status', 'delivered')
+            ->whereYear('created_at', now()->year)
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
+        $labels = $monthly->pluck('month')->map(function($m) { return date('M', mktime(0,0,0,$m,1)); });
+        $data = $monthly->pluck('revenue');
+        return response()->json(['labels' => $labels, 'data' => $data]);
     }
 }

@@ -109,6 +109,15 @@ class ManufacturerOrdersController extends Controller
             $this->checkInventoryAndCreateSupplyRequests($order);
         }
         
+        // If order is delivered, mark invoice as paid
+        if ($request->status === 'delivered') {
+            $invoice = $order->invoice; 
+            if ($invoice && $invoice->status !== 'paid') {
+                $invoice->status = 'paid';
+                $invoice->save();
+            }
+        }
+
         return redirect()->back()->with('success', 'Order status updated successfully.');
     }
 

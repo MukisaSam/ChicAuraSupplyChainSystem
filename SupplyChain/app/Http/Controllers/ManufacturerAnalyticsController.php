@@ -220,7 +220,7 @@ class ManufacturerAnalyticsController extends Controller
 
     private function getSupplierPerformance()
     {
-        $suppliers = Supplier::with(['suppliedItems' => function ($query) {
+        $suppliers = Supplier::with(['user', 'suppliedItems' => function ($query) {
             $query->where('delivery_date', '>=', Carbon::now()->subMonths(6));
         }])->get();
 
@@ -236,7 +236,7 @@ class ManufacturerAnalyticsController extends Controller
 
             return [
                 'id' => $supplier->id,
-                'name' => $supplier->name,
+                'name' => $supplier->user ? $supplier->user->name : '',
                 'on_time_delivery_rate' => $totalDeliveries > 0 ? round(($onTimeDeliveries / $totalDeliveries) * 100, 1) : 0,
                 'avg_delivery_time' => round($avgDeliveryTime ?? 0, 1),
                 'total_deliveries' => $totalDeliveries,
@@ -324,7 +324,7 @@ class ManufacturerAnalyticsController extends Controller
 
     private function getCustomerSegmentation()
     {
-        $wholesalers = Wholesaler::with(['orders' => function ($query) {
+        $wholesalers = Wholesaler::with(['user', 'orders' => function ($query) {
             $query->where('order_date', '>=', Carbon::now()->subMonths(6));
         }])->get();
 
@@ -350,7 +350,7 @@ class ManufacturerAnalyticsController extends Controller
 
             return [
                 'id' => $wholesaler->id,
-                'name' => $wholesaler->name,
+                'name' => $wholesaler->user ? $wholesaler->user->name : '',
                 'segment' => $segment,
                 'color' => $color,
                 'total_orders' => $totalOrders,
@@ -427,23 +427,47 @@ class ManufacturerAnalyticsController extends Controller
     private function getTimeSeriesData()
     {
         $months = collect();
+        $productionData = [];
+        $revenueData = [];
+        $ordersData = [];
+
         for ($i = 11; $i >= 0; $i--) {
-            $month = Carbon::now()->subMonths($i);
-            $months->push($month->format('M Y'));
+            $month = \Carbon\Carbon::now()->subMonths($i);
+            $label = $month->format('M Y');
+            $months->push($label);
+
+            // Get all orders for this month
+            $orders = \App\Models\Order::whereYear('order_date', $month->year)
+                ->whereMonth('order_date', $month->month)
+                ->get();
+
+            // Sum production volume (sum of all order item quantities)
+            $production = 0;
+            foreach ($orders as $order) {
+                $production += $order->orderItems->sum('quantity');
+            }
+            $productionData[] = $production;
+
+            // Sum revenue (total_amount)
+            $revenue = $orders->sum('total_amount');
+            $revenueData[] = (float) $revenue;
+
+            // Count orders
+            $ordersData[] = $orders->count();
         }
 
         return [
             'labels' => $months->toArray(),
-            'production_data' => [65, 59, 80, 81, 56, 55, 70, 85, 90, 75, 88, 92],
-            'revenue_data' => [12000, 15000, 18000, 16000, 14000, 17000, 20000, 22000, 19000, 21000, 23000, 25000],
-            'orders_data' => [45, 52, 68, 74, 58, 62, 78, 85, 72, 88, 95, 102],
+            'production_data' => $productionData,
+            'revenue_data' => $revenueData,
+            'orders_data' => $ordersData,
         ];
     }
 
     // API endpoints for AJAX requests
     public function getChartData(Request $request)
     {
-        $chartType = $request->get('type', 'production');
+        $chartType = $request->get('type', 'timeseries');
         
         switch ($chartType) {
             case 'production':
@@ -452,8 +476,9 @@ class ManufacturerAnalyticsController extends Controller
                 return response()->json($this->getRevenueAnalytics());
             case 'inventory':
                 return response()->json($this->getInventoryAnalytics());
+            case 'timeseries':
             default:
-                return response()->json(['error' => 'Invalid chart type']);
+                return response()->json(['timeData' => $this->getTimeSeriesData()]);
         }
     }
 

@@ -243,8 +243,8 @@
                     <div class="relative">
                         <button class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
                             <span class="mr-2 text-gray-700 font-medium text-sm">{{ Auth::user()->name ?? 'Admin User' }}</span>
-                            <img class="w-7 h-7 rounded-full border-2 border-indigo-200 object-cover" 
-                                 src="{{ Auth::user()->profile_picture ? Storage::disk('public')->url(Auth::user()->profile_picture) : asset('images/default-avatar.svg') }}" 
+                            <img class="w-7 h-7 rounded-full border-2 border-purple-200 object-cover" 
+                                 src="{{ Auth::user()->profile_picture ? asset('storage/profile-pictures/' . basename(Auth::user()->profile_picture)) : asset('images/default-avatar.svg') }}" 
                                  alt="User Avatar">
                         </button>
                     </div>
@@ -569,127 +569,129 @@
             }
         });
 
-        // Charts
-        const labels = @json($analytics['timeData']['labels']);
-        const productionData = @json($analytics['timeData']['production_data']);
-        const revenueData = @json($analytics['timeData']['revenue_data']);
-        const ordersData = @json($analytics['timeData']['orders_data']);
+        // Fetch and render charts with real data
+        function renderAnalyticsCharts() {
+            fetch("{{ route('manufacturer.analytics.chart-data') }}")
+                .then(response => response.json())
+                .then(data => {
+                    // Production Chart
+                    new Chart(document.getElementById('productionChart'), {
+                        type: 'line',
+                        data: {
+                            labels: data.timeData.labels,
+                            datasets: [{
+                                label: 'Production Volume',
+                                data: data.timeData.production_data,
+                                borderColor: '#6366f1',
+                                backgroundColor: 'rgba(99,102,241,0.1)',
+                                fill: true,
+                                tension: 0.4,
+                            }, {
+                                label: 'Revenue',
+                                data: data.timeData.revenue_data.map(val => val / 1000), // Scale down for better visualization
+                                borderColor: '#10b981',
+                                backgroundColor: 'rgba(16,185,129,0.1)',
+                                fill: true,
+                                tension: 0.4,
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    position: 'top'
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: {
+                                        color: 'rgba(0,0,0,0.1)'
+                                    }
+                                },
+                                x: {
+                                    grid: {
+                                        color: 'rgba(0,0,0,0.1)'
+                                    }
+                                }
+                            }
+                        }
+                    });
 
-        // Production Chart
-        new Chart(document.getElementById('productionChart'), {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Production Volume',
-                    data: productionData,
-                    borderColor: '#6366f1',
-                    backgroundColor: 'rgba(99,102,241,0.1)',
-                    fill: true,
-                    tension: 0.4,
-                }, {
-                    label: 'Revenue',
-                    data: revenueData.map(val => val / 1000), // Scale down for better visualization
-                    borderColor: '#10b981',
-                    backgroundColor: 'rgba(16,185,129,0.1)',
-                    fill: true,
-                    tension: 0.4,
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'top'
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0,0,0,0.1)'
+                    // Revenue Chart
+                    new Chart(document.getElementById('revenueChart'), {
+                        type: 'bar',
+                        data: {
+                            labels: data.timeData.labels,
+                            datasets: [{
+                                label: 'Revenue',
+                                data: data.timeData.revenue_data,
+                                backgroundColor: '#10b981',
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: {
+                                        color: 'rgba(0,0,0,0.1)'
+                                    }
+                                },
+                                x: {
+                                    grid: {
+                                        color: 'rgba(0,0,0,0.1)'
+                                    }
+                                }
+                            }
                         }
-                    },
-                    x: {
-                        grid: {
-                            color: 'rgba(0,0,0,0.1)'
-                        }
-                    }
-                }
-            }
-        });
+                    });
 
-        // Revenue Chart
-        new Chart(document.getElementById('revenueChart'), {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Revenue',
-                    data: revenueData,
-                    backgroundColor: '#10b981',
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0,0,0,0.1)'
+                    // Orders Chart
+                    new Chart(document.getElementById('ordersChart'), {
+                        type: 'bar',
+                        data: {
+                            labels: data.timeData.labels,
+                            datasets: [{
+                                label: 'Orders',
+                                data: data.timeData.orders_data,
+                                backgroundColor: '#f59e42',
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    grid: {
+                                        color: 'rgba(0,0,0,0.1)'
+                                    }
+                                },
+                                x: {
+                                    grid: {
+                                        color: 'rgba(0,0,0,0.1)'
+                                    }
+                                }
+                            }
                         }
-                    },
-                    x: {
-                        grid: {
-                            color: 'rgba(0,0,0,0.1)'
-                        }
-                    }
-                }
-            }
-        });
-
-        // Orders Chart
-        new Chart(document.getElementById('ordersChart'), {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Orders',
-                    data: ordersData,
-                    backgroundColor: '#f59e42',
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(0,0,0,0.1)'
-                        }
-                    },
-                    x: {
-                        grid: {
-                            color: 'rgba(0,0,0,0.1)'
-                        }
-                    }
-                }
-            }
-        });
+                    });
+                });
+        }
+        document.addEventListener('DOMContentLoaded', renderAnalyticsCharts);
 
         // Forecast functionality
         document.addEventListener('DOMContentLoaded', function() {

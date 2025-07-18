@@ -29,12 +29,12 @@ trait ManufacturerDashboardTrait
             $activities = collect();
 
             // Recent orders
-            $recentOrders = Order::with('wholesaler')->latest()->take(5)->get();
+            $recentOrders = Order::with('wholesaler.user')->latest()->take(5)->get();
             foreach ($recentOrders as $order) {
-                if ($order->wholesaler) {
+                if ($order->wholesaler && $order->wholesaler->user) {
                     $activities->push([
                         'type' => 'order',
-                        'description' => "New order #{$order->order_number} from {$order->wholesaler->name}",
+                        'description' => "New order #{$order->order_number} from {$order->wholesaler->user->name}",
                         'time' => $order->created_at ? $order->created_at->diffForHumans() : 'N/A',
                         'icon' => 'fa-shopping-cart',
                         'color' => 'text-blue-600',

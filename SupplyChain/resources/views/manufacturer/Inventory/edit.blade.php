@@ -205,8 +205,8 @@
                     <div class="relative">
                         <button class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
                             <span class="mr-2 text-gray-700 font-medium text-sm">{{ Auth::user()->name ?? 'Manufacturer User' }}</span>
-                            <img class="w-7 h-7 rounded-full border-2 border-indigo-200 object-cover" 
-                                 src="{{ Auth::user()->profile_picture ? Storage::disk('public')->url(Auth::user()->profile_picture) : asset('images/default-avatar.svg') }}" 
+                            <img class="w-7 h-7 rounded-full border-2 border-purple-200 object-cover" 
+                                 src="{{ Auth::user()->profile_picture ? asset('storage/profile-pictures/' . basename(Auth::user()->profile_picture)) : asset('images/default-avatar.svg') }}" 
                                  alt="User Avatar">
                         </button>
                     </div>
@@ -332,11 +332,14 @@
                                 <div class="flex-shrink-0">
                                     <div id="imagePreview" class="w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50 overflow-hidden">
                                         @if($item->image_url)
-                                            <img src="{{ Storage::disk('public')->url($item->image_url) }}" alt="{{ $item->name }}" class="w-full h-full object-cover">
+                                            @if(Str::startsWith($item->image_url, ['http://', 'https://']))
+                                                <img src="{{ $item->image_url }}" alt="{{ $item->name }}" class="w-32 h-32 object-cover rounded-lg">
+                                            @else
+                                                <img src="{{ asset('storage/' . $item->image_url) }}" alt="{{ $item->name }}" class="w-32 h-32 object-cover rounded-lg">
+                                            @endif
                                         @else
-                                            <div class="text-center">
-                                                <i class="fas fa-image text-gray-400 text-2xl mb-2"></i>
-                                                <p class="text-xs text-gray-500">No image</p>
+                                            <div class="w-32 h-32 bg-gray-200 flex items-center justify-center rounded-lg">
+                                                <i class="fas fa-image text-gray-400"></i>
                                             </div>
                                         @endif
                                     </div>
@@ -390,12 +393,17 @@
             } else {
                 // Reset to original image or placeholder
                 @if($item->image_url)
-                    preview.innerHTML = `<img src="{{ Storage::disk('public')->url($item->image_url) }}" alt="{{ $item->name }}" class="w-full h-full object-cover">`;
+                    preview.innerHTML = `
+                        @if(Str::startsWith($item->image_url, ['http://', 'https://']))
+                            <img src="{{ $item->image_url }}" alt="{{ $item->name }}" class="w-32 h-32 object-cover rounded-lg">
+                        @else
+                            <img src="{{ asset('storage/' . $item->image_url) }}" alt="{{ $item->name }}" class="w-32 h-32 object-cover rounded-lg">
+                        @endif
+                    `;
                 @else
                     preview.innerHTML = `
-                        <div class="text-center">
-                            <i class="fas fa-image text-gray-400 text-2xl mb-2"></i>
-                            <p class="text-xs text-gray-500">No image</p>
+                        <div class="w-32 h-32 bg-gray-200 flex items-center justify-center rounded-lg">
+                            <i class="fas fa-image text-gray-400"></i>
                         </div>
                     `;
                 @endif

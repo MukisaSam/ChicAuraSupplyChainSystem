@@ -96,39 +96,87 @@
     // Revenue Chart
     const ctx = document.getElementById('revenueChart');
     if (ctx) {
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Monthly Revenue',
-                    data: [30000, 35000, 45000, 40000, 50000, 55000],
-                    borderColor: 'rgb(124, 58, 237)',
-                    backgroundColor: 'rgba(124, 58, 237, 0.1)',
-                    tension: 0.4,
-                    fill: true
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return '$' + value.toLocaleString();
+        fetch("{{ route('manufacturer.revenue.chart-data') }}")
+            .then(response => response.json())
+            .then(data => {
+                // Create a gradient fill for the chart
+                const chartCtx = ctx.getContext('2d');
+                const gradient = chartCtx.createLinearGradient(0, 0, 0, ctx.height);
+                gradient.addColorStop(0, 'rgba(124, 58, 237, 0.4)');
+                gradient.addColorStop(1, 'rgba(124, 58, 237, 0.05)');
+
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            label: 'Monthly Revenue',
+                            data: data.data,
+                            borderColor: 'rgb(124, 58, 237)',
+                            backgroundColor: gradient,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: 'rgb(124, 58, 237)',
+                            pointRadius: 5,
+                            pointHoverRadius: 8,
+                            pointBorderWidth: 2,
+                            pointBorderColor: '#fff',
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                labels: {
+                                    color: '#7c3aed',
+                                    font: { weight: 'bold' }
+                                }
+                            },
+                            tooltip: {
+                                enabled: true,
+                                callbacks: {
+                                    label: function(context) {
+                                        return 'Revenue: $' + context.parsed.y.toLocaleString();
+                                    }
+                                },
+                                backgroundColor: 'rgba(124, 58, 237, 0.9)',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                borderColor: '#fff',
+                                borderWidth: 1,
+                                padding: 12,
+                                cornerRadius: 8,
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return '$' + value.toLocaleString();
+                                    },
+                                    color: '#7c3aed',
+                                    font: { weight: 'bold' }
+                                },
+                                grid: {
+                                    color: 'rgba(124, 58, 237, 0.08)'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    color: '#7c3aed',
+                                    font: { weight: 'bold' }
+                                },
+                                grid: {
+                                    color: 'rgba(124, 58, 237, 0.08)'
+                                }
                             }
                         }
                     }
-                }
-            }
-        });
+                });
+            });
     }
 </script>
 @endsection

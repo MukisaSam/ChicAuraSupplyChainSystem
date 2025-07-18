@@ -4,7 +4,9 @@
         <form method="post" action="{{ route('user.profile.update') }}" enctype="multipart/form-data" class="space-y-4">
             @csrf
             <div class="flex items-center space-x-4">
-                <img id="profile-modal-preview" class="h-16 w-16 rounded-full object-cover border-2 border-gray-300" src="{{ Auth::user()->profile_picture ? Storage::disk('public')->url(Auth::user()->profile_picture) : asset('images/default-avatar.svg') }}" alt="Profile Picture">
+                <img class="h-24 w-24 rounded-full object-cover border-4 border-white shadow-lg"
+                     src="{{ Auth::user()->profile_picture ? asset('storage/profile-pictures/' . basename(Auth::user()->profile_picture)) : asset('images/default-avatar.svg') }}"
+                     alt="Profile Picture">
                 <div>
                     <label for="modal_profile_picture" class="block text-sm font-medium">Profile Picture</label>
                     <input type="file" id="modal_profile_picture" name="profile_picture" accept="image/*" class="block w-full text-sm text-gray-500" onchange="modalPreviewImage(this)">
