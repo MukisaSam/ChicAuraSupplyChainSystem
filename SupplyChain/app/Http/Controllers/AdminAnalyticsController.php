@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\Order; // Adjust if your order model is named differently
-use App\Models\Supplier;      // Adjust if your supplier model is named differently
+use App\Models\Order; 
+use App\Models\Supplier;      
 
 class AdminAnalyticsController extends Controller
 {
@@ -14,8 +14,8 @@ class AdminAnalyticsController extends Controller
         // Metrics
         $totalUsers = User::count();
         $totalOrders = Order::count();
-        $totalRevenue = Order::sum('total'); // Adjust 'total' if your column is named differently
-        $activeSuppliers = Supplier::where('status', 'active')->count(); // Adjust if you use a different status system
+        $totalRevenue = Order::sum('total'); /
+        $activeSuppliers = Supplier::where('status', 'active')->count(); /
 
         // Orders Over Time (last 7 days)
         $orders = Order::selectRaw('DATE(created_at) as date, COUNT(*) as count')
