@@ -143,8 +143,8 @@
                         <button class="flex items-center focus:outline-none bg-white dark:bg-gray-700 rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
                             <span class="mr-2 text-gray-700 dark:text-gray-200 font-medium text-sm">{{ Auth::user()->name ?? 'Supplier User' }}</span>
                             <img class="w-7 h-7 rounded-full border-2 border-purple-200 object-cover" 
-                                 src="{{ Auth::user()->profile_picture ? Storage::disk('public')->url(Auth::user()->profile_picture) : asset('images/default-avatar.svg') }}" 
-                                 alt="User Avatar">
+                                 src="{{ Auth::user()->profile_picture ? asset('storage/profile-pictures/' . basename(Auth::user()->profile_picture)) : asset('images/default-avatar.svg') }}" 
+                                 alt="User Avatar">                           
                         </button>
                     </div>
                     <div class="flex items-center space-x-2">
