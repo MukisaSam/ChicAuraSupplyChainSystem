@@ -82,10 +82,27 @@ class WholesalerDashboardController extends Controller
             })
             ->toArray();
 
+        // Purchase history for the last 6 months
+        $purchaseHistoryLabels = [];
+        $purchaseHistoryData = [];
+        $monthsBack = 6;
+        for ($i = $monthsBack - 1; $i >= 0; $i--) {
+            $date = now()->subMonths($i);
+            $label = $date->format('M');
+            $purchaseHistoryLabels[] = $label;
+            $total = Order::where('wholesaler_id', $wholesaler->id)
+                ->whereMonth('order_date', $date->month)
+                ->whereYear('order_date', $date->year)
+                ->sum('total_amount');
+            $purchaseHistoryData[] = round($total, 2);
+        }
+
         return view('wholesaler.dashboard', [
             'user' => $user,
             'stats' => $stats,
-            'recentOrders' => $recentOrders
+            'recentOrders' => $recentOrders,
+            'purchaseHistoryLabels' => $purchaseHistoryLabels,
+            'purchaseHistoryData' => $purchaseHistoryData
         ]);
     }
 }

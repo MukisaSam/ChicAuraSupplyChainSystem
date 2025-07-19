@@ -169,8 +169,8 @@
                                             </div>
                                             <div class="text-right">
                                                 <p class="font-medium text-gray-900 dark:text-white">Qty: {{ $orderItem->quantity }}</p>
-                                                <p class="text-sm text-gray-600 dark:text-gray-400">${{ number_format($orderItem->unit_price, 2) }} each</p>
-                                                <p class="font-bold text-gray-900 dark:text-white mt-1">${{ number_format($orderItem->total_price, 2) }}</p>
+                                                <p class="text-sm text-gray-600 dark:text-gray-400">UGX {{ number_format($orderItem->unit_price, 2) }} each</p>
+                                                <p class="font-bold text-gray-900 dark:text-white mt-1">UGX {{ number_format($orderItem->total_price, 2) }}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -223,7 +223,7 @@
                                     </div>
                                     <div>
                                         <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Amount:</span>
-                                        <span class="ml-2 font-bold text-gray-900 dark:text-white">${{ number_format($order->total_amount, 2) }}</span>
+                                        <span class="ml-2 font-bold text-gray-900 dark:text-white">UGX {{ number_format($order->total_amount, 2) }}</span>
                                     </div>
                                     <div>
                                         <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Payment Method:</span>

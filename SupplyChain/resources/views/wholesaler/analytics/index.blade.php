@@ -218,7 +218,7 @@
                                 </div>
                                 <div class="ml-4">
                                     <p class="text-sm text-gray-900 dark:text-white">Total Spent</p>
-                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($totalSpent, 2) }}</p>
+                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">UGX {{ number_format($totalSpent, 2) }}</p>
                                 </div>
                             </div>
                         </div>
@@ -230,7 +230,7 @@
                                 </div>
                                 <div class="ml-4">
                                     <p class="text-sm text-gray-900 dark:text-white">Avg Order Value</p>
-                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($averageOrderValue, 2) }}</p>
+                                    <p class="text-2xl font-bold text-gray-900 dark:text-white">UGX {{ number_format($averageOrderValue, 2) }}</p>
                                 </div>
                             </div>
                         </div>
@@ -286,7 +286,7 @@
                                         <tr class="border-b border-gray-100 dark:border-gray-700 top-product-row">
                                             <td class="py-2 text-sm text-gray-900 dark:text-white">{{ $product->name }}</td>
                                             <td class="py-2 text-sm text-gray-700 dark:text-gray-300">{{ $product->total_quantity }}</td>
-                                            <td class="py-2 text-sm text-gray-700 dark:text-gray-300">${{ number_format($product->total_revenue, 2) }}</td>
+                                            <td class="py-2 text-sm text-gray-700 dark:text-gray-300">UGX {{ number_format($product->total_revenue, 2) }}</td>
                                         </tr>
                                         @endforeach
                                     </tbody>
@@ -331,7 +331,7 @@
                                                 {{ ucfirst($order->status) }}
                                             </span>
                                         </td>
-                                        <td class="py-2 text-sm text-gray-700 dark:text-gray-300">${{ number_format($order->total_amount, 2) }}</td>
+                                        <td class="py-2 text-sm text-gray-700 dark:text-gray-300">UGX {{ number_format($order->total_amount, 2) }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>

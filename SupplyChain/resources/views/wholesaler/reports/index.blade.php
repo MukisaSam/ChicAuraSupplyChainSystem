@@ -200,7 +200,7 @@
                             <div class="flex flex-col gap-3">
                                 <div class="flex justify-between text-sm">
                                     <span class="text-gray-600 dark:text-gray-400">Total Sales</span>
-                                    <span class="font-bold text-gray-900 dark:text-white">${{ number_format($salesOverview['current']['total_sales'], 2) }}</span>
+                                    <span class="font-bold text-gray-900 dark:text-white">UGX {{ number_format($salesOverview['current']['total_sales'], 2) }}</span>
                                 </div>
                                 <div class="flex justify-between text-sm">
                                     <span class="text-gray-600 dark:text-gray-400">Orders</span>
@@ -208,7 +208,7 @@
                                 </div>
                                 <div class="flex justify-between text-sm">
                                     <span class="text-gray-600 dark:text-gray-400">Avg. Order Value</span>
-                                    <span class="font-bold text-gray-900 dark:text-white">${{ number_format($salesOverview['current']['avg_order_value'], 2) }}</span>
+                                    <span class="font-bold text-gray-900 dark:text-white">UGX {{ number_format($salesOverview['current']['avg_order_value'], 2) }}</span>
                                 </div>
                                 <div class="flex justify-between text-xs text-green-600 dark:text-green-400 mt-2">
                                     <span>Sales Growth</span>
@@ -259,7 +259,7 @@
                                     </div>
                                     <div class="ml-4 text-right">
                                         <div class="text-sm font-medium text-gray-900 dark:text-white">
-                                            ${{ number_format($product->total_revenue, 2) }}
+                                            UGX {{ number_format($product->total_revenue, 2) }}
                                         </div>
                                         <div class="text-xs text-gray-600 dark:text-gray-400">
                                             Revenue

@@ -167,8 +167,8 @@
                                                 <td class="px-4 py-2 text-gray-900 dark:text-white">{{ $item->item->name }}</td>
                                                 <td class="px-4 py-2 text-gray-700 dark:text-gray-300">{{ $item->item->description }}</td>
                                                 <td class="px-4 py-2 text-center text-gray-900 dark:text-white">{{ $item->quantity }}</td>
-                                                <td class="px-4 py-2 text-right text-gray-900 dark:text-white">${{ number_format($item->unit_price, 2) }}</td>
-                                                <td class="px-4 py-2 text-right font-semibold text-gray-900 dark:text-white">${{ number_format($item->total_price, 2) }}</td>
+                                                <td class="px-4 py-2 text-right text-gray-900 dark:text-white">UGX {{ number_format($item->unit_price, 2) }}</td>
+                                                <td class="px-4 py-2 text-right font-semibold text-gray-900 dark:text-white">UGX {{ number_format($item->total_price, 2) }}</td>
                                             </tr>
                                             @endforeach
                                         </tbody>
@@ -183,15 +183,15 @@
                                 <div class="w-full md:w-1/3">
                                     <div class="flex justify-between text-gray-600 mb-2">
                                         <span class="text-gray-700 dark:text-gray-300">Subtotal:</span>
-                                        <span class="text-gray-900 dark:text-white">${{ number_format($invoice->amount, 2) }}</span>
+                                        <span class="text-gray-900 dark:text-white">UGX {{ number_format($invoice->amount, 2) }}</span>
                                     </div>
                                     <div class="flex justify-between text-gray-600 mb-2">
                                         <span class="text-gray-700 dark:text-gray-300">Tax (0%):</span>
-                                        <span class="text-gray-900 dark:text-white">$0.00</span>
+                                        <span class="text-gray-900 dark:text-white">UGX 0.00</span>
                                     </div>
                                     <div class="flex justify-between text-lg font-bold border-t pt-2">
                                         <span class="text-gray-900 dark:text-white">Total:</span>
-                                        <span class="text-gray-900 dark:text-white">${{ number_format($invoice->amount, 2) }}</span>
+                                        <span class="text-gray-900 dark:text-white">UGX {{ number_format($invoice->amount, 2) }}</span>
                                     </div>
                                 </div>
                             </div>

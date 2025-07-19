@@ -240,7 +240,7 @@
                                             </div>
                                         </div>
                                         <div class="text-right">
-                                            <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($order->total_amount, 2) }}</p>
+                                            <p class="text-2xl font-bold text-gray-900 dark:text-white">UGX {{ number_format($order->total_amount, 2) }}</p>
                                             <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full 
                                                 @if($order->status === 'completed') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
                                                 @elseif($order->status === 'pending') bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200

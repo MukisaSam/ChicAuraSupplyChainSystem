@@ -144,7 +144,7 @@
                                 <tr class="even:bg-white odd:bg-gray-50 dark:even:bg-slate-800 dark:odd:bg-slate-700 border-b border-gray-200 dark:border-gray-700">
                                     <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white">{{ $invoice->invoice_number }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white">{{ $invoice->order->order_number ?? '-' }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white">${{ number_format($invoice->amount, 2) }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white">UGX {{ number_format($invoice->amount, 2) }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <span class="inline-block px-2 py-1 rounded-full text-xs font-semibold {{ $invoice->status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' }}">{{ ucfirst($invoice->status) }}</span>
                                     </td>

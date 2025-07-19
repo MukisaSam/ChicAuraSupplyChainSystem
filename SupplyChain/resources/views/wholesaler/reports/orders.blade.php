@@ -232,7 +232,7 @@
                                 </div>
                                 <div class="ml-4">
                                     <p class="text-sm text-black">Total Revenue</p>
-                                    <p class="text-2xl font-bold text-black">${{ number_format($orderMetrics['total_revenue'], 2) }}</p>
+                                    <p class="text-2xl font-bold text-black">UGX {{ number_format($orderMetrics['total_revenue'], 2) }}</p>
                                 </div>
                             </div>
                         </div>
@@ -244,7 +244,7 @@
                                 </div>
                                 <div class="ml-4">
                                     <p class="text-sm text-black">Avg Order Value</p>
-                                    <p class="text-2xl font-bold text-black">${{ number_format($orderMetrics['avg_order_value'], 2) }}</p>
+                                    <p class="text-2xl font-bold text-black">UGX {{ number_format($orderMetrics['avg_order_value'], 2) }}</p>
                                 </div>
                             </div>
                         </div>
@@ -305,7 +305,7 @@
                                             {{ $order->orderItems->count() }} items
                                         </td>
                                         <td class="py-3 px-4 text-sm text-gray-900 dark:text-white capitalize">{{ $order->payment_method }}</td>
-                                        <td class="py-3 px-4 text-sm text-gray-900 dark:text-white font-medium">${{ number_format($order->total_amount, 2) }}</td>
+                                        <td class="py-3 px-4 text-sm text-gray-900 dark:text-white font-medium">UGX {{ number_format($order->total_amount, 2) }}</td>
                                         <td class="py-3 px-4 text-sm">
                                             <a href="{{ route('wholesaler.orders.show', $order->id) }}" class="text-purple-600 hover:text-purple-800 dark:text-purple-400 dark:hover:text-purple-300">
                                                 <i class="fas fa-eye mr-1"></i>View

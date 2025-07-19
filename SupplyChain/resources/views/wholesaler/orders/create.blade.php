@@ -224,7 +224,7 @@
                                                         </div>
                                                     </div>
                                                     <div class="text-right">
-                                                        <p class="text-xl font-bold text-gray-900 dark:text-gray-100">${{ number_format($item->base_price, 2) }}</p>
+                                                        <p class="text-xl font-bold text-gray-900 dark:text-gray-100">UGX {{ number_format($item->base_price, 2) }}</p>
                                                         <div class="flex items-center space-x-2 mt-2">
                                                             <input type="checkbox" id="select_item_{{ $item->id }}" name="items[{{ $item->id }}][selected]" value="1" onchange="toggleQuantityInput({{ $item->id }})">
                                                             <label for="select_item_{{ $item->id }}" class="text-sm font-medium text-black">Select</label>
@@ -291,15 +291,15 @@
                                     <div class="border-t border-gray-200 dark:border-gray-700 pt-4">
                                         <div class="flex justify-between text-sm mb-2">
                                             <span class="text-gray-600 dark:text-black">Subtotal:</span>
-                                            <span class="font-medium dark:text-black" id="subtotal">$0.00</span>
+                                            <span class="font-medium dark:text-black" id="subtotal">UGX 0.00</span>
                                         </div>
                                         <div class="flex justify-between text-sm mb-2">
                                             <span class="text-gray-600 dark:text-black">Tax (10%):</span>
-                                            <span class="font-medium dark:text-black" id="tax">$0.00</span>
+                                            <span class="font-medium dark:text-black" id="tax">UGX 0.00</span>
                                         </div>
                                         <div class="flex justify-between text-lg font-bold border-t border-gray-200 dark:border-gray-700 pt-2">
                                             <span class="dark:text-black">Total:</span>
-                                            <span class="dark:text-black" id="total">$0.00</span>
+                                            <span class="dark:text-black" id="total">UGX 0.00</span>
                                         </div>
                                     </div>
                                     
@@ -331,7 +331,7 @@
                 const quantity = parseInt(input.value) || 0;
                 const itemCard = input.closest('.bg-white, .dark\\:bg-gray-800');
                 const priceElement = itemCard.querySelector('.text-xl');
-                const price = parseFloat(priceElement.textContent.replace('$', '').replace(',', '')) || 0;
+                const price = parseFloat(priceElement.textContent.replace('UGX', '').replace(',', '')) || 0;
                 
                 subtotal += quantity * price;
             });
@@ -339,9 +339,9 @@
             const tax = subtotal * 0.1; // 10% tax
             const total = subtotal + tax;
             
-            document.getElementById('subtotal').textContent = '$' + subtotal.toFixed(2);
-            document.getElementById('tax').textContent = '$' + tax.toFixed(2);
-            document.getElementById('total').textContent = '$' + total.toFixed(2);
+            document.getElementById('subtotal').textContent = 'UGX ' + subtotal.toFixed(2);
+            document.getElementById('tax').textContent = 'UGX ' + tax.toFixed(2);
+            document.getElementById('total').textContent = 'UGX ' + total.toFixed(2);
         }
 
         // Add event listeners to quantity inputs

@@ -182,7 +182,7 @@
                             </div>
                             <div class="ml-3">
                                 <p class="text-sm text-gray-900 dark:text-white">Revenue</p>
-                                <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($stats['revenue'] ?? '0', 2) }}</p>
+                                <p class="text-2xl font-bold text-gray-900 dark:text-white">UGX {{ number_format($stats['revenue'] ?? '0', 2) }}</p>
                                 <p class="text-sm text-green-600 dark:text-green-300 mt-1">↗ +8% this month</p>
                             </div>
                         </div>
@@ -194,7 +194,7 @@
                             </div>
                             <div class="ml-3">
                                 <p class="text-sm text-gray-900 dark:text-white">Avg Order Value</p>
-                                <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($stats['avg_order_value'] ?? '0', 2) }}</p>
+                                <p class="text-2xl font-bold text-gray-900 dark:text-white">UGX {{ number_format($stats['avg_order_value'] ?? '0', 2) }}</p>
                                 <p class="text-sm text-blue-600 dark:text-blue-300 mt-1">↗ +5% this month</p>
                             </div>
                         </div>
@@ -215,7 +215,7 @@
                 
                 <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-3 h-64">
                     <div class="card-gradient p-4 rounded-xl lg:col-span-2 overflow-hidden bg-white border border-gray-200 shadow dark:bg-gray-800 dark:border-gray-700">
-                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3">Purchase History ($)</h3>
+                        <h3 class="text-lg font-bold text-gray-900 dark:text-white mb-3">Purchase History (UGX)</h3>
                         <canvas id="purchaseChart" class="w-full h-48"></canvas>
                     </div>
                     <div class="card-gradient p-4 rounded-xl bg-white border border-gray-200 shadow dark:bg-gray-800 dark:border-gray-700">
@@ -233,7 +233,7 @@
                                         <p class="text-xs text-gray-500 dark:text-gray-300">Order #{{ $order['id'] }}</p>
                                     </div>
                                     <div class="text-right">
-                                        <p class="text-xs font-semibold text-gray-900 dark:text-white">${{ number_format($order['amount'], 2) }}</p>
+                                        <p class="text-xs font-semibold text-gray-900 dark:text-white">UGX {{ number_format($order['amount'], 2) }}</p>
                                         <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {{ $order['status_color'] }} text-white">{{ $order['status'] }}</span>
                                     </div>
                                 </div>
@@ -265,10 +265,10 @@
             new Chart(purchaseCtx, {
                 type: 'line',
                 data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    labels: @json($purchaseHistoryLabels),
                     datasets: [{
-                        label: 'Purchase Amount',
-                        data: [15000, 25000, 18000, 32000, 28000, 35000],
+                        label: 'Purchase Amount (UGX)',
+                        data: @json($purchaseHistoryData),
                         borderColor: '#8B5CF6',
                         backgroundColor: 'rgba(139, 92, 246, 0.1)',
                         borderWidth: 3,
@@ -289,6 +289,11 @@
                             beginAtZero: true,
                             grid: {
                                 color: 'rgba(0,0,0,0.1)'
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    return 'UGX ' + value.toLocaleString();
+                                }
                             }
                         },
                         x: {

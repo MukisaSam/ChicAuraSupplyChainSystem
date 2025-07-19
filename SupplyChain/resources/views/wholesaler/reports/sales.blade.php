@@ -201,7 +201,7 @@
                                 </div>
                                 <div class="ml-4">
                                     <p class="text-sm text-black">Total Sales</p>
-                                    <p class="text-2xl font-bold text-black">${{ number_format($salesData->sum('total_amount'), 2) }}</p>
+                                    <p class="text-2xl font-bold text-black">UGX {{ number_format($salesData->sum('total_amount'), 2) }}</p>
                                 </div>
                             </div>
                         </div>
@@ -225,7 +225,7 @@
                                 </div>
                                 <div class="ml-4">
                                     <p class="text-sm text-black">Avg Order Value</p>
-                                    <p class="text-2xl font-bold text-black">${{ number_format($salesData->avg('total_amount'), 2) }}</p>
+                                    <p class="text-2xl font-bold text-black">UGX {{ number_format($salesData->avg('total_amount'), 2) }}</p>
                                 </div>
                             </div>
                         </div>
@@ -247,7 +247,7 @@
                                     @foreach($dailySales as $day)
                                     <tr class="border-b border-gray-100 dark:border-gray-700">
                                         <td class="py-2 text-sm text-black">{{ \Carbon\Carbon::parse($day->date)->format('M d, Y') }}</td>
-                                        <td class="py-2 text-sm text-black">${{ number_format($day->total_sales, 2) }}</td>
+                                        <td class="py-2 text-sm text-black">UGX {{ number_format($day->total_sales, 2) }}</td>
                                         <td class="py-2 text-sm text-black">{{ $day->order_count }}</td>
                                     </tr>
                                     @endforeach
@@ -285,7 +285,7 @@
                                             </span>
                                         </td>
                                         <td class="py-2 text-sm text-black capitalize">{{ $order->payment_method }}</td>
-                                        <td class="py-2 text-sm text-black">${{ number_format($order->total_amount, 2) }}</td>
+                                        <td class="py-2 text-sm text-black">UGX {{ number_format($order->total_amount, 2) }}</td>
                                     </tr>
                                     @endforeach
                                 </tbody>
