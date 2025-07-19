@@ -112,6 +112,43 @@ class ManufacturerChatController extends Controller
         if (!in_array($contact->role, ['supplier', 'wholesaler'])) {
             abort(403, 'Invalid chat contact.');
         }
+        
+        // Get manufacturers and admin users as potential chat contacts
+        $suppliers = User::where('role', 'supplier')
+            ->with('supplier')
+            ->get();
+        $wholesalers = User::where('role', 'wholesaler')
+            ->with('wholesaler')
+            ->get();
+        $admins = User::where('role', 'admin')->get();
+
+        // Add online status to each contact
+        foreach ($suppliers as $supplier) {
+            $supplier->is_online = $supplier->isOnline();
+        }
+        foreach ($wholesalers as $wholesaler) {
+            $wholesaler->is_online = $wholesaler->isOnline();
+        }
+        foreach ($admins as $admin) {
+            $admin->is_online = $admin->isOnline();
+        }
+        
+        // Get recent conversations
+        $recentConversations = ChatMessage::where('sender_id', $user->id)
+            ->orWhere('receiver_id', $user->id)
+            ->with(['sender', 'receiver'])
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->groupBy(function ($message) use ($user) {
+                return $message->sender_id === $user->id ? $message->receiver_id : $message->sender_id;
+            })
+            ->take(10);
+
+        // Get unread message counts
+        $unreadCounts = ChatMessage::unread($user->id)
+            ->selectRaw('sender_id, COUNT(*) as count')
+            ->groupBy('sender_id')
+            ->pluck('count', 'sender_id');
 
         // Get conversation messages
         $messages = ChatMessage::conversation($user->id, $contact->id)
@@ -124,7 +161,16 @@ class ManufacturerChatController extends Controller
             ->where('is_read', false)
             ->update(['is_read' => true, 'read_at' => now()]);
 
-        return view('manufacturer.chat.show', compact('user', 'contact', 'messages'));
+        return view('manufacturer.chat.show', compact(
+            'user', 
+            'contact', 
+            'messages',
+            'suppliers',
+            'wholesalers',
+            'admins',
+            'recentConversations',
+            'unreadCounts',
+        ));
     }
 
     /**

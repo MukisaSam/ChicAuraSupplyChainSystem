@@ -23,21 +23,100 @@
 
     <!-- Scripts -->
     <style>
-        body {
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            font-family: 'FigTree', 'Open Sans', 'Helvetica Neue', sans-serif;
-        }
-    </style>
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      font-family: 'FigTree', 'Open Sans', 'Helvetica Neue', sans-serif;
+      background: linear-gradient(-45deg, #e0e7ff, #d7e3fe, #c1d3fe, #a5b4fc);
+      background-size: 400% 400%;
+      background-attachment: fixed;
+      animation: gradientAnimation 15s ease infinite;
+    }
+    
+    @keyframes gradientAnimation {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+    
+    .content-box {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    
+    .animate-fadeIn {
+      animation: fadeIn 0.8s ease-out forwards;
+    }
+    
+    .animate-slideIn {
+      animation: slideIn 0.8s ease-out forwards;
+    }
+    
+    .animate-fadeInUp-delay-200 {
+      animation: fadeInUp 0.8s ease-out 0.2s forwards;
+      opacity: 0;
+    }
+    
+    .animate-fadeInUp-delay-400 {
+      animation: fadeInUp 0.8s ease-out 0.4s forwards;
+      opacity: 0;
+    }
+    
+    .animate-fadeIn-delay-600 {
+      animation: fadeIn 0.8s ease-out 0.6s forwards;
+      opacity: 0;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .server-icon {
+      animation: pulse 2s infinite;
+    }
+    
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+  </style>
 </head>
 
-<body class="bg-cover bg-center bg-fixed"
-    style="background-image: linear-gradient(135deg,rgba(0, 0, 0, 0.2),rgba(0, 0, 0, 0.4) 100%), url('{{ asset('images/showroom.png') }}');">
+<body class="bg-cover bg-center bg-fixed">
     <div class="min-h-screen flex justify-center items-center text-white overflow-hidden p-5 ">
-        <div class="text-center max-w-2xl w-full p-10 rounded-2xl shadow-xl relative z-10 animate-fadeIn"
-            style="background: rgba(248, 250, 252, 0.95); backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);">
+        <div class="text-center max-w-2xl w-full bg-white p-10 rounded-2xl shadow-xl relative z-10 animate-fadeIn">
             <div class="server-icon text-[120px] inline-block text-[#ff6b6b]">
                 <i class="fas fa-server"></i>
             </div>
