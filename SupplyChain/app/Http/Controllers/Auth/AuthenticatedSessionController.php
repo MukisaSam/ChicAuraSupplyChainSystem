@@ -17,6 +17,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
+        Auth::logout();
         return view('auth.login');
     }
 
@@ -25,6 +26,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        //First checks if user is a customer
         if (Auth::guard('customer')->attempt($request->only('email', 'password'), $request->boolean('remember'))) {
             $request->session()->regenerate();
 
@@ -32,23 +34,24 @@ class AuthenticatedSessionController extends Controller
             
             return redirect()->to($intendedUrl)->with('success', 'Login successful!');
         }else{
-        $request->authenticate();
+            //checks if user is a vendor
+            $request->authenticate();
 
-        $request->session()->regenerate();
+            $request->session()->regenerate();
 
-        $user = Auth::user();
-        $role = $user->role;
+            $user = Auth::user();
+            $role = $user->role;
 
-        $route = match ($role) {
-            'admin' => '/admin/dashboard',
-            'supplier' => '/supplier/dashboard',
-            'wholesaler' => '/wholesaler/dashboard',
-            'manufacturer' => '/manufacturer/dashboard',
-            default => '/dashboard',
-        };
+            $route = match ($role) {
+                'admin' => '/admin/dashboard',
+                'supplier' => '/supplier/dashboard',
+                'wholesaler' => '/wholesaler/dashboard',
+                'manufacturer' => '/manufacturer/dashboard',
+                default => '/dashboard',
+            };
 
-        return redirect()->intended($route);
-    }
+            return redirect()->intended($route);
+        }
     }
 
     /**
