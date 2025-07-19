@@ -287,10 +287,7 @@ class SupplierController extends Controller
         if (!$supplier) {
             abort(403, 'You are not a supplier.');
         }
-        $query = $supplier->suppliedItems()->with(['item' => function($query) { $query->where('type', 'raw_material'); }])->latest();
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
+        $query = $supplier->suppliedItems()->with(['item' => function($query) { $query->where('type', 'raw_material'); }])->where('status', 'delivered')->latest();
         if ($request->filled('delivery_date')) {
             $query->whereDate('delivery_date', $request->delivery_date);
         }

@@ -28,8 +28,13 @@
 
         .sidebar {
             transition: transform 0.3s ease-in-out;
-            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
             box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+        }
+        .sidebar .nav-link,
+        .sidebar h3,
+        .sidebar p {
+            color: #000 !important;
         }
 
         .dark .sidebar {
@@ -133,19 +138,19 @@
                     </div>
                 </div>
                 <div class="px-4 py-4">
-                    <h3 class="text-white text-sm font-semibold mb-3 px-3">SUPPLIER PORTAL</h3>
+                    <h3 class="text-black text-sm font-semibold mb-3 px-3">SUPPLIER PORTAL</h3>
                 </div>
                 <nav class="flex-1 px-4 py-2 space-y-1">
                     <a href="{{ route('supplier.dashboard') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('supplier.dashboard') ? 'text-white bg-gradient-to-r from-green-600 to-green-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
                         <i class="fas fa-home w-5"></i><span class="ml-2 font-medium text-sm">Home</span>
                     </a>
-                    <a href="{{ route('supplier.supply-requests.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('supplier.supply-request.index') ? 'text-white bg-gradient-to-r from-green-600 to-green-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
-                        <i class="fas fa-dolly w-5"></i><span class="ml-2 text-sm">Supply Request</span>
+                    <a href="{{ route('supplier.supply-requests.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('supplier.supply-requests.index') ? 'text-white bg-gradient-to-r from-green-600 to-green-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-dolly w-5"></i><span class="ml-2 text-sm">Supply Requests</span>
                     </a>
                     <a href="{{ route('supplier.supplied-items.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('supplier.supplied-items.index') || request()->routeIs('supplier.supplied-items.show') ? 'text-white bg-gradient-to-r from-green-600 to-green-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
                         <i class="fas fa-box w-5"></i><span class="ml-2 text-sm">Supplied Items</span>
                     </a>
-                    <a href="{{ route('supplier.analytics.index') }}" class="nav-links flex items-center px-3 py-2 {{ request()->routeIs('supplier.analytics.index') ? 'text-white bg-gradient-to-r from-green-600 to-green-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                    <a href="{{ route('supplier.analytics.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('supplier.analytics.index') ? 'text-white bg-gradient-to-r from-green-600 to-green-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
                         <i class="fas fa-chart-bar w-5"></i><span class="ml-2 text-sm">Analytics</span>
                     </a>
                     <a href="{{ route('supplier.chat.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('supplier.chat.index') ? 'text-white bg-gradient-to-r from-green-600 to-green-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
@@ -206,8 +211,8 @@
             <!-- Main Content -->
             <main class="flex-1 p-4 overflow-y-auto min-h-0">
                 <div class="mb-6">
-                    <h2 class="text-2xl font-bold text-white mb-1">Chat</h2>
-                    <p class="text-gray-200 text-sm">Communicate with manufacturers and support team</p>
+                    <h2 class="text-2xl font-bold text-black mb-1">Chat</h2>
+                    <p class="text-black text-sm">Communicate with manufacturers and support team</p>
                 </div>
 
                 <div class="flex h-full gap-6">

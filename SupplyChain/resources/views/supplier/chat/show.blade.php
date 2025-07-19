@@ -12,8 +12,8 @@
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
         body { 
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/supplier.jpg') }}');
-            background-size: cover;
+            background: #f4f4f5;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             background-position: center;
             background-attachment: fixed;
             min-height: 100vh;
@@ -23,8 +23,13 @@
         }
         .sidebar { 
             transition: transform 0.3s ease-in-out;
-            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
             box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+        }
+        .sidebar .nav-link,
+        .sidebar h3,
+        .sidebar p {
+            color: #000 !important;
         }
         .dark .sidebar {
             background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
@@ -169,8 +174,6 @@
                     <a href="{{ route('supplier.chat.index') }}" class="absolute top-0 right-0 inline-flex items-center px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition text-sm font-semibold">
                         <i class="fas fa-arrow-left mr-2"></i> Back to Chat
                     </a>
-                    <h2 class="text-2xl font-bold text-white mb-1">Chat with {{ $contact->name }}</h2>
-                    <p class="text-gray-200 text-sm">{{ ucfirst($contact->role) }}</p>
                 </div>
                 <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 flex flex-col" style="height: calc(100vh - 200px);">
                     <!-- Messages Container -->

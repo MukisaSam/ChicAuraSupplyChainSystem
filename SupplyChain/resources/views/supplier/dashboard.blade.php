@@ -141,7 +141,7 @@
                     </div>
                 </div>
                 <div class="px-4 py-4">
-                    <h3 class="text-white text-sm font-semibold mb-3 px-3">SUPPLIER PORTAL</h3>
+                    <h3 class="text-black text-sm font-semibold mb-3 px-3">SUPPLIER PORTAL</h3>
                 </div>
                 <nav class="flex-1 px-4 py-2 space-y-1">
                     <a href="{{ route('supplier.dashboard') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('supplier.dashboard') ? 'text-white bg-gradient-to-r from-green-600 to-green-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">

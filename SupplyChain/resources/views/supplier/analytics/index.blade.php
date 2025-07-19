@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="max-w-6xl mx-auto px-4 py-8">
-    <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Supplier Analytics</h2>
+    <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-black">Supplier Analytics</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 flex flex-col items-center">
             <h5 class="text-sm font-semibold text-gray-500 dark:text-gray-300 mb-2">Total Supplied</h5>

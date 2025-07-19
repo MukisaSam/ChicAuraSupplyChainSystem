@@ -4,9 +4,9 @@
         <div class="flex flex-col flex-1 w-full">
 
 <div class="max-w-6xl mx-auto px-4 py-8">
-    <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-white">Supplier Reports</h2>
+    <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-black">Supplier Reports</h2>
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 mb-8">
-        <h5 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Monthly Performance Report ({{ date('Y') }})</h5>
+        <h5 class="text-lg font-semibold mb-4 text-gray-900 dark:text-black">Monthly Performance Report ({{ date('Y') }})</h5>
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead class="bg-gray-50 dark:bg-gray-900">
