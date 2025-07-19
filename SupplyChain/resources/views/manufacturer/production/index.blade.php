@@ -2,7 +2,7 @@
 @section('content')
 <div class="container mx-auto py-8">
     <div class="flex flex-wrap justify-between items-center mb-6">
-        <h1 class="text-3xl font-bold text-white">Production Work Orders</h1>
+        <h1 class="text-3xl font-bold text-black">Production Work Orders</h1>
         <div class="w-full sm:w-auto flex justify-end mt-4 sm:mt-0">
             <a href="{{ route('manufacturer.production.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition">Create New Work Order</a>
         </div>

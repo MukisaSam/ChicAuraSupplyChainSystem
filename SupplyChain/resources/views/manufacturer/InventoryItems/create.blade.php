@@ -2,7 +2,7 @@
 @section('content')
 <div class="container mx-auto py-8">
     <div class="max-w-xl mx-auto bg-white rounded-lg shadow-lg p-8">
-        <h1 class="text-2xl font-bold mb-6 text-indigo-700">Add Inventory Item</h1>
+        <h1 class="text-2xl font-bold mb-6 text-black">Add Inventory Item</h1>
         <form action="{{ route('warehouses.inventory-items.store', $warehouse) }}" method="POST">
             @csrf
             <div class="mb-4">

@@ -14,11 +14,10 @@
     <style>
         /* Custom styles for a better look and feel */
         body { 
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/manufacturer.png') }}');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background: #f4f6fa;
             min-height: 100vh;
+            margin: 0;
+            padding: 0;
         }
         
         /* Dark mode styles */
@@ -125,12 +124,12 @@
 <body class="font-sans antialiased">
     <div class="flex h-full">
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
+        <aside id="sidebar" class="sidebar" style="position: fixed; top: 0; left: 0; height: 100vh; width: 16rem; z-index: 30; overflow-y: auto; overflow-x: hidden; background: linear-gradient(180deg, #1a237e 0%, #283593 100%); box-shadow: 4px 0 15px rgba(0,0,0,0.12);">
             <div class="flex flex-col h-full">
                 <!-- Sidebar Header -->
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
-                    <div class="logo-container">
-                        <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
+                    <div class="sidebar-logo-blend w-full h-16 flex items-center justify-center p-0 m-0" style="background:#fff;">
+                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
                 <div class="px-4 py-4">
@@ -175,7 +174,7 @@
                         <span class="ml-2 text-sm">Reports</span>
                     </a>
                     <a href="{{route('manufacturer.revenue')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-dollar-sign w-5"></i>
+                        <i class="fas fa-coins w-5 text-yellow-500"></i>
                         <span class="ml-2 text-sm">Revenue</span>
                     </a>
                     <!-- Production Section Heading -->
@@ -216,9 +215,9 @@
             </div>
         </aside>
 
-        <div class="flex flex-col flex-1 w-full">
+        <div class="main-content-wrapper" style="margin-left: 16rem; min-height: 100vh; display: flex; flex-direction: column;">
             <!-- Top Navigation Bar -->
-            <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b">
+            <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b" style="position: fixed; left: 16rem; right: 0; top: 0; height: 4rem; background: #fff; box-shadow: 0 2px 20px rgba(0,0,0,0.04); display: flex; align-items: center;">
                 <div class="flex items-center">
                     <!-- Mobile Menu Toggle -->
                     <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700">
@@ -258,42 +257,44 @@
             </header>
 
             <!-- Main Content -->
-            <main class="flex-1 overflow-y-auto p-8">
-                <h1 class="text-3xl font-bold mb-2 text-indigo-800 dark:text-white flex items-center gap-3">
-                    <i class="fas fa-file-alt text-indigo-600"></i> Manufacturer Portal Reports
-                </h1>
-                <p class="text-white mb-8 text-lg">Access and export detailed reports on sales, inventory, suppliers, and order fulfillment to power your business decisions.</p>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                    <a href="{{ route('manufacturer.reports.sales') }}" class="stat-card p-6 flex flex-col items-center hover:shadow-2xl hover:scale-105 transition-transform group">
-                        <i class="fas fa-chart-line text-4xl text-indigo-600 mb-3 group-hover:text-indigo-800 transition-colors"></i>
-                        <span class="font-semibold text-lg mb-1">Sales Report</span>
-                        <span class="text-gray-500 text-sm">Track revenue and sales trends</span>
-                    </a>
-                    <a href="{{ route('manufacturer.reports.inventory') }}" class="stat-card p-6 flex flex-col items-center hover:shadow-2xl hover:scale-105 transition-transform group">
-                        <i class="fas fa-boxes text-4xl text-green-600 mb-3 group-hover:text-green-800 transition-colors"></i>
-                        <span class="font-semibold text-lg mb-1">Inventory Report</span>
-                        <span class="text-gray-500 text-sm">Monitor stock levels and movement</span>
-                    </a>
-                    <a href="{{ route('manufacturer.reports.suppliers') }}" class="stat-card p-6 flex flex-col items-center hover:shadow-2xl hover:scale-105 transition-transform group">
-                        <i class="fas fa-truck text-4xl text-yellow-600 mb-3 group-hover:text-yellow-800 transition-colors"></i>
-                        <span class="font-semibold text-lg mb-1">Supplier Performance</span>
-                        <span class="text-gray-500 text-sm">Evaluate supplier reliability</span>
-                    </a>
-                    <a href="{{ route('manufacturer.reports.fulfillment') }}" class="stat-card p-6 flex flex-col items-center hover:shadow-2xl hover:scale-105 transition-transform group">
-                        <i class="fas fa-shipping-fast text-4xl text-blue-600 mb-3 group-hover:text-blue-800 transition-colors"></i>
-                        <span class="font-semibold text-lg mb-1">Order Fulfillment</span>
-                        <span class="text-gray-500 text-sm">Analyze delivery and fulfillment</span>
-                    </a>
-                </div>
-                <div class="mt-12">
-                    <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
-                        <i class="fas fa-file-export text-indigo-500"></i> Export Reports
-                    </h2>
-                    <div class="flex flex-wrap gap-4">
-                        <a href="{{ route('manufacturer.reports.export', ['type' => 'sales']) }}" class="flex items-center gap-2 px-5 py-3 bg-indigo-600 text-white rounded-lg font-semibold shadow hover:bg-indigo-700 transition-colors">
-                            <i class="fas fa-file-csv"></i> Export Sales (CSV)
+            <main class="main-content-scrollable" style="flex: 1 1 0%; overflow-y: auto; padding: 2rem 1.5rem; margin-top: 4rem; background: transparent;">
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                    <h1 class="text-3xl font-bold mb-2 text-indigo-800 dark:text-white flex items-center gap-3">
+                        <i class="fas fa-file-alt text-indigo-600"></i> Manufacturer Portal Reports
+                    </h1>
+                    <p class="text-black mb-8 text-lg">Access and export detailed reports on sales, inventory, suppliers, and order fulfillment to power your business decisions.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <a href="{{ route('manufacturer.reports.sales') }}" class="stat-card p-6 flex flex-col items-center hover:shadow-2xl hover:scale-105 transition-transform group">
+                            <i class="fas fa-chart-line text-4xl text-indigo-600 mb-3 group-hover:text-indigo-800 transition-colors"></i>
+                            <span class="font-semibold text-lg mb-1">Sales Report</span>
+                            <span class="text-gray-500 text-sm">Track revenue and sales trends</span>
                         </a>
-                        <!-- Add more export buttons as needed, following the same style -->
+                        <a href="{{ route('manufacturer.reports.inventory') }}" class="stat-card p-6 flex flex-col items-center hover:shadow-2xl hover:scale-105 transition-transform group">
+                            <i class="fas fa-boxes text-4xl text-green-600 mb-3 group-hover:text-green-800 transition-colors"></i>
+                            <span class="font-semibold text-lg mb-1">Inventory Report</span>
+                            <span class="text-gray-500 text-sm">Monitor stock levels and movement</span>
+                        </a>
+                        <a href="{{ route('manufacturer.reports.suppliers') }}" class="stat-card p-6 flex flex-col items-center hover:shadow-2xl hover:scale-105 transition-transform group">
+                            <i class="fas fa-truck text-4xl text-yellow-600 mb-3 group-hover:text-yellow-800 transition-colors"></i>
+                            <span class="font-semibold text-lg mb-1">Supplier Performance</span>
+                            <span class="text-gray-500 text-sm">Evaluate supplier reliability</span>
+                        </a>
+                        <a href="{{ route('manufacturer.reports.fulfillment') }}" class="stat-card p-6 flex flex-col items-center hover:shadow-2xl hover:scale-105 transition-transform group">
+                            <i class="fas fa-shipping-fast text-4xl text-blue-600 mb-3 group-hover:text-blue-800 transition-colors"></i>
+                            <span class="font-semibold text-lg mb-1">Order Fulfillment</span>
+                            <span class="text-gray-500 text-sm">Analyze delivery and fulfillment</span>
+                        </a>
+                    </div>
+                    <div class="mt-12">
+                        <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                            <i class="fas fa-file-export text-indigo-500"></i> Export Reports
+                        </h2>
+                        <div class="flex flex-wrap gap-4">
+                            <a href="{{ route('manufacturer.reports.export', ['type' => 'sales']) }}" class="flex items-center gap-2 px-5 py-3 bg-indigo-600 text-white rounded-lg font-semibold shadow hover:bg-indigo-700 transition-colors">
+                                <i class="fas fa-file-csv"></i> Export Sales (CSV)
+                            </a>
+                            <!-- Add more export buttons as needed, following the same style -->
+                        </div>
                     </div>
                 </div>
             </main>

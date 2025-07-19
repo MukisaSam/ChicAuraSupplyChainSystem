@@ -3,7 +3,7 @@
 <div class="container mx-auto py-8 flex justify-center">
     <div class="w-full max-w-lg bg-white rounded-lg shadow-lg p-8">
         <div class="flex items-center justify-between mb-6">
-            <h1 class="text-3xl font-bold text-gray-800">Edit Work Order</h1>
+            <h1 class="text-3xl font-bold text-black">Edit Work Order</h1>
         </div>
         <form action="{{ route('manufacturer.production.update', ['production' => $workOrder->id]) }}" method="POST">
             @csrf

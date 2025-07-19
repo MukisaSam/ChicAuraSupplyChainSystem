@@ -2,7 +2,7 @@
 @section('content')
 <div class="container mx-auto py-8 flex justify-center">
     <div class="w-full max-w-2xl bg-white rounded-lg shadow-lg p-8">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Bill of Materials Details</h1>
+        <h1 class="text-2xl font-bold mb-6 text-black">Bill of Materials Details</h1>
         @if(session('success'))
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
                 {{ session('success') }}

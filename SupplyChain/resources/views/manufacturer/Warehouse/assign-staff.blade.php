@@ -2,11 +2,11 @@
 @section('content')
 <div class="container mx-auto py-8">
     <div class="max-w-lg mx-auto bg-white rounded-lg shadow-lg p-8">
-        <h1 class="text-2xl font-bold mb-6 text-indigo-700">Assign Staff to Warehouse</h1>
+        <h1 class="text-2xl font-bold mb-6 text-black">Assign Staff to Warehouse</h1>
         <form action="{{ route('manufacturer.warehouse.assign-staff.post', $warehouse) }}" method="POST">
             @csrf
             <div class="mb-6">
-                <label for="workforce_id" class="block mb-2 font-semibold">Select Staff Member</label>
+                <label for="workforce_id" class="block mb-2 text-sm font-medium text-black">Select Staff Member</label>
                 <select name="workforce_id" id="workforce_id" class="w-full border px-3 py-2 rounded" required>
                     <option value="" disabled selected>Select a staff member</option>
                     @foreach($availableWorkforce as $staff)

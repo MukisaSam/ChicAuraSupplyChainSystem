@@ -8,52 +8,117 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
-        body { 
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/manufacturer.png') }}');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+        body {
+            background: #f4f6fa;
             min-height: 100vh;
+            margin: 0;
+            padding: 0;
         }
-        
-        .dark body {
-            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 100%), url('{{ asset('images/manufacturer.png') }}');
-        }
-        
-        .sidebar { 
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 16rem;
+            z-index: 30;
             transition: transform 0.3s ease-in-out;
-            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
-            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            background: linear-gradient(180deg, #1a237e 0%, #283593 100%);
+            box-shadow: 4px 0 15px rgba(0,0,0,0.12);
+            overflow-y: auto;
+            overflow-x: hidden;
         }
-        
-        .dark .sidebar {
-            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+        .main-content-wrapper {
+            margin-left: 16rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
-        
+        .header-gradient {
+            position: fixed;
+            top: 0;
+            left: 16rem;
+            right: 0;
+            height: 4rem;
+            z-index: 40;
+            background: #fff;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.04);
+            display: flex;
+            align-items: center;
+        }
+        .main-content-scrollable {
+            flex: 1 1 0%;
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+            margin-top: 4rem;
+            background: transparent;
+        }
+        .main-content-scrollable, .main-content-scrollable * {
+            color: #1a237e;
+        }
+        .main-content-scrollable h1, .main-content-scrollable h2, .main-content-scrollable h3, .main-content-scrollable h4, .main-content-scrollable h5, .main-content-scrollable h6 {
+            color: #111827;
+        }
+        .main-content-scrollable p, .main-content-scrollable span, .main-content-scrollable td, .main-content-scrollable th, .main-content-scrollable div, .main-content-scrollable li {
+            color: #232e3c;
+        }
+        .dark .main-content-scrollable, .dark .main-content-scrollable * {
+            color: #f1f5f9;
+        }
+        .dark .main-content-scrollable h1, .dark .main-content-scrollable h2, .dark .main-content-scrollable h3, .dark .main-content-scrollable h4, .dark .main-content-scrollable h5, .dark .main-content-scrollable h6 {
+            color: #fff;
+        }
+        .dark .main-content-scrollable p, .dark .main-content-scrollable span, .dark .main-content-scrollable td, .dark .main-content-scrollable th, .dark .main-content-scrollable div, .dark .main-content-scrollable li {
+            color: #f1f5f9;
+        }
         .logo-container {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 12px;
-            padding: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            background: #fff;
+            border-bottom-right-radius: 2.5rem;
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+            border-bottom-left-radius: 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 0 16px 0;
+            margin: 0;
+            box-shadow: none;
         }
-        
-        .dark .logo-container {
-            background: rgba(255, 255, 255, 0.9);
-        }
-        
         .card-gradient {
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
             border: 1px solid rgba(255,255,255,0.2);
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             backdrop-filter: blur(10px);
         }
-        
         .dark .card-gradient {
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
             border: 1px solid rgba(255,255,255,0.1);
             color: #f1f5f9;
         }
-        
+        .stat-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+            border: 1px solid rgba(255,255,255,0.3);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .dark .stat-card {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #f1f5f9;
+        }
+        .dark .stat-card p {
+            color: #f1f5f9;
+        }
+        .dark .stat-card .text-gray-600 {
+            color: #cbd5e1;
+        }
+        .dark .stat-card .text-gray-800 {
+            color: #f1f5f9;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
         .nav-link {
             transition: all 0.3s ease;
             border-radius: 12px;
@@ -62,39 +127,44 @@
         .nav-link:hover {
             transform: translateX(5px);
         }
-        .header-gradient {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-        }
-        
-        .dark .header-gradient {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            border-color: #475569;
-        }
-        
         .dark .text-white {
             color: #f1f5f9;
         }
-        
         .dark .text-gray-200 {
             color: #cbd5e1;
         }
-        
+        @media (max-width: 1024px) {
+            .main-content-wrapper {
+                margin-left: 0;
+            }
+            .sidebar {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 16rem;
+                z-index: 30;
+            }
+            .header-gradient {
+                left: 0;
+            }
+        }
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
+            .main-content-wrapper { margin-left: 0; }
+            .header-gradient { left: 0; }
         }
     </style>
 </head>
 <body class="font-sans antialiased">
-    <div class="flex h-full">
+    <div>
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
+        <aside id="sidebar" class="sidebar">
             <div class="flex flex-col h-full">
                 <!-- Sidebar Header -->
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
-                    <div class="logo-container">
-                        <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
+                    <div class="sidebar-logo-blend w-full h-16 flex items-center justify-center p-0 m-0" style="background:#fff;">
+                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
                 <div class="px-4 py-4">
@@ -139,7 +209,7 @@
                         <span class="ml-2 text-sm">Reports</span>
                     </a>
                      <a href="{{route('manufacturer.revenue')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-dollar-sign w-5"></i>
+                        <i class="fas fa-coins text-green-600 dark:text-green-400 text-xl"></i>
                         <span class="ml-2 text-sm">Revenue</span>
                     </a>
                     <a href="{{ route('manufacturer.workforce.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
@@ -160,9 +230,9 @@
             </div>
         </aside>
 
-        <div class="flex flex-col flex-1 w-full">
+        <div class="main-content-wrapper">
             <!-- Top Navigation Bar -->
-            <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b">
+            <header class="header-gradient flex items-center justify-between border-b">
                 <div class="flex items-center">
                     <!-- Mobile Menu Toggle -->
                     <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700">
@@ -205,12 +275,12 @@
             </header>
 
             <!-- Main Content -->
-            <main class="flex-1 p-4 overflow-y-auto">
+            <main class="main-content-scrollable">
                 <!-- Header Section -->
                 <div class="mb-8">
                     <div class="flex justify-between items-center">
                         <div>
-                            <h1 class="text-3xl font-bold text-white mb-2">Order Details</h1>
+                            <h1 class="text-3xl font-bold text-black mb-2">Order Details</h1>
                             <p class="text-gray-200 text-sm">Order #{{ $order->order_number }}</p>
                         </div>
                         <div class="flex space-x-3">
@@ -305,10 +375,10 @@
                                                 <div class="text-sm gray-500 dark:text-gray-300">{{ $item->quantity }}</div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="text-sm gray-500 dark:text-gray-300">${{ number_format($item->unit_price, 2) }}</div>
+                                                <div class="text-sm gray-500 dark:text-gray-300">UGX {{ number_format($item->unit_price, 2) }}</div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="text-sm font-medium gray-500 dark:text-gray-300">${{ number_format($item->total_price, 2) }}</div>
+                                                <div class="text-sm font-medium gray-500 dark:text-gray-300">UGX {{ number_format($item->total_price, 2) }}</div>
                                             </td>
                                         </tr>
                                         @endforeach
@@ -326,20 +396,20 @@
                             <div class="space-y-3">
                                 <div class="flex justify-between">
                                     <span class="text-black">Subtotal:</span>
-                                    <span class="text-black">${{ number_format($order->total_amount, 2) }}</span>
+                                    <span class="text-black">UGX {{ number_format((float) $order->total_amount, 2) }}</span>
                                 </div>
                                 <div class="flex justify-between">
                                     <span class="text-black">Shipping:</span>
-                                    <span class="text-black">$0.00</span>
+                                    <span class="text-black">UGX 0.00</span>
                                 </div>
                                 <div class="flex justify-between">
                                     <span class="text-black">Tax:</span>
-                                    <span class="text-black">$0.00</span>
+                                    <span class="text-black">UGX 0.00</span>
                                 </div>
                                 <hr class="border-gray-200 dark:border-gray-700">
                                 <div class="flex justify-between">
                                     <span class="text-lg font-semibold text-black">Total:</span>
-                                    <span class="text-lg font-semibold text-black">${{ number_format($order->total_amount, 2) }}</span>
+                                    <span class="text-lg font-semibold text-black">UGX {{ number_format((float) $order->total_amount, 2) }}</span>
                                 </div>
                             </div>
                         </div>

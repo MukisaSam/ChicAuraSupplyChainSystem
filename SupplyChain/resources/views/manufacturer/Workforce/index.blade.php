@@ -1,7 +1,8 @@
 @extends('manufacturer.layouts.dashboard')
 @section('content')
 <div class="container mx-auto py-8">
-    <h1 class="text-3xl font-bold mb-6 text-white">Workforce Management</h1>
+  <div class="bg-white rounded-xl shadow-lg p-8">
+    <h1 class="text-3xl font-bold mb-6 text-black">Workforce Management</h1>
     <div class="flex justify-end mb-6">
         <a href="{{ route('manufacturer.workforce.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition">Add Employee</a>
     </div>
@@ -12,11 +13,12 @@
         <table class="min-w-full table-auto">
             <thead class="bg-gray-100">
                 <tr>
-                    <th class="px-4 py-3 text-left font-semibold text-gray-700">Full Name</th>
-                    <th class="px-4 py-3 text-left font-semibold text-gray-700">Email</th>
-                    <th class="px-4 py-3 text-left font-semibold text-gray-700">Job Role</th>
-                    <th class="px-4 py-3 text-left font-semibold text-gray-700">Status</th>
-                    <th class="px-4 py-3 text-left font-semibold text-gray-700">Actions</th>
+                    <th class="px-4 py-3 text-left font-semibold text-black">Full Name</th>
+                    <th class="px-4 py-3 text-left font-semibold text-black">Email</th>
+                    <th class="px-4 py-3 text-left font-semibold text-black">Job Role</th>
+                    <th class="px-4 py-3 text-left font-semibold text-black">Salary</th>
+                    <th class="px-4 py-3 text-left font-semibold text-black">Status</th>
+                    <th class="px-4 py-3 text-left font-semibold text-black">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -25,6 +27,7 @@
                     <td class="border-t px-4 py-2">{{ $employee->fullname }}</td>
                     <td class="border-t px-4 py-2">{{ $employee->email }}</td>
                     <td class="border-t px-4 py-2">{{ $employee->job_role }}</td>
+                    <td class="border-t px-4 py-2">UGX {{ number_format($employee->salary, 2) }}</td>
                     <td class="border-t px-4 py-2">
                         <span class="inline-block px-3 py-1 rounded-full text-xs font-semibold
                             @if($employee->status == 'Active') bg-green-100 text-green-800
@@ -49,7 +52,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="text-center text-gray-400 py-8">No employees found.</td>
+                    <td colspan="6" class="text-center text-gray-400 py-8">No employees found.</td>
                 </tr>
                 @endforelse
             </tbody>
@@ -58,5 +61,6 @@
     <div class="mt-6 flex justify-center">
         {{ $employees->links() }}
     </div>
+  </div>
 </div>
 @endsection 

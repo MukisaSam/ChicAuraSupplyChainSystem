@@ -13,124 +13,161 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
-        /* Custom styles for a better look and feel */
+        /* Professional, clean background */
         body { 
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/manufacturer.png') }}');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background: #f4f6fa;
             min-height: 100vh;
+            margin: 0;
+            padding: 0;
         }
-        
-        /* Dark mode styles */
         .dark body {
-            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 100%), url('{{ asset('images/manufacturer.png') }}');
+            background: #181f2a;
         }
-        
+        /* Sidebar: deep indigo/blue */
         .sidebar { 
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 16rem; /* 64px * 4 = 256px */
+            z-index: 30;
             transition: transform 0.3s ease-in-out;
-            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
-            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            background: linear-gradient(180deg, #1a237e 0%, #283593 100%);
+            box-shadow: 4px 0 15px rgba(0,0,0,0.12);
+            overflow-y: auto;
+            overflow-x: hidden;
         }
-        
         .dark .sidebar {
-            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+            background: linear-gradient(180deg, #0d1333 0%, #1a237e 100%);
         }
-        
         .logo-container {
-            background: rgba(255, 255, 255, 0.95);
+            background: #fff;
             border-radius: 12px;
             padding: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
         }
         
-        .dark .logo-container {
-            background: rgba(255, 255, 255, 0.9);
-        }
-        
-        .card-gradient {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-            backdrop-filter: blur(10px);
-        }
-        
-        .dark .card-gradient {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            border: 1px solid rgba(255,255,255,0.1);
-            color: #f1f5f9;
-        }
-        
-        .stat-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
-            border: 1px solid rgba(255,255,255,0.3);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        .card-gradient, .stat-card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        
-        .dark .stat-card {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            border: 1px solid rgba(255,255,255,0.1);
+        .dark .card-gradient, .dark .stat-card {
+            background: #232e3c;
+            border: 1px solid #334155;
             color: #f1f5f9;
         }
-        
-        .dark .stat-card p {
-            color: #f1f5f9;
+        .stat-card:hover, .card-gradient:hover {
+            transform: translateY(-3px) scale(1.01);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.10);
         }
-        
-        .dark .stat-card .text-gray-600 {
-            color: #cbd5e1;
-        }
-        
-        .dark .stat-card .text-gray-800 {
-            color: #f1f5f9;
-        }
-        
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-        
         .nav-link {
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(.4,0,.2,1);
             border-radius: 12px;
             margin: 4px 0;
         }
         .nav-link:hover {
+            background: #e0e7ef;
+            color: #232e3c !important;
             transform: translateX(5px);
         }
         .header-gradient {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            left: 16rem;
+            right: 0;
+            height: 4rem;
+            z-index: 40;
+            background: #fff;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.04);
+            display: flex;
+            align-items: center;
         }
-        
         .dark .header-gradient {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            border-color: #475569;
+            background: #232e3c;
+            border-color: #334155;
         }
-        
-        .dark .text-white {
+        .main-content-wrapper {
+            margin-left: 16rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .main-content-scrollable {
+            flex: 1 1 0%;
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+            margin-top: 4rem;
+            background: transparent;
+        }
+        .main-content-visible {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 6px 32px rgba(40, 53, 147, 0.10);
+            padding: 2rem 1.5rem;
+            margin: 2rem 0;
+            color: #1a237e;
+        }
+        .dark .main-content-visible {
+            background: #232e3c;
+            box-shadow: 0 6px 32px rgba(26, 35, 126, 0.18);
             color: #f1f5f9;
         }
-        
-        .dark .text-gray-200 {
-            color: #cbd5e1;
+        .main-content-visible h1, .main-content-visible h2, .main-content-visible h3, .main-content-visible h4, .main-content-visible h5, .main-content-visible h6 {
+            color: #111827;
         }
-        
+        .dark .main-content-visible h1, .dark .main-content-visible h2, .dark .main-content-visible h3, .dark .main-content-visible h4, .dark .main-content-visible h5, .dark .main-content-visible h6 {
+            color: #fff;
+        }
+        .main-content-visible p, .main-content-visible span, .main-content-visible td, .main-content-visible th, .main-content-visible div, .main-content-visible li {
+            color: #232e3c;
+        }
+        .dark .main-content-visible p, .dark .main-content-visible span, .dark .main-content-visible td, .dark .main-content-visible th, .dark .main-content-visible div, .dark .main-content-visible li {
+            color: #f1f5f9;
+        }
+        .dark .text-white { color: #f1f5f9; }
+        .dark .text-gray-200 { color: #cbd5e1; }
+        @media (max-width: 1024px) {
+            .main-content-wrapper {
+                margin-left: 0;
+            }
+            .sidebar {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 16rem;
+                z-index: 30;
+            }
+            .header-gradient {
+                left: 0;
+            }
+            .main-content-visible {
+                padding: 1rem 0.5rem;
+                margin: 1rem 0;
+        }
+        }
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
+            .main-content-wrapper { margin-left: 0; }
+            .header-gradient { left: 0; }
+            .main-content-visible {
+                border-radius: 0;
+                box-shadow: none;
+                margin: 0;
+            }
         }
     </style>
 </head>
 <body class="font-sans antialiased">
-    <div class="flex h-full">
+    <div>
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
+        <aside id="sidebar" class="sidebar">
             <div class="flex flex-col h-full">
                 <!-- Sidebar Header -->
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
-                    <div class="logo-container">
+                    <div class="sidebar-logo-blend w-full h-16 flex items-center justify-center p-0 m-0" style="background:#fff;">
                         <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
@@ -218,9 +255,9 @@
             </div>
         </aside>
 
-        <div class="flex flex-col flex-1 w-full">
+        <div class="main-content-wrapper">
             <!-- Top Navigation Bar -->
-            <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b">
+            <header class="header-gradient flex items-center justify-between border-b">
                 <div class="flex items-center">
                     <!-- Mobile Menu Toggle -->
                     <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700">
@@ -265,7 +302,8 @@
             </header>
 
             <!-- Main Content -->
-            <main class="flex-1 p-4">
+            <main class="main-content-scrollable">
+                <div class="main-content-visible">
                 <div class="mb-4">
                     <h2 class="text-2xl font-bold text-white mb-1">Manufacturer Portal</h2>
                     <p class="text-gray-200 text-sm">Welcome back! Here's an overview of your supply chain.</p>
@@ -274,31 +312,31 @@
                 <!-- Quick Stats Row -->
             <div class="flex flex-col md:flex-row gap-4 mb-6 mt-8">
                 <div class="flex-1 bg-white rounded-lg shadow p-5 flex items-center gap-4 stat-card">
-                    <span class="text-3xl text-indigo-500"><i class="fas fa-cubes"></i></span>
+                        <span class="text-3xl"><i class="fas fa-cubes text-blue-600"></i></span>
                     <div>
                         <div class="text-gray-500 text-sm">Total Raw Materials</div>
                         <div class="text-2xl font-bold">{{ $totalRawMaterials ?? 0 }}</div>
                     </div>
                 </div>
                 <div class="flex-1 bg-white rounded-lg shadow p-5 flex items-center gap-4 stat-card">
-                    <span class="text-3xl text-green-500"><i class="fas fa-tshirt"></i></span>
+                        <span class="text-3xl"><i class="fas fa-tshirt text-teal-600"></i></span>
                     <div>
                         <div class="text-gray-500 text-sm">Total Products</div>
                         <div class="text-2xl font-bold">{{ $totalProducts ?? 0 }}</div>
                     </div>
                 </div>
                 <div class="flex-1 bg-white rounded-lg shadow p-5 flex items-center gap-4 stat-card">
-                    <span class="text-3xl text-yellow-500"><i class="fas fa-users"></i></span>
+                        <span class="text-3xl"><i class="fas fa-users text-amber-600"></i></span>
                     <div>
                         <div class="text-gray-500 text-sm">Total Suppliers</div>
                         <div class="text-2xl font-bold">{{ $totalSuppliers ?? 0 }}</div>
                     </div>
                 </div>
                 <div class="flex-1 bg-white rounded-lg shadow p-5 flex items-center gap-4 stat-card">
-                    <span class="text-3xl text-purple-500"><i class="fas fa-dollar-sign"></i></span>
+                        <span class="text-3xl"><i class="fas fa-coins text-purple-700"></i></span>
                     <div>
                         <div class="text-gray-500 text-sm">Revenue</div>
-                        <div class="text-2xl font-bold">{{ $revenue ?? '$0.00' }}</div>
+                            <div class="text-2xl font-bold">UGX {{ number_format((float)($revenue ?? 0)) }}</div>
                     </div>
                 </div>
             </div>
@@ -333,21 +371,21 @@
                     <!-- Modernized Quick Stats Cards -->
                     <div class="flex flex-col md:flex-row gap-4 mb-6">
                         <div class="flex-1 bg-white rounded-lg shadow p-5 flex items-center gap-4">
-                            <span class="text-3xl text-blue-500"><i class="fas fa-clipboard-list"></i></span>
+                                <span class="text-3xl"><i class="fas fa-clipboard-list text-cyan-700"></i></span>
                             <div>
                                 <div class="text-gray-500 text-sm">Active Work Orders</div>
                                 <div class="text-2xl font-bold">{{ $activeWorkOrders ?? 0 }}</div>
                             </div>
                         </div>
                         <div class="flex-1 bg-white rounded-lg shadow p-5 flex items-center gap-4">
-                            <span class="text-3xl text-orange-500"><i class="fas fa-hourglass-half"></i></span>
+                                <span class="text-3xl"><i class="fas fa-hourglass-half text-amber-700"></i></span>
                             <div>
                                 <div class="text-gray-500 text-sm">In Progress</div>
                                 <div class="text-2xl font-bold">{{ $inProgress ?? 0 }}</div>
                             </div>
                         </div>
                         <div class="flex-1 bg-white rounded-lg shadow p-5 flex items-center gap-4">
-                            <span class="text-3xl text-green-500"><i class="fas fa-check-circle"></i></span>
+                                <span class="text-3xl"><i class="fas fa-check-circle text-emerald-700"></i></span>
                             <div>
                                 <div class="text-gray-500 text-sm">Completed This Month</div>
                                 <div class="text-2xl font-bold">{{ $completedThisMonth ?? 0 }}</div>
@@ -420,14 +458,15 @@
                     <!-- Modernized Quick Links -->
                     <div class="flex flex-col md:flex-row gap-4 mt-6">
                         <a href="{{ route('manufacturer.production.create') }}" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2">
-                            <i class="fas fa-plus"></i> New Work Order
+                                <i class="fas fa-plus text-blue-600 bg-white rounded-full p-1"></i> New Work Order
                         </a>
                         <a href="{{ route('manufacturer.bom.index') }}" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2">
-                            <i class="fas fa-cogs"></i> Bill of Materials
+                                <i class="fas fa-cogs text-teal-600 bg-white rounded-full p-1"></i> Bill of Materials
                         </a>
                         <a href="{{ route('manufacturer.quality.index') }}" class="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-3 rounded-lg flex items-center justify-center gap-2">
-                            <i class="fas fa-clipboard-check"></i> Quality Checks
+                                <i class="fas fa-clipboard-check text-amber-600 bg-white rounded-full p-1"></i> Quality Checks
                         </a>
+                        </div>
                     </div>
                 </div>
             </main>

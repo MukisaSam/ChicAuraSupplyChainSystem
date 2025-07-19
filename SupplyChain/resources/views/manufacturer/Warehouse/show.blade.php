@@ -2,7 +2,7 @@
 @section('content')
 <div class="container mx-auto py-8">
     <div class="max-w-xl mx-auto bg-white rounded-lg shadow-lg p-8 mb-8">
-        <h1 class="text-2xl font-bold mb-6 text-indigo-700">Warehouse Details</h1>
+        <h1 class="text-2xl font-bold mb-6 text-black">Warehouse Details</h1>
         <div class="mb-4">
             <span class="font-semibold text-gray-700">Location:</span>
             <span class="ml-2 text-gray-900">{{ $warehouse->location }}</span>
@@ -24,7 +24,7 @@
 
     <div class="max-w-3xl mx-auto bg-white rounded-lg shadow-lg p-8">
         <div class="flex items-center justify-between mb-6">
-            <h2 class="text-xl font-bold text-indigo-700">Assigned Staff</h2>
+            <h2 class="text-xl font-bold text-black">Assigned Staff</h2>
             <a href="{{ route('manufacturer.warehouse.assign-staff', $warehouse) }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition">Assign Staff</a>
         </div>
         @if($warehouse->workforce->count())

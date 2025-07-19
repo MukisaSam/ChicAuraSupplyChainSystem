@@ -178,7 +178,7 @@
                     <div class="p-6 rounded-xl bg-white border border-gray-200 shadow stat-card dark:bg-gray-800 dark:border-gray-700">
                         <div class="flex items-center">
                             <div class="p-3 rounded-xl bg-green-600">
-                                <i class="fas fa-dollar-sign text-white text-xl"></i>
+                                <i class="fas fa-money-bill-wave text-white text-xl"></i>
                             </div>
                             <div class="ml-3">
                                 <p class="text-sm text-gray-900 dark:text-white">Revenue</p>

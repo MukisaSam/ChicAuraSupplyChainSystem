@@ -125,13 +125,12 @@
     </style>
 </head>
 <body class="font-sans antialiased">
-    <div class="background-overlay"></div>
-    <div class="flex h-full main-content-container">
+    <div>
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
+        <aside id="sidebar" class="sidebar" style="position: fixed; top: 0; left: 0; height: 100vh; width: 16rem; z-index: 30; overflow-y: auto; overflow-x: hidden; background: linear-gradient(180deg, #1a237e 0%, #283593 100%); box-shadow: 4px 0 15px rgba(0,0,0,0.12);">
             <div class="flex flex-col h-full">
-                <div class="flex items-center justify-center h-16 border-b border-gray-600">
-                    <div class="logo-container">
+            <div class="flex items-center justify-center h-16 border-b border-gray-600">
+                    <div class="sidebar-logo-blend w-full h-16 flex items-center justify-center p-0 m-0" style="background:#fff;">
                         <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
@@ -176,7 +175,7 @@
                         <span class="ml-2 text-sm">Reports</span>
                     </a>
                     <a href="{{route('manufacturer.revenue')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-dollar-sign w-5"></i>
+                        <i class="fas fa-coins w-5"></i>
                         <span class="ml-2 text-sm">Revenue</span>
                     </a>
 
@@ -218,9 +217,9 @@
             </div>
         </aside>
 
-        <div class="flex flex-col flex-1 w-full">
+        <div class="main-content-wrapper" style="margin-left: 16rem; min-height: 100vh; display: flex; flex-direction: column;">
             <!-- Top Navigation Bar -->
-            <header class="header-gradient relative z-20 flex items-center justify-between h-16 border-b">
+            <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b" style="position: fixed; left: 16rem; right: 0; top: 0; height: 4rem; background: #fff; box-shadow: 0 2px 20px rgba(0,0,0,0.04); display: flex; align-items: center;">
                 <div class="flex items-center">
                     <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700">
                         <i class="fas fa-bars text-lg"></i>
@@ -260,7 +259,7 @@
             </header>
 
             <!-- Main Content -->
-            <main class="flex-1 p-4">
+            <main class="main-content-scrollable" style="flex: 1 1 0%; overflow-y: auto; padding: 2rem 1.5rem; margin-top: 4rem; background: transparent;">
                 <div class="dashboard-header">
                     <h2 class="text-2xl font-bold mb-1">Analytics Dashboard</h2>
                     <p class="text-sm">Comprehensive insights into your supply chain performance.</p>
@@ -313,11 +312,11 @@
                     <div class="stat-card p-4 rounded-xl">
                         <div class="flex items-center">
                             <div class="p-3 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg">
-                                <i class="fas fa-dollar-sign text-white text-xl"></i>
+                                <i class="fas fa-coins text-white text-xl"></i>
                             </div>
                             <div class="ml-3">
                                 <p class="text-xs font-medium text-gray-600">Revenue</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $analytics['stats']['revenue'] }}</p>
+                                <p class="text-2xl font-bold text-gray-800">UGX {{ $analytics['stats']['revenue'] }}</p>
                                 <p class="text-xs text-purple-600 mt-1">↗ +15% this month</p>
                             </div>
                         </div>
@@ -433,7 +432,7 @@
                                     </div>
                                     <div class="w-full">
                                         <label for="unit_price" class="block text-sm font-medium text-gray-700 mb-1 flex items-center gap-1">
-                                            <i class="fas fa-dollar-sign"></i> Unit Price ($)
+                                            <i class="fas fa-coin"></i> Unit Price (UGX)
                                             <span class="ml-1 text-gray-400" title="Enter the expected selling price."><i class="fas fa-question-circle"></i></span>
                                         </label>
                                         <input type="number" id="unit_price" name="unit_price" step="0.01" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
@@ -538,7 +537,7 @@
                                             <td class="py-2 px-3">{{ $wholesaler['name'] }}</td>
                                             <td class="py-2 px-3"><span class="px-2 py-1 rounded text-xs {{ $wholesaler['color'] }}">{{ $wholesaler['segment'] }}</span></td>
                                             <td class="py-2 px-3">{{ $wholesaler['total_orders'] }}</td>
-                                            <td class="py-2 px-3">${{ number_format($wholesaler['total_spent'], 0) }}</td>
+                                            <td class="py-2 px-3">UGX {{ number_format($wholesaler['total_spent'], 0) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

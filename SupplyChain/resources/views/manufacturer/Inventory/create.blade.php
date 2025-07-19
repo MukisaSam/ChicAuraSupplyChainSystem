@@ -9,11 +9,10 @@
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
         body { 
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/manufacturer.png') }}');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background: #f4f6fa;
             min-height: 100vh;
+            margin: 0;
+            padding: 0;
         }
         
         .dark body {
@@ -87,14 +86,14 @@
     </style>
 </head>
 <body class="font-sans antialiased">
-    <div class="flex h-full">
+    <div>
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
+        <aside id="sidebar" class="sidebar" style="position: fixed; top: 0; left: 0; height: 100vh; width: 16rem; z-index: 30; overflow-y: auto; overflow-x: hidden; background: linear-gradient(180deg, #1a237e 0%, #283593 100%); box-shadow: 4px 0 15px rgba(0,0,0,0.12);">
             <div class="flex flex-col h-full">
                 <!-- Sidebar Header -->
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
-                    <div class="logo-container">
-                        <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
+                    <div class="sidebar-logo-blend w-full h-16 flex items-center justify-center p-0 m-0" style="background:#fff;">
+                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
                 <div class="px-4 py-4">
@@ -139,7 +138,7 @@
                         <span class="ml-2 text-sm">Reports</span>
                     </a>
                     <a href="{{route('manufacturer.revenue')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-dollar-sign w-5"></i>
+                        <i class="fas fa-coins w-5 text-yellow-500"></i>
                         <span class="ml-2 text-sm">Revenue</span>
                     </a>
                     <!-- Production Section -->
@@ -180,9 +179,9 @@
             </div>
         </aside>
 
-        <div class="flex flex-col flex-1 w-full">
+        <div class="main-content-wrapper" style="margin-left: 16rem; min-height: 100vh; display: flex; flex-direction: column;">
             <!-- Top Navigation Bar -->
-            <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b">
+            <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b" style="position: fixed; left: 16rem; right: 0; top: 0; height: 4rem; background: #fff; box-shadow: 0 2px 20px rgba(0,0,0,0.04); display: flex; align-items: center;">
                 <div class="flex items-center">
                     <!-- Mobile Menu Toggle -->
                     <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700">
@@ -214,13 +213,13 @@
             </header>
 
             <!-- Main Content -->
-            <main class="flex-1 p-4 overflow-y-auto">
-                <div class="mb-4">
-                    <h2 class="text-2xl font-bold text-white mb-1">Add New Inventory Item</h2>
-                    <p class="text-gray-200 text-sm">Add raw materials or finished products to your inventory.</p>
-                </div>
+            <main class="main-content-scrollable" style="flex: 1 1 0%; overflow-y: auto; padding: 2rem 1.5rem; margin-top: 4rem; background: transparent;">
+                <div class="bg-white rounded-xl shadow-lg p-8">
+                    <div class="mb-4">
+                        <h2 class="text-2xl font-bold text-black mb-1">Add New Inventory Item</h2>
+                        <p class="text-black text-sm">Add raw materials or finished products to your inventory.</p>
+                    </div>
 
-                <div class="card-gradient rounded-xl p-6 max-w-4xl mx-auto">
                     <form method="POST" action="{{ route('manufacturer.inventory.store') }}" enctype="multipart/form-data">
                         @csrf
                         
@@ -283,7 +282,7 @@
                                 <h3 class="text-lg font-semibold text-black border-b pb-2">Pricing & Stock</h3>
                                 
                                 <div>
-                                    <label for="base_price" class="block text-sm font-medium text-black mb-2">Base Price ($) *</label>
+                                    <label for="base_price" class="block text-sm font-medium text-black mb-2">Base Price (UGX) *</label>
                                     <input type="number" id="base_price" name="base_price" value="{{ old('base_price') }}" step="0.01" min="0" required
                                            placeholder="0.00"
                                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">

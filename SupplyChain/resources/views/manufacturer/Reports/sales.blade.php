@@ -1,8 +1,9 @@
 @extends('manufacturer.layouts.dashboard')
 @section('content')
 <div class="container mx-auto p-6">
+  <div class="bg-white rounded-xl shadow-lg p-8">
     <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-white">Sales Report</h2>
+        <h2 class="text-2xl font-bold text-black">Sales Report</h2>
         <a href="{{ route('manufacturer.reports.export', ['type' => 'sales']) }}" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">
             <i class="fas fa-file-csv mr-2"></i>Export CSV
         </a>
@@ -10,14 +11,14 @@
 
     <!-- Filters -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
-        <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Filters</h3>
+        <h3 class="text-lg font-semibold mb-4 text-black">Filters</h3>
         <form method="GET" class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Start Date</label>
+                <label class="block text-sm font-medium text-black mb-2">Start Date</label>
                 <input type="date" name="start_date" value="{{ $startDate }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">End Date</label>
+                <label class="block text-sm font-medium text-black mb-2">End Date</label>
                 <input type="date" name="end_date" value="{{ $endDate }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
             </div>
             <div class="flex items-end">
@@ -33,11 +34,11 @@
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
             <div class="flex items-center">
                 <div class="p-3 bg-green-100 dark:bg-green-900 rounded-full">
-                    <i class="fas fa-dollar-sign text-green-600 dark:text-green-400 text-xl"></i>
+                    <i class="fas fa-coins text-yellow-500 text-xl"></i>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Sales</p>
-                    <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($totalSales, 2) }}</p>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white">UGX {{ number_format($totalSales, 2) }}</p>
                 </div>
             </div>
         </div>
@@ -75,10 +76,10 @@
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead class="bg-gray-50 dark:bg-gray-700">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Order ID</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Total Amount</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Order ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Total Amount</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Status</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -86,7 +87,7 @@
                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">#{{ $order->id }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $order->created_at->format('M d, Y') }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">${{ number_format($order->total_amount, 2) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">UGX {{ number_format($order->total_amount, 2) }}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
                                 @if($order->status === 'delivered') bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200
@@ -112,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function() {
         data: {
             labels: [],
             datasets: [{
-                label: 'Sales ($)',
+                label: 'Sales (UGX)',
                 data: [],
                 borderColor: 'rgb(59, 130, 246)',
                 backgroundColor: 'rgba(59, 130, 246, 0.1)',

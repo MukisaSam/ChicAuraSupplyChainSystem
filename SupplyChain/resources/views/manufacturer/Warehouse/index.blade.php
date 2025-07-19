@@ -2,7 +2,7 @@
 @section('content')
 <div class="container mx-auto py-8">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-        <h1 class="text-2xl font-bold text-white mb-4 md:mb-0">Warehouse Management</h1>
+        <h1 class="text-2xl font-bold text-black mb-4 md:mb-0">Warehouse Management</h1>
         <a href="{{ route('manufacturer.warehouse.create') }}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg shadow font-semibold transition">Add Warehouse</a>
     </div>
     @if(session('success'))
@@ -12,7 +12,7 @@
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
-                    <th class="py-3 px-6 text-left font-semibold text-gray-700">Location</th>
+                    <th class="py-3 px-6 text-left text-xs font-medium text-black uppercase tracking-wider">Location</th>
                     <th class="py-3 px-6 text-left font-semibold text-gray-700">Capacity</th>
                     <th class="py-3 px-6 text-left font-semibold text-gray-700">Actions</th>
                 </tr>

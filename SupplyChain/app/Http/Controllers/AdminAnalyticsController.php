@@ -14,8 +14,8 @@ class AdminAnalyticsController extends Controller
         // Metrics
         $totalUsers = User::count();
         $totalOrders = Order::count();
-        $totalRevenue = Order::sum('total'); /
-        $activeSuppliers = Supplier::where('status', 'active')->count(); /
+        $totalRevenue = Order::sum('total');
+        $activeSuppliers = Supplier::where('status', 'active')->count();
 
         // Orders Over Time (last 7 days)
         $orders = Order::selectRaw('DATE(created_at) as date, COUNT(*) as count')

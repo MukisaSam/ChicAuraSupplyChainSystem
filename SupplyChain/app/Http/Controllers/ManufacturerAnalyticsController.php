@@ -161,7 +161,7 @@ class ManufacturerAnalyticsController extends Controller
             'products' => Item::where('type', 'finished_product')->count(),
             'suppliers' => Supplier::count(),
             'wholesalers' => Wholesaler::count(),
-            'revenue' => '$' . number_format(Order::where('status', 'delivered')->sum('total_amount'), 2),
+            'revenue' => number_format(Order::where('status', 'delivered')->sum('total_amount'), 2),
             'pending_orders' => Order::whereIn('status', ['pending', 'confirmed'])->count(),
             'active_supply_requests' => SupplyRequest::whereIn('status', ['pending', 'approved'])->count(),
         ];

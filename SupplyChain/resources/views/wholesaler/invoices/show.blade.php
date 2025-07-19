@@ -12,11 +12,20 @@
         body {
             background: #f5f7fa;
             min-height: 100vh;
+            margin: 0;
+            padding: 0;
         }
         .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 16rem;
+            z-index: 30;
             transition: transform 0.3s ease-in-out;
             background: #1a237e;
             box-shadow: 4px 0 15px rgba(0,0,0,0.08);
+            overflow: visible;
         }
         .sidebar .sidebar-logo-blend {
             background: #fff;
@@ -31,8 +40,29 @@
             background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
         }
         .header-gradient {
+            position: fixed;
+            top: 0;
+            left: 16rem;
+            right: 0;
+            height: 4rem;
+            z-index: 40;
             background: #fff;
             box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+            display: flex;
+            align-items: center;
+        }
+        .main-content-wrapper {
+            margin-left: 16rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .main-content-scrollable {
+            flex: 1 1 0%;
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+            margin-top: 4rem;
+            background: transparent;
         }
         .dark .header-gradient {
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
@@ -46,17 +76,34 @@
         .nav-link:hover {
             transform: translateX(5px);
         }
+        @media (max-width: 1024px) {
+            .main-content-wrapper {
+                margin-left: 0;
+            }
+            .sidebar {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 16rem;
+                z-index: 30;
+            }
+            .header-gradient {
+                left: 0;
+            }
+        }
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
+            .main-content-wrapper { margin-left: 0; }
+            .header-gradient { left: 0; }
         }
     </style>
 </head>
 <body class="font-sans antialiased">
     <div id="app">
-    <div class="flex h-full">
+    <div>
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
+        <aside id="sidebar" class="sidebar">
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
                     <div class="sidebar-logo-blend w-full h-16 flex items-center justify-center p-0 m-0" style="background:#fff;">
@@ -82,9 +129,9 @@
                 </div>
             </div>
         </aside>
-        <div class="flex flex-col flex-1 w-full">
+        <div class="main-content-wrapper">
             <!-- Top Navigation Bar -->
-            <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b">
+            <header class="header-gradient flex items-center justify-between border-b">
                 <div class="flex items-center">
                     <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700"><i class="fas fa-bars text-lg"></i></button>
                     <div class="relative ml-3 hidden md:block">
@@ -118,7 +165,7 @@
                 </div>
             </header>
             <!-- Main Content -->
-            <main class="flex-1 p-4">
+            <main class="main-content-scrollable">
                 <!-- INVOICE CONTENT STARTS HERE -->
                 <div class="flex justify-center py-8 bg-gray-100 min-h-screen">
                     <div class="w-full max-w-3xl">

@@ -2,34 +2,34 @@
 @section('content')
 <div class="container mx-auto py-8 flex justify-center">
     <div class="w-full max-w-2xl bg-white rounded-lg shadow-lg p-8">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Work Order Details</h1>
+        <h1 class="text-3xl font-bold text-black mb-6 text-center">Work Order Details</h1>
         <div class="space-y-4">
             <div>
-                <h2 class="text-lg font-semibold text-gray-700 mb-1">Product:</h2>
-                <p class="text-gray-800">{{ $workOrder->product->name ?? '-' }}</p>
+                <h2 class="text-lg font-semibold text-black mb-1">Product:</h2>
+                <p class="text-black">{{ $workOrder->product->name ?? '-' }}</p>
             </div>
             <div>
-                <h2 class="text-lg font-semibold text-gray-700 mb-1">Quantity:</h2>
-                <p class="text-gray-800">{{ $workOrder->quantity }}</p>
+                <h2 class="text-lg font-semibold text-black mb-1">Quantity:</h2>
+                <p class="text-black">{{ $workOrder->quantity }}</p>
             </div>
             <div>
-                <h2 class="text-lg font-semibold text-gray-700 mb-1">Status:</h2>
-                <p class="text-gray-800">{{ $workOrder->status }}</p>
+                <h2 class="text-lg font-semibold text-black mb-1">Status:</h2>
+                <p class="text-black">{{ $workOrder->status }}</p>
             </div>
             <div>
-                <h2 class="text-lg font-semibold text-gray-700 mb-1">Scheduled:</h2>
-                <p class="text-gray-800">{{ $workOrder->scheduled_start ? \Carbon\Carbon::parse($workOrder->scheduled_start)->format('Y-m-d H:i') : '-' }} to {{ $workOrder->scheduled_end ? \Carbon\Carbon::parse($workOrder->scheduled_end)->format('Y-m-d H:i') : '-' }}</p>
+                <h2 class="text-lg font-semibold text-black mb-1">Scheduled:</h2>
+                <p class="text-black">{{ $workOrder->scheduled_start ? \Carbon\Carbon::parse($workOrder->scheduled_start)->format('Y-m-d H:i') : '-' }} to {{ $workOrder->scheduled_end ? \Carbon\Carbon::parse($workOrder->scheduled_end)->format('Y-m-d H:i') : '-' }}</p>
             </div>
             @if($workOrder->notes)
             <div>
-                <h2 class="text-lg font-semibold text-gray-700 mb-1">Notes:</h2>
-                <p class="text-gray-800">{{ $workOrder->notes }}</p>
+                <h2 class="text-lg font-semibold text-black mb-1">Notes:</h2>
+                <p class="text-black">{{ $workOrder->notes }}</p>
             </div>
             @endif
             <div>
-                <h2 class="text-lg font-semibold text-gray-700 mt-4 mb-1">Assignments:</h2>
+                <h2 class="text-lg font-semibold text-black mt-4 mb-1">Assignments:</h2>
                 @if($workOrder->assignments->count())
-                    <ul class="list-disc list-inside text-gray-800">
+                    <ul class="list-disc list-inside text-black">
                         @foreach($workOrder->assignments as $assignment)
                             <li class="mb-1 flex items-center justify-between">
                                 <span>{{ $assignment->workforce->fullname ?? '-' }} ({{ $assignment->role }}) <span class="text-gray-500">[Assigned: {{ $assignment->assigned_at ? \Carbon\Carbon::parse($assignment->assigned_at)->format('Y-m-d H:i') : '-' }}]</span></span>
@@ -49,9 +49,9 @@
                 </div>
             </div>
             <div>
-                <h2 class="text-lg font-semibold text-gray-700 mt-4 mb-1">Quality Checks:</h2>
+                <h2 class="text-lg font-semibold text-black mt-4 mb-1">Quality Checks:</h2>
                 @if($workOrder->qualityChecks->count())
-                    <ul class="list-disc list-inside text-gray-800">
+                    <ul class="list-disc list-inside text-black">
                         @foreach($workOrder->qualityChecks as $qc)
                             <li class="mb-1">Stage: {{ $qc->stage }}, Result: {{ $qc->result }}, By: {{ $qc->checker->fullname ?? '-' }}, At: {{ $qc->checked_at ? \Carbon\Carbon::parse($qc->checked_at)->format('Y-m-d H:i') : '-' }}</li>
                         @endforeach
@@ -61,9 +61,9 @@
                 @endif
             </div>
             <div>
-                <h2 class="text-lg font-semibold text-gray-700 mt-4 mb-1">Downtime Logs:</h2>
+                <h2 class="text-lg font-semibold text-black mt-4 mb-1">Downtime Logs:</h2>
                 @if($workOrder->downtimeLogs->count())
-                    <ul class="list-disc list-inside text-gray-800">
+                    <ul class="list-disc list-inside text-black">
                         @foreach($workOrder->downtimeLogs as $log)
                             <li class="mb-1">{{ $log->reason }}: {{ $log->start_time ? \Carbon\Carbon::parse($log->start_time)->format('Y-m-d H:i') : '-' }} to {{ $log->end_time ? \Carbon\Carbon::parse($log->end_time)->format('Y-m-d H:i') : '-' }} @if($log->notes) ({{ $log->notes }}) @endif</li>
                         @endforeach
@@ -73,13 +73,13 @@
                 @endif
             </div>
             <div>
-                <h2 class="text-lg font-semibold text-gray-700 mt-4 mb-1">Production Cost:</h2>
+                <h2 class="text-lg font-semibold text-black mt-4 mb-1">Production Cost:</h2>
                 @if($workOrder->productionCost)
-                    <ul class="text-gray-800">
-                        <li>Material: ${{ number_format($workOrder->productionCost->material_cost, 2) }}</li>
-                        <li>Labor: ${{ number_format($workOrder->productionCost->labor_cost, 2) }}</li>
-                        <li>Overhead: ${{ number_format($workOrder->productionCost->overhead_cost, 2) }}</li>
-                        <li class="font-semibold">Total: ${{ number_format($workOrder->productionCost->total_cost, 2) }}</li>
+                    <ul class="text-black">
+                        <li>Material: UGX {{ number_format($workOrder->productionCost->material_cost, 2) }}</li>
+                        <li>Labor: UGX {{ number_format($workOrder->productionCost->labor_cost, 2) }}</li>
+                        <li>Overhead: UGX {{ number_format($workOrder->productionCost->overhead_cost, 2) }}</li>
+                        <li class="font-semibold">Total: UGX {{ number_format($workOrder->productionCost->total_cost, 2) }}</li>
                     </ul>
                 @else
                     <p class="text-gray-500">No production cost recorded.</p>

@@ -2,7 +2,7 @@
 @section('content')
 <div class="container mx-auto py-8 flex justify-center">
     <div class="w-full max-w-lg bg-white rounded-lg shadow-lg p-8">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Edit Production Schedule</h1>
+        <h1 class="text-3xl font-bold text-black mb-6 text-center">Edit Production Schedule</h1>
         <form method="POST" action="{{ route('manufacturer.production-schedules.update', $productionSchedule->id) }}">
             @csrf
             @method('PUT')

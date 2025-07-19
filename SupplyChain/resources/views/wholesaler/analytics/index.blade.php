@@ -214,7 +214,7 @@
                         <div class="p-6 rounded-xl bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 shadow stat-card">
                             <div class="flex items-center">
                                 <div class="p-3 rounded-xl bg-green-500 dark:bg-green-700">
-                                    <i class="fas fa-dollar-sign text-white text-xl"></i>
+                                    <i class="fas fa-coins text-white text-xl"></i>
                                 </div>
                                 <div class="ml-4">
                                     <p class="text-sm text-gray-900 dark:text-white">Total Spent</p>

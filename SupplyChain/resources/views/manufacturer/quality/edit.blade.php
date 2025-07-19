@@ -3,7 +3,7 @@
 <div class="container mx-auto py-8 flex justify-center">
     <div class="w-full max-w-2xl bg-white rounded-lg shadow-lg p-8">
         <div class="flex items-center justify-between mb-6">
-            <h1 class="text-3xl font-bold text-gray-800">Edit Quality Check</h1>
+            <h1 class="text-3xl font-bold text-black">Edit Quality Check</h1>
         </div>
         @if ($errors->any())
             <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
