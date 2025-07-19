@@ -135,7 +135,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/user-profile/picture', [\App\Http\Controllers\UserProfileController::class, 'getProfilePicture'])->name('user.profile.picture');
 });
 
-// Admin Routes (organized)
+// Admin Routes
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     // Dashboard
     Route::get('/dashboard', [\App\Http\Controllers\AdminDashboardController::class, 'index'])->name('dashboard');
@@ -143,7 +143,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     // Users Management
     Route::get('/users', [\App\Http\Controllers\AdminUsersController::class, 'index'])->name('users');
 
-    // Add missing admin.users.* routes
+    // Add missing admin.users
     Route::post('/users/editview', [\App\Http\Controllers\AdminUsersController::class, 'editView'])->name('users.editview');
     Route::post('/users/remove', [\App\Http\Controllers\AdminUsersController::class, 'remove'])->name('users.remove');
     Route::post('/users/addview', [\App\Http\Controllers\AdminUsersController::class, 'addView'])->name('users.addview');
@@ -151,17 +151,22 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('/users/add', [\App\Http\Controllers\AdminUsersController::class, 'add'])->name('users.add');
 
     // User Roles
-    Route::get('/user-roles', [\App\Http\Controllers\Admin\UserRoleController::class, 'index'])->name('user-roles.index');
-    Route::get('/user-roles/ajax', [\App\Http\Controllers\Admin\UserRoleController::class, 'ajaxIndex'])->name('user-roles.ajax');
+    Route::get('/user-roles', [\App\Http\Controllers\Admin\UserRoleController::class, 'index'])->name('user_roles.index');
+    Route::get('/user-roles/ajax', [\App\Http\Controllers\Admin\UserRoleController::class, 'ajaxIndex'])->name('user_roles.ajax');
 
     // Analytics
     Route::get('/analytics', [\App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('analytics.index');
+    Route::get('/analytics/chart-data', [\App\Http\Controllers\Admin\AnalyticsController::class, 'getChartData'])->name('analytics.chart-data');
+    Route::get('/analytics/user-stats', [\App\Http\Controllers\Admin\AnalyticsController::class, 'getUserStats'])->name('analytics.user-stats');
 
     // Chat
     Route::prefix('chat')->name('chat.')->group(function () {
         Route::get('/', [\App\Http\Controllers\AdminChatController::class, 'index'])->name('index');
         Route::get('/{contactId}', [\App\Http\Controllers\AdminChatController::class, 'show'])->name('show');
         Route::post('/send', [\App\Http\Controllers\AdminChatController::class, 'sendMessage'])->name('send');
+        Route::post('/mark-read', [\App\Http\Controllers\AdminChatController::class, 'markAsRead'])->name('mark-read');
+        Route::get('/unread-count', [\App\Http\Controllers\AdminChatController::class, 'getUnreadCount'])->name('unread-count');
+        Route::get('/{contactId}/messages', [\App\Http\Controllers\AdminChatController::class, 'getRecentMessages'])->name('messages');
     });
 
     // Notifications
@@ -172,10 +177,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('/settings', [\App\Http\Controllers\AdminSettingsController::class, 'update'])->name('settings.update');
 
     // Audit Logs
-    Route::get('/audit-logs', [\App\Http\Controllers\AuditLogsController::class, 'index'])->name('audit-logs.index');
-
-    // System Settings
-    Route::get('/settings', function() { return view('admin.settings.index'); })->name('settings.index');
+    Route::get('/audit-logs', [\App\Http\Controllers\Admin\AuditLogController::class, 'index'])->name('audit-logs.index');
 });
 
 // Supplier Routes
