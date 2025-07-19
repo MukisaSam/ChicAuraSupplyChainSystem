@@ -11,14 +11,14 @@
     <!-- Chart.js for graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <style>
         /* Custom styles for a better look and feel */
         body { 
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/manufacturer.png') }}');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background: #f4f6fa;
             min-height: 100vh;
+            margin: 0;
+            padding: 0;
         }
         
         /* Dark mode styles */
@@ -123,13 +123,13 @@
     </style>
 </head>
 <body class="font-sans antialiased">
-    <div class="flex h-full">
+    <div>
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
+        <aside id="sidebar" class="sidebar" style="position: fixed; top: 0; left: 0; height: 100vh; width: 16rem; z-index: 30; overflow-y: auto; overflow-x: hidden; background: linear-gradient(180deg, #1a237e 0%, #283593 100%); box-shadow: 4px 0 15px rgba(0,0,0,0.12);">
             <div class="flex flex-col h-full">
                 <!-- Sidebar Header -->
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
-                    <div class="logo-container">
+                    <div class="sidebar-logo-blend w-full h-16 flex items-center justify-center p-0 m-0" style="background:#fff;">
                         <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
@@ -175,7 +175,7 @@
                         <span class="ml-2 text-sm">Reports</span>
                     </a>
                     <a href="{{route('manufacturer.revenue')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-dollar-sign w-5"></i>
+                        <i class="fas fa-coins w-5 text-yellow-500"></i>
                         <span class="ml-2 text-sm">Revenue</span>
                     </a>
                     <div class="mt-6 mb-2">
@@ -215,9 +215,9 @@
             </div>
         </aside>
 
-        <div class="flex flex-col flex-1 w-full">
+        <div class="main-content-wrapper" style="margin-left: 16rem; min-height: 100vh; display: flex; flex-direction: column;">
             <!-- Top Navigation Bar -->
-            <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b">
+            <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b" style="position: fixed; left: 16rem; right: 0; top: 0; height: 4rem; background: #fff; box-shadow: 0 2px 20px rgba(0,0,0,0.04); display: flex; align-items: center;">
                 <div class="flex items-center">
                     <!-- Mobile Menu Toggle -->
                     <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700">
@@ -257,7 +257,7 @@
             </header>
 
             <!-- Main Content -->
-            <main class="flex-1 p-4 overflow-y-auto">
+            <main class="main-content-scrollable" style="flex: 1 1 0%; overflow-y: auto; padding: 2rem 1.5rem; margin-top: 4rem; background: transparent;">
                 <!-- Success/Error Messages -->
                 @if(session('success'))
                     <div class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
@@ -271,10 +271,10 @@
                     </div>
                 @endif
 
-                <div class="mb-4 flex justify-between items-center">
+                <div class="mb-4 flex justify-between items-center bg-white rounded-xl shadow-lg p-8">
                     <div>
-                        <h2 class="text-2xl font-bold text-white mb-1">Inventory Management</h2>
-                        <p class="text-gray-200 text-sm">Manage your raw materials and finished products inventory.</p>
+                        <h2 class="text-2xl font-bold text-black mb-1">Inventory Management</h2>
+                        <p class="text-black text-sm">Manage your raw materials and finished products inventory.</p>
                     </div>
                     <div class="flex space-x-2">
                         <a href="{{ route('manufacturer.inventory.analytics') }}" class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
@@ -287,15 +287,15 @@
                 </div>
 
                 <!-- Stats Cards -->
-                <div class="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 lg:grid-cols-4">
+                <div class="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2 lg:grid-cols-4 bg-white rounded-xl shadow-lg p-8">
                     <div class="stat-card p-4 rounded-xl">
                         <div class="flex items-center">
                             <div class="p-3 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl shadow-lg">
-                                <i class="fas fa-boxes text-white text-xl"></i>
+                                <i class="fas fa-boxes text-black text-xl"></i>
                             </div>
                             <div class="ml-3">
-                                <p class="text-xs font-medium text-gray-600">Total Items</p>
-                                <p class="text-2xl font-bold text-gray-800">{{ $stats['total_items'] ?? '0' }}</p>
+                                <p class="text-xs font-medium text-black">Total Items</p>
+                                <p class="text-2xl font-bold text-black">{{ $stats['total_items'] ?? '0' }}</p>
                                 <p class="text-xs text-indigo-600 mt-1">Active inventory items</p>
                             </div>
                         </div>
@@ -327,11 +327,11 @@
                     <div class="stat-card p-4 rounded-xl">
                         <div class="flex items-center">
                             <div class="p-3 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg">
-                                <i class="fas fa-dollar-sign text-white text-xl"></i>
+                                <i class="fas fa-coins text-yellow-500 text-xl"></i>
                             </div>
                             <div class="ml-3">
                                 <p class="text-xs font-medium text-gray-600">Total Value</p>
-                                <p class="text-2xl font-bold text-gray-800">${{ $stats['total_value'] ?? '0' }}</p>
+                                <p class="text-2xl font-bold text-gray-800">UGX {{ number_format($stats['total_value'] ?? 0, 2) }}</p>
                                 <p class="text-xs text-purple-600 mt-1">Inventory worth</p>
                             </div>
                         </div>
@@ -340,10 +340,10 @@
 
                 <!-- Low Stock Alerts -->
                 @if($lowStockItems->count() > 0)
-                <div class="mb-6">
-                    <div class="card-gradient p-4 rounded-xl">
+                <div class="mb-6 bg-white rounded-xl shadow-lg p-8">
+                    <div class="p-4 rounded-xl">
                         <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-lg font-bold text-gray-800 flex items-center">
+                            <h3 class="text-lg font-bold text-black flex items-center">
                                 <i class="fas fa-exclamation-triangle text-yellow-600 mr-2"></i>
                                 Low Stock Alerts
                             </h3>
@@ -373,7 +373,14 @@
                 </div>
                 @endif
                 
+                <!-- Raw Materials and Finished Products Tabs -->
+                <div x-data="{ tab: 'raw' }" class="mb-8 bg-white rounded-xl shadow-lg p-8">
+                    <div class="flex justify-center mb-4">
+                        <button @click="tab = 'raw'" :class="tab === 'raw' ? 'bg-indigo-600 text-white' : 'bg-white text-indigo-600'" class="px-6 py-2 rounded-l-lg font-semibold border border-indigo-600 focus:outline-none transition">Raw Materials</button>
+                        <button @click="tab = 'finished'" :class="tab === 'finished' ? 'bg-indigo-600 text-white' : 'bg-white text-indigo-600'" class="px-6 py-2 rounded-r-lg font-semibold border-t border-b border-r border-indigo-600 focus:outline-none transition">Finished Products</button>
+                    </div>
                 <!-- Raw Materials Table -->
+                    <div x-show="tab === 'raw'">
                 <div class="card-gradient rounded-xl overflow-hidden mb-8">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="text-lg font-bold text-black">Raw Materials</h3>
@@ -382,13 +389,13 @@
                         <table class="w-full">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Image</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Item</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Category</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Stock</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Price (UGX)</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Status</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -410,7 +417,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $item->name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $item->category }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $item->stock_quantity }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">${{ number_format($item->base_price, 2) }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap">UGX {{ number_format($item->base_price, 2) }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @if($item->is_active)
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
@@ -438,8 +445,9 @@
                         </table>
                     </div>
                 </div>
-
+                    </div>
                 <!-- Finished Products Table -->
+                    <div x-show="tab === 'finished'">
                 <div class="card-gradient rounded-xl overflow-hidden">
                     <div class="p-4 border-b border-gray-200">
                         <h3 class="text-lg font-bold text-black">Finished Products</h3>
@@ -448,13 +456,13 @@
                         <table class="w-full">
                             <thead class="bg-gray-50">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Image</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Item</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Category</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Stock</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Price (UGX)</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Status</th>
+                                            <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Actions</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -476,7 +484,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $item->name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $item->category }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $item->stock_quantity }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">${{ number_format($item->base_price, 2) }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap">UGX {{ number_format($item->base_price, 2) }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @if($item->is_active)
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
@@ -502,6 +510,8 @@
                                 @endforelse
                             </tbody>
                         </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </main>

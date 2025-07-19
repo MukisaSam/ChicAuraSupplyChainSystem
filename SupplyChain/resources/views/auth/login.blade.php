@@ -148,7 +148,7 @@
             </div>
             <div class="login-card-right">
                 <div class="login-title">Welcome Back</div>
-                <div class="login-subtitle">Sign in to your ChicAura account</div>
+                <div class="login-subtitle">Sign in to your ChicAura Business account</div>
                 @if (session('status'))
                     <div class="mb-4 p-4 text-sm rounded-lg bg-blue-100 text-blue-700">
                         {{ session('status') }}

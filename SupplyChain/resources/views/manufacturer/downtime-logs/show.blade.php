@@ -2,7 +2,7 @@
 @section('content')
 <div class="container mx-auto py-8 flex justify-center">
     <div class="w-full max-w-lg bg-white rounded-lg shadow-lg p-8">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Downtime Log Details</h1>
+        <h1 class="text-2xl font-bold mb-6 text-black">Downtime Log Details</h1>
         <div class="mb-4">
             <span class="block text-gray-700 font-semibold mb-1">Reason:</span>
             <span class="text-gray-800">{{ $downtimeLog->reason }}</span>

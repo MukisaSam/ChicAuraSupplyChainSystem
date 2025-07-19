@@ -56,28 +56,130 @@
 
         /* Enhanced Navbar Styles */
         .navbar {
-            padding: 0.75rem 0;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 1rem 0;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            background: #ffffff !important;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1030;
+            width: 100%;
         }
 
-        .navbar-brand {
-            font-size: 1.75rem;
-            font-weight: 700;
-        }
-
-        .navbar-toggler {
-            border: none;
-            padding: 0.25rem 0.5rem;
-        }
-
-        .navbar-toggler:focus {
-            box-shadow: none;
-        }
-
-        /* Header Button Styles */
-        .navbar-nav .nav-link {
+        /* Add top padding to body to account for fixed navbar */
+        body {
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+            padding-top: 80px; /* Adjust based on your navbar height */
+        }
+        
+        main {
+            flex: 1;
+        }
+
+        /* Mobile adjustments */
+        @media (max-width: 575.98px) {
+            body {
+                padding-top: 70px; /* Smaller padding for mobile */
+            }
+            
+            .navbar {
+                padding: 0.5rem 0;
+            }
+            
+            .navbar-brand {
+                font-size: 1.25rem;
+            }
+            
+            .navbar-brand img {
+                max-width: 80px !important;
+            }
+            
+            .btn {
+                font-size: 0.75rem;
+                padding: 0.375rem 0.75rem;
+            }
+            
+            .dropdown-menu {
+                min-width: 160px;
+            }
+            
+            .navbar-nav {
+                padding-top: 1rem;
+            }
+            
+            .nav-item {
+                margin-bottom: 0.5rem;
+            }
+        }
+
+        @media (min-width: 576px) and (max-width: 767.98px) {
+            body {
+                padding-top: 75px;
+            }
+            
+            .navbar {
+                padding: 0.75rem 0;
+            }
+            
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+            
+            .navbar-brand img {
+                max-width: 90px !important;
+            }
+            
+            .btn {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.8rem;
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 991.98px) {
+            body {
+                padding-top: 80px;
+            }
+            
+            .navbar-brand {
+                font-size: 1.6rem;
+            }
+            
+            .btn {
+                font-size: 0.85rem;
+                padding: 0.45rem 0.9rem;
+            }
+        }
+
+        @media (min-width: 992px) {
+            body {
+                padding-top: 85px;
+            }
+            
+            .navbar-nav {
+                align-items: center;
+            }
+            
+            .nav-item {
+                margin-left: 0.5rem;
+            }
+        }
+
+        @media (min-width: 1200px) {
+            body {
+                padding-top: 90px;
+            }
+            
+            .btn {
+                padding: 0.5rem 1rem;
+            }
+        }
+
+        /* Navigation Links */
+        .navbar-nav .nav-link {
             padding: 0.5rem 1rem;
             transition: all 0.3s ease;
             font-weight: 500;
@@ -85,172 +187,176 @@
 
         .navbar-nav .nav-link:hover {
             color: #0d6efd !important;
-            transform: translateY(-1px);
         }
 
-        .navbar-nav .btn {
-            padding: 0.375rem 0.75rem;
-            border-radius: 6px;
-            font-weight: 500;
-            transition: all 0.3s ease;
+        /* Dropdown Styling */
+        .dropdown-menu {
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+            padding: 0.5rem 0;
+            margin-top: 0.5rem;
+            min-width: 200px;
+            box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+        }
+
+        .dropdown-item {
+            padding: 0.75rem 1rem;
             font-size: 0.875rem;
-            border-width: 1px;
-            white-space: nowrap;
+            transition: all 0.2s ease;
         }
 
-        .navbar-nav .btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        }
-
-        .navbar-nav .btn-outline-primary {
-            border-color: #0d6efd;
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
             color: #0d6efd;
         }
 
-        .navbar-nav .btn-outline-primary:hover {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
+        .dropdown-item.text-danger:hover {
+            background-color: #f8d7da;
+            color: #dc3545;
+        }
+
+        /* Cart Badge Styling */
+        .cart-badge {
+            background: linear-gradient(135deg, #dc3545, #c82333);
             color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            min-width: 18px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(220,53,69,0.3);
         }
 
-        .navbar-nav .btn-primary {
-            background-color: #0d6efd;
-            border-color: #0d6efd;
-            color: white;
+        /* Vertical Divider */
+        .vr {
+            width: 1px;
+            background-color: rgba(0,0,0,0.1);
+            height: 24px;
         }
 
-        .navbar-nav .btn-primary:hover {
-            background-color: #0b5ed7;
-            border-color: #0b5ed7;
+        /* Mobile-first Responsive Design */
+        @media (max-width: 575.98px) {
+            .navbar {
+                padding: 0.5rem 0;
+            }
+            
+            .navbar-brand {
+                font-size: 1.25rem;
+            }
+            
+            .navbar-brand img {
+                max-width: 80px !important;
+            }
+            
+            .btn {
+                font-size: 0.75rem;
+                padding: 0.375rem 0.75rem;
+            }
+            
+            .dropdown-menu {
+                min-width: 160px;
+            }
+            
+            .navbar-nav {
+                padding-top: 1rem;
+            }
+            
+            .nav-item {
+                margin-bottom: 0.5rem;
+            }
         }
 
-        .navbar-nav .btn-secondary {
-            background-color: #6c757d;
-            border-color: #6c757d;
-            color: white;
+        @media (min-width: 576px) and (max-width: 767.98px) {
+            .navbar {
+                padding: 0.75rem 0;
+            }
+            
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+            
+            .navbar-brand img {
+                max-width: 90px !important;
+            }
+            
+            .btn {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.8rem;
+            }
         }
 
-        .navbar-nav .btn-secondary:hover {
-            background-color: #5c636a;
-            border-color: #5c636a;
+        @media (min-width: 768px) and (max-width: 991.98px) {
+            .navbar-brand {
+                font-size: 1.6rem;
+            }
+            
+            .btn {
+                font-size: 0.85rem;
+                padding: 0.45rem 0.9rem;
+            }
         }
 
-        /* Desktop right-aligned buttons */
-        .navbar .d-lg-flex {
-            margin-left: auto;
-        }
-
-        .navbar .d-lg-flex .nav-link {
-            padding: 0.5rem 1rem;
-            color: #6c757d;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-        }
-
-        .navbar .d-lg-flex .nav-link:hover {
-            color: #0d6efd;
-        }
-
-        .navbar .d-lg-flex .btn {
-            padding: 0.375rem 0.75rem;
-            font-size: 0.875rem;
-            border-radius: 6px;
-            font-weight: 500;
-        }
-
-        .navbar .d-lg-flex .btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-
-        /* Desktop button alignment */
         @media (min-width: 992px) {
             .navbar-nav {
                 align-items: center;
             }
+            
+            .nav-item {
+                margin-left: 0.5rem;
+            }
         }
 
-        /* Mobile-first responsive design */
-        @media (max-width: 991.98px) {
-            .navbar {
-                padding: 0.5rem 0;
+        @media (min-width: 1200px) {
+            .btn {
+                padding: 0.5rem 1rem;
             }
+        }
 
+        /* Collapsible Navigation Styling */
+        .navbar-collapse {
+            border-top: 1px solid rgba(0,0,0,0.1);
+            margin-top: 1rem;
+            padding-top: 1rem;
+        }
+
+        @media (min-width: 992px) {
             .navbar-collapse {
-                margin-top: 1rem;
-                padding: 1rem;
-                background: #f8f9fa;
-                border-radius: 8px;
-                border: 1px solid #dee2e6;
-            }
-
-            .navbar-nav {
-                gap: 0.5rem;
-            }
-
-            .navbar-nav .nav-item {
-                margin-bottom: 0.5rem;
-            }
-
-            .navbar-nav .nav-link {
-                padding: 0.75rem 1rem;
-                border-radius: 6px;
-                text-align: center;
-                background: white;
-                border: 1px solid #dee2e6;
-            }
-
-            .navbar-nav .nav-link:hover {
-                background-color: #e9ecef;
-                transform: translateY(0);
-            }
-
-            .navbar-nav .btn {
-                width: 100%;
-                margin: 0.25rem 0;
-                text-align: center;
-                padding: 0.75rem 1rem;
-                font-size: 0.95rem;
-            }
-
-            /* Mobile search form styling */
-            .d-lg-none.mb-3 {
-                background: white;
-                padding: 1rem;
-                border-radius: 6px;
-                margin-bottom: 1rem !important;
-                border: 1px solid #dee2e6;
+                border-top: none;
+                margin-top: 0;
+                padding-top: 0;
             }
         }
 
-        @media (max-width: 575.98px) {
-            .navbar-brand {
-                font-size: 1.5rem;
-            }
-
-            .navbar-collapse {
-                margin: 0.75rem 0 0;
-                padding: 1rem;
-            }
-
-            .navbar-nav .btn {
-                font-size: 0.9rem;
-                padding: 0.65rem 1rem;
-            }
-
-            .navbar-nav .nav-link {
-                font-size: 0.9rem;
-                padding: 0.65rem 1rem;
-            }
+        /* Professional spacing and alignment */
+        .d-flex.gap-2 > * {
+            display: flex;
+            align-items: center;
         }
 
-        .footer {
+        /* Ensure proper mobile menu behavior */
+        .navbar-nav .dropdown-menu {
+            position: static !important;
+            transform: none !important;
+            border: none;
+            box-shadow: none;
             background-color: #f8f9fa;
-            margin-top: auto;
+            margin: 0.5rem 0;
         }
+
+        @media (min-width: 992px) {
+            .navbar-nav .dropdown-menu {
+                position: absolute !important;
+                background-color: white;
+                border: 1px solid rgba(0,0,0,0.1);
+                box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.15);
+                margin: 0.5rem 0 0 0;
+            }
+        }
+
         body {
             display: flex;
             flex-direction: column;
@@ -269,72 +375,116 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container">
             <a class="navbar-brand text-primary" href="{{ route('public.home') }}">
-                <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura" class="img-fluid" style="max-width: 150px;"/>
+                <img src="{{ asset('images/logo.png') }}" alt="ChicAura" class="img-fluid" style="max-width: 100px;"/>
             </a>
-        </div>
 
-            <!-- Right-aligned buttons for desktop -->
-            <div class="d-flex gap-3 mt-2 ">
-                <div>
-                    <a class=" position-relative btn btn-outline-primary me-2" href="{{ route('public.cart') }}">
-                        <i class="bi bi-cart3"></i> Cart
-                        <span class="cart-badge" id="cart-count">0</span>
-                    </a>
+            <!-- Mobile toggle button -->
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Collapsible navigation content -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="navbar-nav ms-auto">
+                    <!-- Shopping Cart -->
+                    <div class="nav-item position-relative me-2">
+                        <a class="btn btn-outline-secondary d-flex align-items-center" href="{{ route('public.cart') }}">
+                            <i class="bi bi-cart3 me-1"></i>
+                            <span class="d-none d-sm-inline">Cart</span>
+                            <span class="cart-badge" id="cart-count">0</span>
+                        </a>
+                    </div>
+
+                    @guest('customer')
+                    <!-- Guest Navigation -->
+                    <div class="nav-item dropdown d-lg-none">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle me-1"></i>Account
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="{{ route('login') }}">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="{{ route('customer.register') }}">
+                                    <i class="bi bi-person-plus me-2"></i>Sign Up
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="{{ route('welcome') }}">
+                                    <i class="bi bi-briefcase me-2"></i>Business Portal
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Desktop Guest Navigation -->
+                    <div class="d-none d-lg-flex align-items-center gap-2">
+                        <a class="btn btn-outline-primary d-flex align-items-center" href="{{ route('customer.login') }}">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>
+                            <span class="d-none d-xl-inline">Sign In</span>
+                        </a>
+                        
+                        <a class="btn btn-primary d-flex align-items-center" href="{{ route('customer.register') }}">
+                            <i class="bi bi-person-plus me-1"></i>
+                            <span class="d-none d-xl-inline">Sign Up</span>
+                        </a>
+                        
+                        <div class="vr mx-2"></div>
+                        
+                        <a class="btn btn-outline-dark d-flex align-items-center" href="{{ route('welcome') }}">
+                            <i class="bi bi-briefcase me-1"></i>
+                            <span class="d-none d-xl-inline">Business Portal</span>
+                        </a>
+                    </div>
+                    @endguest
+
+                    @auth('customer')
+                    <!-- Authenticated Customer Navigation -->
+                    <div class="nav-item dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle me-1"></i>
+                            <span class="d-none d-sm-inline">{{ Auth::guard('customer')->user()->name ?? 'Account' }}</span>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow">
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="{{ route('customer.dashboard') }}">
+                                    <i class="bi bi-house me-2"></i>Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="{{ route('customer.orders') }}">
+                                    <i class="bi bi-bag me-2"></i>My Orders
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                    <i class="bi bi-person me-2"></i>Profile Settings
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item d-flex align-items-center" href="{{ route('welcome') }}">
+                                    <i class="bi bi-briefcase me-2"></i>Business Portal
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="POST" action="{{ route('customer.logout') }}" class="d-inline">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item d-flex align-items-center text-danger">
+                                        <i class="bi bi-box-arrow-right me-2"></i>Sign Out
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                    @endauth
                 </div>
-
-                @guest('customer')
-                <div>
-                    <a class="btn btn-outline-primary me-2" href="{{ route('login') }}">
-                        <i class="bi bi-box-arrow-in-right me-1"></i>Login
-                    </a>
-                </div>
-
-                <div>
-                    <a class="btn btn-outline-primary me-2" href="{{ route('customer.register') }}">
-                        <i class="bi bi-person-plus me-1"></i>SignUp
-                    </a>
-                </div>
-
-                <div>
-                    <a class="btn btn-outline-primary me-2" href="{{ route('welcome') }}">
-                        <i class="bi bi-people"></i> Business
-                    </a>
-                </div>
-                @endguest
-
-    @auth('customer')
-            <div>
-                <a class="btn btn-outline-primary me-2" href="{{ route('customer.dashboard') }}">
-                    <i class="bi bi-house"></i> Home
-                </a>
             </div>
-
-            <!-- <div>
-                <a class="btn btn-outline-primary me-2" href="{{ route('customer.profile') }}">
-                    <i class="bi bi-person"></i> Profile
-                </a>
-            </div> -->
-
-            <div>
-                <a class="btn btn-outline-primary me-2" href="{{ route('customer.orders') }}">
-                    <i class="bi bi-bag"></i> My Orders
-                </a>
-            </div>
-
-            <div>
-                <a class="btn btn-outline-primary me-2" href="{{ route('welcome') }}">
-                    <i class="bi bi-people"></i> Business
-                </a>
-            </div>
-
-            <form method="POST" action="{{ route('customer.logout') }}">
-                    @csrf
-                    <button type="submit" class="btn btn-outline-primary me-2">
-                        <i class="bi bi-box-arrow-right"></i> Logout
-                    </button>
-            </form>
-    @endauth
-</div>
         </div>
     </nav>
 
@@ -369,7 +519,7 @@
                 <div class="col-lg-4 mb-4">
                     <h5 class="text-primary">
                         <a class="navbar-brand text-primary" href="{{ route('public.home') }}">
-                <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura" class="img-fluid" style="max-width: 150px;"/>
+                <img src="{{ asset('images/logo.png') }}" alt="ChicAura" class="img-fluid" style="max-width: 80px;"/>
             </a>
                     </h5>
                     <p class="text-muted">Your premier destination for fashion and style. Connecting suppliers, manufacturers, and customers in one seamless platform.</p>

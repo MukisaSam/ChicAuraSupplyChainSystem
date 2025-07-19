@@ -2,7 +2,7 @@
 @section('content')
 <div class="container mx-auto py-8">
     <div class="max-w-xl mx-auto bg-white rounded-lg shadow-lg p-8">
-        <h1 class="text-2xl font-bold mb-6 text-indigo-700">Inventory Item Details</h1>
+        <h1 class="text-2xl font-bold mb-6 text-black">Inventory Item Details</h1>
         <div class="mb-4">
             <span class="font-semibold text-gray-700">Name:</span>
             <span class="ml-2 text-gray-900">{{ $inventory_item->name }}</span>

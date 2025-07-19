@@ -1,415 +1,503 @@
 """
-Enhanced Feature Engineering Utilities
-Shared feature engineering functions for all ML models in the system
+Enhanced Feature Engineering for Customer Recommendation System
+Provides advanced feature engineering capabilities for customer analysis and segmentation.
 """
 
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
-from typing import Dict, List, Tuple, Optional, Union
 import logging
-from sklearn.preprocessing import StandardScaler, LabelEncoder, MinMaxScaler
-from sklearn.feature_selection import SelectKBest, f_regression, RFE
-from sklearn.ensemble import RandomForestRegressor
-import warnings
-warnings.filterwarnings('ignore')
+from typing import Dict, List, Tuple, Optional
+from scipy import stats
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA
+from sklearn.cluster import KMeans
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 class AdvancedFeatureEngineer:
-    """Advanced feature engineering for time series and recommendation systems"""
+    """
+    Advanced feature engineering class for customer recommendation system.
+    Creates sophisticated features for customer analysis and product recommendations.
+    """
     
     def __init__(self):
-        self.scalers = {}
-        self.encoders = {}
-        self.feature_names = []
-        
-    def create_time_features(self, df: pd.DataFrame, date_col: str) -> pd.DataFrame:
-        """Create comprehensive time-based features"""
-        df = df.copy()
-        df[date_col] = pd.to_datetime(df[date_col])
-        
-        # Basic time features
-        df['year'] = df[date_col].dt.year
-        df['month'] = df[date_col].dt.month
-        df['day'] = df[date_col].dt.day
-        df['dayofweek'] = df[date_col].dt.dayofweek
-        df['dayofyear'] = df[date_col].dt.dayofyear
-        df['week'] = df[date_col].dt.isocalendar().week
-        df['quarter'] = df[date_col].dt.quarter
-        
-        # Cyclical features (important for time series)
-        df['month_sin'] = np.sin(2 * np.pi * df['month'] / 12)
-        df['month_cos'] = np.cos(2 * np.pi * df['month'] / 12)
-        df['day_sin'] = np.sin(2 * np.pi * df['day'] / 31)
-        df['day_cos'] = np.cos(2 * np.pi * df['day'] / 31)
-        df['dayofweek_sin'] = np.sin(2 * np.pi * df['dayofweek'] / 7)
-        df['dayofweek_cos'] = np.cos(2 * np.pi * df['dayofweek'] / 7)
-        
-        # Business features
-        df['is_weekend'] = (df['dayofweek'] >= 5).astype(int)
-        df['is_month_start'] = df[date_col].dt.is_month_start.astype(int)
-        df['is_month_end'] = df[date_col].dt.is_month_end.astype(int)
-        df['is_quarter_start'] = df[date_col].dt.is_quarter_start.astype(int)
-        df['is_quarter_end'] = df[date_col].dt.is_quarter_end.astype(int)
-        
-        # Holiday features (basic - can be extended with specific holidays)
-        df['is_holiday_season'] = ((df['month'] == 12) | (df['month'] == 1)).astype(int)
-        df['is_summer'] = ((df['month'] >= 6) & (df['month'] <= 8)).astype(int)
-        
-        logger.info(f"Created {len([col for col in df.columns if col not in [date_col]])} time features")
-        return df
-    
-    def create_lag_features(self, df: pd.DataFrame, target_col: str, 
-                          lags: List[int] = [1, 2, 3, 7, 14, 30], 
-                          group_cols: Optional[List[str]] = None) -> pd.DataFrame:
-        """Create lag features for time series"""
-        df = df.copy()
-        
-        if group_cols:
-            for lag in lags:
-                df[f'{target_col}_lag_{lag}'] = df.groupby(group_cols)[target_col].shift(lag)
-        else:
-            for lag in lags:
-                df[f'{target_col}_lag_{lag}'] = df[target_col].shift(lag)
-        
-        logger.info(f"Created {len(lags)} lag features for {target_col}")
-        return df
-    
-    def create_rolling_features(self, df: pd.DataFrame, target_col: str,
-                              windows: List[int] = [3, 7, 14, 30],
-                              group_cols: Optional[List[str]] = None) -> pd.DataFrame:
-        """Create rolling window features"""
-        df = df.copy()
-        
-        for window in windows:
-            if group_cols:
-                df[f'{target_col}_rolling_mean_{window}'] = df.groupby(group_cols)[target_col].rolling(window, min_periods=1).mean().reset_index(0, drop=True)
-                df[f'{target_col}_rolling_std_{window}'] = df.groupby(group_cols)[target_col].rolling(window, min_periods=1).std().reset_index(0, drop=True)
-                df[f'{target_col}_rolling_min_{window}'] = df.groupby(group_cols)[target_col].rolling(window, min_periods=1).min().reset_index(0, drop=True)
-                df[f'{target_col}_rolling_max_{window}'] = df.groupby(group_cols)[target_col].rolling(window, min_periods=1).max().reset_index(0, drop=True)
-            else:
-                df[f'{target_col}_rolling_mean_{window}'] = df[target_col].rolling(window, min_periods=1).mean()
-                df[f'{target_col}_rolling_std_{window}'] = df[target_col].rolling(window, min_periods=1).std()
-                df[f'{target_col}_rolling_min_{window}'] = df[target_col].rolling(window, min_periods=1).min()
-                df[f'{target_col}_rolling_max_{window}'] = df[target_col].rolling(window, min_periods=1).max()
-        
-        logger.info(f"Created rolling features for {len(windows)} windows")
-        return df
-    
-    def create_trend_features(self, df: pd.DataFrame, target_col: str,
-                            group_cols: Optional[List[str]] = None) -> pd.DataFrame:
-        """Create trend and momentum features"""
-        df = df.copy()
-        
-        # Price changes
-        if group_cols:
-            df[f'{target_col}_change'] = df.groupby(group_cols)[target_col].diff()
-            df[f'{target_col}_pct_change'] = df.groupby(group_cols)[target_col].pct_change()
-        else:
-            df[f'{target_col}_change'] = df[target_col].diff()
-            df[f'{target_col}_pct_change'] = df[target_col].pct_change()
-        
-        # Momentum indicators
-        df[f'{target_col}_momentum_3'] = df[f'{target_col}_change'].rolling(3).sum()
-        df[f'{target_col}_momentum_7'] = df[f'{target_col}_change'].rolling(7).sum()
-        
-        # Volatility
-        df[f'{target_col}_volatility'] = df[f'{target_col}_pct_change'].rolling(7).std()
-        
-        logger.info(f"Created trend and momentum features for {target_col}")
-        return df
+        """Initialize the feature engineer with default parameters."""
+        self.reference_date = datetime.now()
+        logger.info("AdvancedFeatureEngineer initialized")
     
     def create_customer_features(self, customer_df: pd.DataFrame) -> pd.DataFrame:
-        """Create features for customer analysis and recommendations"""
-        df = customer_df.copy()
+        """
+        Create advanced customer features from basic customer data.
         
-        # Age group encoding
-        if 'age_group' in df.columns:
-            age_mapping = {'18-25': 1, '26-35': 2, '36-45': 3, '46-55': 4, '55+': 5}
-            df['age_group_encoded'] = df['age_group'].map(age_mapping).fillna(0)
+        Args:
+            customer_df: DataFrame with customer information
+            
+        Returns:
+            DataFrame with enhanced customer features
+        """
+        if customer_df.empty:
+            return customer_df
         
-        # Income bracket encoding
-        if 'income_bracket' in df.columns:
-            income_mapping = {'<30k': 1, '30k-50k': 2, '50k-75k': 3, '75k-100k': 4, '100k+': 5}
-            df['income_bracket_encoded'] = df['income_bracket'].map(income_mapping).fillna(0)
-        
-        # Purchase frequency encoding
-        if 'purchase_frequency' in df.columns:
-            freq_mapping = {'rarely': 1, 'monthly': 2, 'weekly': 3, 'daily': 4}
-            df['purchase_frequency_encoded'] = df['purchase_frequency'].map(freq_mapping).fillna(0)
-        
-        # Gender encoding
-        if 'gender' in df.columns:
-            df['gender_encoded'] = LabelEncoder().fit_transform(df['gender'].fillna('unknown'))
-        
-        logger.info("Created customer demographic features")
-        return df
+        try:
+            # Make a copy to avoid modifying original
+            features_df = customer_df.copy()
+            
+            # Age-based features
+            if 'age' in features_df.columns:
+                features_df['age_group'] = pd.cut(
+                    features_df['age'], 
+                    bins=[0, 25, 35, 45, 55, 100], 
+                    labels=['18-25', '26-35', '36-45', '46-55', '55+']
+                )
+                features_df['is_young_adult'] = (features_df['age'] <= 35).astype(int)
+                features_df['is_middle_aged'] = ((features_df['age'] > 35) & (features_df['age'] <= 55)).astype(int)
+                features_df['is_senior'] = (features_df['age'] > 55).astype(int)
+            
+            # Location-based features
+            if 'location' in features_df.columns:
+                # Extract region information (assuming Ugandan districts)
+                features_df['region'] = features_df['location'].apply(self._extract_region)
+                features_df['is_urban'] = features_df['location'].apply(self._is_urban_location)
+            
+            # Registration recency features
+            if 'created_at' in features_df.columns:
+                features_df['created_at'] = pd.to_datetime(features_df['created_at'])
+                features_df['days_since_registration'] = (
+                    self.reference_date - features_df['created_at']
+                ).dt.days
+                features_df['is_new_customer'] = (features_df['days_since_registration'] <= 30).astype(int)
+                features_df['registration_month'] = features_df['created_at'].dt.month
+                features_df['registration_year'] = features_df['created_at'].dt.year
+            
+            # Income-based features (if available)
+            if 'income' in features_df.columns:
+                features_df['income_tier'] = pd.cut(
+                    features_df['income'], 
+                    bins=[0, 500000, 1000000, 2000000, float('inf')], 
+                    labels=['Low', 'Medium', 'High', 'Premium']
+                )
+                features_df['log_income'] = np.log1p(features_df['income'])
+            
+            logger.info(f"Created customer features for {len(features_df)} customers")
+            return features_df
+            
+        except Exception as e:
+            logger.error(f"Error creating customer features: {e}")
+            return customer_df
     
-    def create_product_features(self, product_df: pd.DataFrame) -> pd.DataFrame:
-        """Create features for product analysis"""
-        df = product_df.copy()
+    def create_rfm_features(self, interaction_df: pd.DataFrame, customer_df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Create RFM (Recency, Frequency, Monetary) features for customer segmentation.
         
-        # Category encoding
-        if 'category' in df.columns:
-            le_category = LabelEncoder()
-            df['category_encoded'] = le_category.fit_transform(df['category'].fillna('unknown'))
-            self.encoders['category'] = le_category
+        Args:
+            interaction_df: DataFrame with customer order interactions
+            customer_df: DataFrame with customer information
+            
+        Returns:
+            DataFrame with RFM features
+        """
+        if interaction_df.empty or customer_df.empty:
+            return customer_df
         
-        # Material encoding
-        if 'material' in df.columns:
-            le_material = LabelEncoder()
-            df['material_encoded'] = le_material.fit_transform(df['material'].fillna('unknown'))
-            self.encoders['material'] = le_material
-        
-        # Price features
-        if 'base_price' in df.columns:
-            df['price_log'] = np.log1p(df['base_price'])
-            df['price_sqrt'] = np.sqrt(df['base_price'])
-        
-        # Stock features
-        if 'stock_quantity' in df.columns:
-            df['stock_level'] = pd.cut(df['stock_quantity'], bins=5, labels=['very_low', 'low', 'medium', 'high', 'very_high'])
-            df['stock_level_encoded'] = LabelEncoder().fit_transform(df['stock_level'].astype(str))
-        
-        logger.info("Created product features")
-        return df
-    
-    def create_interaction_features(self, df: pd.DataFrame, 
-                                  feature_pairs: List[Tuple[str, str]]) -> pd.DataFrame:
-        """Create interaction features between specified columns"""
-        df = df.copy()
-        
-        for col1, col2 in feature_pairs:
-            if col1 in df.columns and col2 in df.columns:
-                # Multiplication interaction
-                df[f'{col1}_x_{col2}'] = df[col1] * df[col2]
-                # Addition interaction
-                df[f'{col1}_plus_{col2}'] = df[col1] + df[col2]
-                # Ratio interaction (avoid division by zero)
-                df[f'{col1}_div_{col2}'] = df[col1] / (df[col2] + 1e-8)
-        
-        logger.info(f"Created interaction features for {len(feature_pairs)} pairs")
-        return df
-    
-    def select_features(self, X: pd.DataFrame, y: pd.Series, 
-                       method: str = 'mutual_info', k: int = 50) -> Tuple[pd.DataFrame, List[str]]:
-        """Select top k features using specified method"""
-        
-        if method == 'mutual_info':
-            from sklearn.feature_selection import mutual_info_regression
-            selector = SelectKBest(score_func=mutual_info_regression, k=k)
-        elif method == 'f_regression':
-            selector = SelectKBest(score_func=f_regression, k=k)
-        elif method == 'rfe':
-            estimator = RandomForestRegressor(n_estimators=50, random_state=42)
-            selector = RFE(estimator=estimator, n_features_to_select=k)
-        else:
-            raise ValueError(f"Unknown method: {method}")
-        
-        X_selected = selector.fit_transform(X, y)
-        selected_features = X.columns[selector.get_support()].tolist()
-        
-        logger.info(f"Selected {len(selected_features)} features using {method}")
-        return pd.DataFrame(X_selected, columns=selected_features, index=X.index), selected_features
-    
-    def scale_features(self, X: pd.DataFrame, method: str = 'standard', 
-                      fit: bool = True) -> pd.DataFrame:
-        """Scale features using specified method"""
-        
-        if method == 'standard':
-            scaler_class = StandardScaler
-        elif method == 'minmax':
-            scaler_class = MinMaxScaler
-        else:
-            raise ValueError(f"Unknown scaling method: {method}")
-        
-        if fit:
-            self.scalers[method] = scaler_class()
-            X_scaled = self.scalers[method].fit_transform(X)
-        else:
-            if method not in self.scalers:
-                raise ValueError(f"Scaler for {method} not fitted yet")
-            X_scaled = self.scalers[method].transform(X)
-        
-        return pd.DataFrame(X_scaled, columns=X.columns, index=X.index)
-    
-    def handle_missing_values(self, df: pd.DataFrame, 
-                            strategy: Dict[str, str] = None) -> pd.DataFrame:
-        """Handle missing values with different strategies per column"""
-        df = df.copy()
-        
-        default_strategy = {
-            'numeric': 'median',
-            'categorical': 'mode',
-            'datetime': 'forward_fill'
-        }
-        
-        for column in df.columns:
-            if df[column].isnull().sum() > 0:
-                dtype = str(df[column].dtype)
+        try:
+            # Ensure date column is datetime
+            interaction_df = interaction_df.copy()
+            interaction_df['order_date'] = pd.to_datetime(interaction_df['order_date'])
+            
+            # Debug: Check available columns
+            logger.info(f"Available columns in interaction_df: {list(interaction_df.columns)}")
+            
+            # Check if customer_id exists, if not, return customer_df as is
+            if 'customer_id' not in interaction_df.columns:
+                logger.warning("customer_id column not found in interaction_df")
+                return customer_df
+            
+            # Convert numeric columns to handle Decimal types
+            numeric_cols = ['total_amount', 'quantity']
+            for col in numeric_cols:
+                if col in interaction_df.columns:
+                    interaction_df[col] = pd.to_numeric(interaction_df[col], errors='coerce')
+            
+            # Calculate RFM metrics
+            rfm_df = interaction_df.groupby('customer_id').agg({
+                'order_date': ['max', 'count'],  # Recency and Frequency
+                'total_amount': ['sum', 'mean'],  # Monetary
+                'quantity': ['sum', 'mean']
+            }).reset_index()
+            
+            # Flatten column names
+            rfm_df.columns = [
+                'customer_id', 'last_order_date', 'order_frequency',
+                'total_spent', 'avg_order_value', 'total_quantity', 'avg_quantity'
+            ]
+            
+            # Calculate recency (days since last order)
+            rfm_df['recency'] = (self.reference_date - rfm_df['last_order_date']).dt.days
+            
+            # Create RFM scores (1-5 scale) - handle small datasets
+            try:
+                rfm_df['recency_score'] = pd.qcut(
+                    rfm_df['recency'].rank(method='first', ascending=False), 
+                    q=min(5, len(rfm_df)), labels=list(range(min(5, len(rfm_df)), 0, -1))
+                ).astype(int)
                 
-                if column in (strategy or {}):
-                    method = strategy[column]
-                elif 'int' in dtype or 'float' in dtype:
-                    method = default_strategy['numeric']
-                elif 'object' in dtype:
-                    method = default_strategy['categorical']
-                elif 'datetime' in dtype:
-                    method = default_strategy['datetime']
-                else:
-                    method = 'median'
+                rfm_df['frequency_score'] = pd.qcut(
+                    rfm_df['order_frequency'].rank(method='first'), 
+                    q=min(5, len(rfm_df)), labels=list(range(1, min(5, len(rfm_df)) + 1))
+                ).astype(int)
                 
-                if method == 'median':
-                    df[column].fillna(df[column].median(), inplace=True)
-                elif method == 'mean':
-                    df[column].fillna(df[column].mean(), inplace=True)
-                elif method == 'mode':
-                    df[column].fillna(df[column].mode().iloc[0] if not df[column].mode().empty else 'unknown', inplace=True)
-                elif method == 'forward_fill':
-                    df[column].fillna(method='ffill', inplace=True)
-                elif method == 'backward_fill':
-                    df[column].fillna(method='bfill', inplace=True)
-                elif method == 'zero':
-                    df[column].fillna(0, inplace=True)
-        
-        logger.info("Handled missing values")
-        return df
+                rfm_df['monetary_score'] = pd.qcut(
+                    rfm_df['total_spent'].rank(method='first'), 
+                    q=min(5, len(rfm_df)), labels=list(range(1, min(5, len(rfm_df)) + 1))
+                ).astype(int)
+            except ValueError as e:
+                # Handle case where qcut fails (all values are the same)
+                logger.warning(f"RFM scoring failed with qcut, using simple scoring: {e}")
+                rfm_df['recency_score'] = 3
+                rfm_df['frequency_score'] = 3
+                rfm_df['monetary_score'] = 3
+            
+            # Create RFM segment
+            rfm_df['rfm_score'] = (
+                rfm_df['recency_score'].astype(str) +
+                rfm_df['frequency_score'].astype(str) +
+                rfm_df['monetary_score'].astype(str)
+            )
+            
+            # Create customer segments
+            rfm_df['customer_segment'] = rfm_df['rfm_score'].apply(self._categorize_rfm)
+            
+            # Merge with customer data
+            result_df = customer_df.merge(
+                rfm_df[['customer_id', 'recency', 'order_frequency', 'total_spent', 
+                       'avg_order_value', 'recency_score', 'frequency_score', 
+                       'monetary_score', 'rfm_score', 'customer_segment']], 
+                on='customer_id', 
+                how='left'
+            )
+            
+            # Fill NaN values for customers with no orders
+            result_df['recency'] = result_df['recency'].fillna(9999)
+            result_df['order_frequency'] = result_df['order_frequency'].fillna(0)
+            result_df['total_spent'] = result_df['total_spent'].fillna(0)
+            result_df['avg_order_value'] = result_df['avg_order_value'].fillna(0)
+            result_df['customer_segment'] = result_df['customer_segment'].fillna('New')
+            
+            logger.info(f"Created RFM features for {len(result_df)} customers")
+            return result_df
+            
+        except Exception as e:
+            logger.error(f"Error creating RFM features: {e}")
+            return customer_df
     
-    def detect_outliers(self, df: pd.DataFrame, columns: List[str] = None, 
-                       method: str = 'iqr', threshold: float = 1.5) -> pd.DataFrame:
-        """Detect and optionally remove outliers"""
-        df = df.copy()
+    def _extract_region(self, location: str) -> str:
+        """Extract region from Ugandan district location."""
+        if pd.isna(location):
+            return 'Unknown'
         
-        if columns is None:
-            columns = df.select_dtypes(include=[np.number]).columns.tolist()
+        # Ugandan regions mapping
+        central_districts = ['Kampala', 'Wakiso', 'Mukono', 'Mpigi', 'Luwero', 'Nakaseke']
+        western_districts = ['Mbarara', 'Kasese', 'Bushenyi', 'Ntungamo', 'Kabale', 'Kisoro']
+        northern_districts = ['Gulu', 'Lira', 'Arua', 'Kitgum', 'Pader', 'Moyo']
+        eastern_districts = ['Jinja', 'Mbale', 'Tororo', 'Busia', 'Soroti', 'Kumi']
         
-        outlier_mask = pd.Series([False] * len(df), index=df.index)
+        location_lower = location.lower()
         
-        for column in columns:
-            if method == 'iqr':
-                Q1 = df[column].quantile(0.25)
-                Q3 = df[column].quantile(0.75)
-                IQR = Q3 - Q1
-                lower_bound = Q1 - threshold * IQR
-                upper_bound = Q3 + threshold * IQR
-                column_outliers = (df[column] < lower_bound) | (df[column] > upper_bound)
-            
-            elif method == 'zscore':
-                z_scores = np.abs((df[column] - df[column].mean()) / df[column].std())
-                column_outliers = z_scores > threshold
-            
-            else:
-                raise ValueError(f"Unknown outlier detection method: {method}")
-            
-            outlier_mask |= column_outliers
-        
-        logger.info(f"Detected {outlier_mask.sum()} outliers using {method} method")
-        
-        # Add outlier flag column
-        df['is_outlier'] = outlier_mask
-        
-        return df
+        if any(district.lower() in location_lower for district in central_districts):
+            return 'Central'
+        elif any(district.lower() in location_lower for district in western_districts):
+            return 'Western'
+        elif any(district.lower() in location_lower for district in northern_districts):
+            return 'Northern'
+        elif any(district.lower() in location_lower for district in eastern_districts):
+            return 'Eastern'
+        else:
+            return 'Other'
     
-    def create_rfm_features(self, order_data: pd.DataFrame, 
-                          customer_col: str = 'customer_id',
-                          date_col: str = 'order_date',
-                          amount_col: str = 'total_amount') -> pd.DataFrame:
-        """Create RFM (Recency, Frequency, Monetary) features"""
+    def _is_urban_location(self, location: str) -> int:
+        """Determine if location is urban (1) or rural (0)."""
+        if pd.isna(location):
+            return 0
         
-        # Calculate reference date (latest date in dataset)
-        reference_date = pd.to_datetime(order_data[date_col]).max()
+        urban_areas = ['Kampala', 'Jinja', 'Mbarara', 'Gulu', 'Lira', 'Mbale', 'Arua', 'Masaka']
+        return 1 if any(urban.lower() in location.lower() for urban in urban_areas) else 0
+    
+    def _categorize_rfm(self, rfm_score: str) -> str:
+        """Categorize customers based on RFM score."""
+        if len(rfm_score) != 3:
+            return 'Unknown'
         
-        # Group by customer
-        rfm = order_data.groupby(customer_col).agg({
-            date_col: lambda x: (reference_date - pd.to_datetime(x).max()).days,  # Recency
-            amount_col: ['count', 'sum', 'mean']  # Frequency and Monetary
-        }).round(2)
+        r, f, m = int(rfm_score[0]), int(rfm_score[1]), int(rfm_score[2])
         
-        # Flatten column names
-        rfm.columns = ['recency', 'frequency', 'monetary_total', 'monetary_avg']
-        rfm.reset_index(inplace=True)
-        
-        # Create RFM scores (1-5 scale)
-        rfm['recency_score'] = pd.qcut(rfm['recency'], 5, labels=[5,4,3,2,1], duplicates='drop')
-        rfm['frequency_score'] = pd.qcut(rfm['frequency'].rank(method='first'), 5, labels=[1,2,3,4,5], duplicates='drop')
-        rfm['monetary_score'] = pd.qcut(rfm['monetary_total'], 5, labels=[1,2,3,4,5], duplicates='drop')
-        
-        # Create combined RFM score
-        rfm['rfm_score'] = rfm['recency_score'].astype(str) + rfm['frequency_score'].astype(str) + rfm['monetary_score'].astype(str)
-        
-        # Customer segmentation based on RFM
-        def segment_customers(row):
-            score = row['rfm_score']
-            if score in ['555', '554', '544', '545', '454', '455', '445']:
-                return 'Champions'
-            elif score in ['543', '444', '435', '355', '354', '345', '344', '335']:
-                return 'Loyal Customers'
-            elif score in ['553', '551', '552', '541', '542', '533', '532', '531', '452', '451']:
-                return 'Potential Loyalists'
-            elif score in ['512', '511', '422', '421', '412', '411', '311']:
-                return 'New Customers'
-            elif score in ['155', '154', '144', '214', '215', '115', '114']:
-                return 'At Risk'
-            elif score in ['155', '154', '144', '214', '215', '115']:
-                return 'Cannot Lose Them'
-            else:
-                return 'Others'
-        
-        rfm['customer_segment'] = rfm.apply(segment_customers, axis=1)
-        
-        logger.info("Created RFM analysis features")
-        return rfm
+        # Champions: High value, frequent, recent
+        if r >= 4 and f >= 4 and m >= 4:
+            return 'Champions'
+        # Loyal Customers: High frequency and monetary, but not recent
+        elif f >= 4 and m >= 4:
+            return 'Loyal Customers'
+        # Potential Loyalists: Recent customers with good frequency
+        elif r >= 4 and f >= 3:
+            return 'Potential Loyalists'
+        # New Customers: Recent but low frequency
+        elif r >= 4 and f <= 2:
+            return 'New Customers'
+        # Promising: Recent with medium frequency and monetary
+        elif r >= 3 and f >= 3 and m >= 3:
+            return 'Promising'
+        # Need Attention: Above average recency, frequency, and monetary
+        elif r >= 3 and f >= 2 and m >= 2:
+            return 'Need Attention'
+        # About to Sleep: Below average recency, frequency, and monetary
+        elif r <= 2 and f >= 2 and m >= 2:
+            return 'About to Sleep'
+        # At Risk: Good monetary and frequency but low recency
+        elif r <= 2 and f >= 3 and m >= 3:
+            return 'At Risk'
+        # Cannot Lose Them: Low recency but high monetary and frequency
+        elif r <= 2 and f >= 4 and m >= 4:
+            return 'Cannot Lose Them'
+        # Lost: Lowest recency, frequency, and monetary
+        else:
+            return 'Lost'
 
 
 class SeasonalityDetector:
-    """Detect seasonal patterns in time series data"""
+    """
+    Advanced seasonality detection for time series data.
+    Detects various seasonal patterns including weekly, monthly, and yearly patterns.
+    """
     
     def __init__(self):
+        """Initialize the seasonality detector."""
+        self.scaler = StandardScaler()
         self.seasonal_patterns = {}
+        logger.info("SeasonalityDetector initialized")
     
-    def detect_seasonality(self, ts_data: pd.Series, 
-                         periods: List[int] = [7, 30, 365]) -> Dict[str, float]:
-        """Detect seasonal patterns using autocorrelation"""
-        from scipy.stats import pearsonr
+    def detect_seasonality(self, data: pd.DataFrame, date_col: str = 'date', 
+                          value_col: str = 'value') -> Dict[str, any]:
+        """
+        Detect seasonal patterns in time series data.
         
-        seasonality_scores = {}
-        
-        for period in periods:
-            if len(ts_data) > period:
-                # Calculate autocorrelation at lag = period
-                correlation, p_value = pearsonr(ts_data[:-period], ts_data[period:])
-                seasonality_scores[f'period_{period}'] = {
-                    'correlation': correlation,
-                    'p_value': p_value,
-                    'significant': p_value < 0.05
-                }
-        
-        return seasonality_scores
+        Args:
+            data: DataFrame with date and value columns
+            date_col: Name of the date column
+            value_col: Name of the value column
+            
+        Returns:
+            Dictionary with seasonality information
+        """
+        try:
+            if data.empty:
+                return {'has_seasonality': False, 'patterns': {}}
+            
+            # Prepare data
+            df = data.copy()
+            df[date_col] = pd.to_datetime(df[date_col])
+            df = df.sort_values(date_col)
+            
+            # Create time-based features
+            df['year'] = df[date_col].dt.year
+            df['month'] = df[date_col].dt.month
+            df['day_of_week'] = df[date_col].dt.dayofweek
+            df['day_of_year'] = df[date_col].dt.dayofyear
+            df['week_of_year'] = df[date_col].dt.isocalendar().week
+            
+            patterns = {}
+            
+            # Test for different seasonal patterns
+            patterns['monthly'] = self._test_monthly_seasonality(df, value_col)
+            patterns['weekly'] = self._test_weekly_seasonality(df, value_col)
+            patterns['yearly'] = self._test_yearly_seasonality(df, value_col)
+            
+            # Overall seasonality assessment
+            has_seasonality = any(pattern['significant'] for pattern in patterns.values())
+            
+            return {
+                'has_seasonality': has_seasonality,
+                'patterns': patterns,
+                'strongest_pattern': self._find_strongest_pattern(patterns)
+            }
+            
+        except Exception as e:
+            logger.error(f"Error detecting seasonality: {e}")
+            return {'has_seasonality': False, 'patterns': {}}
     
-    def create_seasonal_features(self, df: pd.DataFrame, date_col: str, 
-                               target_col: str) -> pd.DataFrame:
-        """Create features based on detected seasonality"""
-        df = df.copy()
-        df[date_col] = pd.to_datetime(df[date_col])
+    def _test_monthly_seasonality(self, df: pd.DataFrame, value_col: str) -> Dict[str, any]:
+        """Test for monthly seasonal patterns."""
+        try:
+            monthly_stats = df.groupby('month')[value_col].agg(['mean', 'std', 'count'])
+            
+            # Statistical test for monthly differences
+            monthly_groups = [group[value_col].values for name, group in df.groupby('month')]
+            monthly_groups = [group for group in monthly_groups if len(group) > 1]
+            
+            if len(monthly_groups) < 3:
+                return {'significant': False, 'p_value': 1.0, 'strength': 0.0}
+            
+            # ANOVA test
+            f_stat, p_value = stats.f_oneway(*monthly_groups)
+            
+            # Calculate strength (coefficient of variation of monthly means)
+            cv = monthly_stats['mean'].std() / monthly_stats['mean'].mean()
+            
+            return {
+                'significant': p_value < 0.05,
+                'p_value': p_value,
+                'strength': cv,
+                'peak_months': monthly_stats['mean'].nlargest(3).index.tolist()
+            }
+            
+        except Exception as e:
+            logger.error(f"Error in monthly seasonality test: {e}")
+            return {'significant': False, 'p_value': 1.0, 'strength': 0.0}
+    
+    def _test_weekly_seasonality(self, df: pd.DataFrame, value_col: str) -> Dict[str, any]:
+        """Test for weekly seasonal patterns."""
+        try:
+            weekly_stats = df.groupby('day_of_week')[value_col].agg(['mean', 'std', 'count'])
+            
+            # Statistical test for weekly differences
+            weekly_groups = [group[value_col].values for name, group in df.groupby('day_of_week')]
+            weekly_groups = [group for group in weekly_groups if len(group) > 1]
+            
+            if len(weekly_groups) < 3:
+                return {'significant': False, 'p_value': 1.0, 'strength': 0.0}
+            
+            # ANOVA test
+            f_stat, p_value = stats.f_oneway(*weekly_groups)
+            
+            # Calculate strength
+            cv = weekly_stats['mean'].std() / weekly_stats['mean'].mean()
+            
+            return {
+                'significant': p_value < 0.05,
+                'p_value': p_value,
+                'strength': cv,
+                'peak_days': weekly_stats['mean'].nlargest(2).index.tolist()
+            }
+            
+        except Exception as e:
+            logger.error(f"Error in weekly seasonality test: {e}")
+            return {'significant': False, 'p_value': 1.0, 'strength': 0.0}
+    
+    def _test_yearly_seasonality(self, df: pd.DataFrame, value_col: str) -> Dict[str, any]:
+        """Test for yearly seasonal patterns."""
+        try:
+            if df['year'].nunique() < 2:
+                return {'significant': False, 'p_value': 1.0, 'strength': 0.0}
+            
+            yearly_stats = df.groupby('year')[value_col].agg(['mean', 'std', 'count'])
+            
+            # Statistical test for yearly differences
+            yearly_groups = [group[value_col].values for name, group in df.groupby('year')]
+            yearly_groups = [group for group in yearly_groups if len(group) > 1]
+            
+            if len(yearly_groups) < 2:
+                return {'significant': False, 'p_value': 1.0, 'strength': 0.0}
+            
+            # ANOVA test
+            f_stat, p_value = stats.f_oneway(*yearly_groups)
+            
+            # Calculate strength
+            cv = yearly_stats['mean'].std() / yearly_stats['mean'].mean()
+            
+            return {
+                'significant': p_value < 0.05,
+                'p_value': p_value,
+                'strength': cv,
+                'trend': self._calculate_trend(yearly_stats['mean'])
+            }
+            
+        except Exception as e:
+            logger.error(f"Error in yearly seasonality test: {e}")
+            return {'significant': False, 'p_value': 1.0, 'strength': 0.0}
+    
+    def _calculate_trend(self, yearly_means: pd.Series) -> str:
+        """Calculate trend direction from yearly means."""
+        try:
+            if len(yearly_means) < 2:
+                return 'insufficient_data'
+            
+            # Linear regression to determine trend
+            x = np.arange(len(yearly_means))
+            slope, intercept, r_value, p_value, std_err = stats.linregress(x, yearly_means.values)
+            
+            if p_value < 0.05:
+                return 'increasing' if slope > 0 else 'decreasing'
+            else:
+                return 'stable'
+                
+        except Exception:
+            return 'unknown'
+    
+    def _find_strongest_pattern(self, patterns: Dict[str, Dict]) -> Optional[str]:
+        """Find the strongest seasonal pattern."""
+        try:
+            significant_patterns = {
+                name: pattern for name, pattern in patterns.items() 
+                if pattern.get('significant', False)
+            }
+            
+            if not significant_patterns:
+                return None
+            
+            # Find pattern with highest strength
+            strongest = max(
+                significant_patterns.items(),
+                key=lambda x: x[1].get('strength', 0)
+            )
+            
+            return strongest[0]
+            
+        except Exception:
+            return None
+    
+    def generate_seasonal_features(self, data: pd.DataFrame, date_col: str = 'date') -> pd.DataFrame:
+        """
+        Generate seasonal features for time series data.
         
-        # Sort by date
-        df = df.sort_values(date_col)
-        
-        # Detect seasonality
-        seasonality = self.detect_seasonality(df[target_col])
-        
-        # Create seasonal decomposition features
-        from statsmodels.tsa.seasonal import seasonal_decompose
-        
-        if len(df) >= 24:  # Minimum periods for decomposition
-            try:
-                decomposition = seasonal_decompose(df[target_col], model='additive', period=min(12, len(df)//2))
-                df['trend'] = decomposition.trend
-                df['seasonal'] = decomposition.seasonal
-                df['residual'] = decomposition.resid
-            except:
-                logger.warning("Could not perform seasonal decomposition")
-        
-        return df
+        Args:
+            data: DataFrame with date column
+            date_col: Name of the date column
+            
+        Returns:
+            DataFrame with additional seasonal features
+        """
+        try:
+            df = data.copy()
+            df[date_col] = pd.to_datetime(df[date_col])
+            
+            # Basic time features
+            df['year'] = df[date_col].dt.year
+            df['month'] = df[date_col].dt.month
+            df['day_of_week'] = df[date_col].dt.dayofweek
+            df['day_of_month'] = df[date_col].dt.day
+            df['day_of_year'] = df[date_col].dt.dayofyear
+            df['week_of_year'] = df[date_col].dt.isocalendar().week
+            df['quarter'] = df[date_col].dt.quarter
+            
+            # Cyclical features (important for ML models)
+            df['month_sin'] = np.sin(2 * np.pi * df['month'] / 12)
+            df['month_cos'] = np.cos(2 * np.pi * df['month'] / 12)
+            df['day_of_week_sin'] = np.sin(2 * np.pi * df['day_of_week'] / 7)
+            df['day_of_week_cos'] = np.cos(2 * np.pi * df['day_of_week'] / 7)
+            df['day_of_year_sin'] = np.sin(2 * np.pi * df['day_of_year'] / 365)
+            df['day_of_year_cos'] = np.cos(2 * np.pi * df['day_of_year'] / 365)
+            
+            # Business features
+            df['is_weekend'] = (df['day_of_week'] >= 5).astype(int)
+            df['is_month_start'] = (df['day_of_month'] <= 7).astype(int)
+            df['is_month_end'] = (df['day_of_month'] >= 25).astype(int)
+            df['is_quarter_start'] = df[date_col].dt.is_quarter_start.astype(int)
+            df['is_quarter_end'] = df[date_col].dt.is_quarter_end.astype(int)
+            df['is_year_start'] = df[date_col].dt.is_year_start.astype(int)
+            df['is_year_end'] = df[date_col].dt.is_year_end.astype(int)
+            
+            logger.info(f"Generated seasonal features for {len(df)} records")
+            return df
+            
+        except Exception as e:
+            logger.error(f"Error generating seasonal features: {e}")
+            return data

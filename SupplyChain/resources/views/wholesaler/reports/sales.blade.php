@@ -197,7 +197,7 @@
                         <div class="card-gradient p-6 rounded-xl">
                             <div class="flex items-center">
                                 <div class="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl">
-                                    <i class="fas fa-dollar-sign text-white text-xl"></i>
+                                    <i class="fas fa-coins text-white text-xl"></i>
                                 </div>
                                 <div class="ml-4">
                                     <p class="text-sm text-black">Total Sales</p>

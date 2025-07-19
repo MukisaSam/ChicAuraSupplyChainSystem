@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\Log;
 
 class RecommendationService
 {
-    private const ML_API_BASE_URL = 'http://localhost:8000';
+    private const ML_API_BASE_URL = 'http://localhost:8001';
     private const API_TOKEN = 'ml-api-chicaura-token';
     private const CACHE_DURATION = 1440; // 24 hours in minutes
-    
+
     /**
      * Get recommendations for a customer
      */

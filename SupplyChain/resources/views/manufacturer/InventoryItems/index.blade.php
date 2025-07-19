@@ -1,7 +1,7 @@
 @extends('manufacturer.layouts.dashboard')
 @section('content')
 <div class="container mx-auto py-8">
-    <h1 class="text-3xl font-bold mb-6 text-white">Inventory for {{ $warehouse->location }}</h1>
+    <h1 class="text-3xl font-bold text-black mb-6">Inventory for {{ $warehouse->location }}</h1>
     <div class="flex justify-end mb-6">
         <a href="{{ route('warehouses.inventory-items.create', $warehouse) }}" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition">Add Inventory Item</a>
     </div>

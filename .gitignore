@@ -1,0 +1,11 @@
+/ml_models/recommendation_models/
+/ml_models/enhanced_demand_models/
+/ml_models/__pycache__/
+/ml_models/supplier_models/
+/ml_models/demand_model.pkl
+/ml_models/label_encoders.pkl
+/ml_models/model_features.pkl
+/SupplyChain/public/supplier_analysis.csv
+/SupplyChain/public/supplier_insights.json
+/SupplyChain/public/recommendations_sample.json
+/SupplyChain/public/forecast_plots

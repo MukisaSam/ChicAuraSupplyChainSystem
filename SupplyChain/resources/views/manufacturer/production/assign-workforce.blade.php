@@ -2,7 +2,7 @@
 @section('content')
 <div class="container mx-auto py-8 flex justify-center">
     <div class="w-full max-w-lg bg-white rounded-lg shadow-lg p-8">
-        <h1 class="text-2xl font-bold text-gray-800 mb-6 text-center">Assign Workforce to Work Order #{{ $workOrder->id }}</h1>
+        <h1 class="text-2xl font-bold text-black mb-6 text-center">Assign Workforce to Work Order #{{ $workOrder->id }}</h1>
         <form method="POST" action="{{ route('manufacturer.production.assign-workforce.store', $workOrder->id) }}">
             @csrf
             <div class="mb-5">

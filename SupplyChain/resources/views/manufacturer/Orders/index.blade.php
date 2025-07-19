@@ -10,36 +10,100 @@
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
         body { 
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/manufacturer.png') }}');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background: #f4f6fa;
             min-height: 100vh;
+            margin: 0;
+            padding: 0;
         }
         
-        .dark body {
-            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 100%), url('{{ asset('images/manufacturer.png') }}');
-        }
-        
-        .sidebar { 
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 16rem;
+            z-index: 30;
             transition: transform 0.3s ease-in-out;
-            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
-            box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            background: linear-gradient(180deg, #1a237e 0%, #283593 100%);
+            box-shadow: 4px 0 15px rgba(0,0,0,0.12);
+            overflow-y: auto;
+            overflow-x: hidden;
         }
         
-        .dark .sidebar {
-            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+        .main-content-wrapper {
+            margin-left: 16rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .header-gradient {
+            position: fixed;
+            top: 0;
+            left: 16rem;
+            right: 0;
+            height: 4rem;
+            z-index: 40;
+            background: #fff;
+            box-shadow: 0 2px 20px rgba(0,0,0,0.04);
+            display: flex;
+            align-items: center;
+        }
+        
+        .main-content-scrollable {
+            flex: 1 1 0%;
+            overflow-y: auto;
+            padding: 2rem 1.5rem;
+            margin-top: 4rem;
+            background: transparent;
+        }
+        .main-content-scrollable, .main-content-scrollable * {
+            color: #1a237e;
+        }
+        .main-content-scrollable h1, .main-content-scrollable h2, .main-content-scrollable h3, .main-content-scrollable h4, .main-content-scrollable h5, .main-content-scrollable h6 {
+            color: #111827;
+        }
+        .main-content-scrollable p, .main-content-scrollable span, .main-content-scrollable td, .main-content-scrollable th, .main-content-scrollable div, .main-content-scrollable li {
+            color: #232e3c;
+        }
+        .dark .main-content-scrollable, .dark .main-content-scrollable * {
+            color: #f1f5f9;
+        }
+        .dark .main-content-scrollable h1, .dark .main-content-scrollable h2, .dark .main-content-scrollable h3, .dark .main-content-scrollable h4, .dark .main-content-scrollable h5, .dark .main-content-scrollable h6 {
+            color: #fff;
+        }
+        .dark .main-content-scrollable p, .dark .main-content-scrollable span, .dark .main-content-scrollable td, .dark .main-content-scrollable th, .dark .main-content-scrollable div, .dark .main-content-scrollable li {
+            color: #f1f5f9;
+        }
+        
+        @media (max-width: 1024px) {
+            .main-content-wrapper {
+                margin-left: 0;
+            }
+            .sidebar {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 16rem;
+                z-index: 30;
+            }
+            .header-gradient {
+                left: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-content-wrapper { margin-left: 0; }
+            .header-gradient { left: 0; }
         }
         
         .logo-container {
-            background: rgba(255, 255, 255, 0.95);
+            background: #fff;
             border-radius: 12px;
             padding: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        
-        .dark .logo-container {
-            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
         }
         
         .card-gradient {
@@ -93,15 +157,6 @@
         .nav-link:hover {
             transform: translateX(5px);
         }
-        .header-gradient {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            box-shadow: 0 2px 20px rgba(0,0,0,0.1);
-        }
-        
-        .dark .header-gradient {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-            border-color: #475569;
-        }
         
         .dark .text-white {
             color: #f1f5f9;
@@ -125,21 +180,16 @@
         .status-shipped { background-color: #c7d2fe; color: #4338ca; }
         .status-delivered { background-color: #d1fae5; color: #065f46; }
         .status-cancelled { background-color: #fee2e2; color: #dc2626; }
-        
-        @media (max-width: 768px) {
-            .sidebar { transform: translateX(-100%); }
-            .sidebar.open { transform: translateX(0); }
-        }
     </style>
 </head>
 <body class="font-sans antialiased">
-    <div class="flex h-full">
+    <div>
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
+        <aside id="sidebar" class="sidebar">
             <div class="flex flex-col h-full">
                 <!-- Sidebar Header -->
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
-                    <div class="logo-container">
+                    <div class="sidebar-logo-blend w-full h-16 flex items-center justify-center p-0 m-0" style="background:#fff;">
                         <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
@@ -181,7 +231,7 @@
                         <span class="ml-2 text-sm">Reports</span>
                     </a>
                      <a href="{{route('manufacturer.revenue')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-dollar-sign w-5"></i>
+                        <i class="fas fa-coins w-5 text-yellow-500"></i>
                         <span class="ml-2 text-sm">Revenue</span>
                     </a>
                     <a href="{{ route('manufacturer.workforce.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
@@ -230,9 +280,9 @@
             </div>
         </aside>
 
-        <div class="flex flex-col flex-1 w-full">
+        <div class="main-content-wrapper">
             <!-- Top Navigation Bar -->
-            <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b">
+            <header class="header-gradient flex items-center justify-between border-b">
                 <div class="flex items-center">
                     <!-- Mobile Menu Toggle -->
                     <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700">
@@ -272,12 +322,12 @@
             </header>
 
             <!-- Main Content -->
-            <main class="flex-1 p-4 overflow-y-auto">
+            <main class="main-content-scrollable">
                 <!-- Header Section -->
                 <div class="mb-8">
                     <div class="flex justify-between items-center">
                         <div>
-                            <h1 class="text-3xl font-bold text-white">Orders Management</h1>
+                            <h1 class="text-3xl font-bold text-black">Orders Management</h1>
                             <p class="text-white mt-2">Manage wholesaler orders and supplier requests</p>
                         </div>
                         <div class="flex space-x-3">
@@ -336,11 +386,11 @@
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
                         <div class="flex items-center">
                             <div class="p-3 bg-green-100 dark:bg-green-900 rounded-lg">
-                                <i class="fas fa-dollar-sign text-green-600 dark:text-green-400 text-xl"></i>
+                                <i class="fas fa-coins text-green-600 dark:text-green-400 text-xl"></i>
                             </div>
                             <div class="ml-4">
                                 <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Revenue</p>
-                                <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($stats['total_revenue'] ?? 0, 2) }}</p>
+                                <p class="text-2xl font-bold text-gray-900 dark:text-white">UGX {{ number_format($stats['total_revenue'] ?? 0, 2) }}</p>
                             </div>
                         </div>
                     </div>
@@ -388,7 +438,7 @@
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Order</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Wholesaler</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Items</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Amount</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"><i class="fas fa-coins mr-1"></i>Amount (UGX)</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
@@ -415,9 +465,7 @@
                                                 @endif
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm font-medium text-gray-900 dark:text-white">${{ number_format($order->total_amount, 2) }}</div>
-                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white">UGX {{ number_format((float) $order->amount) }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
                                                 @if($order->status === 'pending') bg-yellow-100 text-yellow-800

@@ -5,7 +5,7 @@
     <div class="bg-white/80 rounded-xl shadow p-6 flex items-center gap-4">
         <div class="flex-shrink-0">
             <div class="bg-gradient-to-br from-indigo-500 to-indigo-700 p-3 rounded-full shadow">
-                <i class="fas fa-dollar-sign text-white text-2xl"></i>
+                <i class="fas fa-coins text-yellow-500 text-2xl"></i>
             </div>
         </div>
         <div>
@@ -19,11 +19,11 @@
     <div class="stat-card p-6 rounded-xl bg-white/90">
         <div class="flex items-center">
             <div class="p-4 bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl shadow-lg">
-                <i class="fas fa-dollar-sign text-white text-2xl"></i>
+                <i class="fas fa-coins text-white text-2xl"></i>
             </div>
             <div class="ml-4">
                 <p class="text-sm font-medium text-gray-600">Total Revenue</p>
-                <p class="text-2xl font-bold text-gray-800">{{ $stats['revenue'] ?? '$0' }}</p>
+                <p class="text-2xl font-bold text-gray-800">UGX {{ number_format($stats['revenue'] ?? 0, 2) }}</p>
             </div>
         </div>
     </div>
@@ -138,7 +138,7 @@
                                 enabled: true,
                                 callbacks: {
                                     label: function(context) {
-                                        return 'Revenue: $' + context.parsed.y.toLocaleString();
+                                        return 'Revenue: UGX ' + context.parsed.y.toLocaleString();
                                     }
                                 },
                                 backgroundColor: 'rgba(124, 58, 237, 0.9)',
@@ -155,7 +155,7 @@
                                 beginAtZero: true,
                                 ticks: {
                                     callback: function(value) {
-                                        return '$' + value.toLocaleString();
+                                        return 'UGX ' + value.toLocaleString();
                                     },
                                     color: '#7c3aed',
                                     font: { weight: 'bold' }

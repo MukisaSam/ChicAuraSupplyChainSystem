@@ -19,7 +19,7 @@
                     All Products
                 @endif
             </h1>
-            <p class="text-muted">{{ $products->total() }} product(s) found</p>
+            <p class="text-muted mb-0">{{ $products->total() }} product(s) found</p>
         </div>
     </div>
 
@@ -176,9 +176,68 @@
             </div>
 
             <!-- Pagination -->
-            <!-- <div class="d-flex justify-content-center mt-5">
-                {{ $products->withQueryString()->links() }}
-            </div> -->
+            @if($products->hasPages())
+            <div class="d-flex justify-content-center mt-5">
+                <nav aria-label="Products pagination">
+                    <ul class="pagination pagination-lg">
+                        {{-- Previous Page Link --}}
+                        @if ($products->onFirstPage())
+                            <li class="page-item disabled">
+                                <span class="page-link">
+                                    <i class="bi bi-chevron-left"></i>
+                                    <span class="d-none d-sm-inline ms-1">Previous</span>
+                                </span>
+                            </li>
+                        @else
+                            <li class="page-item">
+                                <a class="page-link" href="{{ $products->appends(request()->query())->previousPageUrl() }}">
+                                    <i class="bi bi-chevron-left"></i>
+                                    <span class="d-none d-sm-inline ms-1">Previous</span>
+                                </a>
+                            </li>
+                        @endif
+
+                        {{-- Pagination Elements --}}
+                        @foreach ($products->appends(request()->query())->getUrlRange(1, $products->lastPage()) as $page => $url)
+                            @if ($page == $products->currentPage())
+                                <li class="page-item active">
+                                    <span class="page-link">{{ $page }}</span>
+                                </li>
+                            @else
+                                <li class="page-item">
+                                    <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                                </li>
+                            @endif
+                        @endforeach
+
+                        {{-- Next Page Link --}}
+                        @if ($products->hasMorePages())
+                            <li class="page-item">
+                                <a class="page-link" href="{{ $products->appends(request()->query())->nextPageUrl() }}">
+                                    <span class="d-none d-sm-inline me-1">Next</span>
+                                    <i class="bi bi-chevron-right"></i>
+                                </a>
+                            </li>
+                        @else
+                            <li class="page-item disabled">
+                                <span class="page-link">
+                                    <span class="d-none d-sm-inline me-1">Next</span>
+                                    <i class="bi bi-chevron-right"></i>
+                                </span>
+                            </li>
+                        @endif
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Pagination Info -->
+            <div class="text-center mt-3">
+                <small class="text-muted">
+                    Showing {{ $products->firstItem() }} to {{ $products->lastItem() }} of {{ $products->total() }} results
+                    (Page {{ $products->currentPage() }} of {{ $products->lastPage() }})
+                </small>
+            </div>
+            @endif
 
             @else
             <!-- No Products Found -->
@@ -207,6 +266,97 @@
     }
     .product-card:hover {
         transform: translateY(-5px);
+    }
+    
+    /* Professional Pagination Styles */
+    .pagination {
+        margin-bottom: 0;
+    }
+    
+    .pagination .page-link {
+        border: 1px solid #dee2e6;
+        color: #0d6efd;
+        padding: 0.75rem 1rem;
+        margin: 0 2px;
+        border-radius: 6px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    
+    .pagination .page-link:hover {
+        background-color: #e9ecef;
+        border-color: #adb5bd;
+        color: #0a58ca;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .pagination .page-item.active .page-link {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+        color: white;
+        transform: none;
+        box-shadow: 0 2px 8px rgba(13, 110, 253, 0.3);
+    }
+    
+    .pagination .page-item.disabled .page-link {
+        color: #6c757d;
+        background-color: #f8f9fa;
+        border-color: #dee2e6;
+        cursor: not-allowed;
+    }
+    
+    .pagination .page-item.disabled .page-link:hover {
+        transform: none;
+        box-shadow: none;
+    }
+    
+    /* Mobile Responsiveness for Pagination */
+    @media (max-width: 576px) {
+        .pagination {
+            justify-content: center;
+        }
+        
+        .pagination .page-link {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+            margin: 0 1px;
+        }
+        
+        .pagination-lg .page-link {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.875rem;
+        }
+    }
+    
+    @media (max-width: 480px) {
+        .pagination .page-link {
+            padding: 0.4rem 0.6rem;
+            font-size: 0.8rem;
+        }
+        
+        /* Hide page numbers on very small screens, keep only prev/next */
+        .pagination .page-item:not(:first-child):not(:last-child) {
+            display: none;
+        }
+        
+        /* Show current page and adjacent pages */
+        .pagination .page-item.active,
+        .pagination .page-item.active + .page-item,
+        .pagination .page-item.active - .page-item {
+            display: block;
+        }
+    }
+    
+    /* Pagination info styling */
+    .text-muted small {
+        font-size: 0.875rem;
+    }
+    
+    /* Smooth scroll to top after pagination click */
+    .page-link {
+        scroll-behavior: smooth;
     }
 </style>
 @endpush

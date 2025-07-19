@@ -234,8 +234,8 @@
                 <div class="mb-8">
                     <div class="flex justify-between items-center">
                         <div>
-                            <h1 class="text-3xl font-bold text-white mb-2">Create Supply Request</h1>
-                            <p class="text-gray-200 text-sm">Request raw materials from suppliers</p>
+                            <h1 class="text-3xl font-bold text-black mb-2">Create Supply Request</h1>
+                            <p class="text-black text-sm">Request raw materials from suppliers</p>
                         </div>
                         <div class="flex space-x-3">
                             <a href="{{ route('manufacturer.orders') }}" 

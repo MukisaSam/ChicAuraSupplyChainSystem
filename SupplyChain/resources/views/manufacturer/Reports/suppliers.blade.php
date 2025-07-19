@@ -2,7 +2,7 @@
 @section('content')
 <div class="container mx-auto p-6">
     <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-bold text-white">Supplier Performance Report</h2>
+        <h2 class="text-2xl font-bold text-black mb-6 flex items-center gap-3">Supplier Reports</h2>
         <a href="#" class="px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 opacity-50 cursor-not-allowed">
             <i class="fas fa-file-csv mr-2"></i>Export CSV (Coming Soon)
         </a>
@@ -10,14 +10,14 @@
 
     <!-- Filters -->
     <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
-        <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-white">Filters</h3>
+        <h3 class="text-lg font-semibold mb-4 text-black">Filters</h3>
         <form method="GET" class="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Start Date</label>
+                <label class="block text-sm font-medium text-black mb-2">Start Date</label>
                 <input type="date" name="start_date" value="{{ $startDate }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">End Date</label>
+                <label class="block text-sm font-medium text-black mb-2">End Date</label>
                 <input type="date" name="end_date" value="{{ $endDate }}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
             </div>
             <div class="flex items-end">
@@ -55,11 +55,11 @@
         <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
             <div class="flex items-center">
                 <div class="p-3 bg-yellow-100 dark:bg-yellow-900 rounded-full">
-                    <i class="fas fa-dollar-sign text-yellow-600 dark:text-yellow-400 text-xl"></i>
+                    <i class="fas fa-coins text-yellow-600 dark:text-yellow-400 text-xl"></i>
                 </div>
                 <div class="ml-4">
                     <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Value</p>
-                    <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ number_format($suppliers->sum(function($s) { return $s->suppliedItems->sum(DB::raw('delivered_quantity * price')); }), 2) }}</p>
+                    <p class="text-2xl font-bold text-gray-900 dark:text-white">UGX {{ number_format($suppliers->sum(function($s) { return $s->suppliedItems->sum(DB::raw('delivered_quantity * price')); }), 2) }}</p>
                 </div>
             </div>
         </div>
@@ -97,12 +97,12 @@
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                 <thead class="bg-gray-50 dark:bg-gray-700">
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Supplier Name</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Total Supplied</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Total Value</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Last Supplied</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Performance</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Supplier Name</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Email</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Total Supplied</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Total Value</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Last Supplied</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">Performance</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
@@ -116,7 +116,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{{ $supplier->user->full_name ?? 'N/A' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{{ $supplier->user->email ?? 'N/A' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">{{ $totalSupplied }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">${{ number_format($totalValue, 2) }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">UGX {{ number_format($totalValue, 2) }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
                             {{ $lastSupplied ? $lastSupplied->delivery_date->format('M d, Y') : 'Never' }}
                         </td>
@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
         data: {
             labels: [],
             datasets: [{
-                label: 'Total Value ($)',
+                label: 'Total Value (UGX)',
                 data: [],
                 backgroundColor: 'rgba(34, 197, 94, 0.8)',
                 borderColor: 'rgb(34, 197, 94)',

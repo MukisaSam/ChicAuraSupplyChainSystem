@@ -15,7 +15,8 @@ use App\Http\Controllers\{
     CartController,
     CustomerController,
     CustomerOrderController,
-    CustomerRecommendationController
+    CustomerRecommendationController,
+    ManufacturerAnalyticsController
 };
 
 /*
@@ -247,6 +248,9 @@ Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('
     Route::get('/analytics/forecast/options', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'getForecastOptions'])->name('analytics.forecast.options');
     Route::post('/analytics/forecast/generate', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'generateForecast'])->name('analytics.forecast.generate');
 
+    // ML System Refresh Route
+    Route::post('/analytics/refresh-ml-system', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'refreshMLSystem'])->name('analytics.refresh-ml-system');
+
     //Inventory routes
     Route::get('/inventory', [App\Http\Controllers\ManufacturerInventoryController::class, 'index'])->name('inventory');
     Route::get('/inventory/create', [App\Http\Controllers\ManufacturerInventoryController::class, 'create'])->name('inventory.create');
@@ -431,5 +435,24 @@ Route::delete('manufacturer/production/assignment/{workOrderAssignment}', [App\H
 Route::post('/payment/process', [PaymentController::class, 'process'])->name('payment.process');
 Route::get('/payment/success', [PaymentController::class, 'success'])->name('payment.success');
 Route::get('/payment/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
+
+// ML Supplier Insights routes
+Route::middleware(['auth', 'role:manufacturer'])->group(function () {
+    Route::post('/manufacturer/analytics/refresh-supplier-insights', [ManufacturerAnalyticsController::class, 'refreshSupplierInsights'])
+        ->name('manufacturer.analytics.refresh-supplier-insights');
+    
+    Route::get('/manufacturer/analytics/supplier-insights-details', [ManufacturerAnalyticsController::class, 'getSupplierInsightsDetails'])
+        ->name('manufacturer.analytics.supplier-insights-details');
+    
+    Route::get('/manufacturer/analytics/download-supplier-insights', [ManufacturerAnalyticsController::class, 'downloadSupplierInsights'])
+        ->name('manufacturer.analytics.download-supplier-insights');
+});
+
+Route::prefix('manufacturer')->middleware(['auth', 'role:manufacturer'])->group(function () {
+    Route::get('/analytics', [ManufacturerAnalyticsController::class, 'index'])->name('manufacturer.analytics');
+    Route::post('/analytics/refresh-wholesaler-segmentation', [ManufacturerAnalyticsController::class, 'refreshWholesalerSegmentation'])->name('manufacturer.analytics.refresh-wholesaler-segmentation');
+});
+
+
 
 

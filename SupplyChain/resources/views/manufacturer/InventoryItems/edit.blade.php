@@ -1,7 +1,7 @@
 @extends('manufacturer.layouts.dashboard')
 @section('content')
 <div class="container mx-auto py-6">
-    <h1 class="text-2xl text-white font-bold mb-4">Edit Inventory Item</h1>
+    <h1 class="text-2xl font-bold mb-6 text-black">Edit Inventory Item</h1>
     <form action="{{ route('warehouses.inventory-items.update', [$warehouse, $inventory_item]) }}" method="POST" class="bg-white p-6 rounded-lg shadow-lg max-w-xl mx-auto">
         @csrf
         @method('PUT')

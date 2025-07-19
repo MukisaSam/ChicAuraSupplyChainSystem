@@ -17,7 +17,7 @@ class DatabaseConfig:
             'host': os.getenv('DB_HOST', 'localhost'),
             'user': os.getenv('DB_USER', 'root'),
             'password': os.getenv('DB_PASSWORD', ''),
-            'database': os.getenv('DB_NAME', 'mukisa'),
+            'database': os.getenv('DB_NAME', 'supply'),
             'charset': 'utf8mb4',
             'autocommit': True,
             'raise_on_warnings': True,
@@ -145,11 +145,7 @@ def get_demand_data(product_filter: Optional[str] = None,
         t3.name as product_name,
         t3.id as product_id,
         t3.category,
-        t3.material,
-        t1.size,
-        t1.color,
-        t2.total_amount,
-        t2.id as order_id
+        t3.material
     FROM order_items t1 
     JOIN orders t2 ON t1.order_id = t2.id 
     JOIN items t3 ON t1.item_id = t3.id
@@ -217,7 +213,7 @@ def get_supplier_performance_data() -> list:
     FROM suppliers s
     JOIN users u ON s.user_id = u.id
     LEFT JOIN supply_requests sr ON s.id = sr.supplier_id
-    LEFT JOIN supplied_items si ON sr.id = si.supply_request_id
+    LEFT JOIN supplied_items si ON sr.supplier_id = si.supplier_id AND sr.item_id = si.item_id
     LEFT JOIN items i ON sr.item_id = i.id
     WHERE sr.id IS NOT NULL
     ORDER BY sr.created_at DESC
