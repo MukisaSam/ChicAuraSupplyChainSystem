@@ -31,7 +31,7 @@
                         <!-- Profile Picture Section -->
                         <div class="flex items-center space-x-6">
                             <div class="flex-shrink-0">
-                                <img id="profile-preview" 
+                                    <img id="profile-preview" 
                                      class="h-24 w-24 rounded-full object-cover border-4 border-white shadow-lg" 
                                      src="{{ $user->profile_picture ? (Str::startsWith($user->profile_picture, ['http://', 'https://']) ? $user->profile_picture : Storage::disk('public')->url($user->profile_picture)) : asset('images/default-avatar.svg') }}" 
                                      alt="Profile Picture">

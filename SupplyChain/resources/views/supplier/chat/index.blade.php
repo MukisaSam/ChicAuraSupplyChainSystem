@@ -23,7 +23,7 @@
 
         /* Dark mode styles */
         .dark body {
-            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 100%), url('{{ asset('images/supplier.jpg') }}');
+            background: linear-gradient(135deg, rgba(15, 3, 3, 0.8) 0%, rgba(0,0,0,0.7) 100%), url('{{ asset('images/supplier.jpg') }}');
         }
 
         .sidebar {
