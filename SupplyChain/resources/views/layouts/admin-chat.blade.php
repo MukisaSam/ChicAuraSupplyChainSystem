@@ -9,7 +9,8 @@
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
         body {
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/black.jpeg') }}');
+            background: #f4f4f5;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             background-size: cover;
             background-position: center;
             background-attachment: fixed;

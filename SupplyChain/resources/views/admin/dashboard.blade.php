@@ -2,8 +2,8 @@
 @section('content')
 <div class="flex-1 p-4">
     <div class="mb-4">
-        <h2 class="text-2xl font-bold text-white mb-1">Administrator Dashboard</h2>
-        <p class="text-gray-200 text-sm">Welcome back! Here's your system overview.</p>
+        <h2 class="text-2xl font-bold text-black mb-1">Administrator Dashboard</h2>
+        <p class="text-black text-sm">Welcome back! Here's your system overview.</p>
     </div>
     <div class="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2 lg:grid-cols-4">
         <div class="stat-card p-4 rounded-xl">

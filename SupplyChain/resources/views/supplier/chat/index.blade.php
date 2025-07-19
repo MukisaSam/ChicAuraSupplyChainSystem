@@ -13,8 +13,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         body {
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/supplier.jpg') }}');
-            background-size: cover;
+            background: #f4f4f5;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             background-position: center;
             background-attachmecnt: fixed;
             min-height: 100vh;

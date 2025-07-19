@@ -11,7 +11,8 @@
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
         body {
-            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 100%), url('{{ asset('images/black.jpeg') }}');
+            background: #f4f4f5;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -21,12 +22,17 @@
             background: linear-gradient(135deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.8) 100%), url('{{ asset('images/black.jpeg') }}');
         }
         .sidebar {
-            transition: transform 0.3s ease-in-out;
-            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
             box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            color: #000;
+        }
+        .sidebar .nav-link,
+        .sidebar h3,
+        .sidebar p {
+            color: #000 !important;
         }
         .dark .sidebar {
-            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
         }
         .logo-container {
             background: rgba(255, 255, 255, 0.95);
@@ -246,9 +252,9 @@
                         </button>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <a href="{{ route('user.profile.edit') }}" class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors" title="Edit Profile">
+                        <button type="button" class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors" title="Edit Profile" x-data x-on:click="$dispatch('open-modal', 'profile-editor-modal')">
                             <i class="fas fa-user-edit text-lg"></i>
-                        </a>
+                        </button>
                         <form method="POST" action="{{ route('logout') }}" class="inline">
                             @csrf
                             <button type="submit" class="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors" title="Logout">
@@ -263,6 +269,7 @@
             </main>
         </div>
     </div>
+    <x-profile-editor-modal />
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const menuToggle = document.getElementById('menu-toggle');

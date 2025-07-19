@@ -13,12 +13,14 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         body {
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/supplier.jpg') }}');
+            background: #f4f4f5;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             background-size: cover;
             background-position: center;
             background-attachmecnt: fixed;
             min-height: 100vh;
             overflow: hidden;
+           
         }
 
         /* Dark mode styles */
@@ -28,12 +30,18 @@
 
         .sidebar {
             transition: transform 0.3s ease-in-out;
-            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
             box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            color: #000;
+        }
+        .sidebar .nav-link,
+        .sidebar h3,
+        .sidebar p {
+            color: #000 !important;
         }
 
         .dark .sidebar {
-            background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
         }
 
         .logo-container {
@@ -204,8 +212,8 @@
             <!-- Main Content -->
             <main class="flex-1 p-4 overflow-hidden">
                 <div id="home" class="mb-4 dashboard-section">
-                    <h2 class="text-2xl font-bold text-white mb-1">Supplier Dashboard</h2>
-                    <p class="text-gray-200 text-sm">Manage your supply chain operations efficiently.</p>
+                    <h2 class="text-2xl font-bold text-black mb-1">Supplier Dashboard</h2>
+                    <p class="text-black text-sm">Manage your supply chain operations efficiently.</p>
                     <div class="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2 lg:grid-cols-4">
                         <div class="stat-card p-4 rounded-xl">
                             <div class="flex items-center">
