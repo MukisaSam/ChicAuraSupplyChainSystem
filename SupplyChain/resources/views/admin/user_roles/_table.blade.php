@@ -14,8 +14,9 @@
             <td class="p-3">{{ $user->email }}</td>
             <td class="p-3">{{ ucfirst($user->role) }}</td>
             <td class="p-3">
-                <form action="{{ route('admin.user_roles.update', $user) }}" method="POST" class="flex items-center gap-2">
+                <form action="{{ route('admin.user_roles.update', $user) }}" method="POST">
                     @csrf
+                    @method('PUT')
                     <select name="role" class="rounded border-gray-300">
                         @foreach($roles as $role)
                             <option value="{{ $role }}" @if($user->role === $role) selected @endif>

@@ -17,14 +17,16 @@ class UserRoleController extends Controller
     }
 
     // Update a user's role
-    public function update(Request $request, User $user)
+    public function update(Request $request, $user)
     {
         $request->validate([
-            'role' => 'required|string|in:admin,manager,supplier,manufacturer,wholesaler', // Update as needed
+            'role' => 'required|string|in:admin,supplier,manufacturer,wholesaler'
         ]);
-        $user->role = $request->role;
+
+        $user = User::findOrFail($user);
+        $user->role = $request->input('role');
         $user->save();
 
-        return redirect()->route('admin.user_roles.index')->with('success', 'User role updated!');
+        return redirect()->route('admin.user_roles.index')->with('success', 'Role updated!');
     }
 }

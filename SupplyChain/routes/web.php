@@ -151,8 +151,9 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('/users/add', [\App\Http\Controllers\AdminUsersController::class, 'add'])->name('users.add');
 
     // User Roles
-    Route::get('/user-roles', [\App\Http\Controllers\Admin\UserRoleController::class, 'index'])->name('user_roles.index');
-    Route::get('/user-roles/ajax', [\App\Http\Controllers\Admin\UserRoleController::class, 'ajaxIndex'])->name('user_roles.ajax');
+    Route::get('/user_roles', [\App\Http\Controllers\Admin\UserRoleController::class, 'index'])->name('user_roles.index');
+    Route::get('/user_roles/ajax', [\App\Http\Controllers\Admin\UserRoleController::class, 'ajaxIndex'])->name('user_roles.ajax');
+    Route::put('/use_roles/{user}', [\App\Http\Controllers\Admin\UserRoleController::class, 'update'])->name('user_roles.update');
 
     // Analytics
     Route::get('/analytics', [\App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('analytics.index');
