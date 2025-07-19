@@ -5,59 +5,51 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Stripe\Stripe;
 use Stripe\Checkout\Session as StripeSession;
-use App\Models\Order;
+use App\Models\CustomerOrder;
+use App\Models\CustomerOrderItem;
 use App\Models\Item;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Auth;
 
 class PaymentController extends Controller
 {
     public function process(Request $request)
     {
-        // Validate the request
-        $validated = $request->validate([
+        $request->validate([
+            'payment_method' => 'required|in:credit_card,debit_card,paypal,bank_transfer,mobile_money,cash_on_delivery',
             'shipping_address.name' => 'required',
             'shipping_address.phone' => 'required',
             'payment_method' => 'required|in:credit_card,debit_card,paypal,bank_transfer,mobile_money,cash_on_delivery'
         ]);
 
-        // Get cart from session (using CartController's logic)
         $cart = Session::get('cart', []);
         if (empty($cart)) {
             return redirect()->route('cart.view')->with('error', 'Your cart is empty');
         }
 
-        // For cash on delivery - no payment processing needed
         if ($request->payment_method === 'cash_on_delivery') {
             return $this->handleCashOnDelivery($request, $cart);
         }
 
-        // For card payments (Stripe)
         if (in_array($request->payment_method, ['credit_card', 'debit_card'])) {
-            return $this->handleStripePayment($request, $cart);
+            return $this->handleStripePayment($request, $cart); // Keep original Stripe handling
         }
 
-        // For other payment methods
         return back()->with('error', 'Payment method not yet implemented');
     }
 
     protected function handleCashOnDelivery(Request $request, $cart)
     {
-        // Create order with 'pending' status
-        $order = $this->createOrder($request, $cart, 'cash_on_delivery');
-        
-        // Clear cart
+        $order = $this->createCustomerOrder($request, $cart, 'cash_on_delivery');
         Session::forget('cart');
         
-        // Redirect to success page with order details
-        return redirect()->route('payment.success')->with([
-            'order_id' => $order->id,
-            'payment_method' => 'Cash on Delivery'
-        ]);
+        return redirect()->route('customer.order.confirmation', $order->id)
+            ->with('success', 'Order placed successfully! Payment will be collected on delivery.');
     }
 
     protected function handleStripePayment(Request $request, $cart)
     {
+        // Keep original Stripe implementation exactly the same
         Stripe::setApiKey(env('STRIPE_SECRET'));
 
         $lineItems = [];
@@ -66,7 +58,7 @@ class PaymentController extends Controller
         foreach ($cart as $cartKey => $item) {
             $product = Item::find($item['product_id']);
             if ($product) {
-                $unitAmount = $product->base_price * 100; // Convert to cents
+                $unitAmount = $product->base_price * 100;
                 $subtotal += $product->base_price * $item['quantity'];
                 
                 $lineItems[] = [
@@ -87,7 +79,6 @@ class PaymentController extends Controller
             }
         }
 
-        // Add tax (10% as in CartController)
         $tax = $subtotal * 0.1;
         $lineItems[] = [
             'price_data' => [
@@ -114,49 +105,49 @@ class PaymentController extends Controller
         return redirect($session->url);
     }
 
-    protected function createOrder(Request $request, $cart, $paymentMethod)
+    protected function createCustomerOrder(Request $request, $cart, $paymentMethod)
     {
-        // Calculate totals using CartController's logic
-        $subtotal = 0;
-        foreach ($cart as $item) {
+        $totalAmount = 0;
+        $orderItems = [];
+
+        foreach ($cart as $cartKey => $item) {
             $product = Item::find($item['product_id']);
             if ($product) {
-                $subtotal += $product->base_price * $item['quantity'];
+                $itemTotal = $product->base_price * $item['quantity'];
+                $totalAmount += $itemTotal;
+                
+                $orderItems[] = [
+                    'item_id' => $product->id,
+                    'quantity' => $item['quantity'],
+                    'unit_price' => $product->base_price,
+                    'total_price' => $itemTotal,
+                    'size' => $item['size'] ?? null,
+                    'color' => $item['color'] ?? null
+                ];
             }
         }
-        $tax = $subtotal * 0.1;
-        $total = $subtotal + $tax;
 
-        $order = Order::create([
+        // Add tax (10%)
+        $totalAmount *= 1.1;
+
+        $order = CustomerOrder::create([
             'customer_id' => auth()->guard('customer')->id(),
-            'wholesaler_id' => 1,
-            'manufacturer_id' => 1,
+            'total_amount' => $totalAmount,
+            'payment_method' => $paymentMethod,
+            'payment_status' => $paymentMethod === 'cash_on_delivery' ? 'pending' : 'pending',
             'shipping_address' => $request->shipping_address,
             'billing_address' => $request->billing_same_as_shipping ? 
                                $request->shipping_address : 
                                $request->billing_address,
-            'payment_method' => $paymentMethod,
-            'status' => $paymentMethod === 'cash_on_delivery' ? 'pending' : 'processing',
-            'subtotal' => $subtotal,
-            'tax' => $tax,
-            'total' => $total,
+            'status' => 'pending',
+            'estimated_delivery' => now()->addDays(7),
             'notes' => $request->notes
         ]);
 
-        // Add order items using cart data
-        foreach ($cart as $cartKey => $item) {
-            $product = Item::find($item['product_id']);
-            if ($product) {
-                $order->items()->create([
-                    'product_id' => $product->id,
-                    'quantity' => $item['quantity'],
-                    'price' => $product->base_price,
-                    'options' => [
-                        'size' => $item['size'] ?? null,
-                        'color' => $item['color'] ?? null
-                    ]
-                ]);
-            }
+        foreach ($orderItems as $itemData) {
+            CustomerOrderItem::create(array_merge($itemData, [
+                'customer_order_id' => $order->id
+            ]));
         }
 
         return $order;
@@ -165,7 +156,6 @@ class PaymentController extends Controller
     public function success(Request $request)
     {
         if ($request->has('session_id') && $request->query('payment_method') === 'stripe') {
-            // Verify Stripe payment
             Stripe::setApiKey(env('STRIPE_SECRET'));
             $session = StripeSession::retrieve($request->session_id);
             
@@ -174,26 +164,17 @@ class PaymentController extends Controller
                 $orderData = json_decode($session->metadata->order_data, true);
                 
                 $request = new Request($orderData);
-                $order = $this->createOrder($request, $cart, 'stripe');
+                $order = $this->createCustomerOrder($request, $cart, 'credit_card');
                 
-                // Clear cart
                 Session::forget('cart');
                 
-                return view('payment.success', [
-                    'order' => $order,
-                    'payment_method' => 'Credit/Debit Card'
-                ]);
+                return redirect()->route('customer.order.confirmation', $order->id);
             }
         }
 
-        // For cash on delivery
         if (session()->has('order_id')) {
-            $order = Order::find(session('order_id'));
-            
-            return view('payment.success', [
-                'order' => $order,
-                'payment_method' => session('payment_method')
-            ]);
+            $order = CustomerOrder::find(session('order_id'));
+            return redirect()->route('customer.order.confirmation', $order->id);
         }
 
         return redirect()->route('cart.view')->with('error', 'Invalid payment confirmation');
