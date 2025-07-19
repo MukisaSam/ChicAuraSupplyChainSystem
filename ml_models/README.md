@@ -87,7 +87,7 @@ Set environment variables or update `db_config.py`:
 export DB_HOST=localhost
 export DB_USER=root
 export DB_PASSWORD=your_password
-export DB_NAME=mukisa
+export DB_NAME=supply
 ```
 
 ### 3. Train Initial Models
@@ -100,13 +100,16 @@ python recommendation_system.py
 
 # Analyze supplier performance
 python supplier_performance.py
+
+#Segment wholesalers
+python wholesaler_segmentation.py
 ```
 
 ### 4. Start API Server
 ```bash
 python api_server.py
-# API will be available at http://localhost:8000
-# Documentation at http://localhost:8000/ml-docs
+# API will be available at http://localhost:8001
+# Documentation at http://localhost:8001/ml-docs
 ```
 
 ### 5. Start Model Monitoring

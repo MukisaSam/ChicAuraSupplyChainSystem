@@ -490,60 +490,393 @@
                 </div>
 
                 <!-- Tables Section -->
-                <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-2">
-                    <!-- Supplier Performance Table -->
-                    <div class="card-gradient rounded-xl p-4 ">
-                        <h3 class="text-lg font-bold text-black mb-3">Supplier Performance (Last 6 Months)</h3>
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full text-sm">
-                                <thead>
-                                    <tr class="bg-gray-100">
-                                        <th class="py-2 px-3 text-left">Name</th>
-                                        <th class="py-2 px-3 text-left">On-Time (%)</th>
-                                        <th class="py-2 px-3 text-left">Avg. Days</th>
-                                        <th class="py-2 px-3 text-left">Rating</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($analytics['suppliers']['suppliers'] as $supplier)
-                                        <tr class="border-b">
-                                            <td class="py-2 px-3 text-black">{{ $supplier['name'] }}</td>
-                                            <td class="py-2 px-3 text-black">{{ $supplier['on_time_delivery_rate'] }}%</td>
-                                            <td class="py-2 px-3 text-black">{{ $supplier['avg_delivery_time'] }}</td>
-                                            <td class="py-2 px-3 text-black">{{ $supplier['quality_rating'] }}</td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                <div class="grid grid-cols-1 gap-4 mt-4">
+                    <!-- Enhanced ML Supplier Insights Section -->
+                    <div class="card-gradient rounded-xl p-6 shadow-lg">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center gap-3">
+                                <div class="p-2 bg-indigo-100 rounded-lg">
+                                    <i class="fas fa-brain text-indigo-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold text-black">AI-Powered Supplier Insights</h3>
+                                    <p class="text-sm text-gray-600">Machine learning analysis of supplier performance</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                @if(isset($analytics['mlSupplierInsights']['last_updated']))
+                                    <span class="text-xs text-gray-500">
+                                        Last updated: {{ date('M j, Y g:i A', $analytics['mlSupplierInsights']['last_updated']) }}
+                                    </span>
+                                @endif
+                                <!-- <button id="refreshInsightsBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-sm">
+                                    <i class="fas fa-sync-alt mr-1"></i> Refresh
+                                </button> -->
+                            </div>
                         </div>
+
+                        @if(isset($analytics['mlSupplierInsights']['error']))
+                            <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded mb-4">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>
+                                {{ $analytics['mlSupplierInsights']['error'] }}
+                                @if(isset($analytics['mlSupplierInsights']['message']))
+                                    <br><small>{{ $analytics['mlSupplierInsights']['message'] }}</small>
+                                @endif
+                            </div>
+                        @else
+                            <!-- Summary Statistics -->
+                            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-600">Total Suppliers</p>
+                                            <p class="text-2xl font-bold text-gray-900">{{ $analytics['mlSupplierInsights']['summary']['total_suppliers'] ?? 0 }}</p>
+                                        </div>
+                                        <i class="fas fa-users text-blue-500 text-2xl"></i>
+                                    </div>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-600">Avg Performance</p>
+                                            <p class="text-2xl font-bold text-gray-900">{{ number_format($analytics['mlSupplierInsights']['summary']['avg_performance_score'] ?? 0, 1) }}%</p>
+                                        </div>
+                                        <i class="fas fa-chart-line text-green-500 text-2xl"></i>
+                                    </div>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-600">Excellent</p>
+                                            <p class="text-2xl font-bold text-green-600">{{ $analytics['mlSupplierInsights']['summary']['excellent_suppliers'] ?? 0 }}</p>
+                                        </div>
+                                        <i class="fas fa-star text-yellow-500 text-2xl"></i>
+                                    </div>
+                                </div>
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-600">Poor</p>
+                                            <p class="text-2xl font-bold text-red-600">{{ $analytics['mlSupplierInsights']['summary']['poor_suppliers'] ?? 0 }}</p>
+                                        </div>
+                                        <i class="fas fa-exclamation-triangle text-red-500 text-2xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Top Performers and Underperformers -->
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                <!-- Top Performers -->
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <h4 class="font-semibold text-gray-800 mb-3 flex items-center">
+                                        <i class="fas fa-trophy text-yellow-500 mr-2"></i>
+                                        Top Performers
+                                    </h4>
+                                    <div class="space-y-2">
+                                        @if(isset($analytics['mlSupplierInsights']['top_performers']['suppliers']))
+                                            @foreach(array_slice($analytics['mlSupplierInsights']['top_performers']['suppliers'], 0, 5) as $supplier)
+                                                <div class="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                                                    <div>
+                                                        <p class="font-medium text-sm text-gray-800">{{ $supplier['supplier_name'] }}</p>
+                                                        <p class="text-xs text-gray-600">{{ $supplier['performance_tier'] }}</p>
+                                                    </div>
+                                                    <div class="text-right">
+                                                        <p class="font-bold text-green-600">{{ number_format($supplier['overall_performance_score'], 1) }}%</p>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        @else
+                                            <p class="text-gray-500 text-sm">No top performers data available</p>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                <!-- Underperformers -->
+                                <div class="bg-white rounded-lg p-4 shadow-sm">
+                                    <h4 class="font-semibold text-gray-800 mb-3 flex items-center">
+                                        <i class="fas fa-exclamation-triangle text-red-500 mr-2"></i>
+                                        Needs Improvement
+                                    </h4>
+                                    <div class="space-y-2">
+                                        @if(isset($analytics['mlSupplierInsights']['underperformers']['suppliers']))
+                                            @foreach(array_slice($analytics['mlSupplierInsights']['underperformers']['suppliers'], 0, 5) as $supplier)
+                                                <div class="flex items-center justify-between p-3 bg-red-50 rounded-lg">
+                                                    <div>
+                                                        <p class="font-medium text-sm text-gray-800">{{ $supplier['supplier_name'] }}</p>
+                                                        <p class="text-xs text-gray-600">{{ $supplier['performance_tier'] }}</p>
+                                                    </div>
+                                                    <div class="text-right">
+                                                        <p class="font-bold text-red-600">{{ number_format($supplier['overall_performance_score'], 1) }}%</p>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        @else
+                                            <p class="text-gray-500 text-sm">No underperformers data available</p>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Recommendations -->
+                            @if(isset($analytics['mlSupplierInsights']['recommendations']) && !empty($analytics['mlSupplierInsights']['recommendations']))
+                                <div class="bg-white rounded-lg p-4 shadow-sm mt-4">
+                                    <h4 class="font-semibold text-gray-800 mb-3 flex items-center">
+                                        <i class="fas fa-lightbulb text-yellow-500 mr-2"></i>
+                                        AI Recommendations
+                                    </h4>
+                                    <div class="space-y-2">
+                                        @foreach($analytics['mlSupplierInsights']['recommendations'] as $recommendation)
+                                            <div class="flex items-start p-3 bg-blue-50 rounded-lg">
+                                                <i class="fas fa-arrow-right text-blue-500 mt-1 mr-2"></i>
+                                                <p class="text-sm text-gray-700">{{ $recommendation }}</p>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+
+                            <!-- Alerts -->
+                            @if(isset($analytics['mlSupplierInsights']['alerts']) && !empty($analytics['mlSupplierInsights']['alerts']))
+                                <div class="bg-white rounded-lg p-4 shadow-sm mt-4">
+                                    <h4 class="font-semibold text-gray-800 mb-3 flex items-center">
+                                        <i class="fas fa-bell text-red-500 mr-2"></i>
+                                        Critical Alerts
+                                    </h4>
+                                    <div class="space-y-2">
+                                        @foreach($analytics['mlSupplierInsights']['alerts'] as $alert)
+                                            <div class="flex items-start p-3 bg-red-50 rounded-lg border-l-4 border-red-500">
+                                                <i class="fas fa-exclamation-circle text-red-500 mt-1 mr-2"></i>
+                                                <p class="text-sm text-gray-700">{{ $alert }}</p>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+                        @endif
                     </div>
 
-                    <!-- Customer Segmentation Table -->
-                    <div class="card-gradient rounded-xl p-4 ">
-                        <h3 class="text-lg font-bold text-black mb-3">Wholesaler Segmentation</h3>
-                        <div class="overflow-x-auto">
-                            <table class="min-w-full text-sm">
-                                <thead>
-                                    <tr class="bg-gray-100">
-                                        <th class="py-2 px-3 text-left">Name</th>
-                                        <th class="py-2 px-3 text-left">Segment</th>
-                                        <th class="py-2 px-3 text-left">Orders</th>
-                                        <th class="py-2 px-3 text-left">Value</th>
+                    <!-- Traditional Supplier Performance Table (Optional - for comparison) -->
+                    <div class="">
+
+                    <!-- Wholesaler Segmentation Table (ML-Powered) -->
+        <div class="card-gradient rounded-xl p-4">
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-users text-indigo-600"></i>
+                    <h3 class="text-lg font-bold text-black">AI-Powered Wholesaler Segmentation</h3>
+                </div>
+                <button id="refreshSegmentationBtn" class="bg-indigo-600 text-white px-3 py-1 rounded-lg hover:bg-indigo-700 transition-colors text-xs">
+                    <i class="fas fa-sync-alt mr-1"></i> Refresh
+                </button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-sm">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="py-2 px-3 text-left">Wholesaler Name</th>
+                            <th class="py-2 px-3 text-left">Segment</th>
+                            <th class="py-2 px-3 text-left">Business Type</th>
+                            <th class="py-2 px-3 text-left">Total Orders</th>
+                            <th class="py-2 px-3 text-left">Total Spent</th>
+                            <th class="py-2 px-3 text-left">Avg Order Value</th>
+                            <th class="py-2 px-3 text-left">Recency (Days)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if(isset($analytics['wholesalerSegmentation']['segments']) && !empty($analytics['wholesalerSegmentation']['segments']))
+                            @foreach($analytics['wholesalerSegmentation']['segments'] as $segment)
+                                @foreach($segment['wholesalers'] as $wholesaler)
+                                    <tr class="border-b hover:bg-gray-50">
+                                        <td class="py-2 px-3 text-black font-medium">{{ $wholesaler['customer_name'] }}</td>
+                                        <td class="py-2 px-3">
+                                            <span class="px-2 py-1 rounded text-xs font-medium
+                                                @if($segment['name'] == 'Premium Wholesalers') bg-purple-100 text-purple-800
+                                                @elseif($segment['name'] == 'Active Regular Buyers') bg-green-100 text-green-800
+                                                @elseif($segment['name'] == 'At-Risk/Dormant') bg-red-100 text-red-800
+                                                @else bg-yellow-100 text-yellow-800
+                                                @endif">
+                                                {{ $segment['name'] }}
+                                            </span>
+                                        </td>
+                                        <td class="py-2 px-3 text-gray-700">{{ $wholesaler['business_type'] ?? 'N/A' }}</td>
+                                        <td class="py-2 px-3 text-black">{{ number_format($wholesaler['total_orders']) }}</td>
+                                        <td class="py-2 px-3 text-black">${{ number_format($wholesaler['total_spent'], 0) }}</td>
+                                        <td class="py-2 px-3 text-black">${{ number_format($wholesaler['avg_order_value'], 0) }}</td>
+                                        <td class="py-2 px-3">
+                                            <span class="
+                                                @if($wholesaler['recency'] <= 30) text-green-600
+                                                @elseif($wholesaler['recency'] <= 90) text-yellow-600
+                                                @else text-red-600
+                                                @endif">
+                                                {{ number_format($wholesaler['recency']) }}
+                                            </span>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($analytics['customers']['segments'] as $wholesaler)
-                                        <tr class="border-b">
-                                            <td class="py-2 px-3">{{ $wholesaler['name'] }}</td>
-                                            <td class="py-2 px-3"><span class="px-2 py-1 rounded text-xs {{ $wholesaler['color'] }}">{{ $wholesaler['segment'] }}</span></td>
-                                            <td class="py-2 px-3">{{ $wholesaler['total_orders'] }}</td>
-                                            <td class="py-2 px-3">UGX {{ number_format($wholesaler['total_spent'], 0) }}</td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                @endforeach
+                            @endforeach
+                        @else
+                            <tr class="border-b">
+                                <td colspan="7" class="py-8 px-3 text-gray-500 text-center">
+                                    <div class="flex flex-col items-center">
+                                        <i class="fas fa-chart-pie text-gray-400 text-2xl mb-2"></i>
+                                        <p class="text-sm">No wholesaler segmentation data available</p>
+                                        <button onclick="refreshWholesalerSegmentation()" class="mt-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-xs">
+                                            <i class="fas fa-magic mr-1"></i> Generate Segmentation
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endif
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Segment Summary -->
+            @if(isset($analytics['wholesalerSegmentation']['summary']) && !empty($analytics['wholesalerSegmentation']['summary']))
+                <div class="mt-4 grid grid-cols-1 md:grid-cols-4 gap-3">
+                    @foreach($analytics['wholesalerSegmentation']['summary'] as $segment)
+                        <div class="bg-white rounded-lg p-3 shadow-sm border">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-xs font-medium text-gray-600">{{ $segment['name'] }}</span>
+                                <span class="text-xs px-2 py-1 rounded
+                                    @if($segment['name'] == 'Premium Wholesalers') bg-purple-100 text-purple-600
+                                    @elseif($segment['name'] == 'Active Regular Buyers') bg-green-100 text-green-600
+                                    @elseif($segment['name'] == 'At-Risk/Dormant') bg-red-100 text-red-600
+                                    @else bg-yellow-100 text-yellow-600
+                                    @endif">
+                                    {{ $segment['count'] }}
+                                </span>
+                            </div>
+                            <p class="text-xs text-gray-500">{{ $segment['percentage'] }}% of total</p>
                         </div>
+                    @endforeach
+                </div>
+            @endif
+        </div>
+        
+
+                        <!-- Customer Segmentation Table (Keep existing) -->
+                        <!-- <div class="card-gradient rounded-xl p-4">
+                            <h3 class="text-lg font-bold text-black mb-3">Wholesaler Segmentation</h3>
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full text-sm">
+                                    <thead>
+                                        <tr class="bg-gray-100">
+                                            <th class="py-2 px-3 text-left">Name</th>
+                                            <th class="py-2 px-3 text-left">Segment</th>
+                                            <th class="py-2 px-3 text-left">Orders</th>
+                                            <th class="py-2 px-3 text-left">Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(isset($analytics['customers']['segments']))
+                                            @foreach($analytics['customers']['segments'] as $wholesaler)
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3">{{ $wholesaler['name'] }}</td>
+                                                    <td class="py-2 px-3"><span class="px-2 py-1 rounded text-xs {{ $wholesaler['color'] }}">{{ $wholesaler['segment'] }}</span></td>
+                                                    <td class="py-2 px-3">{{ $wholesaler['total_orders'] }}</td>
+                                                    <td class="py-2 px-3">${{ number_format($wholesaler['total_spent'], 0) }}</td>
+                                                </tr>
+                                            @endforeach
+                                        @else
+                                            <tr class="border-b">
+                                                <td colspan="4" class="py-2 px-3 text-gray-500 text-center">No customer segmentation data available</td>
+                                            </tr>
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div> -->
                     </div>
+                </div>
+
+                <!-- ML System Refresh Section -->
+                <div class="card-gradient p-6 rounded-xl mt-4 shadow-lg">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="flex items-center gap-3">
+                            <div class="p-2 bg-purple-100 rounded-lg">
+                                <i class="fas fa-cogs text-purple-600 text-xl"></i>
+                                    </div>
+                                    <div>
+                                <h3 class="text-xl font-bold text-black">ML System Management</h3>
+                                <p class="text-sm text-gray-600">Retrain models and refresh AI-powered insights</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div class="bg-white rounded-lg p-4 shadow-sm">
+                            <div class="flex items-center gap-3 mb-2">
+                                <i class="fas fa-brain text-indigo-600"></i>
+                                <span class="font-medium text-gray-800">Demand Model</span>
+                                </div>
+                            <p class="text-sm text-gray-600">Retrain demand forecasting model with latest data</p>
+                                                    </div>
+                        <div class="bg-white rounded-lg p-4 shadow-sm">
+                            <div class="flex items-center gap-3 mb-2">
+                                <i class="fas fa-chart-line text-green-600"></i>
+                                <span class="font-medium text-gray-800">Supplier Performance</span>
+                                                </div>
+                            <p class="text-sm text-gray-600">Analyze supplier performance with ML algorithms</p>
+                                            </div>
+                        <div class="bg-white rounded-lg p-4 shadow-sm">
+                            <div class="flex items-center gap-3 mb-2">
+                                <i class="fas fa-lightbulb text-yellow-600"></i>
+                                <span class="font-medium text-gray-800">Recommendations</span>
+                                </div>
+                            <p class="text-sm text-gray-600">Generate AI-powered business recommendations</p>
+                                                                </div>
+                                                                </div>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button id="refreshAllModelsBtn" class="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-3 px-6 rounded-lg hover:from-purple-700 hover:to-indigo-700 transition-all duration-300 flex items-center justify-center gap-2 font-semibold">
+                            <span id="refreshAllBtnText">
+                                <i class="fas fa-sync-alt mr-2"></i>
+                                Refresh All ML Systems
+                                                            </span>
+                            <span id="refreshAllBtnLoader" class="hidden">
+                                <i class="fas fa-spinner fa-spin mr-2"></i>
+                                Processing...
+                                                            </span>
+                                                                </button>
+                        <button id="refreshIndividualBtn" class="bg-gray-600 text-white py-3 px-6 rounded-lg hover:bg-gray-700 transition-colors flex items-center justify-center gap-2">
+                            <i class="fas fa-cog"></i>
+                            Individual Refresh
+                                                                </button>
+                    </div>
+                    
+                    <!-- Individual Refresh Options (Initially Hidden) -->
+                    <div id="individualRefreshOptions" class="hidden mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <button class="refresh-individual-btn bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors text-sm" data-model="demand">
+                            <i class="fas fa-brain mr-2"></i>
+                            Retrain Demand Model
+                                                                    </button>
+                        <button class="refresh-individual-btn bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors text-sm" data-model="supplier">
+                            <i class="fas fa-chart-line mr-2"></i>
+                            Refresh Supplier Analysis
+                        </button>
+                        <button class="refresh-individual-btn bg-yellow-600 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 transition-colors text-sm" data-model="recommendations">
+                            <i class="fas fa-lightbulb mr-2"></i>
+                            Generate Recommendations
+                        </button>
+                                                            </div>
+                    
+                    <!-- Progress Section -->
+                    <div id="mlRefreshProgress" class="hidden mt-4">
+                        <div class="bg-white rounded-lg p-4 shadow-sm">
+                            <h4 class="font-semibold text-gray-800 mb-3">Processing Status</h4>
+                            <div id="progressSteps" class="space-y-2"></div>
+                            <div class="mt-4">
+                                <div class="bg-gray-200 rounded-full h-2">
+                                    <div id="progressBar" class="bg-gradient-to-r from-purple-600 to-indigo-600 h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                                                        </div>
+                                <div class="flex justify-between text-xs text-gray-600 mt-1">
+                                    <span>Starting...</span>
+                                    <span id="progressPercent">0%</span>
+                                </div>
+                                                    </div>
+                                            </div>
+                        </div>
                 </div>
             </main>
         </div>
@@ -810,6 +1143,78 @@
             }
         });
 
+        // Refresh supplier insights functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const refreshInsightsBtn = document.getElementById('refreshInsightsBtn');
+            
+            if (refreshInsightsBtn) {
+                refreshInsightsBtn.addEventListener('click', function() {
+                    refreshSupplierInsights();
+                });
+            }
+            
+            function refreshSupplierInsights() {
+                const btn = document.getElementById('refreshInsightsBtn');
+                const originalContent = btn.innerHTML;
+                
+                // Show loading state
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Refreshing...';
+                btn.disabled = true;
+                
+                fetch('/manufacturer/analytics/refresh-supplier-insights', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Show success message
+                        showNotification('Supplier insights refreshed successfully!', 'success');
+                        
+                        // Reload the page after a short delay to show updated insights
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    } else {
+                        showNotification(data.message || 'Failed to refresh supplier insights', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error refreshing supplier insights:', error);
+                    showNotification('An error occurred while refreshing supplier insights', 'error');
+                })
+                .finally(() => {
+                    // Reset button state
+                    btn.innerHTML = originalContent;
+                    btn.disabled = false;
+                });
+            }
+            
+            function showNotification(message, type) {
+                const alertClass = type === 'success' ? 'bg-green-100 border-green-400 text-green-700' : 'bg-red-100 border-red-400 text-red-700';
+                const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
+                
+                const notification = document.createElement('div');
+                notification.className = `fixed top-4 right-4 z-50 ${alertClass} px-4 py-3 rounded border max-w-md shadow-lg`;
+                notification.innerHTML = `
+                    <div class="flex items-center">
+                        <i class="fas ${icon} mr-2"></i>
+                        <span>${message}</span>
+                    </div>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Remove notification after 5 seconds
+                setTimeout(() => {
+                    notification.remove();
+                }, 5000);
+            }
+        });
+
         // Universal search event for all manufacturer pages
         const searchInput = document.getElementById('manufacturerUniversalSearch');
         if (searchInput) {
@@ -841,6 +1246,256 @@
                 item.style.display = name.includes(searchTerm) ? 'flex' : 'none';
             });
         });
+
+        // ML System Refresh functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const refreshAllBtn = document.getElementById('refreshAllModelsBtn');
+            const refreshIndividualBtn = document.getElementById('refreshIndividualBtn');
+            const individualOptions = document.getElementById('individualRefreshOptions');
+            const refreshAllBtnText = document.getElementById('refreshAllBtnText');
+            const refreshAllBtnLoader = document.getElementById('refreshAllBtnLoader');
+            const mlRefreshProgress = document.getElementById('mlRefreshProgress');
+            const progressSteps = document.getElementById('progressSteps');
+            const progressBar = document.getElementById('progressBar');
+            const progressPercent = document.getElementById('progressPercent');
+            
+            // Toggle individual refresh options
+            refreshIndividualBtn.addEventListener('click', function() {
+                individualOptions.classList.toggle('hidden');
+                const icon = this.querySelector('i');
+                if (individualOptions.classList.contains('hidden')) {
+                    icon.className = 'fas fa-cog';
+                } else {
+                    icon.className = 'fas fa-times';
+                }
+            });
+            
+            // Handle individual model refresh
+            document.querySelectorAll('.refresh-individual-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const model = this.dataset.model;
+                    refreshIndividualModel(model, this);
+                });
+            });
+            
+            // Handle refresh all models
+            refreshAllBtn.addEventListener('click', function() {
+                refreshAllModels();
+            });
+            
+            function refreshAllModels() {
+                // Show loading state
+                refreshAllBtnText.classList.add('hidden');
+                refreshAllBtnLoader.classList.remove('hidden');
+                refreshAllBtn.disabled = true;
+                mlRefreshProgress.classList.remove('hidden');
+                individualOptions.classList.add('hidden');
+                
+                // Initialize progress
+                updateProgress(0, 'Initializing ML system refresh...');
+                
+                const steps = [
+                    { name: 'Retraining Demand Model', model: 'demand', progress: 33 },
+                    { name: 'Analyzing Supplier Performance', model: 'supplier', progress: 66 },
+                    { name: 'Generating Recommendations', model: 'recommendations', progress: 100 }
+                ];
+                
+                let currentStep = 0;
+                
+                function processNextStep() {
+                    if (currentStep >= steps.length) {
+                        // All steps completed
+                        updateProgress(100, 'All ML systems refreshed successfully!');
+                        showNotification('All ML systems have been refreshed successfully!', 'success');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 3000);
+                        return;
+                    }
+                    
+                    const step = steps[currentStep];
+                    updateProgress(step.progress, step.name);
+                    
+                    fetch('/manufacturer/analytics/refresh-ml-system', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify({ 
+                            model: step.model,
+                            step: currentStep + 1,
+                            total_steps: steps.length
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            addProgressStep(step.name, 'completed');
+                            currentStep++;
+                            setTimeout(processNextStep, 1000); // Wait 1 second between steps
+                        } else {
+                            addProgressStep(step.name, 'failed');
+                            throw new Error(data.message || 'Failed to process step');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error refreshing ML system:', error);
+                        addProgressStep(step.name, 'failed');
+                        showNotification(`Failed to refresh ${step.name}: ${error.message}`, 'error');
+                        resetRefreshButton();
+                    });
+                }
+                
+                // Start processing
+                processNextStep();
+            }
+            
+            function refreshIndividualModel(model, button) {
+                const originalContent = button.innerHTML;
+                const modelNames = {
+                    'demand': 'Demand Model',
+                    'supplier': 'Supplier Analysis',
+                    'recommendations': 'Recommendations'
+                };
+                
+                // Show loading state
+                button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Processing...';
+                button.disabled = true;
+                
+                fetch('/manufacturer/analytics/refresh-ml-system', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({ 
+                        model: model,
+                        individual: true
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showNotification(`${modelNames[model]} refreshed successfully!`, 'success');
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 2000);
+                    } else {
+                        showNotification(data.message || `Failed to refresh ${modelNames[model]}`, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error refreshing individual model:', error);
+                    showNotification(`An error occurred while refreshing ${modelNames[model]}`, 'error');
+                })
+                .finally(() => {
+                    // Reset button state
+                    button.innerHTML = originalContent;
+                    button.disabled = false;
+                });
+            }
+            
+            function updateProgress(percent, message) {
+                progressBar.style.width = percent + '%';
+                progressPercent.textContent = percent + '%';
+                
+                const statusText = progressBar.parentElement.parentElement.querySelector('span');
+                if (statusText) {
+                    statusText.textContent = message;
+                }
+            }
+            
+            function addProgressStep(stepName, status) {
+                const stepElement = document.createElement('div');
+                const iconClass = status === 'completed' ? 'fa-check-circle text-green-600' : 
+                                 status === 'failed' ? 'fa-times-circle text-red-600' : 
+                                 'fa-spinner fa-spin text-blue-600';
+                
+                stepElement.className = 'flex items-center gap-2 text-sm';
+                stepElement.innerHTML = `
+                    <i class="fas ${iconClass}"></i>
+                    <span class="text-gray-700">${stepName}</span>
+                `;
+                
+                progressSteps.appendChild(stepElement);
+            }
+            
+            function resetRefreshButton() {
+                refreshAllBtnText.classList.remove('hidden');
+                refreshAllBtnLoader.classList.add('hidden');
+                refreshAllBtn.disabled = false;
+            }
+            
+            function showNotification(message, type) {
+                const alertClass = type === 'success' ? 'bg-green-100 border-green-400 text-green-700' : 'bg-red-100 border-red-400 text-red-700';
+                const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
+                
+                const notification = document.createElement('div');
+                notification.className = `fixed top-4 right-4 z-50 ${alertClass} px-4 py-3 rounded border max-w-md shadow-lg`;
+                notification.innerHTML = `
+                    <div class="flex items-center">
+                        <i class="fas ${icon} mr-2"></i>
+                        <span>${message}</span>
+                        <button class="ml-4 text-lg" onclick="this.parentElement.parentElement.remove()">×</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(notification);
+                
+                // Remove notification after 10 seconds
+                setTimeout(() => {
+                    if (notification.parentElement) {
+                        notification.remove();
+                    }
+                }, 10000);
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Base URL for the application
+            const baseUrl = window.location.origin + '/ChicAuraSupplyChainSystem/SupplyChain/public';
+            const apiUrl = baseUrl + '/manufacturer/analytics/refresh-ml-system';
+            
+            console.log('API URL:', apiUrl);
+        });
+        // Add to your existing JavaScript section
+        function refreshWholesalerSegmentation() {
+            const btn = event.target;
+            const originalContent = btn.innerHTML;
+            
+            // Show loading state
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Generating...';
+            btn.disabled = true;
+            
+            fetch('/manufacturer/analytics/refresh-wholesaler-segmentation', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showNotification('Wholesaler segmentation generated successfully!', 'success');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                } else {
+                    showNotification(data.message || 'Failed to generate wholesaler segmentation', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error generating wholesaler segmentation:', error);
+                showNotification('An error occurred while generating wholesaler segmentation', 'error');
+            })
+            .finally(() => {
+                // Reset button state
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+            });
+        }
     </script>
 </body>
-</html> 
+</html>

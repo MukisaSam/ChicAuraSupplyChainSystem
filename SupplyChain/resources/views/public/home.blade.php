@@ -33,20 +33,36 @@
             <h2 class="fw-bold">Shop by Category</h2>
             <p class="text-muted">Find exactly what you're looking for</p>
         </div>
-        <div class="row g-4">
-            @foreach($categories as $category)
-            <div class="col-md-6 col-lg-3">
-                <a href="{{ route('public.products', ['category' => $category]) }}" class="text-decoration-none">
-                    <div class="card h-100 border-0 shadow-sm category-card">
-                        <div class="card-body text-center p-4">
-                            <i class="bi bi-tags display-4 text-primary mb-3"></i>
-                            <h5 class="card-title text-capitalize">{{ str_replace('_', ' ', $category) }}</h5>
-                            <p class="card-text text-muted">Explore our {{ $category }} collection</p>
-                        </div>
+        
+        <div class="position-relative">
+            <!-- Left Arrow -->
+            <button class="btn btn-outline-primary categories-nav-btn categories-prev" id="categoriesPrev" type="button">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+            
+            <!-- Categories Container -->
+            <div class="categories-container" id="categoriesContainer">
+                <div class="categories-wrapper d-flex">
+                    @foreach($categories as $category)
+                    <div class="category-item flex-shrink-0">
+                        <a href="{{ route('public.products', ['category' => $category]) }}" class="text-decoration-none">
+                            <div class="card h-100 border-0 shadow-sm category-card">
+                                <div class="card-body text-center p-4">
+                                    <i class="bi bi-tags display-6 text-primary mb-3"></i>
+                                    <h6 class="card-title text-capitalize mb-2">{{ str_replace('_', ' ', $category) }}</h6>
+                                    <p class="card-text text-muted small">Explore {{ $category }}</p>
+                                </div>
+                            </div>
+                        </a>
                     </div>
-                </a>
+                    @endforeach
+                </div>
             </div>
-            @endforeach
+            
+            <!-- Right Arrow -->
+            <button class="btn btn-outline-primary categories-nav-btn categories-next" id="categoriesNext" type="button">
+                <i class="bi bi-chevron-right"></i>
+            </button>
         </div>
     </div>
 </section>
@@ -195,6 +211,129 @@
         border-radius: 15px;
     }
     
+    /* Horizontal Categories Scrolling Styles */
+    .categories-container {
+        overflow-x: auto;
+        scroll-behavior: smooth;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
+        margin: 0 60px; /* Space for arrows */
+        position: relative;
+    }
+    
+    .categories-container::-webkit-scrollbar {
+        display: none; /* Chrome, Safari, Opera */
+    }
+    
+    .categories-wrapper {
+        gap: 1rem;
+        padding: 0.5rem 0;
+    }
+    
+    .category-item {
+        min-width: 220px;
+        max-width: 220px;
+    }
+    
+    .categories-nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        z-index: 10;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: white;
+        border: 2px solid #0d6efd;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+    
+    .categories-nav-btn:hover {
+        background: #0d6efd;
+        color: white;
+        transform: translateY(-50%) scale(1.1);
+        box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+    }
+    
+    .categories-nav-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
+        transform: translateY(-50%);
+    }
+    
+    .categories-nav-btn:disabled:hover {
+        background: white;
+        color: #0d6efd;
+        transform: translateY(-50%);
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    .categories-prev {
+        left: 0;
+    }
+    
+    .categories-next {
+        right: 0;
+    }
+    
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+        .categories-container {
+            margin: 0 50px;
+        }
+        
+        .categories-nav-btn {
+            width: 40px;
+            height: 40px;
+            font-size: 0.9rem;
+        }
+        
+        .category-item {
+            min-width: 180px;
+            max-width: 180px;
+        }
+        
+        .category-card .card-body {
+            padding: 1rem !important;
+        }
+        
+        .category-card .display-6 {
+            font-size: 2rem !important;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .categories-container {
+            margin: 0 45px;
+        }
+        
+        .categories-nav-btn {
+            width: 35px;
+            height: 35px;
+            font-size: 0.8rem;
+        }
+        
+        .category-item {
+            min-width: 160px;
+            max-width: 160px;
+        }
+    }
+    
+    /* Hide arrows on very small screens */
+    @media (max-width: 480px) {
+        .categories-nav-btn {
+            display: none;
+        }
+        
+        .categories-container {
+            margin: 0;
+        }
+    }
+    
     /* Authentication Section Styles */
     .bg-gradient {
         position: relative;
@@ -260,7 +399,59 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Form validation and enhancement
+    // Categories Horizontal Scroll Functionality
+    const categoriesContainer = document.getElementById('categoriesContainer');
+    const prevBtn = document.getElementById('categoriesPrev');
+    const nextBtn = document.getElementById('categoriesNext');
+    
+    if (categoriesContainer && prevBtn && nextBtn) {
+        const scrollAmount = 240; // Width of one category item + gap
+        
+        // Check scroll position and update button states
+        function updateButtonStates() {
+            const isAtStart = categoriesContainer.scrollLeft <= 0;
+            const isAtEnd = categoriesContainer.scrollLeft >= 
+                (categoriesContainer.scrollWidth - categoriesContainer.clientWidth - 5);
+            
+            prevBtn.disabled = isAtStart;
+            nextBtn.disabled = isAtEnd;
+        }
+        
+        // Initial button state
+        updateButtonStates();
+        
+        // Previous button click
+        prevBtn.addEventListener('click', function() {
+            categoriesContainer.scrollBy({
+                left: -scrollAmount,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Next button click
+        nextBtn.addEventListener('click', function() {
+            categoriesContainer.scrollBy({
+                left: scrollAmount,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Update button states on scroll
+        categoriesContainer.addEventListener('scroll', updateButtonStates);
+        
+        // Handle window resize
+        window.addEventListener('resize', updateButtonStates);
+        
+        // Mouse wheel support for horizontal scrolling
+        categoriesContainer.addEventListener('wheel', function(e) {
+            if (e.deltaY !== 0) {
+                e.preventDefault();
+                this.scrollLeft += e.deltaY > 0 ? 50 : -50;
+            }
+        });
+    }
+
+    // Form validation and enhancement (existing code)
     const loginForm = document.getElementById('homeLoginForm');
     const registerForm = document.getElementById('homeRegisterForm');
     
@@ -320,8 +511,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         
-        passwordField.addEventListener('input', validatePasswords);
-        confirmField.addEventListener('input', validatePasswords);
+        if (passwordField && confirmField) {
+            passwordField.addEventListener('input', validatePasswords);
+            confirmField.addEventListener('input', validatePasswords);
+        }
     }
     
     // Show alerts function

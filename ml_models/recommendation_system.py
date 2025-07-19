@@ -27,6 +27,8 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Input, Embedding, Flatten, Dense, Concatenate, Dropout
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.regularizers import l2
+from functools import lru_cache
+import redis
 
 from db_config import get_customer_data, execute_query
 from enhanced_features import AdvancedFeatureEngineer
@@ -51,8 +53,8 @@ class HybridRecommendationSystem:
         
         # Feature extractors
         self.tfidf_vectorizer = TfidfVectorizer(max_features=100, stop_words='english')
-        self.svd_model = TruncatedSVD(n_components=50, random_state=42)
-        self.nmf_model = NMF(n_components=20, random_state=42)
+        self.svd_model = TruncatedSVD(n_components=15, random_state=42)  # Reduced to handle small datasets
+        self.nmf_model = NMF(n_components=10, random_state=42)  # Reduced to handle small datasets
         
         # Hybrid weights
         self.weights = {
@@ -191,10 +193,17 @@ class HybridRecommendationSystem:
             return
         
         try:
+            # Dynamically adjust components based on available features
+            n_features = min(user_item_matrix.shape)
+            
             # Matrix Factorization with SVD
+            if self.svd_model.n_components >= n_features:
+                self.svd_model.n_components = max(1, n_features - 1)
             self.svd_model.fit(user_item_matrix.values)
             
             # Non-negative Matrix Factorization
+            if self.nmf_model.n_components >= n_features:
+                self.nmf_model.n_components = max(1, n_features - 1)
             self.nmf_model.fit(user_item_matrix.values)
             
             logger.info("Collaborative filtering models trained")
@@ -320,15 +329,20 @@ class HybridRecommendationSystem:
             if col in features_df.columns:
                 features_df = pd.get_dummies(features_df, columns=[col], prefix=col)
         
-        # Numerical features
+        # Numerical features - convert Decimal to float first
         numerical_cols = ['base_price', 'total_sales', 'unique_customers']
         for col in numerical_cols:
             if col in features_df.columns:
+                # Convert Decimal to float to avoid numpy issues
+                features_df[col] = pd.to_numeric(features_df[col], errors='coerce')
                 features_df[f'{col}_log'] = np.log1p(features_df[col].fillna(0))
                 features_df[f'{col}_sqrt'] = np.sqrt(features_df[col].fillna(0))
         
         # Popularity features
         if 'total_sales' in features_df.columns and 'unique_customers' in features_df.columns:
+            # Convert to numeric to handle Decimal types
+            features_df['total_sales'] = pd.to_numeric(features_df['total_sales'], errors='coerce')
+            features_df['unique_customers'] = pd.to_numeric(features_df['unique_customers'], errors='coerce')
             features_df['popularity_score'] = (
                 features_df['total_sales'].fillna(0) * 0.6 +
                 features_df['unique_customers'].fillna(0) * 0.4
@@ -409,19 +423,29 @@ class HybridRecommendationSystem:
         
         # Customer segmentation using RFM
         if not interaction_df.empty:
-            rfm_features = self.feature_engineer.create_rfm_features(
-                interaction_df, 
-                customer_col='customer_id',
-                date_col='order_date',
-                amount_col='total_amount'
-            )
-            
-            features_df = features_df.merge(
-                rfm_features,
-                left_on='id',
-                right_on='customer_id',
-                how='left'
-            )
+            try:
+                rfm_features = self.feature_engineer.create_rfm_features(
+                    interaction_df, 
+                    customer_df
+                )
+                
+                # Debug: Check what columns are available
+                logger.info(f"RFM features columns: {list(rfm_features.columns)}")
+                logger.info(f"Customer features columns: {list(features_df.columns)}")
+                
+                # Check if customer_id exists in rfm_features
+                if 'customer_id' in rfm_features.columns:
+                    features_df = features_df.merge(
+                        rfm_features,
+                        left_on='id',
+                        right_on='customer_id',
+                        how='left'
+                    )
+                else:
+                    logger.warning("customer_id not found in RFM features, skipping RFM merge")
+            except Exception as e:
+                logger.error(f"Error processing RFM features: {e}")
+                logger.warning("Continuing without RFM features")
         
         self.customer_features = features_df
         logger.info(f"Created customer features: {features_df.shape}")
@@ -652,24 +676,47 @@ class HybridRecommendationSystem:
     def get_popularity_recommendations(self, n_recommendations: int = 10) -> List[int]:
         """Get popular item recommendations"""
         try:
+            # Fixed query - use subquery to handle aggregate functions properly
             popular_items_query = """
             SELECT 
-                i.id,
-                COUNT(coi.id) as order_count,
-                SUM(coi.quantity) as total_quantity,
-                COUNT(DISTINCT co.customer_id) as unique_customers
-            FROM items i
-            JOIN customer_order_items coi ON i.id = coi.item_id
-            JOIN customer_orders co ON coi.customer_order_id = co.id
-            WHERE i.type = 'finished_product' AND co.created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH)
-            GROUP BY i.id
-            ORDER BY (order_count * 0.4 + total_quantity * 0.3 + unique_customers * 0.3) DESC
+                item_stats.id,
+                item_stats.order_count,
+                item_stats.total_quantity,
+                item_stats.unique_customers
+            FROM (
+                SELECT 
+                    i.id,
+                    COUNT(coi.id) as order_count,
+                    SUM(coi.quantity) as total_quantity,
+                    COUNT(DISTINCT co.customer_id) as unique_customers
+                FROM items i
+                JOIN customer_order_items coi ON i.id = coi.item_id
+                JOIN customer_orders co ON coi.customer_order_id = co.id
+                WHERE i.type = 'finished_product' 
+                AND co.status != 'cancelled'
+                AND co.created_at >= DATE_SUB(NOW(), INTERVAL 3 MONTH)
+                GROUP BY i.id
+            ) as item_stats
+            ORDER BY (item_stats.order_count * 0.4 + item_stats.total_quantity * 0.3 + item_stats.unique_customers * 0.3) DESC
             LIMIT %s
             """
             
             popular_data = execute_query(popular_items_query, (n_recommendations,))
             if popular_data:
                 return [item['id'] for item in popular_data]
+            
+            # Fallback to newest items if no popular items found
+            fallback_query = """
+            SELECT id FROM items 
+            WHERE type = 'finished_product' 
+            AND stock_quantity > 0
+            ORDER BY created_at DESC
+            LIMIT %s
+            """
+            
+            fallback_data = execute_query(fallback_query, (n_recommendations,))
+            if fallback_data:
+                return [item['id'] for item in fallback_data]
             
             return []
             
@@ -908,6 +955,98 @@ class HybridRecommendationSystem:
             json.dump(config, f, indent=2)
         
         logger.info(f"Models saved to {filepath}")
+    
+    def should_retrain(self) -> bool:
+        """Check if models need retraining based on new data"""
+        # Check last training time, new interactions, etc.
+        pass
+
+    def incremental_train(self, new_interactions: pd.DataFrame):
+        """Update models with new interaction data"""
+        pass
+
+    def get_recommendations_with_variant(self, customer_id: int, variant: str = 'default'):
+        """Support A/B testing different recommendation strategies"""
+        if variant == 'content_heavy':
+            self.weights['content_based'] = 0.5
+            self.weights['collaborative'] = 0.3
+        elif variant == 'popularity_heavy':
+            self.weights['popularity'] = 0.4
+            self.weights['collaborative'] = 0.4
+    
+        return self.get_hybrid_recommendations(customer_id)
+
+    def add_diversity_filter(self, recommendations: List[Dict], diversity_factor: float = 0.3):
+        """Ensure recommendations are diverse across categories"""
+        diverse_recs = []
+        seen_categories = set()
+        
+        for rec in recommendations:
+            if rec['category'] not in seen_categories or len(diverse_recs) < 3:
+                diverse_recs.append(rec)
+                seen_categories.add(rec['category'])
+            elif len(diverse_recs) < len(recommendations):
+                # Add remaining items if we have space
+                diverse_recs.append(rec)
+        
+        return diverse_recs
+
+    def calculate_enhanced_score(self, base_score: float, item_data: Dict) -> float:
+        """Enhanced scoring considering business rules"""
+        score = base_score
+        
+        # Boost high-margin items
+        if item_data.get('profit_margin', 0) > 0.3:
+            score *= 1.1
+        
+        # Boost items with good ratings
+        if item_data.get('avg_rating', 0) > 4.0:
+            score *= 1.05
+        
+        # Reduce score for low stock
+        if item_data.get('stock_quantity', 0) < 10:
+            score *= 0.9
+        
+        return score
+
+
+class CachedRecommendationSystem(HybridRecommendationSystem):
+    def __init__(self):
+        super().__init__()
+        self.redis_client = redis.Redis(host='localhost', port=6379, db=0)
+    
+    @lru_cache(maxsize=1000)
+    def get_cached_recommendations(self, customer_id: int, n_recommendations: int):
+        """Cache recommendations for frequent requests"""
+        cache_key = f"recommendations:{customer_id}:{n_recommendations}"
+        
+        cached = self.redis_client.get(cache_key)
+        if cached:
+            return json.loads(cached)
+        
+        recommendations = self.get_hybrid_recommendations(customer_id, n_recommendations)
+        
+        # Cache for 1 hour
+        self.redis_client.setex(cache_key, 3600, json.dumps(recommendations, default=str))
+        
+        return recommendations
+
+    def get_batch_recommendations(self, customer_ids: List[int], n_recommendations: int = 10):
+        """Generate recommendations for multiple customers efficiently"""
+        batch_recommendations = {}
+        
+        # Pre-load common data
+        self._preload_batch_data()
+        
+        for customer_id in customer_ids:
+            try:
+                recommendations = self.get_hybrid_recommendations(customer_id, n_recommendations)
+                batch_recommendations[customer_id] = recommendations
+            except Exception as e:
+                logger.error(f"Failed to generate recommendations for customer {customer_id}: {e}")
+                batch_recommendations[customer_id] = []
+        
+        return batch_recommendations
 
 
 def main():
@@ -934,12 +1073,19 @@ def main():
                 print(f"   Score: {rec['recommendation_score']:.3f}")
                 print()
             
-            # Save sample recommendations
-            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            output_file = f'../SupplyChain/public/recommendations_sample_{timestamp}.json'
+            # Save sample recommendations (replace existing file)
+            output_file = '../SupplyChain/public/recommendations_sample.json'
+            
+            # Add metadata to the recommendations
+            output_data = {
+                'last_updated': datetime.now().isoformat(),
+                'customer_id': test_customer_id,
+                'total_recommendations': len(recommendations),
+                'recommendations': recommendations
+            }
             
             with open(output_file, 'w') as f:
-                json.dump(recommendations, f, indent=2, default=str)
+                json.dump(output_data, f, indent=2, default=str)
             
             print(f"Sample recommendations saved to {output_file}")
         

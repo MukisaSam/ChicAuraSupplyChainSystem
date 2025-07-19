@@ -1,0 +1,99 @@
+{
+  "summary": {
+    "total_suppliers": 20,
+    "avg_performance_score": 74.2,
+    "excellent_suppliers": 0,
+    "good_suppliers": 17,
+    "average_suppliers": 3,
+    "below_average_suppliers": 0,
+    "poor_suppliers": 0,
+    "anomalous_suppliers": "2"
+  },
+  "top_performers": {
+    "suppliers": [
+      {
+        "supplier_name": "Kabale Wool Traders",
+        "overall_performance_score": 79.47932470951065,
+        "performance_tier": "Good"
+      },
+      {
+        "supplier_name": "Tororo Silk Suppliers",
+        "overall_performance_score": 77.93029220438892,
+        "performance_tier": "Good"
+      },
+      {
+        "supplier_name": "Kasese Cotton Suppliers",
+        "overall_performance_score": 77.50900165333661,
+        "performance_tier": "Good"
+      },
+      {
+        "supplier_name": "Kampala Dye & Chemicals Ltd",
+        "overall_performance_score": 76.49345204639563,
+        "performance_tier": "Good"
+      },
+      {
+        "supplier_name": "Soroti Fiber Traders",
+        "overall_performance_score": 76.2922791362062,
+        "performance_tier": "Good"
+      },
+      {
+        "supplier_name": "Gulu Cotton Growers Coop",
+        "overall_performance_score": 75.97909997049452,
+        "performance_tier": "Good"
+      },
+      {
+        "supplier_name": "Jinja Thread Industries",
+        "overall_performance_score": 75.47585920023076,
+        "performance_tier": "Good"
+      },
+      {
+        "supplier_name": "Mukono Zipper & Accessories",
+        "overall_performance_score": 75.2330931697657,
+        "performance_tier": "Good"
+      },
+      {
+        "supplier_name": "Bushenyi Organic Cotton",
+        "overall_performance_score": 75.00848729367824,
+        "performance_tier": "Good"
+      }
+    ],
+    "avg_score": 76.6
+  },
+  "underperformers": {
+    "suppliers": [
+      {
+        "supplier_name": "Kamuli Fabric Finishers",
+        "overall_performance_score": 67.39308379023062,
+        "performance_tier": "Average"
+      },
+      {
+        "supplier_name": "Moroto Leather Suppliers",
+        "overall_performance_score": 67.86049056739988,
+        "performance_tier": "Average"
+      },
+      {
+        "supplier_name": "Apac Cotton Collective",
+        "overall_performance_score": 68.44336794498575,
+        "performance_tier": "Average"
+      },
+      {
+        "supplier_name": "Masindi Cotton Merchants",
+        "overall_performance_score": 73.06110167714115,
+        "performance_tier": "Good"
+      },
+      {
+        "supplier_name": "Pallisa Cotton Union",
+        "overall_performance_score": 73.16308070365902,
+        "performance_tier": "Good"
+      }
+    ],
+    "avg_score": 70.0
+  },
+  "recommendations": [],
+  "alerts": [
+    "Anomalous performance detected for supplier Kabale Wool Traders",
+    "Anomalous performance detected for supplier Kitgum Fiber Processing"
+  ],
+  "generated_at": "2025-07-19T19:25:34.207253",
+  "last_updated": 1752942334.207253
+}
