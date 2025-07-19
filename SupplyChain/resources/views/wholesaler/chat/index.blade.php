@@ -324,10 +324,10 @@
 
     <!-- Main Content -->
     <main class="ml-64 mt-16 p-4" style="min-height: calc(100vh - 4rem);">
-        <div class="mb-6">
+        {{-- <div class="mb-6">
             <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">Chat</h2>
             <p class="text-gray-900 dark:text-white text-sm">Communicate with manufacturers and support team</p>
-        </div>
+        </div> --}}
 
         <div class="flex h-full gap-6">
             <!-- Contacts Sidebar -->

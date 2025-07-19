@@ -6,15 +6,20 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Chat - ChicAura SCM</title>
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!--Fonts-->
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
         body { 
-            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/wholesaler.jpg') }}');
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
+            background: #f4f6fa;
             min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: 'Figtree', 'Open Sans', 'Helvetica Neue', sans-serif
         }
         
         .dark body {
@@ -23,7 +28,7 @@
         
         .sidebar { 
             transition: transform 0.3s ease-in-out;
-            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
+            background:  linear-gradient(180deg, #1a237e 0%, #283593 100%);
             box-shadow: 4px 0 15px rgba(0,0,0,0.1);
         }
         
@@ -32,10 +37,8 @@
         }
         
         .logo-container {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255);
             border-radius: 12px;
-            padding: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         
         .dark .logo-container {
@@ -113,7 +116,7 @@
         }
         
         .contact-item:hover {
-            background-color: rgba(139, 92, 246, 0.1);
+            background-color: rgba(68, 45, 215, 0.2);
             transform: translateX(5px);
         }
         
@@ -125,7 +128,7 @@
         .contacts-scroll {
             overflow-y: scroll;
             scrollbar-width: thin;
-            scrollbar-color: #8b5cf6 #e5e7eb;
+            scrollbar-color: #432dd7 #e5e7eb;
         }
         
         .contacts-scroll::-webkit-scrollbar {
@@ -196,39 +199,6 @@
             box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
         }
         
-        .online-indicator {
-            width: 8px;
-            height: 8px;
-            background: #10b981;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 8px;
-            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
-        }
-        
-        .message-bubble {
-            max-width: 70%;
-            border-radius: 18px;
-            padding: 12px 16px;
-            margin: 8px 0;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        
-        .message-bubble.own {
-            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
-            color: white;
-            margin-left: auto;
-            border-bottom-right-radius: 6px;
-        }
-        
-        .message-bubble.other {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            color: #1f2937;
-            margin-right: auto;
-            border-bottom-left-radius: 6px;
-            border: 1px solid rgba(0,0,0,0.1);
-        }
-        
         .dark .message-bubble.other {
             background: linear-gradient(135deg, #374151 0%, #4b5563 100%);
             color: #f1f5f9;
@@ -241,13 +211,13 @@
         }
     </style>
 </head>
-<body class="font-sans antialiased">
-    <div class="flex h-full">
+<body>
+    <div class="flex h-full overflow-hidden">
         <!-- Sidebar -->
         <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
             <div class="flex flex-col h-full">
-                <div class="flex items-center justify-center h-16 border-b border-gray-600">
-                    <div class="logo-container">
+            <div class="flex items-center justify-center h-16 border-b border-gray-600">
+                    <div class="sidebar-logo-blend w-full h-16 flex items-center justify-center p-0 m-0" style="background:#fff;">
                         <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
@@ -285,41 +255,42 @@
                     </a>
                     <a href="{{route('manufacturer.chat')}}" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-indigo-600 to-indigo-700 rounded-xl shadow-lg">
                         <i class="fas fa-comments w-5"></i>
-                        <span class="ml-2 text-sm">Chat</span>
+                        <span class="ml-2 font-medium text-sm">Chat</span>
                     </a>
                     <a href="{{route('manufacturer.reports')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-file-alt w-5"></i>
                         <span class="ml-2 text-sm">Reports</span>
                     </a>
-                     <a href="{{route('manufacturer.revenue')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-dollar-sign w-5"></i>
+                    <a href="{{route('manufacturer.revenue')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                        <i class="fas fa-coins w-5"></i>
                         <span class="ml-2 text-sm">Revenue</span>
                     </a>
-                    <!-- Production Section Heading -->
+
+                    <!-- Production Section -->
                     <div class="mt-6 mb-2">
                         <h4 class="text-gray-400 text-xs font-bold uppercase tracking-wider px-3 mb-1">Production</h4>
                     </div>
-                    <a href="{{ route('manufacturer.work-orders.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                    <a href="{{ route('manufacturer.work-orders.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white rounded-xl">
                         <i class="fas fa-cogs w-5"></i>
                         <span class="ml-2 text-sm">Work Orders</span>
                     </a>
-                    <a href="{{ route('manufacturer.bom.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                    <a href="{{ route('manufacturer.bom.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white rounded-xl">
                         <i class="fas fa-list-alt w-5"></i>
                         <span class="ml-2 text-sm">Bill of Materials</span>
                     </a>
-                    <a href="{{ route('manufacturer.production-schedules.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                    <a href="{{ route('manufacturer.production-schedules.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white rounded-xl">
                         <i class="fas fa-calendar-alt w-5"></i>
                         <span class="ml-2 text-sm">Production Schedules</span>
                     </a>
-                    <a href="{{ route('manufacturer.quality-checks.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                    <a href="{{ route('manufacturer.quality-checks.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white rounded-xl">
                         <i class="fas fa-clipboard-check w-5"></i>
                         <span class="ml-2 text-sm">Quality Checks</span>
                     </a>
-                    <a href="{{ route('manufacturer.downtime-logs.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                    <a href="{{ route('manufacturer.downtime-logs.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white rounded-xl">
                         <i class="fas fa-stopwatch w-5"></i>
                         <span class="ml-2 text-sm">Downtime Logs</span>
                     </a>
-                    <a href="{{ route('manufacturer.production-costs.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                    <a href="{{ route('manufacturer.production-costs.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-indigo-700 hover:text-white rounded-xl">
                         <i class="fas fa-coins w-5"></i>
                         <span class="ml-2 text-sm">Production Costs</span>
                     </a>
@@ -375,8 +346,8 @@
             <!-- Main Content -->
             <main class="flex-1 p-4">
                 <div class="mb-6">
-                    <h2 class="text-2xl font-bold text-white mb-1">Chat</h2>
-                    <p class="text-gray-200 text-sm">Communicate with suppliers, wholesalers, and support team</p>
+                    <h2 class="text-2xl font-bold text-black mb-1">Chat</h2>
+                    <p class="text-black text-sm">Communicate with suppliers, wholesalers, and support team</p>
                 </div>
 
                 <div class="flex h-full gap-6">
@@ -480,7 +451,7 @@
                         <div id="chat-welcome" class="flex-1 flex items-center justify-center">
                             <div class="text-center">
                                 <div class="w-24 h-24 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900 dark:to-purple-800 rounded-full flex items-center justify-center mx-auto mb-6">
-                                    <i class="fas fa-comments text-4xl text-purple-600 dark:text-purple-300"></i>
+                                    <i class="fas fa-comments text-4xl text-indigo-600 dark:text-purple-300"></i>
                                 </div>
                                 <h3 class="text-xl font-semibold text-black mb-2">Welcome to Chat</h3>
                                 <p class="text-gray-600 dark:text-gray-400">Select a contact from the sidebar to start a conversation</p>
@@ -728,28 +699,6 @@
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
 
-            // Load unread count on page load
-            loadUnreadCount();
-
-            // Load unread count
-            function loadUnreadCount() {
-                fetch('/wholesaler/chat/unread-count')
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Unread count:', data);
-                        const badge = document.getElementById('unread-count');
-                        if (data.count > 0) {
-                            badge.textContent = data.count;
-                            badge.style.display = 'inline-block';
-                        } else {
-                            badge.style.display = 'none';
-                        }
-                    })
-                    .catch(error => console.error('Error loading unread count:', error));
-            }
-
-            // Auto-refresh unread count every 30 seconds
-            setInterval(loadUnreadCount, 30000);
 
             // Real-time online status with Echo presence channel
             if (window.Echo) {

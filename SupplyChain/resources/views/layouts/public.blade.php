@@ -423,7 +423,7 @@
 
                     <!-- Desktop Guest Navigation -->
                     <div class="d-none d-lg-flex align-items-center gap-2">
-                        <a class="btn btn-outline-primary d-flex align-items-center" href="{{ route('customer.login') }}">
+                        <a class="btn btn-outline-primary d-flex align-items-center" href="{{ route('login') }}">
                             <i class="bi bi-box-arrow-in-right me-1"></i>
                             <span class="d-none d-xl-inline">Sign In</span>
                         </a>
@@ -538,8 +538,8 @@
                 <div class="col-lg-2 mb-4">
                     <h6>Business</h6>
                     <ul class="list-unstyled">
-                        <li><a href="{{ route('register.supplier') }}" class="text-muted text-decoration-none">Become a Supplier</a></li>
-                        <li><a href="{{ route('register.wholesaler') }}" class="text-muted text-decoration-none">Become a Wholesaler</a></li>
+                        <li><a href="{{ route('register') }}" class="text-muted text-decoration-none">Become a Supplier</a></li>
+                        <li><a href="{{ route('register') }}" class="text-muted text-decoration-none">Become a Wholesaler</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-2 mb-4">
