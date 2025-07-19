@@ -3,19 +3,28 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Services\SettingsService;
 
 class AdminSettingsController extends Controller
 {
+    protected $settings;
+
+    public function __construct(SettingsService $settings)
+    {
+        $this->settings = $settings;
+    }
+
     public function index()
     {
-        $settings = \App\Models\SystemSetting::firstOrFail();
+        $settings = $this->settings->all();
         return view('admin.settings.index', compact('settings'));
     }
 
     public function update(Request $request)
     {
-        $settings = \App\Models\SystemSetting::firstOrFail();
-        $settings->update($request->only(['company_name', 'currency', 'order_timeout']));
-        return redirect()->route('admin.settings.index')->with('success', 'Settings updated!');
+        foreach ($request->except('_token') as $key => $value) {
+            $this->settings->set($key, $value);
+        }
+        return redirect()->back()->with('success', 'Settings updated!');
     }
 }

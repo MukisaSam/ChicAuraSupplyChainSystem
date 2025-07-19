@@ -503,7 +503,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
                     <div>
                         <h1 class="text-2xl font-bold text-white">User Management</h1>
-                        <p class="text-gray-300 mt-1">Manage all user accounts and permissions</p>
+                        <p class="text-black mt-1">Manage all user accounts and permissions</p>
                     </div>
                     <div class="flex flex-wrap gap-2 mt-4 md:mt-0">
                         <a id="addUserBtn" href="{{route('register.admin')}}" class="btn-primary flex items-center">
