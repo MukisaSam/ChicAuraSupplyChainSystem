@@ -129,6 +129,8 @@ class PaymentController extends Controller
 
         $order = Order::create([
             'customer_id' => auth()->guard('customer')->id(),
+            'wholesaler_id' => 1,
+            'manufacturer_id' => 1,
             'shipping_address' => $request->shipping_address,
             'billing_address' => $request->billing_same_as_shipping ? 
                                $request->shipping_address : 
