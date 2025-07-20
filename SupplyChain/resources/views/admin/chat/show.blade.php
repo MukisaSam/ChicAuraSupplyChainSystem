@@ -1,4 +1,4 @@
-@extends('layouts.admin-dashboard')
+@extends('layouts.admin-chat')
 @section('content')
 @if (!isset($contact) || !isset($messages))
     <script>window.location = "{{ route('admin.chat.index') }}";</script>

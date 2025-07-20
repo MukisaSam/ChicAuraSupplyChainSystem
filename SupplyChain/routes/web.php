@@ -171,7 +171,14 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::get('/{contactId}/messages', [\App\Http\Controllers\AdminChatController::class, 'getRecentMessages'])->name('messages');
     });
 
-    // Notifications
+    
+        Route::get('reports', [ReportsController::class, 'index'])->name('reports.index');
+        Route::get('reports/sales', [ReportsController::class, 'sales'])->name('reports.sales');
+        Route::get('reports/users', [ReportsController::class, 'users'])->name('reports.users');
+        Route::get('reports/inventory', [ReportsController::class, 'inventory'])->name('reports.inventory');
+        Route::post('reports/export', [ReportsController::class, 'export'])->name('reports.export');
+  
+        // Notifications
     Route::get('/notifications', [\App\Http\Controllers\AdminNotificationsController::class, 'index'])->name('notifications.index');
 
     // Settings

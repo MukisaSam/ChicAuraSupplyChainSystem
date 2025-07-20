@@ -20,9 +20,14 @@
             background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 100%), url('{{ asset('images/black.jpeg') }}');
         }
         .sidebar {
-            transition: transform 0.3s ease-in-out;
-            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
             box-shadow: 4px 0 15px rgba(0,0,0,0.1);
+            color: #000;
+        }
+        .sidebar .nav-link,
+        .sidebar h3,
+        .sidebar p {
+            color: #000 !important;
         }
         .dark .sidebar {
             background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
@@ -69,25 +74,32 @@
                     <h3 class="text-white text-sm font-semibold mb-3 px-3">ADMIN PORTAL</h3>
                 </div>
                 <nav class="flex-1 px-4 py-2 space-y-1">
-                    <a href="{{ route('admin.dashboard') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-blue-700 hover:text-white rounded-xl">
-                        <i class="fas fa-home w-5"></i>
-                        <span class="ml-2 text-sm">Home</span>
+                    <a href="{{ route('admin.dashboard') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.dashboard') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-blue-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-tachometer-alt w-5"></i><span class="ml-2 font-medium text-sm">Dashboard</span>
                     </a>
-                    <a href="{{ route('admin.users') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-blue-700 hover:text-white rounded-xl">
-                        <i class="fas fa-users-cog w-5"></i>
-                        <span class="ml-2 text-sm">Users</span>
+                    <a href="{{ route('admin.users') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.users') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-blue-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-users-cog w-5"></i><span class="ml-2 text-sm">Users Management</span>
                     </a>
-                    <a href="{{ route('admin.analytics.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-blue-700 hover:text-white rounded-xl">
-                        <i class="fas fa-chart-bar w-5"></i>
-                        <span class="ml-2 text-sm">Analytics</span>
+                    <a href="{{ route('admin.user_roles.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.user_roles.*') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-blue-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-shield-alt w-5"></i><span class="ml-2 text-sm">Roles & Permissions</span>
                     </a>
-                    <a href="{{ route('admin.chat.index') }}" class="nav-link flex items-center px-3 py-2 text-white bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl shadow-lg">
-                        <i class="fas fa-comments w-5"></i>
-                        <span class="ml-2 text-sm">Chat</span>
+                    <a href="{{ route('admin.analytics.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.analytics.*') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-blue-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-chart-pie w-5"></i><span class="ml-2 text-sm">Analytics</span>
                     </a>
-                    <a href="{{ route('admin.notifications.index') }}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-blue-700 hover:text-white rounded-xl">
-                        <i class="fas fa-bell w-5"></i>
-                        <span class="ml-2 text-sm">Notifications</span>
+                    <a href="{{ route('admin.audit-logs.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.audit-logs.*') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-blue-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-history w-5"></i><span class="ml-2 text-sm">Audit Logs</span>
+                    </a>
+                    <a href="{{ route('admin.notifications.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.notifications.*') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-blue-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-bell w-5"></i><span class="ml-2 text-sm">Notifications</span>
+                    </a>
+                    <a href="{{ route('admin.settings.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.settings.*') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-blue-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-cogs w-5"></i><span class="ml-2 text-sm">System Settings</span>
+                    </a>
+                    <a href="{{ route('admin.reports.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.reports.*') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-blue-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-file-alt w-5"></i><span class="ml-2 text-sm">Reports</span>
+                    </a>
+                    <a href="{{ route('admin.chat.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('admin.chat.index') || request()->routeIs('admin.chat.show') ? 'text-white bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg' : 'text-gray-300 hover:bg-blue-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-comments w-5"></i><span class="ml-2 text-sm">Chat</span>
                     </a>
                 </nav>
                 <div class="p-3 border-t border-blue-900">
