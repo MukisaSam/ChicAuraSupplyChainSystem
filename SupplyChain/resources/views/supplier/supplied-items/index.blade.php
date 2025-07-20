@@ -27,8 +27,8 @@
                                     <p class="text-sm text-gray-500">{{ $item->item->description }}</p>
                                     <ul class="text-sm mt-2 space-y-1">
                                         <li><strong>Quantity:</strong> {{ number_format($item->delivered_quantity) }}</li>
-                                        <li><strong>Price:</strong> ${{ number_format($item->price, 2) }}</li>
-                                        <li><strong>Total:</strong> ${{ number_format($item->price * $item->delivered_quantity, 2) }}</li>
+                                        <li><strong>Price:</strong> UGX{{ number_format($item->price, 2) }}</li>
+                                        <li><strong>Total:</strong> UGX{{ number_format($item->price * $item->delivered_quantity, 2) }}</li>
                                         <li><strong>Delivery Date:</strong> {{ $item->delivery_date->format('M d, Y') }}</li>
                                         <li><strong>Status:</strong> <span class="badge ...">{{ ucfirst($item->status) }}</span></li>
                                         <li>

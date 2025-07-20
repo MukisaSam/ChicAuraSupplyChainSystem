@@ -60,7 +60,7 @@
     <hr class="my-4">
     <h4 class="text-lg font-semibold mb-2">Price Negotiation</h4>
     <div class="mb-2">
-        <span class="font-semibold">Initial Price:</span> ${{ number_format($supplyRequest->priceNegotiation->initial_price, 2) }}
+        <span class="font-semibold">Initial Price:</span> UGX{{ number_format($supplyRequest->priceNegotiation->initial_price, 2) }}
     </div>
     <div class="mb-2">
         <span class="font-semibold">Status:</span> {{ ucfirst($supplyRequest->priceNegotiation->status) }}

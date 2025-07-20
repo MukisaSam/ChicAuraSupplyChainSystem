@@ -18,7 +18,7 @@
         </div>
         <div class="stat-card p-6 rounded-xl shadow text-center">
             <div class="text-gray-500 text-sm mb-2">Revenue</div>
-            <div class="text-3xl font-bold">${{ number_format($totalRevenue ?? 0, 2) }}</div>
+            <div class="text-3xl font-bold">UGX{{ number_format($totalRevenue ?? 0, 2) }}</div>
         </div>
         <div class="stat-card p-6 rounded-xl shadow text-center">
             <div class="text-gray-500 text-sm mb-2">Active Suppliers</div>
@@ -56,7 +56,7 @@
                 <tr>
                     <td class="p-2">{{ $order->id }}</td>
                     <td class="p-2">{{ $order->customer->name ?? 'N/A' }}</td>
-                    <td class="p-2">${{ number_format($order->total, 2) }}</td>
+                    <td class="p-2">UGX{{ number_format($order->total, 2) }}</td>
                     <td class="p-2">{{ ucfirst($order->status) }}</td>
                     <td class="p-2">{{ $order->created_at->format('Y-m-d') }}</td>
                 </tr>

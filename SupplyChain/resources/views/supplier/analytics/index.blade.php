@@ -18,7 +18,7 @@
         </div>
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 flex flex-col items-center">
             <h5 class="text-sm font-semibold text-gray-500 dark:text-gray-300 mb-2">Total Revenue</h5>
-            <p class="text-3xl font-bold text-purple-600 dark:text-purple-400">${{ number_format($stats['total_revenue'], 2) }}</p>
+            <p class="text-3xl font-bold text-purple-600 dark:text-purple-400">UGX{{ number_format($stats['total_revenue'], 2) }}</p>
         </div>
     </div>
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 mb-8">
