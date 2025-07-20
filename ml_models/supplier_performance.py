@@ -672,8 +672,18 @@ class SupplierPerformanceAnalyzer:
         # Anomaly alerts
         if 'is_anomaly' in df.columns:
             anomalous = df[df['is_anomaly'] == True]
+            score_cols = [col for col in df.columns if 'score' in col or 'rate' in col]
+            medians = df[score_cols].median()
             for _, supplier in anomalous.iterrows():
-                alerts.append(f"Anomalous performance detected for supplier {supplier.get('supplier_name', supplier.name)}")
+                abnormal_metrics = []
+                for col in score_cols:
+                    if col in supplier and abs(supplier[col] - medians[col]) > 20:  # threshold for "abnormal"
+                        abnormal_metrics.append(f"{col}: {supplier[col]:.2f}")
+                reason = ", ".join(abnormal_metrics) if abnormal_metrics else "Multiple metrics deviate from normal"
+                alerts.append(
+                    f"Anomalous performance detected for supplier {supplier.get('supplier_name', supplier.name)} "
+                    f"(Anomaly Score: {supplier.get('anomaly_score', 'N/A'):.2f}). Reason: {reason}"
+                )
         
         # Predicted performance alerts
         if 'predicted_performance' in df.columns:

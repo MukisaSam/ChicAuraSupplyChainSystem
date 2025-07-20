@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Import ML modules
-from demand_model import EnhancedProphetDemandModel, main as train_demand_model
+from demand_model import main as train_demand_model
 from recommendation_system import HybridRecommendationSystem
 from supplier_performance import SupplierPerformanceAnalyzer
 from db_config import get_demand_data, get_customer_data, get_supplier_performance_data, execute_query

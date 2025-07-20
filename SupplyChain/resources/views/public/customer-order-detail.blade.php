@@ -29,17 +29,30 @@
                                 </span>
                             </p>
                             <p><strong>Payment Method:</strong> {{ ucfirst(str_replace('_', ' ', $order->payment_method)) }}</p>
-                            <p><strong>Total Amount:</strong> ${{ number_format($order->total_amount, 2) }}</p>
+                            <p><strong>Total Amount:</strong> Ugx{{ number_format($order->total_amount, 2) }}</p>
                         </div>
                         <div class="col-md-6">
                             <h5 class="mb-3">Shipping Information</h5>
-                            <p><strong>Name:</strong> {{ $order->shipping_address['name'] }}</p>
-                            <p><strong>Phone:</strong> {{ $order->shipping_address['phone'] }}</p>
-                            <p><strong>Address:</strong> {{ $order->shipping_address['address'] }}</p>
-                            <p><strong>City:</strong> {{ $order->shipping_address['city'] }}</p>
-                            @isset($order->shipping_address['postal_code'])
-                                <p><strong>Postal Code:</strong> {{ $order->shipping_address['postal_code'] }}</p>
-                            @endisset
+                            @if(isset($order->shipping_address['name']))
+                                {{-- New format --}}
+                                <p><strong>Name:</strong> {{ $order->shipping_address['name'] }}</p>
+                                <p><strong>Phone:</strong> {{ $order->shipping_address['phone'] }}</p>
+                                <p><strong>Address:</strong> {{ $order->shipping_address['address'] }}</p>
+                                <p><strong>City:</strong> {{ $order->shipping_address['city'] }}</p>
+                                @isset($order->shipping_address['postal_code'])
+                                    <p><strong>Postal Code:</strong> {{ $order->shipping_address['postal_code'] }}</p>
+                                @endisset
+                            @elseif(isset($order->shipping_address['district']) || isset($order->shipping_address['area']))
+                                {{-- Old format --}}
+                                <p><strong>District:</strong> {{ $order->shipping_address['district'] ?? 'N/A' }}</p>
+                                <p><strong>Area:</strong> {{ $order->shipping_address['area'] ?? 'N/A' }}</p>
+                                <p><strong>Street:</strong> {{ $order->shipping_address['street'] ?? 'N/A' }}</p>
+                                @if(isset($order->shipping_address['landmark']) && $order->shipping_address['landmark'])
+                                    <p><strong>Landmark:</strong> {{ $order->shipping_address['landmark'] }}</p>
+                                @endif
+                            @else
+                                <p>Address information unavailable or in unsupported format.</p>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -80,24 +93,24 @@
                                                 </div>
                                             </div>
                                         </td>
-                                        <td>${{ number_format($item->unit_price, 2) }}</td>
+                                        <td>Ugx{{ number_format($item->unit_price, 2) }}</td>
                                         <td>{{ $item->quantity }}</td>
-                                        <td>${{ number_format($item->total_price, 2) }}</td>
+                                        <td>Ugx{{ number_format($item->total_price, 2) }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
                             <tfoot>
                                 <tr>
                                     <td colspan="3" class="text-end"><strong>Subtotal:</strong></td>
-                                    <td>${{ number_format($order->total_amount / 1.1, 2) }}</td>
+                                    <td>Ugx{{ number_format($order->total_amount / 1.1, 2) }}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="3" class="text-end"><strong>Tax (10%):</strong></td>
-                                    <td>${{ number_format($order->total_amount - ($order->total_amount / 1.1), 2) }}</td>
+                                    <td>Ugx{{ number_format($order->total_amount - ($order->total_amount / 1.1), 2) }}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="3" class="text-end"><strong>Total:</strong></td>
-                                    <td>${{ number_format($order->total_amount, 2) }}</td>
+                                    <td>Ugx{{ number_format($order->total_amount, 2) }}</td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -122,9 +135,9 @@
                     <a href="{{ route('customer.orders') }}" class="btn btn-outline-secondary">
                         Back to Orders
                     </a>
-                    <a href="{{ route('customer.order.reorder', $order->id) }}" class="btn btn-primary">
+                    <!-- <a href="{{ route('customer.order.reorder', $order->id) }}" class="btn btn-primary">
                         Reorder
-                    </a>
+                    </a> -->
                 </div>
             </div>
         </div>

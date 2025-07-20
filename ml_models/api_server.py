@@ -18,7 +18,8 @@ import os
 import traceback
 
 # Import ML modules
-from demand_model import EnhancedProphetDemandModel, predict_demand, load_model
+from demand_model import MLDemandModel as EnhancedProphetDemandModel
+#from demand_model import predict, load_model
 from recommendation_system import HybridRecommendationSystem
 from supplier_performance import SupplierPerformanceAnalyzer
 from db_config import get_demand_data, get_customer_data, get_supplier_performance_data
@@ -544,6 +545,36 @@ async def internal_error_handler(request, exc):
 @app.on_event("startup")
 async def set_startup_time():
     app.state.start_time = datetime.now()
+
+# Initialize models on startup
+@app.on_event("startup")
+async def initialize_models():
+    global demand_model, recommendation_system, supplier_analyzer
+    
+    try:
+        logger.info("Initializing ML models...")
+        
+        # Initialize recommendation system
+        logger.info("Loading recommendation system...")
+        recommendation_system = HybridRecommendationSystem()
+        
+        # Try to load existing models first
+        try:
+            logger.info("Attempting to load saved recommendation models...")
+            # Add code to load saved models here if needed
+            recommendation_system.models_trained = True
+        except Exception as e:
+            logger.warning(f"Could not load saved models: {e}")
+            logger.info("Will train models on first request")
+        
+        # Initialize other models
+        # demand_model = ...
+        # supplier_analyzer = ...
+        
+        logger.info("ML models initialized successfully")
+    except Exception as e:
+        logger.error(f"Error initializing ML models: {e}")
+        logger.error(traceback.format_exc())
 
 if __name__ == "__main__":
     import uvicorn

@@ -72,7 +72,7 @@ class ManufacturerAnalyticsController extends Controller
                 // Traditional Supplier Performance
                 'suppliers' => $this->getSupplierPerformance(),
                 
-                // ML Supplier Insights (NEW)
+                // ML Supplier Insights
                 'mlSupplierInsights' => $this->getMLSupplierInsights(),
                 
                 // Revenue Analytics
@@ -84,6 +84,9 @@ class ManufacturerAnalyticsController extends Controller
                 // Customer Segmentation
                 'customers' => $this->getCustomerSegmentation(),
                 
+                // Wholesaler Segmentation (ML-Powered)
+                'wholesalerSegmentation' => $this->getWholesalerSegmentation(),
+                
                 // Recent Activities
                 'recentActivities' => $this->getRecentActivities(),
                 
@@ -93,7 +96,7 @@ class ManufacturerAnalyticsController extends Controller
         } catch (\Exception $e) {
             \Log::error('Analytics Data Error: ' . $e->getMessage());
             
-            // Return default data structure with ML insights
+            // Return default structure
             return [
                 'stats' => [
                     'raw_materials' => 0,
@@ -156,6 +159,11 @@ class ManufacturerAnalyticsController extends Controller
                     'production_data' => [],
                     'revenue_data' => [],
                     'orders_data' => [],
+                ],
+                // Add wholesaler segmentation fallback
+                'wholesalerSegmentation' => [
+                    'error' => 'Failed to load segmentation data',
+                    'last_updated' => null
                 ],
             ];
         }
@@ -497,22 +505,86 @@ class ManufacturerAnalyticsController extends Controller
     }
 
     // API endpoints for AJAX requests
-    public function getChartData(Request $request)
-    {
-        $chartType = $request->get('type', 'timeseries');
+    // public function getChartData(Request $request)
+    // {
+    //     $chartType = $request->get('type', 'timeseries');
         
-        switch ($chartType) {
-            case 'production':
-                return response()->json($this->getProductionAnalytics());
-            case 'revenue':
-                return response()->json($this->getRevenueAnalytics());
-            case 'inventory':
-                return response()->json($this->getInventoryAnalytics());
-            case 'timeseries':
-            default:
-                return response()->json(['timeData' => $this->getTimeSeriesData()]);
-        }
+    //     switch ($chartType) {
+    //         case 'production':
+    //             return response()->json($this->getProductionAnalytics());
+    //         case 'revenue':
+    //             return response()->json($this->getRevenueAnalytics());
+    //         case 'inventory':
+    //             return response()->json($this->getInventoryAnalytics());
+    //         case 'timeseries':
+    //         default:
+    //             return response()->json(['timeData' => $this->getTimeSeriesData()]);
+    //     }
+    // }
+public function getChartData(Request $request)
+{
+    $chartType = $request->get('type', 'timeseries');
+    
+    switch ($chartType) {
+        case 'production':
+            return response()->json($this->getProductionAnalytics());
+        case 'revenue':
+            return response()->json($this->getRevenueAnalytics());
+        case 'inventory':
+            return response()->json($this->getInventoryAnalytics());
+        case 'products':
+            return response()->json(['products' => $this->getProductQuantityData()]);
+        case 'timeseries':
+        default:
+            return response()->json(['timeData' => $this->getTimeSeriesData()]);
     }
+}
+
+private function getProductQuantityData()
+{
+    // Get all finished products
+    $products = Item::where('type', 'finished_product')
+        ->get()
+        ->map(function($product) {
+            // Get monthly quantity data for this product
+            $monthlyData = OrderItem::join('orders', 'order_items.order_id', '=', 'orders.id')
+                ->where('order_items.item_id', $product->id)
+                ->where('orders.created_at', '>=', Carbon::now()->subMonths(6))
+                ->selectRaw('MONTH(orders.created_at) as month, YEAR(orders.created_at) as year, SUM(order_items.quantity) as quantity')
+                ->groupBy('year', 'month')
+                ->orderBy('year')
+                ->orderBy('month')
+                ->get();
+                
+            $dates = [];
+            $quantities = [];
+            
+            // Fill in data for the last 6 months
+            for ($i = 5; $i >= 0; $i--) {
+                $date = Carbon::now()->subMonths($i);
+                $monthNum = $date->month;
+                $yearNum = $date->year;
+                $dateLabel = $date->format('M Y');
+                
+                $monthData = $monthlyData
+                    ->where('month', $monthNum)
+                    ->where('year', $yearNum)
+                    ->first();
+                
+                $dates[] = $dateLabel;
+                $quantities[] = $monthData ? $monthData->quantity : 0;
+            }
+            
+            return [
+                'id' => $product->id,
+                'name' => $product->name,
+                'dates' => $dates,
+                'quantities' => $quantities
+            ];
+        });
+
+    return $products;
+}
 
     public function getSupplierReport()
     {
@@ -548,10 +620,13 @@ class ManufacturerAnalyticsController extends Controller
                 ->get()
                 ->pluck('location');
 
-            // Add some default locations if warehouses are empty
+            // Add some default locations if database is empty
             if ($locations->isEmpty()) {
                 $locations = collect(['Wakiso', 'Kampala', 'Entebbe', 'Jinja', 'Gulu']);
             }
+            
+            // Add "Countrywide" as the first option
+            $locations = $locations->prepend('Countrywide');
 
             return response()->json([
                 'products' => $products,
@@ -1161,4 +1236,247 @@ class ManufacturerAnalyticsController extends Controller
 
         return null;
     }
+
+    public function refreshWholesalerSegmentation(Request $request)
+    {
+        try {
+            // Trigger ML model to generate new segmentation
+            $baseDir = base_path('../ml_models');
+            $pythonExe = $this->findPythonExecutable();
+            
+            if (!$pythonExe) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Python executable not found. Please ensure Python is installed and accessible.'
+                ]);
+            }
+            
+            $command = "cd /d \"{$baseDir}\" && \"{$pythonExe}\" wholesaler_segmentation.py 2>&1";
+            putenv('PYTHONIOENCODING=utf-8');
+            
+            $output = shell_exec($command);
+            
+            // Clean the output
+            if ($output) {
+                $output = mb_convert_encoding($output, 'UTF-8', 'UTF-8');
+                $output = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $output);
+            }
+            
+            \Log::info("Wholesaler segmentation output: " . substr($output ?? '', 0, 1000));
+            
+            // Check if segmentation completed successfully
+            $segmentationFile = public_path('wholesaler_segments.csv');
+            $fileUpdated = file_exists($segmentationFile) && (time() - filemtime($segmentationFile)) < 300;
+            
+            if ($fileUpdated) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Wholesaler segmentation completed successfully',
+                    'file_updated_at' => date('Y-m-d H:i:s', filemtime($segmentationFile))
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Segmentation may have failed - no output file found or file not updated',
+                    'output_preview' => substr($output ?? '', 0, 500)
+                ]);
+            }
+        } catch (\Exception $e) {
+            \Log::error('Wholesaler segmentation error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error running wholesaler segmentation: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+// private function getWholesalerSegmentation()
+// {
+//     try {
+//         $segmentationFile = public_path('wholesaler_segments.csv');
+        
+//         if (!file_exists($segmentationFile)) {
+//             return [
+//                 'error' => 'No segmentation data available',
+//                 'message' => 'Run the segmentation analysis to generate insights'
+//             ];
+//         }
+        
+//         // Read CSV file
+//         $segmentData = [];
+//         $segmentNames = [];
+//         $segmentDescriptions = [];
+        
+//         // Get last modified time
+//         $lastUpdated = filemtime($segmentationFile);
+        
+//         // Parse the CSV file
+//         $csv = array_map('str_getcsv', file($segmentationFile));
+//         $headers = array_shift($csv);
+        
+//         // Convert to associative array
+//         $wholesalers = [];
+//         foreach ($csv as $row) {
+//             $wholesaler = array_combine($headers, $row);
+//             $wholesalers[] = $wholesaler;
+//         }
+        
+//         // Group by cluster
+//         $segmentedWholesalers = [];
+//         $segmentSummary = [];
+        
+//         foreach ($wholesalers as $wholesaler) {
+//             $cluster = $wholesaler['cluster'];
+            
+//             if (!isset($segmentedWholesalers[$cluster])) {
+//                 $segmentedWholesalers[$cluster] = [
+//                     'name' => $this->getSegmentName($cluster, $wholesaler['recency'], $wholesaler['total_spent']),
+//                     'description' => $this->getSegmentDescription($cluster),
+//                     'wholesalers' => []
+//                 ];
+//             }
+            
+//             $segmentedWholesalers[$cluster]['wholesalers'][] = $wholesaler;
+//         }
+        
+//         // Calculate summary statistics
+//         $totalWholesalers = count($wholesalers);
+//         foreach ($segmentedWholesalers as $cluster => $segment) {
+//             $count = count($segment['wholesalers']);
+//             $percentage = ($totalWholesalers > 0) ? round(($count / $totalWholesalers) * 100) : 0;
+            
+//             $segmentSummary[] = [
+//                 'name' => $segment['name'],
+//                 'count' => $count,
+//                 'percentage' => $percentage
+//             ];
+//         }
+        
+//         return [
+//             'segments' => $segmentedWholesalers,
+//             'summary' => $segmentSummary,
+//             'last_updated' => $lastUpdated,
+//         ];
+//     } catch (\Exception $e) {
+//         \Log::error('Failed to load wholesaler segmentation: ' . $e->getMessage());
+//         return [
+//             'error' => 'Failed to load segmentation data: ' . $e->getMessage()
+//         ];
+//     }
+// }
+
+    private function getWholesalerSegmentation()
+    {
+        try {
+            $jsonFile = public_path('wholesaler_segments_meta.json');
+            $csvFile = public_path('wholesaler_segments.csv');
+            
+            // First try to use the JSON metadata if available
+            if (file_exists($jsonFile)) {
+                $jsonData = json_decode(file_get_contents($jsonFile), true);
+                
+                // Prepare the segment data for the view
+                $segmentedWholesalers = [];
+                
+                // If we also need the detailed data, load the CSV
+                if (file_exists($csvFile)) {
+                    // Read CSV file for detailed wholesaler data
+                    $csv = array_map('str_getcsv', file($csvFile));
+                    $headers = array_shift($csv);
+                    
+                    // Convert to associative array
+                    $wholesalers = [];
+                    foreach ($csv as $row) {
+                        $wholesaler = array_combine($headers, $row);
+                        $cluster = $wholesaler['cluster'];
+                        
+                        if (!isset($segmentedWholesalers[$cluster])) {
+                            $segmentedWholesalers[$cluster] = [
+                                'name' => $jsonData['segments'][$cluster]['name'],
+                                'description' => $jsonData['segments'][$cluster]['description'],
+                                'wholesalers' => []
+                            ];
+                        }
+                        
+                        $segmentedWholesalers[$cluster]['wholesalers'][] = $wholesaler;
+                    }
+                }
+                
+                // Get the segment summary from the JSON
+                $segmentSummary = [];
+                foreach ($jsonData['segments'] as $cluster => $segment) {
+                    $segmentSummary[] = [
+                        'name' => $segment['name'],
+                        'count' => $segment['count'],
+                        'percentage' => $segment['percentage'],
+                        'avg_total_spent' => $segment['avg_total_spent'],
+                        'avg_orders' => $segment['avg_orders']
+                    ];
+                }
+                
+                return [
+                    'segments' => $segmentedWholesalers,
+                    'summary' => $segmentSummary,
+                    'last_updated' => $jsonData['last_updated'],
+                    'total_wholesalers' => $jsonData['total_wholesalers']
+                ];
+            } else if (file_exists($csvFile)) {
+                // Fall back to CSV-only method if JSON doesn't exist
+                // (your existing CSV parsing code)
+            } else {
+                return [
+                    'error' => 'No segmentation data available',
+                    'message' => 'Run the segmentation analysis to generate insights'
+                ];
+            }
+        } catch (\Exception $e) {
+            \Log::error('Failed to load wholesaler segmentation: ' . $e->getMessage());
+            return [
+                'error' => 'Failed to load segmentation data: ' . $e->getMessage()
+            ];
+        }
+    }
+
+private function getSegmentName($cluster, $recency, $totalSpent)
+{
+    // Define segment names based on the Python model's naming logic
+    switch ($cluster) {
+        case 0:
+            return "Premium Wholesalers";
+        case 1:
+            return "High-Value Active Buyers";
+        case 2:
+            return "At-Risk/Dormant";
+        case 3:
+            return "Regular Active Buyers";
+        default:
+            // Fallback logic similar to Python script
+            if ($recency <= 30 && $totalSpent > 100000000) {
+                return "High-Value Active Buyers";
+            } elseif ($recency <= 30) {
+                return "Regular Active Buyers";
+            } elseif ($recency > 90) {
+                return "At-Risk/Dormant";
+            } else {
+                return "Occasional Buyers";
+            }
+    }
+}
+
+private function getSegmentDescription($cluster)
+{
+    // Define segment descriptions based on the Python model's descriptions
+    switch ($cluster) {
+        case 0:
+            return "High-value, frequent buyers with large order volumes";
+        case 1:
+            return "Recently active customers with above-average spending";
+        case 2:
+            return "Haven't ordered recently, need re-engagement";
+        case 3:
+            return "Recently active customers with moderate spending";
+        default:
+            return "Moderate activity, potential for growth";
+    }
+}
 }
