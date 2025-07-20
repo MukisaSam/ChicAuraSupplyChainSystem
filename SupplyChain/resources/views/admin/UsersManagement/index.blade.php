@@ -468,14 +468,21 @@
                     </div>
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
-                    <button
-                        class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"><i
-                            class="fas fa-bell text-lg"></i></button>
-                    <button data-theme-toggle
-                        class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
-                        title="Switch Theme">
-                        <i class="fas fa-moon text-lg"></i>
-                    </button>
+                <div class="flex items-center pr-4 space-x-3">
+                    <div class="relative">
+                        <a href="{{ route('admin.notifications.index') }}">
+                            <i class="fas fa-bell"></i>
+                            @php
+                                $unreadCount = isset($unreadCount) ? $unreadCount : (Auth::check() ? Auth::user()->unreadNotifications()->count() : 0);
+                            @endphp
+                            @if($unreadCount > 0)
+                                <span class="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5">
+                                    {{ $unreadCount }}
+                                </span>
+                            @endif
+                        </a>
+                    </div>
+                                      
                     <div class="relative">
                         <button
                             class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">

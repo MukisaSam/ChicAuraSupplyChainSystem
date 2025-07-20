@@ -184,9 +184,7 @@
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
                     <i class="fas fa-bell"></i>
-                    <button data-theme-toggle class="p-2 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded-full transition-colors" title="Switch Theme">
-                        <i class="fas fa-moon text-lg"></i>
-                    </button>
+
                     <div class="relative">
                         <button class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
                             <span class="mr-2 text-gray-700 font-medium text-sm">{{ Auth::user()->name ?? 'Supplier User' }}</span>

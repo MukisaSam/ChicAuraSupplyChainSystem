@@ -206,10 +206,7 @@
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
                 <i class="fas fa-bell"></i>
-                    <button data-theme-toggle class="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 dark:text-gray-400 dark:hover:text-purple-400 dark:hover:bg-purple-900/20 rounded-full transition-colors" title="Switch Theme">
-                        <i class="fas fa-moon text-lg"></i>
-                    </button>
-                    <div class="relative">
+                                     <div class="relative">
                         <button class="flex items-center focus:outline-none bg-white dark:bg-gray-700 rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
                             <span class="mr-2 text-gray-700 dark:text-gray-200 font-medium text-sm">{{ $user->name ?? 'Wholesaler User' }}</span>
                             <img class="w-7 h-7 rounded-full border-2 border-purple-200 object-cover" 

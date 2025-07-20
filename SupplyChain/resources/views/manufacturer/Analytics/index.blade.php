@@ -235,9 +235,6 @@
                     <div class="relative">
                         <x-notification-bell />
                     </div>
-                    <button data-theme-toggle class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors" title="Switch Theme">
-                        <i class="fas fa-moon text-lg"></i>
-                    </button>
                     <!-- Profile Dropdown -->
                     <div class="relative">
                         <button class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
