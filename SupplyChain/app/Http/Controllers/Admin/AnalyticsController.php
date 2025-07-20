@@ -3,47 +3,64 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Order;
+use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class AnalyticsController extends Controller
 {
-    public function analytics() {
-        // Fetch data as needed
-        return view('admin.analytics', [/* data */]);
-    }
-
     public function index()
     {
-        // Orders processed
-        $ordersCount = \App\Models\Order::count();
+        // Total Users
+        $totalUsers = User::count();
+        
+        // Total Orders
+        $totalOrders = Order::count();
 
-        // Vendors registered (suppliers, manufacturers, wholesalers)
-        $vendorsCount = \App\Models\User::whereIn('role', ['supplier', 'manufacturer', 'wholesaler'])->count();
+        // Total Revenue (using the correct field name from Order model)
+        $totalRevenue = Order::sum('total_amount');
 
-        // Revenue for this month
-        $monthlyRevenue = \App\Models\Order::whereMonth('created_at', now()->month)->sum('total_amount');
+        // Active Suppliers (using the role constant from User model)
+        // Removed is_active check since column doesn't exist
+        $activeSuppliers = User::where('role', User::ROLE_SUPPLIER)
+                            ->count();
 
         // Orders chart data (orders per day this month)
-        $orders = \App\Models\Order::selectRaw('DATE(created_at) as date, COUNT(*) as count')
+        $orders = Order::selectRaw('DATE(order_date) as date, COUNT(*) as count')
+            ->whereMonth('order_date', now()->month)
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+            
+        $ordersChartLabels = $orders->pluck('date');
+        $ordersChartData = $orders->pluck('count');
+
+        // Users registration chart data (users per day this month)
+        $users = User::selectRaw('DATE(created_at) as date, COUNT(*) as count')
             ->whereMonth('created_at', now()->month)
             ->groupBy('date')
             ->orderBy('date')
             ->get();
-        $chartData = [
-            'labels' => $orders->pluck('date')->toArray(),
-            'datasets' => [
-                [
-                    'label' => 'Orders',
-                    'data' => $orders->pluck('count')->toArray(),
-                    'borderColor' => '#3B82F6',
-                    'backgroundColor' => 'rgba(59, 130, 246, 0.2)',
-                    'fill' => true,
-                ]
-            ]
-        ];
+            
+        $usersChartLabels = $users->pluck('date');
+        $usersChartData = $users->pluck('count');
+
+        // Recent Orders with wholesaler relationship
+        $recentOrders = Order::with(['wholesaler.user'])
+            ->latest('order_date')
+            ->take(10)
+            ->get();
 
         return view('admin.analytics.index', compact(
-            'ordersCount', 'vendorsCount', 'monthlyRevenue', 'chartData'
+            'totalUsers',
+            'totalOrders',
+            'totalRevenue',
+            'activeSuppliers',
+            'ordersChartLabels',
+            'ordersChartData',
+            'usersChartLabels',
+            'usersChartData',
+            'recentOrders'
         ));
     }
 }
