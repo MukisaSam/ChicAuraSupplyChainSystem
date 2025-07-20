@@ -27,14 +27,20 @@ class WeeklyReportService
         // User activity
         $newUsers = User::whereBetween('created_at', [$weekAgo, $now])->get();
         $newUsersCount = $newUsers->count();
-        $activeUsers = User::whereHas('orders', function($q) use ($weekAgo, $now) {
-            $q->whereBetween('created_at', [$weekAgo, $now]);
-        })->get();
-        $activeUsersCount = $activeUsers->count();
+
+        // Active wholesalers and manufacturers
+        $activeWholesalers = Order::whereNotNull('wholesaler_id')
+            ->whereBetween('created_at', [$weekAgo, $now])
+            ->distinct('wholesaler_id')
+            ->count('wholesaler_id');
+        $activeManufacturers = Order::whereNotNull('manufacturer_id')
+            ->whereBetween('created_at', [$weekAgo, $now])
+            ->distinct('manufacturer_id')
+            ->count('manufacturer_id');
 
         // Inventory data
-        $lowStockItems = InventoryItem::where('quantity', '<', 10)->get(); // threshold can be adjusted
-        $totalInventory = InventoryItem::sum('quantity');
+        $lowStockItems = \App\Models\InventoryItem::where('quantity', '<', 10)->get();
+        $totalInventory = \App\Models\InventoryItem::sum('quantity');
 
         return [
             'period_start' => $weekAgo,
@@ -44,8 +50,8 @@ class WeeklyReportService
             'salesCount' => $salesCount,
             'newUsers' => $newUsers,
             'newUsersCount' => $newUsersCount,
-            'activeUsers' => $activeUsers,
-            'activeUsersCount' => $activeUsersCount,
+            'activeWholesalers' => $activeWholesalers,
+            'activeManufacturers' => $activeManufacturers,
             'lowStockItems' => $lowStockItems,
             'totalInventory' => $totalInventory,
         ];

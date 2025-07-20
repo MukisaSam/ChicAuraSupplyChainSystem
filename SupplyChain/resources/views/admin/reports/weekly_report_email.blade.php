@@ -31,7 +31,8 @@
     <h3>User Activity</h3>
     <ul>
         <li><strong>New Users:</strong> {{ $newUsersCount }}</li>
-        <li><strong>Active Users (placed orders):</strong> {{ $activeUsersCount }}</li>
+        <li><strong>Active Wholesalers (placed orders):</strong> {{ $activeWholesalers }}</li>
+        <li><strong>Active Manufacturers (placed orders):</strong> {{ $activeManufacturers }}</li>
     </ul>
     <table border="1" cellpadding="5" cellspacing="0" style="margin-bottom: 20px;">
         <thead>
