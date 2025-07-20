@@ -1,4 +1,4 @@
-@extends('layouts.supplier')
+@extends('layouts.supplier-dashboard')
 
 @section('content')
 <div class="p-6 bg-gray-100 min-h-screen">
@@ -7,7 +7,7 @@
     <p class="mb-4"><strong>Total Sales:</strong> ${{ number_format($totalSales, 2) }} | <strong>Number of Orders:</strong> {{ $salesCount }}</p>
     <form action="{{ route('supplier.reports.download') }}" method="POST" class="mb-6">
         @csrf
-        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">Download Report (HTML)</button>
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">Download Report</button>
     </form>
     <h2 class="text-lg font-semibold mt-6 mb-2">Orders</h2>
     <table class="min-w-full bg-white border border-gray-300 mb-6">
