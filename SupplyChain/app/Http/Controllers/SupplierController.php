@@ -152,55 +152,90 @@ class SupplierController extends Controller
     }
 
     public function analytics()
-    {
-        $supplier = Auth::user()->supplier;
+{
+    $supplier = Auth::user()->supplier;
+    
+    // Basic stats
+    $stats = [
+        'total_supplied' => $supplier->suppliedItems()->sum('delivered_quantity'),
+        'average_rating' => $supplier->suppliedItems()->avg('quality_rating') ?? 0,
+        'active_requests' => $supplier->supplyRequests()->where('status', 'pending')->count(),
+        'total_revenue' => $supplier->suppliedItems()->sum(DB::raw('price * delivered_quantity')),
+    ];
 
-        $stats = [
-            'total_supplied' => $supplier->suppliedItems()->sum('delivered_quantity'),
-            'average_rating' => $supplier->suppliedItems()->avg('quality_rating'),
-            'active_requests' => $supplier->supplyRequests()->where('status', 'pending')->count(),
-            'total_revenue' => $supplier->suppliedItems()->sum(DB::raw('price * delivered_quantity')),
-        ];
+    // Get data for the last 12 months
+    $startDate = now()->subMonths(11)->startOfMonth();
+    $endDate = now()->endOfMonth();
 
-        $supplyTrends = $supplier->suppliedItems()
-            ->selectRaw('MONTH(delivery_date) as month, SUM(delivered_quantity) as total')
-            ->groupBy('month')
-            ->get();
-
-        // Prepare data for supply trends chart
-        $months = [];
-        $totals = [];
-        foreach ($supplyTrends as $trend) {
-            $months[] = DateTime::createFromFormat('!m', $trend->month)->format('F');
-            $totals[] = $trend->total;
-        }
-
-        // Prepare data for revenue chart
-        $revenueTrends = $supplier->suppliedItems()
-            ->selectRaw('MONTH(delivery_date) as month, SUM(price * delivered_quantity) as revenue')
-            ->groupBy('month')
-            ->get();
-        $revenueMonths = [];
-        $revenues = [];
-        foreach ($revenueTrends as $trend) {
-            $revenueMonths[] = DateTime::createFromFormat('!m', $trend->month)->format('F');
-            $revenues[] = $trend->revenue;
-        }
-
-        // Prepare data for ratings chart
-        $ratingTrends = $supplier->suppliedItems()
-            ->selectRaw('MONTH(delivery_date) as month, AVG(quality_rating) as avg_rating')
-            ->groupBy('month')
-            ->get();
-        $ratingMonths = [];
-        $ratings = [];
-        foreach ($ratingTrends as $trend) {
-            $ratingMonths[] = DateTime::createFromFormat('!m', $trend->month)->format('F');
-            $ratings[] = round($trend->avg_rating, 2);
-        }
-
-        return view('supplier/analytics.index', compact('stats', 'supplyTrends', 'months', 'totals', 'revenueMonths', 'revenues', 'ratingMonths', 'ratings'));
+    // Initialize all months with 0 values
+    $allMonths = collect();
+    for ($i = 0; $i < 12; $i++) {
+        $date = $startDate->copy()->addMonths($i);
+        $allMonths->push([
+            'month' => $date->month,
+            'month_name' => $date->format('F'),
+            'year' => $date->year,
+            'total' => 0,
+            'revenue' => 0,
+            'avg_rating' => 0
+        ]);
     }
+
+    // Get supply trends data
+    $supplyTrends = $supplier->suppliedItems()
+        ->selectRaw('
+            MONTH(delivery_date) as month, 
+            YEAR(delivery_date) as year,
+            SUM(delivered_quantity) as total,
+            SUM(price * delivered_quantity) as revenue,
+            AVG(quality_rating) as avg_rating
+        ')
+        ->whereBetween('delivery_date', [$startDate, $endDate])
+        ->groupBy('year', 'month')
+        ->orderBy('year')
+        ->orderBy('month')
+        ->get();
+
+    // Merge actual data with all months
+    $mergedData = $allMonths->map(function ($month) use ($supplyTrends) {
+        $found = $supplyTrends->first(function ($item) use ($month) {
+            return $item->month == $month['month'] && $item->year == $month['year'];
+        });
+        
+        if ($found) {
+            $month['total'] = $found->total;
+            $month['revenue'] = $found->revenue;
+            $month['avg_rating'] = round($found->avg_rating, 2);
+        }
+        
+        return $month;
+    });
+
+    // Prepare data for charts
+    $chartData = [
+        'months' => $mergedData->pluck('month_name'),
+        'totals' => $mergedData->pluck('total'),
+        'revenues' => $mergedData->pluck('revenue'),
+        'ratings' => $mergedData->pluck('avg_rating'),
+    ];
+
+    // Get top 5 items by quantity
+    $topItems = $supplier->suppliedItems()
+        ->selectRaw('item_id, SUM(delivered_quantity) as total_quantity')
+        ->with('item')
+        ->groupBy('item_id')
+        ->orderByDesc('total_quantity')
+        ->take(5)
+        ->get();
+
+    return view('supplier.analytics.index', compact(
+        'stats',
+        'chartData',
+        'mergedData',
+        'topItems'
+    ));
+}
+    
 
     public function chat()
     {
