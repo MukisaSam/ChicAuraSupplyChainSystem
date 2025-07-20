@@ -48,6 +48,13 @@ class ProfileController extends Controller
 
         $user = $request->user();
 
+        // Audit log for user deletion
+        \App\Models\AuditLog::create([
+            'user_id' => $user->id,
+            'action' => 'delete',
+            'details' => 'User deleted their own account (email: ' . $user->email . ')',
+        ]);
+
         Auth::logout();
 
         $user->delete();

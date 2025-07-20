@@ -5,30 +5,23 @@ namespace App\Mail;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use App\Models\User;
 
-class WeeklyReportMail extends Mailable
+class SupplierWeeklyReportMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $htmlContent;
     public $subjectLine;
+    public $supplier;
 
-    /**
-     * Create a new message instance.
-     *
-     * @return void
-     */
-    public function __construct($htmlContent, $subjectLine = 'Weekly Admin Report')
+    public function __construct($htmlContent, User $supplier, $subjectLine = 'Your Weekly Supplier Report')
     {
         $this->htmlContent = $htmlContent;
         $this->subjectLine = $subjectLine;
+        $this->supplier = $supplier;
     }
 
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
     public function build()
     {
         return $this->subject($this->subjectLine)

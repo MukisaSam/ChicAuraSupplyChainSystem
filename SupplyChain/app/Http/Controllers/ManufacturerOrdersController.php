@@ -80,6 +80,13 @@ class ManufacturerOrdersController extends Controller
             'notes' => $request->notes,
         ]);
         
+        // Audit log for order status update
+        \App\Models\AuditLog::create([
+            'user_id' => $user->id,
+            'action' => 'order_update_status',
+            'details' => 'Order #' . $order->order_number . ' status changed from ' . $oldStatus . ' to ' . $request->status,
+        ]);
+
         // Notify wholesaler of status update
         if ($order->wholesaler && $order->wholesaler->user) {
             $order->wholesaler->user->notify(new OrderStatusUpdatedNotification($order, $request->status));
