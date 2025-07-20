@@ -231,7 +231,7 @@ class RecommendationManager {
             // Set content
             item.querySelector('.recommendation-name').textContent = rec.name;
             item.querySelector('.recommendation-category').textContent = rec.category || 'Product';
-            item.querySelector('.recommendation-price').textContent = `$${rec.base_price.toFixed(2)}`;
+            item.querySelector('.recommendation-price').textContent = `UGX ${rec.base_price.toLocaleString()}`;
             
             // Set recommendation score
             const scoreElement = item.querySelector('.recommendation-score');

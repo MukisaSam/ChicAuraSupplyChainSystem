@@ -36,7 +36,7 @@
                     <span class="badge bg-primary mb-2">{{ ucwords(str_replace('_', ' ', $product->category)) }}</span>
                     <h1 class="h2 mb-3">{{ $product->name }}</h1>
                     <div class="d-flex align-items-center mb-3">
-                        <span class="h3 text-primary mb-0 me-3">${{ number_format($product->base_price, 2) }}</span>
+                        <span class="h3 text-primary mb-0 me-3">UGX {{ number_format($product->base_price, 2) }}</span>
                         @if($product->stock_quantity > 0)
                             <span class="badge bg-success">In Stock ({{ $product->stock_quantity }} available)</span>
                         @else
@@ -195,7 +195,7 @@
                         <h6 class="card-title">{{ $relatedProduct->name }}</h6>
                         <p class="card-text text-muted small flex-grow-1">{{ Str::limit($relatedProduct->description, 60) }}</p>
                         <div class="d-flex justify-content-between align-items-center mt-auto">
-                            <span class="h6 mb-0 text-primary">${{ number_format($relatedProduct->base_price, 2) }}</span>
+                            <span class="h6 mb-0 text-primary">UGX {{ number_format($relatedProduct->base_price, 2) }}</span>
                             <a href="{{ route('public.product.detail', $relatedProduct->id) }}" class="btn btn-outline-primary btn-sm" onclick="event.stopPropagation();">
                                 <i class="bi bi-eye me-1"></i>View
                             </a>

@@ -29,7 +29,7 @@
                                 </span>
                             </p>
                             <p><strong>Payment Method:</strong> {{ ucfirst(str_replace('_', ' ', $order->payment_method)) }}</p>
-                            <p><strong>Total Amount:</strong> Ugx{{ number_format($order->total_amount, 2) }}</p>
+                            <p><strong>Total Amount:</strong> UGX {{ number_format($order->total_amount, 2) }}</p>
                         </div>
                         <div class="col-md-6">
                             <h5 class="mb-3">Shipping Information</h5>
@@ -95,22 +95,22 @@
                                         </td>
                                         <td>Ugx{{ number_format($item->unit_price, 2) }}</td>
                                         <td>{{ $item->quantity }}</td>
-                                        <td>Ugx{{ number_format($item->total_price, 2) }}</td>
+                                        <td>UGX {{ number_format($item->total_price, 2) }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
                             <tfoot>
                                 <tr>
                                     <td colspan="3" class="text-end"><strong>Subtotal:</strong></td>
-                                    <td>Ugx{{ number_format($order->total_amount / 1.1, 2) }}</td>
+                                    <td>UGX {{ number_format($order->total_amount / 1.1, 2) }}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="3" class="text-end"><strong>Tax (10%):</strong></td>
-                                    <td>Ugx{{ number_format($order->total_amount - ($order->total_amount / 1.1), 2) }}</td>
+                                    <td>UGX {{ number_format($order->total_amount - ($order->total_amount / 1.1), 2) }}</td>
                                 </tr>
                                 <tr>
                                     <td colspan="3" class="text-end"><strong>Total:</strong></td>
-                                    <td>Ugx{{ number_format($order->total_amount, 2) }}</td>
+                                    <td>UGX {{ number_format($order->total_amount, 2) }}</td>
                                 </tr>
                             </tfoot>
                         </table>

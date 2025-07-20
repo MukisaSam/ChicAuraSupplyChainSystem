@@ -21,7 +21,7 @@
                             <h5>Order Summary</h5>
                             <p><strong>Order Number:</strong> {{ $order->order_number }}</p>
                             <p><strong>Date:</strong> {{ $order->created_at->format('M d, Y \a\t g:i A') }}</p>
-                            <p><strong>Total:</strong> ${{ number_format($order->total_amount, 2) }}</p>
+                            <p><strong>Total:</strong> UGX{{ number_format($order->total_amount, 2) }}</p>
                             <p><strong>Payment Method:</strong> {{ ucfirst(str_replace('_', ' ', $order->payment_method)) }}</p>
                         </div>
                         <div class="col-md-6">

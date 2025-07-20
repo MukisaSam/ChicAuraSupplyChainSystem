@@ -91,7 +91,7 @@
                         <h6 class="card-title fw-semibold">{{ $product->name }}</h6>
                         <p class="card-text text-muted small flex-grow-1">{{ Str::limit($product->description, 80) }}</p>
                         <div class="d-flex justify-content-between align-items-center mt-2">
-                            <span class="h5 mb-0 text-primary">${{ number_format($product->base_price, 2) }}</span>
+                            <span class="h5 mb-0 text-primary">UGX {{ number_format($product->base_price, 2) }}</span>
                             <a href="{{ route('public.product.detail', $product->id) }}" class="btn btn-outline-primary btn-sm rounded-pill px-3" onclick="event.stopPropagation();">
                                 <i class="bi bi-eye me-1"></i>View Details
                             </a>
