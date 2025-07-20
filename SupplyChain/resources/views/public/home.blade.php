@@ -4,49 +4,51 @@
 
 @section('content')
 <!-- Hero Section -->
-<section class="bg-primary text-white py-5">
+<section class="hero-section position-relative py-5" style="background: linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%);">
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <h1 class="display-4 fw-bold mb-3">Welcome to ChicAura</h1>
-                <p class="lead mb-4">Discover the latest fashion trends and timeless classics. From casual wear to luxury items, find everything you need to express your unique style.</p>
-                <div class="d-flex gap-3 mb-4">
-                    <a href="{{ route('public.products') }}" class="btn btn-light btn-lg">
+        <div class="row align-items-center flex-lg-row flex-column-reverse">
+            <div class="col-lg-6 text-lg-start text-center">
+                <span class="badge bg-gradient-primary text-white mb-3 px-3 py-2 fs-6 shadow-sm" style="background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%)">Premium Fashion Platform</span>
+                <h1 class="display-4 fw-bold mb-3" style="font-family: 'Montserrat', sans-serif; letter-spacing: -1px;">Welcome to ChicAura</h1>
+                <p class="lead mb-4 text-muted">Discover the latest fashion trends and timeless classics. From casual wear to luxury items, find everything you need to express your unique style.</p>
+                <div class="d-flex gap-3 mb-4 justify-content-lg-start justify-content-center">
+                    <a href="{{ route('public.products') }}" class="btn btn-primary btn-lg rounded-pill shadow-sm px-4">
                         <i class="bi bi-bag"></i> Shop Now
                     </a>
-                    <a href="#featured" class="btn btn-outline-light btn-lg">
+                    <a href="#featured" class="btn btn-outline-primary btn-lg rounded-pill px-4">
                         <i class="bi bi-arrow-down"></i> Explore
                     </a>
                 </div>
             </div>
-            <div class="col-lg-6">
-                <img src="{{ asset('images/showroom.png') }}" alt="Fashion Collection" class="img-fluid rounded">
+            <div class="col-lg-6 mb-4 mb-lg-0 d-flex justify-content-center">
+                <div class="hero-img-wrapper position-relative">
+                    <img src="{{ asset('images/showroom.png') }}" alt="Fashion Collection" class="img-fluid rounded-4 shadow-lg hero-image" style="max-width: 420px;">
+                    <div class="hero-img-overlay position-absolute top-0 start-0 w-100 h-100 rounded-4" style="background: linear-gradient(120deg, rgba(99,102,241,0.08) 0%, rgba(139,92,246,0.10) 100%);"></div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 
 <!-- Categories Section -->
-<section class="py-5 bg-light">
+<section class="py-5 bg-light position-relative">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="fw-bold">Shop by Category</h2>
+            <h2 class="fw-bold mb-2" style="font-family: 'Montserrat', sans-serif;">Shop by Category</h2>
             <p class="text-muted">Find exactly what you're looking for</p>
         </div>
-        
-        <div class="position-relative">
+        <div class="position-relative categories-bg p-3 rounded-4 shadow-sm">
             <!-- Left Arrow -->
             <button class="btn btn-outline-primary categories-nav-btn categories-prev" id="categoriesPrev" type="button">
                 <i class="bi bi-chevron-left"></i>
             </button>
-            
             <!-- Categories Container -->
             <div class="categories-container" id="categoriesContainer">
                 <div class="categories-wrapper d-flex">
                     @foreach($categories as $category)
                     <div class="category-item flex-shrink-0">
                         <a href="{{ route('public.products', ['category' => $category]) }}" class="text-decoration-none">
-                            <div class="card h-100 border-0 shadow-sm category-card">
+                            <div class="card h-100 border-0 shadow-sm category-card category-card-pro rounded-4">
                                 <div class="card-body text-center p-4">
                                     <i class="bi bi-tags display-6 text-primary mb-3"></i>
                                     <h6 class="card-title text-capitalize mb-2">{{ str_replace('_', ' ', $category) }}</h6>
@@ -58,7 +60,6 @@
                     @endforeach
                 </div>
             </div>
-            
             <!-- Right Arrow -->
             <button class="btn btn-outline-primary categories-nav-btn categories-next" id="categoriesNext" type="button">
                 <i class="bi bi-chevron-right"></i>
@@ -68,32 +69,30 @@
 </section>
 
 <!-- Featured Products Section -->
-<section id="featured" class="py-5">
+<section id="featured" class="py-5" style="background: #f7f9fb;">
     <div class="container">
         <div class="text-center mb-5">
-            <h2 class="fw-bold">Featured Products</h2>
+            <h2 class="fw-bold mb-2" style="font-family: 'Montserrat', sans-serif;">Featured Products</h2>
             <p class="text-muted">Handpicked items just for you</p>
         </div>
-        
         @if($featuredProducts->count() > 0)
         <div class="row g-4">
-            @foreach($featuredProducts as $product)
+            @foreach($featuredProducts->take(4) as $product)
             <div class="col-md-6 col-lg-3">
-                <div class="card product-card h-100 border-0 shadow-sm" style="cursor: pointer;" onclick="window.location.href='{{ route('public.product.detail', $product->id) }}'">
+                <div class="card product-card h-100 border-0 shadow product-card-pro rounded-4" style="cursor: pointer; transition: box-shadow 0.2s;" onclick="window.location.href='{{ route('public.product.detail', $product->id) }}'">
                     @if($product->image_url)
-                        <img src="{{ $product->image_url }}" class="card-img-top" alt="{{ $product->name }}" style="height: 250px; object-fit: cover;">
+                        <img src="{{ $product->image_url }}" class="card-img-top rounded-top-4" alt="{{ $product->name }}" style="height: 220px; object-fit: cover;">
                     @else
-                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 250px;">
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center rounded-top-4" style="height: 220px;">
                             <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
                         </div>
                     @endif
-                    
                     <div class="card-body d-flex flex-column">
-                        <h6 class="card-title">{{ $product->name }}</h6>
+                        <h6 class="card-title fw-semibold">{{ $product->name }}</h6>
                         <p class="card-text text-muted small flex-grow-1">{{ Str::limit($product->description, 80) }}</p>
-                        <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex justify-content-between align-items-center mt-2">
                             <span class="h5 mb-0 text-primary">${{ number_format($product->base_price, 2) }}</span>
-                            <a href="{{ route('public.product.detail', $product->id) }}" class="btn btn-outline-primary btn-sm" onclick="event.stopPropagation();">
+                            <a href="{{ route('public.product.detail', $product->id) }}" class="btn btn-outline-primary btn-sm rounded-pill px-3" onclick="event.stopPropagation();">
                                 <i class="bi bi-eye me-1"></i>View Details
                             </a>
                         </div>
@@ -102,9 +101,8 @@
             </div>
             @endforeach
         </div>
-        
         <div class="text-center mt-5">
-            <a href="{{ route('public.products') }}" class="btn btn-primary btn-lg">
+            <a href="{{ route('public.products') }}" class="btn btn-primary btn-lg rounded-pill px-4">
                 <i class="bi bi-grid"></i> View All Products
             </a>
         </div>
@@ -121,33 +119,37 @@
 <!-- Features Section -->
 <section class="py-5 bg-light">
     <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-2" style="font-family: 'Montserrat', sans-serif;">Why Shop With Us?</h2>
+            <p class="text-muted">Experience the ChicAura difference</p>
+        </div>
         <div class="row g-4">
             <div class="col-md-6 col-lg-3">
-                <div class="text-center">
+                <div class="text-center feature-icon-card rounded-4 p-4 shadow-sm bg-white h-100">
                     <i class="bi bi-truck display-4 text-primary mb-3"></i>
-                    <h5>Free Shipping</h5>
-                    <p class="text-muted">Free shipping on orders over $50</p>
+                    <h5 class="fw-semibold mb-2">Free Shipping</h5>
+                    <p class="text-muted mb-0">Free shipping on orders over $50</p>
                 </div>
             </div>
             <div class="col-md-6 col-lg-3">
-                <div class="text-center">
+                <div class="text-center feature-icon-card rounded-4 p-4 shadow-sm bg-white h-100">
                     <i class="bi bi-arrow-return-left display-4 text-primary mb-3"></i>
-                    <h5>Easy Returns</h5>
-                    <p class="text-muted">30-day return policy</p>
+                    <h5 class="fw-semibold mb-2">Easy Returns</h5>
+                    <p class="text-muted mb-0">30-day return policy</p>
                 </div>
             </div>
             <div class="col-md-6 col-lg-3">
-                <div class="text-center">
+                <div class="text-center feature-icon-card rounded-4 p-4 shadow-sm bg-white h-100">
                     <i class="bi bi-shield-check display-4 text-primary mb-3"></i>
-                    <h5>Secure Payment</h5>
-                    <p class="text-muted">Your payment information is safe</p>
+                    <h5 class="fw-semibold mb-2">Secure Payment</h5>
+                    <p class="text-muted mb-0">Your payment information is safe</p>
                 </div>
             </div>
             <div class="col-md-6 col-lg-3">
-                <div class="text-center">
+                <div class="text-center feature-icon-card rounded-4 p-4 shadow-sm bg-white h-100">
                     <i class="bi bi-headset display-4 text-primary mb-3"></i>
-                    <h5>24/7 Support</h5>
-                    <p class="text-muted">We're here to help anytime</p>
+                    <h5 class="fw-semibold mb-2">24/7 Support</h5>
+                    <p class="text-muted mb-0">We're here to help anytime</p>
                 </div>
             </div>
         </div>
@@ -168,10 +170,10 @@
             </div>
             <div class="col-lg-4 text-lg-end">
                 <div class="btn-group">
-                    <a href="{{ route('customer.profile') }}" class="btn btn-outline-primary">
+                    <a href="{{ route('customer.profile') }}" class="btn btn-outline-primary rounded-pill px-3">
                         <i class="bi bi-person"></i> My Profile
                     </a>
-                    <a href="{{ route('customer.orders') }}" class="btn btn-primary">
+                    <a href="{{ route('customer.orders') }}" class="btn btn-primary rounded-pill px-3">
                         <i class="bi bi-bag"></i> My Orders
                     </a>
                 </div>
@@ -182,7 +184,7 @@
 @endauth
 
 <!-- Call to Action for Business Partners -->
-<section class="py-5 bg-primary text-white">
+<section class="py-5 bg-gradient-primary text-white position-relative" style="background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%);">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-8">
@@ -190,7 +192,7 @@
                 <p class="lead mb-0">Connect with suppliers, manufacturers, and wholesalers. Grow your business with ChicAura's comprehensive supply chain platform.</p>
             </div>
             <div class="col-lg-4 text-lg-end">
-                <a href="{{ route('welcome') }}" class="btn btn-light btn-lg">
+                <a href="{{ route('welcome') }}" class="btn btn-light btn-lg rounded-pill px-4 shadow-sm">
                     <i class="bi bi-people"></i> Join Our Team
                 </a>
             </div>
@@ -209,6 +211,32 @@
     }
     .hero-image {
         border-radius: 15px;
+    }
+    .categories-bg {
+        background: #f3f6fa;
+    }
+    .category-card-pro {
+        box-shadow: 0 2px 10px rgba(99,102,241,0.07);
+        transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .category-card-pro:hover {
+        box-shadow: 0 8px 24px rgba(99,102,241,0.13);
+        transform: translateY(-6px) scale(1.03);
+    }
+    .product-card-pro {
+        box-shadow: 0 2px 10px rgba(99,102,241,0.07);
+        transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .product-card-pro:hover {
+        box-shadow: 0 8px 24px rgba(99,102,241,0.13);
+        transform: translateY(-6px) scale(1.03);
+    }
+    .feature-icon-card {
+        transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .feature-icon-card:hover {
+        box-shadow: 0 8px 24px rgba(99,102,241,0.13);
+        transform: translateY(-6px) scale(1.03);
     }
     
     /* Horizontal Categories Scrolling Styles */

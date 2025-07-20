@@ -331,7 +331,7 @@
                             </div>
                             <div class="ml-3">
                                 <p class="text-xs font-medium text-gray-600">Total Value</p>
-                                <p class="text-2xl font-bold text-gray-800">UGX {{ number_format($stats['total_value'] ?? 0, 2) }}</p>
+                                <p class="text-2xl font-bold text-gray-800">UGX {{ number_format((float)($stats['total_value'] ?? 0), 2) }}</p>
                                 <p class="text-xs text-purple-600 mt-1">Inventory worth</p>
                             </div>
                         </div>
@@ -417,7 +417,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $item->name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $item->category }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $item->stock_quantity }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap">UGX {{ number_format($item->base_price, 2) }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap">UGX {{ number_format((float)$item->base_price, 2) }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @if($item->is_active)
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
@@ -484,7 +484,7 @@
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $item->name }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $item->category }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">{{ $item->stock_quantity }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap">UGX {{ number_format($item->base_price, 2) }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap">UGX {{ number_format((float)$item->base_price, 2) }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @if($item->is_active)
                                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>

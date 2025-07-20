@@ -292,7 +292,7 @@
                     </a>
                     <a href="{{route('manufacturer.revenue')}}"
                         class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
-                        <i class="fas fa-dollar-sign w-5"></i>
+                        <i class="fas fa-coins w-5"></i>
                         <span class="ml-2 text-sm">Revenue</span>
                     </a>
 

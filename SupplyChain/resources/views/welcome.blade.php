@@ -49,6 +49,7 @@
       display: flex;
       flex-direction: column;
       position: relative;
+      padding-top: 84px; /* header height + margin */
     }
 
     /* Header */
@@ -56,8 +57,12 @@
       background: var(--card-bg);
       box-shadow: var(--shadow-sm);
       padding: 1rem 0;
-      position: relative;
-      z-index: 10;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      z-index: 100;
+      transition: box-shadow 0.2s;
     }
 
     .header-content {
@@ -76,8 +81,9 @@
     }
 
     .logo {
-      height: 40px;
+      height: 64px;
       width: auto;
+      transition: height 0.2s;
     }
 
     .brand-name {
@@ -217,8 +223,8 @@
     /* Features Section */
     .features {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 2rem;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
       max-width: 1000px;
       margin: 0 auto;
       padding: 0 2rem;
@@ -226,12 +232,13 @@
 
     .feature-card {
       background: var(--card-bg);
-      padding: 2rem;
-      border-radius: 1rem;
+      padding: 1.1rem 1rem;
+      border-radius: 0.75rem;
       box-shadow: var(--shadow-md);
       border: 1px solid var(--border-color);
       transition: all 0.3s ease;
       text-align: left;
+      min-width: 0;
     }
 
     .feature-card:hover {
@@ -241,28 +248,29 @@
     }
 
     .feature-icon {
-      width: 3rem;
-      height: 3rem;
+      width: 2.2rem;
+      height: 2.2rem;
       background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
       border-radius: 0.75rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1rem;
       color: var(--text-white);
-      font-size: 1.25rem;
+      font-size: 1rem;
     }
 
     .feature-title {
-      font-size: 1.25rem;
+      font-size: 1.05rem;
       font-weight: 600;
       color: var(--text-dark);
-      margin-bottom: 0.75rem;
+      margin-bottom: 0.5rem;
     }
 
     .feature-description {
       color: var(--text-light);
       line-height: 1.6;
+      font-size: 0.92rem;
     }
 
     /* Decorative Elements */
@@ -280,6 +288,11 @@
       top: 10%;
       left: -150px;
       animation: float 6s ease-in-out infinite;
+      background: linear-gradient(rgba(30,41,59,0.18), rgba(30,41,59,0.18)), url('/images/showroom.png') center center/cover no-repeat;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.42;
     }
 
     .decoration-2 {
@@ -288,6 +301,11 @@
       bottom: 20%;
       right: -100px;
       animation: float 8s ease-in-out infinite reverse;
+      background: linear-gradient(rgba(30,41,59,0.13), rgba(30,41,59,0.13)), url('/images/manufacturer.png') center center/cover no-repeat;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.42;
     }
 
     @keyframes float {
@@ -296,6 +314,11 @@
     }
 
     /* Responsive Design */
+    @media (max-width: 1024px) {
+      .features {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
     @media (max-width: 768px) {
       .header-content {
         padding: 0 1rem;
@@ -331,9 +354,17 @@
         grid-template-columns: 1fr;
         padding: 0 1rem;
       }
-
+      .feature-card {
+        padding: 1rem;
+      }
       .decoration {
         display: none;
+      }
+      .logo {
+        height: 48px;
+      }
+      .main-container {
+        padding-top: 68px;
       }
     }
 
@@ -359,7 +390,6 @@
       <div class="header-content">
         <div class="logo-section">
           <img src="/images/logo.png" alt="ChicAura Logo" class="logo">
-          <span class="brand-name">ChicAura</span>
         </div>
         <div class="header-actions">
           <a href="{{ route('login') }}" class="btn-secondary">Sign In</a>
