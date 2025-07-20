@@ -79,7 +79,15 @@ class ManufacturerInventoryController extends Controller
             $data['image_url'] = $imagePath;
         }
 
-        Item::create($data);
+        $item = Item::create($data);
+        // Audit log for inventory item creation
+        if (Auth::check()) {
+            \App\Models\AuditLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'inventory_create',
+                'details' => 'Created inventory item: ' . $item->name . ' (ID: ' . $item->id . ')',
+            ]);
+        }
 
         return redirect()->route('manufacturer.inventory')
             ->with('success', 'Item added to inventory successfully.');
@@ -113,6 +121,14 @@ class ManufacturerInventoryController extends Controller
         }
 
         $item->update($data);
+        // Audit log for inventory item update
+        if (Auth::check()) {
+            \App\Models\AuditLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'inventory_update',
+                'details' => 'Updated inventory item: ' . $item->name . ' (ID: ' . $item->id . ')',
+            ]);
+        }
 
         return redirect()->route('manufacturer.inventory')
             ->with('success', 'Item updated successfully.');
@@ -121,6 +137,14 @@ class ManufacturerInventoryController extends Controller
     public function destroy(Item $item)
     {
         $item->update(['is_active' => false]);
+        // Audit log for inventory item deletion
+        if (Auth::check()) {
+            \App\Models\AuditLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'inventory_delete',
+                'details' => 'Deleted inventory item: ' . $item->name . ' (ID: ' . $item->id . ')',
+            ]);
+        }
         
         return redirect()->route('manufacturer.inventory')
             ->with('success', 'Item removed from inventory successfully.');

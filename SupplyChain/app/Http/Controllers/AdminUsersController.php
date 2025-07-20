@@ -193,6 +193,14 @@ class AdminUsersController extends Controller
             'role' => $request->role,
             'profile_picture' => $storePath,
         ]);
+        // Audit log for admin user creation
+        if (Auth::check()) {
+            \App\Models\AuditLog::create([
+                'user_id' => Auth::id(),
+                'action' => 'admin_create_user',
+                'details' => 'Admin created user: ' . $user->email . ' (role: ' . $user->role . ')',
+            ]);
+        }
 
         $role = $request->role;
         if ($role == 'supplier') {
@@ -234,10 +242,18 @@ class AdminUsersController extends Controller
 
     public function removeUser(Request $request){
         $id = $request->id;
-
+        $user = DB::table('users')->where('id', $id)->first();
         if($request->database == 'users'){
             //Remove record from users
             DB::delete('DELETE FROM users WHERE id = ?', [$id]);
+            // Audit log for admin user deletion
+            if (Auth::check()) {
+                \App\Models\AuditLog::create([
+                    'user_id' => Auth::id(),
+                    'action' => 'admin_delete_user',
+                    'details' => 'Admin deleted user: ' . ($user->email ?? 'ID ' . $id),
+                ]);
+            }
             return redirect()->route('admin.users');
         }else{
             //Remove record from pending_users

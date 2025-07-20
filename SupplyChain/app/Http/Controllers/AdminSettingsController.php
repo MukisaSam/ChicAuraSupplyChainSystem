@@ -25,6 +25,14 @@ class AdminSettingsController extends Controller
         foreach ($request->except('_token') as $key => $value) {
             $this->settings->set($key, $value);
         }
+        // Audit log for settings update
+        if (\Illuminate\Support\Facades\Auth::check()) {
+            \App\Models\AuditLog::create([
+                'user_id' => \Illuminate\Support\Facades\Auth::id(),
+                'action' => 'settings_update',
+                'details' => 'Admin updated system settings.',
+            ]);
+        }
         return redirect()->back()->with('success', 'Settings updated!');
     }
 }

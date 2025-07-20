@@ -43,15 +43,6 @@
                     <option value="on" {{ (isset($settings['maintenance_mode']) && $settings['maintenance_mode'] == 'on') ? 'selected' : '' }}>On</option>
                 </select>
             </div>
-            <div>
-                <label class="block font-medium text-gray-700 mb-1">Company Logo</label>
-                <div class="flex items-center gap-4">
-                    <div class="w-16 h-16 bg-gray-100 border rounded flex items-center justify-center overflow-hidden">
-                        <span class="text-gray-400 text-xs">Logo</span>
-                    </div>
-                    <button type="button" class="px-3 py-1 rounded bg-gray-200 text-gray-700 hover:bg-gray-300 cursor-not-allowed" disabled>Upload (Coming Soon)</button>
-                </div>
-            </div>
             <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-xl shadow hover:bg-blue-700 font-semibold">Save Settings</button>
         </form>
     </div>

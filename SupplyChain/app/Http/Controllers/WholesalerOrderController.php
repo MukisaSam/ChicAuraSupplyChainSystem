@@ -102,6 +102,12 @@ class WholesalerOrderController extends Controller
             'notes' => $request->notes,
             'estimated_delivery' => now()->addDays(14), // Default 2 weeks
         ]);
+        // Audit log for order creation
+        \App\Models\AuditLog::create([
+            'user_id' => $user->id,
+            'action' => 'order_create',
+            'details' => 'Order #' . $order->order_number . ' created by wholesaler (ID: ' . $wholesaler->id . ')',
+        ]);
         
         // Generate invoice for the order
         $invoice = Invoice::create([
@@ -177,6 +183,12 @@ class WholesalerOrderController extends Controller
         }
         
         $order->update(['status' => 'cancelled']);
+        // Audit log for order cancellation
+        \App\Models\AuditLog::create([
+            'user_id' => $user->id,
+            'action' => 'order_cancel',
+            'details' => 'Order #' . $order->order_number . ' cancelled by wholesaler (ID: ' . $wholesaler->id . ')',
+        ]);
         
         return redirect()->route('wholesaler.orders.index')
             ->with('success', 'Order cancelled successfully.');

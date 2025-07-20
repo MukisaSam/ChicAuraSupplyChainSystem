@@ -21,6 +21,14 @@ except ImportError as e:
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s:%(message)s")
 
+# List of all locations used in your model
+ALL_LOCATIONS = [
+    "Kampala", "Entebbe", "Jinja", "Gulu", "Wakiso", "Mukono", "Mbarara", "Hoima",
+    "Arua", "Mbale", "Masaka", "Moroto", "Kabale", "Lira", "Moyo", "Kiryandongo",
+    "Kiboga", "Kisoro", "Mityana", "Kamuli", "Kaliro", "Kibale", "Kasese", "Kabarole"
+    # Add any other locations your model expects
+]
+
 def main():
     try:
         parser = argparse.ArgumentParser(description='Generate monthly demand forecast')
@@ -67,34 +75,36 @@ def main():
         future_dates = pd.date_range(start=pd.Timestamp.today().normalize(), periods=12, freq='MS')
 
         logging.info(f"Forecasting monthly demand for {args.product_name} at {args.location} with price ${args.unit_price}")
-        
-        # Build DataFrame for this product/location
-        future_df = pd.DataFrame({
-            'product_name': [args.product_name] * len(future_dates),
-            'sales_date': future_dates,
-            'unit_price': [args.unit_price] * len(future_dates),
-            'location': [args.location] * len(future_dates),
-        })
 
-        try:
-            # Generate predictions
+        if args.location.lower() == "countrywide":
+            # Aggregate predictions for all locations
+            monthly_predictions = np.zeros(len(future_dates))
+            for loc in ALL_LOCATIONS:
+                future_df = pd.DataFrame({
+                    'product_name': [args.product_name] * len(future_dates),
+                    'sales_date': future_dates,
+                    'unit_price': [args.unit_price] * len(future_dates),
+                    'location': [loc] * len(future_dates),
+                })
+                preds = model_instance.predict(future_df)
+                preds = np.maximum(preds, 0)
+                monthly_predictions += preds * 30  # Aggregate monthly predictions
+            logging.info(f"Aggregated monthly predictions for all locations")
+        else:
+            # Single location prediction
+            future_df = pd.DataFrame({
+                'product_name': [args.product_name] * len(future_dates),
+                'sales_date': future_dates,
+                'unit_price': [args.unit_price] * len(future_dates),
+                'location': [args.location] * len(future_dates),
+            })
             predictions = model_instance.predict(future_df)
-            
-            # Ensure predictions are non-negative
             predictions = np.maximum(predictions, 0)
-            
-            # Scale predictions for monthly (multiply by ~30 days)
             monthly_predictions = predictions * 30
-            
-            logging.info(f"Generated monthly predictions for {len(monthly_predictions)} months")
-            logging.info(f"Monthly prediction range: {monthly_predictions.min():.2f} to {monthly_predictions.max():.2f}")
-            
-        except Exception as e:
-            print(f"ERROR: Error during prediction: {e}")
-            import traceback
-            traceback.print_exc()
-            sys.exit(1)
 
+        logging.info(f"Generated monthly predictions for {len(monthly_predictions)} months")
+        logging.info(f"Monthly prediction range: {monthly_predictions.min():.2f} to {monthly_predictions.max():.2f}")
+        
         # Create the plot
         plt.figure(figsize=(15, 8))
         
