@@ -3,325 +3,448 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Chicaura SCM System</title>
+  <title>ChicAura SCM System</title>
   <link rel="stylesheet" href="{{ asset('css/app.css') }}">
   <link rel="preconnect" href="https://fonts.bunny.net">
   <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
   <style>
     :root {
-      --primary-color: #2563eb;
-      --primary-dark: #1d4ed8;
-      --text-color: #1f2937;
-      --text-light: #ffffff;
-      --bg-overlay-color: rgba(158, 216, 243, 0.7);
-      --container-bg-start: rgba(255, 255, 255, 0.95);
-      --container-bg-end: rgba(255, 255, 255, 0.95);
-      --shadow-color: rgba(0, 0, 0, 0.15);
+      --primary-color: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary-color: #8b5cf6;
+      --accent-color: #06b6d4;
+      --text-dark: #1e293b;
+      --text-light: #64748b;
+      --text-white: #ffffff;
+      --bg-gradient-start: #f8fafc;
+      --bg-gradient-end: #e2e8f0;
+      --card-bg: #ffffff;
+      --border-color: #e2e8f0;
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
 
     body {
-      font-family: 'FigTree', 'Open Sans', sans-serif;
-      background-image: url('/images/showroom.png');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      margin: 0;
-      padding: 20px;
-      color: var(--text-color);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      font-family: 'Inter', 'FigTree', sans-serif;
+      background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
       min-height: 100vh;
+      color: var(--text-dark);
+      line-height: 1.6;
+      overflow-x: hidden;
     }
 
-    .container {
-      background: rgba(255, 255, 255, 0.1);
-      max-width: 90vw;
-      max-height: 90vh;
-      padding: 30px;
-      border-radius: 20px;
-      box-shadow: 0 20px 40px var(--shadow-color);
-      text-align: center;
-      border: 2px solid rgba(37, 99, 235, 0.2);
-      backdrop-filter: blur(10px);
+    .main-container {
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      position: relative;
+    }
+
+    /* Header */
+    .header {
+      background: var(--card-bg);
+      box-shadow: var(--shadow-sm);
+      padding: 1rem 0;
+      position: relative;
+      z-index: 10;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
       align-items: center;
     }
 
-    .logo-container {
-      position: relative;
-      margin-bottom: 20px;
-      opacity: 1;
-      transform: scale(1);
-      animation: logoAppear 1.5s ease-out forwards;
-      display: inline-block;
-      background-image: url('/images/silk.jpeg');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      padding: 18px 32px;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-      border: 1px solid rgba(37, 99, 235, 0.1);
-      z-index: 1;
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
     }
-    .logo-container::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(255,255,255,0.7); /* White overlay for contrast */
-      border-radius: 12px;
+
+    .logo {
+      height: 40px;
+      width: auto;
+    }
+
+    .brand-name {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      letter-spacing: -0.025em;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-light);
+      border: 1px solid var(--border-color);
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-gradient-start);
+      color: var(--text-dark);
+      border-color: var(--primary-color);
+    }
+
+    /* Hero Section */
+    .hero {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 2rem;
+      position: relative;
+    }
+
+    .hero-content {
+      max-width: 1200px;
+      width: 100%;
+      text-align: center;
+      position: relative;
       z-index: 2;
     }
-    .logo {
-      position: relative;
-      z-index: 3;
-      max-width: 120px;
-      height: auto;
-      filter: none;
-      border-radius: 0;
-      display: block;
-      margin: 0 auto;
-    }
 
-    h1 {
-      font-family: 'Montserrat', sans-serif;
-      font-size: 2.5em;
-      color: var(--text-light);
-      margin-bottom: 10px;
-      line-height: 1.1;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-      /* Static - no animation */
-    }
-
-    .subtitle {
-      font-size: 1.1em;
-      color: var(--text-light);
-      margin-bottom: 25px;
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: var(--text-white);
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
+      font-size: 0.875rem;
       font-weight: 500;
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-      /* Static - no animation */
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-md);
     }
 
-    .buttons-container {
-      display: flex;
-      justify-content: center;
-      gap: 15px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
+    .hero-title {
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+      letter-spacing: -0.025em;
     }
 
-    .btn {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    .hero-subtitle {
+      font-size: 1.25rem;
       color: var(--text-light);
-      padding: 12px 25px;
+      margin-bottom: 3rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 4rem;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+      color: var(--text-white);
+      padding: 1rem 2rem;
+      border-radius: 0.75rem;
       text-decoration: none;
-      border-radius: 50px;
-      font-size: 0.95em;
       font-weight: 600;
+      font-size: 1rem;
       transition: all 0.3s ease;
-      box-shadow: 0 6px 15px rgba(37, 99, 235, 0.3);
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      opacity: 0;
-      transform: translateY(30px);
-      animation: slideInButton 0.8s ease-out forwards;
+      box-shadow: var(--shadow-lg);
+      border: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
-    .btn.login {
-      animation-delay: 0.5s;
-    }
-
-    .btn.register {
-      animation-delay: 0.8s;
-    }
-
-    .btn:hover {
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-xl);
       background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
-      transform: translateY(-5px);
-      box-shadow: 0 12px 25px rgba(37, 99, 235, 0.4);
-      border-color: rgba(255, 255, 255, 0.4);
     }
 
+    .btn-outline {
+      background: transparent;
+      color: var(--primary-color);
+      border: 2px solid var(--primary-color);
+      padding: 1rem 2rem;
+      border-radius: 0.75rem;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-outline:hover {
+      background: var(--primary-color);
+      color: var(--text-white);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* Features Section */
     .features {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-      margin-top: 20px;
-      opacity: 0;
-      animation: fadeInFeatures 1s ease-out forwards;
-      animation-delay: 1.2s;
-      width: 100%;
-      max-width: 600px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 2rem;
     }
 
-    .feature {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 15px;
-      border-radius: 15px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      backdrop-filter: blur(5px);
+    .feature-card {
+      background: var(--card-bg);
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border-color);
+      transition: all 0.3s ease;
+      text-align: left;
     }
 
-    .feature h3 {
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-xl);
+      border-color: var(--primary-color);
+    }
+
+    .feature-icon {
+      width: 3rem;
+      height: 3rem;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      color: var(--text-white);
+      font-size: 1.25rem;
+    }
+
+    .feature-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 0.75rem;
+    }
+
+    .feature-description {
       color: var(--text-light);
-      margin-bottom: 8px;
-      font-size: 0.95em;
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+      line-height: 1.6;
     }
 
-    .feature p {
-      color: var(--text-light);
-      font-size: 0.8em;
-      margin: 0;
-      line-height: 1.3;
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    /* Decorative Elements */
+    .decoration {
+      position: absolute;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      opacity: 0.1;
+      z-index: 1;
     }
 
-    @keyframes logoAppear {
-      0% {
-        opacity: 0;
-        transform: scale(0.8) rotate(-5deg);
-      }
-      50% {
-        opacity: 0.8;
-        transform: scale(1.1) rotate(2deg);
-      }
-      100% {
-        opacity: 1;
-        transform: scale(1) rotate(0deg);
-      }
+    .decoration-1 {
+      width: 300px;
+      height: 300px;
+      top: 10%;
+      left: -150px;
+      animation: float 6s ease-in-out infinite;
     }
 
-    @keyframes slideInButton {
-      0% {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .decoration-2 {
+      width: 200px;
+      height: 200px;
+      bottom: 20%;
+      right: -100px;
+      animation: float 8s ease-in-out infinite reverse;
     }
 
-    @keyframes fadeInFeatures {
-      0% {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
     }
 
+    /* Responsive Design */
     @media (max-width: 768px) {
-      body {
-        padding: 10px;
+      .header-content {
+        padding: 0 1rem;
+        flex-direction: column;
+        gap: 1rem;
       }
 
-      .container {
-        margin: 0;
-        padding: 20px;
-        max-width: 95vw;
-        max-height: 95vh;
+      .hero {
+        padding: 2rem 1rem;
       }
 
-      .logo {
-        max-width: 60px;
+      .hero-title {
+        font-size: 2.5rem;
       }
 
-      .logo-container {
-        padding: 8px 15px;
-        margin-bottom: 15px;
+      .hero-subtitle {
+        font-size: 1.125rem;
       }
 
-      h1 {
-        font-size: 2em;
-        margin-bottom: 8px;
-      }
-
-      .subtitle {
-        font-size: 1em;
-        margin-bottom: 20px;
-      }
-
-      .buttons-container {
+      .hero-buttons {
         flex-direction: column;
         align-items: center;
-        gap: 10px;
-        margin-bottom: 15px;
       }
 
-      .btn {
+      .btn-primary,
+      .btn-outline {
         width: 100%;
-        max-width: 250px;
-        margin: 0;
-        padding: 10px 20px;
-        font-size: 0.9em;
+        max-width: 300px;
+        justify-content: center;
       }
 
       .features {
         grid-template-columns: 1fr;
-        gap: 10px;
-        margin-top: 15px;
-        max-width: 100%;
+        padding: 0 1rem;
       }
 
-      .feature {
-        padding: 12px;
+      .decoration {
+        display: none;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-title {
+        font-size: 2rem;
       }
 
-      .feature h3 {
-        font-size: 0.9em;
-        margin-bottom: 6px;
+      .hero-subtitle {
+        font-size: 1rem;
       }
 
-      .feature p {
-        font-size: 0.75em;
-        line-height: 1.2;
+      .feature-card {
+        padding: 1.5rem;
       }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="logo-container">
-      <img src="/images/logo.png" alt="ChicAura Logo" class="logo">
-    </div>
-    
-    <h1>Welcome to ChicAura</h1>
-    <p class="subtitle">Your Premier Supply Chain Management System</p>
-    
-    <div class="buttons-container">
-      <a href="{{ route('login') }}" class="btn login">Login to Your Account</a>
-      <a href="{{ route('register') }}" class="btn register">Start Your Journey</a>
-    </div>
+  <div class="main-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <div class="logo-section">
+          <img src="/images/logo.png" alt="ChicAura Logo" class="logo">
+          <span class="brand-name">ChicAura</span>
+        </div>
+        <div class="header-actions">
+          <a href="{{ route('login') }}" class="btn-secondary">Sign In</a>
+          <a href="{{ route('register') }}" class="btn-secondary">Get Started</a>
+        </div>
+      </div>
+    </header>
 
-    <div class="features">
-      <div class="feature">
-        <h3>🔄 Streamlined Operations</h3>
-        <p>Manage your entire supply chain from procurement to delivery with ease</p>
+    <!-- Hero Section -->
+    <section class="hero">
+      <!-- Decorative Elements -->
+      <div class="decoration decoration-1"></div>
+      <div class="decoration decoration-2"></div>
+
+      <div class="hero-content">
+        <div class="hero-badge">
+          <i class="fas fa-star"></i>
+          <span>Premier Supply Chain Management</span>
+        </div>
+        
+        <h1 class="hero-title">Transform Your Fashion Supply Chain</h1>
+        <p class="hero-subtitle">
+          Streamline operations, enhance collaboration, and drive growth with our comprehensive 
+          supply chain management platform designed specifically for the fashion industry.
+        </p>
+        
+        <div class="hero-buttons">
+          <a href="{{ route('login') }}" class="btn-primary">
+            <i class="fas fa-sign-in-alt"></i>
+            Login to Your Account
+          </a>
+          <a href="{{ route('register') }}" class="btn-outline">
+            <i class="fas fa-rocket"></i>
+            Start Your Journey
+          </a>
+        </div>
+
+        <!-- Features Grid -->
+        <div class="features">
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-sync-alt"></i>
+            </div>
+            <h3 class="feature-title">Streamlined Operations</h3>
+            <p class="feature-description">
+              Manage your entire supply chain from procurement to delivery with our intuitive 
+              platform designed for maximum efficiency.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-chart-line"></i>
+            </div>
+            <h3 class="feature-title">Real-time Analytics</h3>
+            <p class="feature-description">
+              Get comprehensive insights into your supply chain performance with detailed 
+              analytics and actionable reports.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <h3 class="feature-title">Collaborative Platform</h3>
+            <p class="feature-description">
+              Connect suppliers, manufacturers, and wholesalers in one unified system 
+              for seamless collaboration and communication.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fas fa-tshirt"></i>
+            </div>
+            <h3 class="feature-title">Fashion-Focused</h3>
+            <p class="feature-description">
+              Specialized tools for the clothing industry with advanced material tracking, 
+              style management, and trend analysis.
+            </p>
+          </div>
+        </div>
       </div>
-      <div class="feature">
-        <h3>📊 Real-time Analytics</h3>
-        <p>Get insights into your supply chain performance with detailed analytics</p>
-      </div>
-      <div class="feature">
-        <h3>🤝 Collaborative Platform</h3>
-        <p>Connect suppliers, manufacturers, and wholesalers in one unified system</p>
-      </div>
-      <div class="feature">
-        <h3>👗 Fashion-Focused</h3>
-        <p>Specialized tools for clothing industry with material tracking and style management</p>
-      </div>
-    </div>
+    </section>
   </div>
 </body>
 </html>
