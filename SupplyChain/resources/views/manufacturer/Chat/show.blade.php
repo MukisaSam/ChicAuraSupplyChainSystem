@@ -15,7 +15,7 @@
 
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
-        body {
+        body { 
             background: #f4f6fa;
             min-height: 100vh;
             margin: 0;
@@ -35,7 +35,7 @@
             url('{{ asset(' images/manufacturer.png') }}');
         }
 
-        .sidebar {
+        .sidebar { 
             transition: transform 0.3s ease-in-out;
             background: linear-gradient(180deg, #1a237e 0%, #283593 100%);
             box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
@@ -336,7 +336,7 @@
                     <div class="relative ml-3 hidden md:block">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <i class="fas fa-search text-gray-400"></i>
-                        </span>
+                            </span>
                         <input type="text" id="manufacturerUniversalSearch" placeholder="Search contacts..."
                             class="w-80 py-2 pl-10 pr-4 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm dark:bg-gray-700 dark:text-white">
                     </div>
@@ -349,13 +349,11 @@
                         <i class="fas fa-moon text-lg"></i>
                     </button>
                     <div class="relative">
-                        <button
-                            class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
-                            <span class="mr-2 text-gray-700 font-medium text-sm">{{ Auth::user()->name ?? 'Manufacturer
-                                User' }}</span>
-                            <img class="w-7 h-7 rounded-full border-2 border-indigo-200 object-cover"
-                                src="{{ Auth::user()->profile_picture ? Storage::disk('public')->url(Auth::user()->profile_picture) : asset('images/default-avatar.svg') }}"
-                                alt="User Avatar">
+                        <button class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
+                            <span class="mr-2 text-gray-700 font-medium text-sm">{{ Auth::user()->name ?? 'Admin User' }}</span>
+                            <img class="w-7 h-7 rounded-full border-2 border-purple-200 object-cover" 
+                                 src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : asset('images/default-avatar.svg') }}" 
+                                 alt="User Avatar">
                         </button>
                     </div>
                     <div class="flex items-center space-x-2">
@@ -396,7 +394,7 @@
                                     data-contact-id="{{ $supplier->id }}" data-contact-name="{{ $supplier->name }}"
                                     data-chat-url="{{ route('manufacturer.chat.show', ['contactId' => $supplier->id]) }}">
                                     <div class="relative">
-                                        <img src="{{ asset('images/supplier.jpg') }}" alt="{{ $supplier->name }}"
+                                        <img src="{{ $supplier->profile_picture ? asset('storage/' . $supplier->profile_picture) : asset('images/default-avatar.svg') }}" alt="{{ $supplier->name }}"
                                             class="w-12 h-12 rounded-full border-2 border-purple-200">
                                         <span
                                             class="online-indicator absolute -bottom-1 -right-1 {{ $supplier->is_online ? 'bg-green-500' : 'bg-gray-400' }}"></span>
@@ -424,7 +422,7 @@
                                     data-contact-id="{{ $wholesaler->id }}" data-contact-name="{{ $wholesaler->name }}"
                                     data-chat-url="{{ route('manufacturer.chat.show', ['contactId' => $wholesaler->id]) }}">
                                     <div class="relative">
-                                        <img src="{{ asset('images/wholesaler.jpg') }}" alt="{{ $wholesaler->name }}"
+                                        <img src="{{ $wholesaler->profile_picture ? asset('storage/' . $wholesaler->profile_picture) : asset('images/default-avatar.svg') }}" alt="{{ $wholesaler->name }}"
                                             class="w-12 h-12 rounded-full border-2 border-purple-200">
                                         <span
                                             class="online-indicator absolute -bottom-1 -right-1 {{ $wholesaler->is_online ? 'bg-green-500' : 'bg-gray-400' }}"></span>
@@ -486,7 +484,7 @@
                     <div class="flex-1 card-gradient rounded-xl flex flex-col overflow-hidden">
                         <div class="bg-gradient-to-r from-indigo-600 to-indigo-700 p-6">
                             <div class="flex items-center space-x-4">
-                                <img src="{{ $contact->profile_picture ? Storage::disk('public')->url($contact->profile_picture) : asset('images/supplier.jpg') }}"
+                                <img src="{{ $contact->profile_picture ? asset('storage/' . $contact->profile_picture) : asset('images/default-avatar.svg') }}"
                                     alt="{{ $contact->name }}" class="w-16 h-16 rounded-full border-none">
                                 <div>
                                     <h2 class="text-2xl font-bold text-white dark:text-white mb-1"> {{ $contact->name }}
@@ -506,55 +504,51 @@
                         </div>
                         <div class="p-6">
                             <div id="messages-container" class="flex-1 overflow-y-auto p-2 space-y-4 h-[300px]">
-                                @foreach($messages as $message)
-                                @php
+                        @foreach($messages as $message)
+                            @php
                                 $isOwnMessage = $message->sender_id == $user->id;
                                 $senderRole = $message->sender->role ?? null;
                                 $senderName = $message->sender->name ?? '';
                                 $avatar = $isOwnMessage
-                                ? ($user->profile_picture ? asset('images/' . basename($user->profile_picture)) :
+                                ? ($user->profile_picture ? asset('storage/' . $user->profile_picture) :
                                 asset('images/default-avatar.svg'))
                                 : ($message->sender->profile_picture ?
-                                Storage::disk('public')->url($message->sender->profile_picture) :
+                                asset('storage/' . $message->sender->profile_picture) :
                                 asset('images/default-avatar.svg'));
-                                @endphp
-                                <div class="flex {{ $isOwnMessage ? 'justify-end' : 'justify-start' }}">
+                            @endphp
+                            <div class="flex {{ $isOwnMessage ? 'justify-end' : 'justify-start' }}">
                                     <div
                                         class="flex {{ $isOwnMessage ? 'flex-row-reverse' : 'flex-row' }} items-end max-w-xs lg:max-w-md">
                                         <img src="{{ $avatar }}" alt="{{ $senderName }}"
                                             class="w-8 h-8 rounded-full flex-shrink-0 border-2 border-indigo-200">
                                         <div class="message-bubble {{ $isOwnMessage ? 'own mr-3' : 'other ml-3' }}">
-                                            <p class="text-sm">{{ $message->content }}</p>
+                                        <p class="text-sm">{{ $message->content }}</p>
                                             <p
                                                 class="text-xs {{ $isOwnMessage ? 'text-indigo-100' : 'text-gray-500 dark:text-gray-400' }} mt-1">
-                                                {{ $message->created_at->format('H:i') }}
-                                            </p>
-                                        </div>
+                                            {{ $message->created_at->format('H:i') }}
+                                        </p>
                                     </div>
                                 </div>
-                                @endforeach
                             </div>
-                            <!-- Message Input -->
-                            <div class="pt-4 border-t border-gray-200 dark:border-gray-600">
-                                <form id="message-form" class="flex space-x-4">
-                                    <input type="hidden" name="receiver_id" value="{{ $contact->id }}">
-                                    <div class="flex-1">
-                                        <input type="text" id="message-input" name="content"
-                                            placeholder="Type your message..."
-                                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:placeholder-gray-400">
-                                    </div>
-                                    <button type="submit"
-                                        class="px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-colors">
-                                        <i class="fas fa-paper-plane"></i>
-                                    </button>
-                                </form>
+                        @endforeach
+                    </div>
+                    <!-- Message Input -->
+                    <div class="pt-4 border-t border-gray-200 dark:border-gray-600">
+                        <form id="message-form" class="flex space-x-4">
+                            <input type="hidden" name="receiver_id" value="{{ $contact->id }}">
+                            <div class="flex-1">
+                        <input type="text" id="message-input" name="content"
+                                       placeholder="Type your message..." 
+                            class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white dark:placeholder-gray-400">
                             </div>
-                        </div>
+                            <button type="submit" 
+                        class="px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </main>
-        </div>
-    </div>
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
     @vite('resources/js/bootstrap.js')
     <script>
@@ -798,4 +792,4 @@
     </script>
 </body>
 
-</html>
+</html> 

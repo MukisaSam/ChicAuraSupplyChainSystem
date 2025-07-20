@@ -208,23 +208,35 @@
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
+            main { margin-left: 0 !important; }
+            header { left: 0 !important; }
+        }
+        
+        .main-content {
+            height: calc(100vh - 4rem);
+            overflow-y: auto;
+        }
+        
+        .sidebar-content {
+            height: calc(100vh - 4rem);
+            overflow-y: auto;
         }
     </style>
 </head>
-<body>
-    <div class="flex h-full overflow-hidden">
+<body class="font-sans antialiased">
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
+    <aside id="sidebar" class="sidebar fixed top-0 left-0 h-full w-64 z-20">
             <div class="flex flex-col h-full">
-            <div class="flex items-center justify-center h-16 border-b border-gray-600">
-                    <div class="sidebar-logo-blend w-full h-16 flex items-center justify-center p-0 m-0" style="background:#fff;">
+            <div class="flex items-center justify-center h-16 border-b border-gray-600 flex-shrink-0">
+                <div class="sidebar-logo-blend w-full h-16 flex items-center justify-center p-0 m-0" style="background:#fff;">
                         <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
+            <div class="sidebar-content">
                 <div class="px-4 py-4">
                     <h3 class="text-white text-sm font-semibold mb-3 px-3">MANUFACTURER PORTAL</h3>
                 </div>
-                <nav class="flex-1 px-4 py-2 space-y-1">
+                <nav class="px-4 py-2 space-y-1">
                     <a href="{{route('manufacturer.dashboard')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-home w-5"></i>
                         <span class="ml-2 text-sm">Home</span>
@@ -261,7 +273,7 @@
                         <i class="fas fa-file-alt w-5"></i>
                         <span class="ml-2 text-sm">Reports</span>
                     </a>
-                    <a href="{{route('manufacturer.revenue')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
+                     <a href="{{route('manufacturer.revenue')}}" class="nav-link flex items-center px-3 py-2 text-gray-300 hover:bg-gray-700 hover:text-white rounded-xl">
                         <i class="fas fa-coins w-5"></i>
                         <span class="ml-2 text-sm">Revenue</span>
                     </a>
@@ -295,18 +307,17 @@
                         <span class="ml-2 text-sm">Production Costs</span>
                     </a>
                 </nav>
-                <div class="p-3 border-t border-gray-600">
+                <div class="p-3 border-t border-gray-600 flex-shrink-0">
                     <div class="text-center text-gray-400 text-xs">
                         <p>ChicAura SCM</p>
                         <p class="text-xs mt-1">v2.1.0</p>
                     </div>
+                    </div>
                 </div>
             </div>
         </aside>
-
-        <div class="flex flex-col flex-1 w-full">
             <!-- Top Navigation Bar -->
-            <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b">
+    <header class="header-gradient fixed top-0 left-64 right-0 h-16 z-10 flex items-center justify-between border-b">
                 <div class="flex items-center">
                     <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
                         <i class="fas fa-bars text-lg"></i>
@@ -325,10 +336,10 @@
                         <i class="fas fa-moon text-lg"></i>
                     </button>
                     <div class="relative">
-                        <button class="flex items-center focus:outline-none bg-white dark:bg-gray-700 rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
-                            <span class="mr-2 text-gray-700 dark:text-gray-200 font-medium text-sm">{{ $user->name ?? 'Wholesaler User' }}</span>
+                    <button class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
+                            <span class="mr-2 text-gray-700 font-medium text-sm">{{ Auth::user()->name ?? 'Admin User' }}</span>
                             <img class="w-7 h-7 rounded-full border-2 border-purple-200 object-cover" 
-                                 src="{{ $user->profile_picture ? Storage::disk('public')->url($user->profile_picture) : asset('images/default-avatar.svg') }}" 
+                                 src="{{ Auth::user()->profile_picture ? asset('storage/' . Auth::user()->profile_picture) : asset('images/default-avatar.svg') }}" 
                                  alt="User Avatar">
                         </button>
                     </div>
@@ -342,22 +353,21 @@
                     </div>
                 </div>
             </header>
-
             <!-- Main Content -->
-            <main class="flex-1 p-4">
+    <main class="ml-64 mt-16 p-4 main-content">
                 <div class="mb-6">
-                    <h2 class="text-2xl font-bold text-black mb-1">Chat</h2>
-                    <p class="text-black text-sm">Communicate with suppliers, wholesalers, and support team</p>
+            <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-1">Chat</h2>
+            <p class="text-gray-600 dark:text-gray-400 text-sm">Communicate with suppliers, wholesalers, and support team</p>
                 </div>
 
-                <div class="flex h-full gap-6">
+        <div class="flex gap-6" style="height: calc(100vh - 200px);">
                     <!-- Contacts Sidebar -->
                     <div class="w-80 card-gradient rounded-xl flex flex-col">
                         <div class="p-6 border-b border-gray-200 dark:border-gray-600">
                             <h3 class="text-lg font-semibold text-black mb-4">Contacts</h3>
                         </div>
 
-                        <div class="flex-1 overflow-y-auto p-4 contacts-scroll" style="height: calc(100vh - 300px); max-height: 420px;">
+                        <div class="flex-1 overflow-y-auto p-4 contacts-scroll">
                             <!-- Suppliers -->
                             @if($suppliers->count() > 0)
                             <div class="mb-6">
@@ -368,7 +378,7 @@
                                      data-contact-name="{{ $supplier->name }}"
                                      data-chat-url="{{ route('manufacturer.chat.show', ['contactId' => $supplier->id]) }}">
                                     <div class="relative">
-                                        <img src="{{ asset('images/supplier.jpg') }}" alt="{{ $supplier->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
+                                        <img src="{{ $supplier->profile_picture ? asset('storage/' . $supplier->profile_picture) : asset('images/default-avatar.svg') }}" alt="{{ $supplier->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
                                         <span class="online-indicator absolute -bottom-1 -right-1 {{ $supplier->is_online ? 'bg-green-500' : 'bg-gray-400' }}"></span>
                                     </div>
                                     <div class="ml-4 flex-1">
@@ -393,7 +403,7 @@
                                      data-contact-name="{{ $wholesaler->name }}"
                                      data-chat-url="{{ route('manufacturer.chat.show', ['contactId' => $wholesaler->id]) }}">
                                     <div class="relative">
-                                        <img src="{{ asset('images/wholesaler.jpg') }}" alt="{{ $wholesaler->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
+                                        <img src="{{ $wholesaler->profile_picture ? asset('storage/' . $wholesaler->profile_picture) : asset('images/default-avatar.svg') }}" alt="{{ $wholesaler->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
                                         <span class="online-indicator absolute -bottom-1 -right-1 {{ $wholesaler->is_online ? 'bg-green-500' : 'bg-gray-400' }}"></span>
                                     </div>
                                     <div class="ml-4 flex-1">

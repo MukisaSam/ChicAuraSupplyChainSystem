@@ -307,7 +307,7 @@
                 <button class="flex items-center focus:outline-none bg-white dark:bg-gray-700 rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
                     <span class="mr-2 text-gray-700 dark:text-gray-200 font-medium text-sm">{{ $user->name ?? 'Wholesaler User' }}</span>
                     <img class="w-7 h-7 rounded-full border-2 border-purple-200 object-cover" 
-                         src="{{ $user->profile_picture ? asset('storage/profile-pictures/' . basename($user->profile_picture)) : asset('images/default-avatar.svg') }}" 
+                         src="{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('images/default-avatar.svg') }}" 
                          alt="User Avatar">
                 </button>
             </div>
@@ -347,7 +347,7 @@
                              data-contact-name="{{ $manufacturer->name }}"
                              data-chat-url="{{ route('wholesaler.chat.show', ['contactId' => $manufacturer->id]) }}">
                             <div class="relative">
-                                <img src="{{ asset('images/manufacturer.png') }}" alt="{{ $manufacturer->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
+                                <img src="{{ $manufacturer->profile_picture ? asset('storage/' . $manufacturer->profile_picture) : asset('images/default-avatar.svg') }}" alt="{{ $manufacturer->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
                                 <span class="online-indicator absolute -bottom-1 -right-1 {{ $manufacturer->is_online ? 'bg-green-500' : 'bg-gray-400' }}"></span>
                             </div>
                             <div class="ml-4 flex-1">
@@ -372,7 +372,7 @@
                              data-contact-name="{{ $admin->name }}"
                              data-chat-url="{{ route('wholesaler.chat.show', ['contactId' => $admin->id]) }}">
                             <div class="relative">
-                                <img src="{{ asset('images/default-avatar.svg') }}" alt="{{ $admin->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
+                                <img src="{{ $admin->profile_picture ? asset('storage/' . $admin->profile_picture) : asset('images/default-avatar.svg') }}" alt="{{ $admin->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
                                 <span class="online-indicator absolute -bottom-1 -right-1 {{ $admin->is_online ? 'bg-green-500' : 'bg-gray-400' }}"></span>
                             </div>
                             <div class="ml-4 flex-1">
@@ -632,7 +632,7 @@
                 const messageHtml = `
                     <div class="flex ${isOwnMessage ? 'justify-end' : 'justify-start'}">
                         <div class="flex ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'} items-end space-x-3 max-w-xs lg:max-w-md">
-                            <img src="${isOwnMessage ? '{{ asset('images/default-avatar.svg') }}' : message.sender.role === 'manufacturer' ? '{{ asset('images/manufacturer.png') }}' : '{{ asset('images/default-avatar.svg') }}'}" 
+                            <img src="${isOwnMessage ? '{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('images/default-avatar.svg') }}' : message.sender.profile_picture ? '{{ asset('storage/') }}' + message.sender.profile_picture : '{{ asset('images/default-avatar.svg') }}'}" 
                                  alt="${message.sender.name}" class="w-8 h-8 rounded-full flex-shrink-0 border-2 border-purple-200">
                             <div class="message-bubble ${isOwnMessage ? 'own' : 'other'}">
                                 <p class="text-base font-semibold text-gray-900 dark:text-white">${message.content}</p>

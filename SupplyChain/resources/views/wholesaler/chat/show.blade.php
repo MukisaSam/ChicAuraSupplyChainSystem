@@ -352,7 +352,7 @@
                     <span class="mr-2 text-gray-700 font-medium text-sm">{{ Auth::user()->name ?? 'Wholesaler User'
                         }}</span>
                     <img class="w-7 h-7 rounded-full border-2 border-purple-200 object-cover"
-                        src="{{ $user->profile_picture ? asset('storage/profile-pictures/' . basename($user->profile_picture)) : asset('images/default-avatar.svg') }}"
+                        src="{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('images/default-avatar.svg') }}"
                         alt="User Avatar">
                 </button>
             </div>
@@ -391,7 +391,7 @@
                             data-contact-id="{{ $manufacturer->id }}" data-contact-name="{{ $manufacturer->name }}"
                             data-chat-url="{{ route('wholesaler.chat.show', ['contactId' => $manufacturer->id]) }}">
                             <div class="relative">
-                                <img src="{{ asset('images/manufacturer.png') }}" alt="{{ $manufacturer->name }}"
+                                <img src="{{ $manufacturer->profile_picture ? asset('storage/' . $manufacturer->profile_picture) : asset('images/default-avatar.svg') }}" alt="{{ $manufacturer->name }}"
                                     class="w-12 h-12 rounded-full border-2 border-purple-200">
                                 <span
                                     class="online-indicator absolute -bottom-1 -right-1 {{ $manufacturer->is_online ? 'bg-green-500' : 'bg-gray-400' }}"></span>
@@ -420,7 +420,7 @@
                             data-contact-name="{{ $admin->name }}"
                             data-chat-url="{{ route('wholesaler.chat.show', ['contactId' => $admin->id]) }}">
                             <div class="relative">
-                                <img src="{{ asset('images/default-avatar.svg') }}" alt="{{ $admin->name }}"
+                                <img src="{{ $admin->profile_picture ? asset('storage/' . $admin->profile_picture) : asset('images/default-avatar.svg') }}" alt="{{ $admin->name }}"
                                     class="w-12 h-12 rounded-full border-2 border-purple-200">
                                 <span
                                     class="online-indicator absolute -bottom-1 -right-1 {{ $admin->is_online ? 'bg-green-500' : 'bg-gray-400' }}"></span>
@@ -453,7 +453,7 @@
             <div class="flex-1 card-gradient rounded-xl flex flex-col overflow-hidden">
                 <div class="bg-gradient-to-r from-purple-600 to-purple-700 p-6">
                     <div class="flex items-center space-x-4">
-                        <img src="{{ $contact->profile_picture ? Storage::disk('public')->url($contact->profile_picture) : asset('images/default-avatar.svg') }}"
+                        <img src="{{ $contact->profile_picture ? asset('storage/' . $contact->profile_picture) : asset('images/default-avatar.svg') }}"
                             alt="{{ $contact->name }}" class="w-16 h-16 rounded-full border-none">
                         <div>
                             <h2 class="text-2xl font-bold text-white dark:text-white mb-1"> {{ $contact->name }}</h2>
@@ -477,8 +477,8 @@
                         $senderRole = $message->sender->role ?? null;
                         $senderName = $message->sender->name ?? '';
                         $avatar = $isOwnMessage
-                                    ? ($user->profile_picture ? asset('storage/profile-pictures/' . basename($user->profile_picture)) : asset('images/default-avatar.svg'))
-                                    : ($message->sender->profile_picture ? Storage::disk('public')->url($message->sender->profile_picture) : asset('images/default-avatar.svg'));
+                                    ? ($user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('images/default-avatar.svg'))
+                                    : ($message->sender->profile_picture ? asset('storage/' . $message->sender->profile_picture) : asset('images/default-avatar.svg'));
                         @endphp
                         <div class="flex {{ $isOwnMessage ? 'justify-end' : 'justify-start' }}">
                             <div
@@ -734,8 +734,8 @@
 
         function appendMessage(message) {
             const isOwnMessage = message.sender_id == {{ $user-> id }};
-            const avatar = isOwnMessage ? '{{ $user->profile_picture ? asset('storage/profile-pictures/' . basename($user->profile_picture)) : asset('images/default-avatar.svg') }}' : 
-                                          '{{ $contact->profile_picture ? Storage::disk('public')->url($contact->profile_picture) : asset('images/default-avatar.svg') }}';
+                          const avatar = isOwnMessage ? '{{ $user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('images/default-avatar.svg') }}' :  
+                                          '{{ $contact->profile_picture ? asset('storage/' . $contact->profile_picture) : asset('images/default-avatar.svg') }}';
 
             const messageHtml = `
                         <div class="flex ${isOwnMessage ? 'justify-end' : 'justify-start'}">
