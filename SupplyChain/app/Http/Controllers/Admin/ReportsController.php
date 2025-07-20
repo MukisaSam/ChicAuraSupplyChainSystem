@@ -8,6 +8,10 @@ use App\Services\WeeklyReportService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\WeeklyReportMail;
+use App\Models\Order;
+use App\Models\User;
+use App\Models\InventoryItem;
+use Carbon\Carbon;
 
 class ReportsController extends Controller
 {
@@ -17,22 +21,40 @@ class ReportsController extends Controller
         return view('admin.reports.index');
     }
 
-    // Show the sales report page (placeholder)
+    // Show the sales report page (real data)
     public function sales()
     {
-        return view('admin.reports.sales'); // Create this view or return a placeholder
+        $now = Carbon::now();
+        $weekAgo = $now->copy()->subDays(7);
+        $sales = Order::whereBetween('created_at', [$weekAgo, $now])->with('user')->get();
+        $totalSales = $sales->sum('total_amount');
+        $salesCount = $sales->count();
+        return view('admin.reports.sales', compact('sales', 'totalSales', 'salesCount', 'weekAgo', 'now'));
     }
 
-    // Show the user activity report page (placeholder)
+    // Show the user activity report page (real data)
     public function users()
     {
-        return view('admin.reports.users'); // Create this view or return a placeholder
+        $now = Carbon::now();
+        $weekAgo = $now->copy()->subDays(7);
+        $newUsers = User::whereBetween('created_at', [$weekAgo, $now])->get();
+        $activeUsers = User::whereHas('orders', function($q) use ($weekAgo, $now) {
+            $q->whereBetween('created_at', [$weekAgo, $now]);
+        })->get();
+        $newUsersCount = $newUsers->count();
+        $activeUsersCount = $activeUsers->count();
+        return view('admin.reports.users', compact('newUsers', 'activeUsers', 'newUsersCount', 'activeUsersCount', 'weekAgo', 'now'));
     }
 
-    // Show the inventory report page (placeholder)
+    // Show the inventory report page (real data)
     public function inventory()
     {
-        return view('admin.reports.inventory'); // Create this view or return a placeholder
+        $now = Carbon::now();
+        $weekAgo = $now->copy()->subDays(7);
+        $inventoryItems = InventoryItem::all();
+        $lowStockItems = InventoryItem::where('quantity', '<', 10)->get();
+        $totalInventory = InventoryItem::sum('quantity');
+        return view('admin.reports.inventory', compact('inventoryItems', 'lowStockItems', 'totalInventory', 'weekAgo', 'now'));
     }
 
     // Handle export (HTML download for now)

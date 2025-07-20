@@ -1,98 +1,72 @@
-@extends('layouts.supplier-dashboard')
+@extends('layouts.supplier')
 
-@section('content')     
-        <div class="flex flex-col flex-1 w-full">
-
-<div class="max-w-6xl mx-auto px-4 py-8">
-    <h2 class="text-2xl font-bold mb-6 text-gray-900 dark:text-black">Supplier Reports</h2>
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6 mb-8">
-        <h5 class="text-lg font-semibold mb-4 text-gray-900 dark:text-black">Monthly Performance Report ({{ date('Y') }})</h5>
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead class="bg-gray-50 dark:bg-gray-900">
-                    <tr>
-                        <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase">Month</th>
-                        <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase">Quantity Supplied</th>
-                        <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase">Revenue</th>
-                        <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase">Average Rating</th>
-                        <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase">Performance</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                    @forelse($monthlyReport as $report)
-                    <tr>
-                        <td class="px-4 py-2">{{ date('F', mktime(0, 0, 0, $report->month, 1)) }}</td>
-                        <td class="px-4 py-2">{{ number_format($report->quantity) }}</td>
-                        <td class="px-4 py-2">${{ number_format($report->revenue, 2) }}</td>
-                        <td class="px-4 py-2">
-                            <div class="flex items-center">
-                                @for($i = 1; $i <= 5; $i++)
-                                    <i class="fas fa-star {{ $i <= $report->avg_rating ? 'text-yellow-400' : 'text-gray-300' }}"></i>
-                                @endfor
-                                <span class="ml-2 text-xs">({{ number_format($report->avg_rating, 1) }})</span>
-                            </div>
-                        </td>
-                        <td class="px-4 py-2">
-                            @php
-                                $performance = ($report->quantity > 1000) ? 'Excellent' : 
-                                            (($report->quantity > 500) ? 'Good' : 'Average');
-                                $badgeClass = ($performance == 'Excellent') ? 'bg-green-200 text-green-800' : 
-                                            (($performance == 'Good') ? 'bg-blue-200 text-blue-800' : 'bg-yellow-200 text-yellow-800');
-                            @endphp
-                            <span class="inline-block px-2 py-1 rounded text-xs font-semibold {{ $badgeClass }}">{{ $performance }}</span>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="5" class="text-center py-4 text-gray-500">No data available</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="bg-white dark:bg-gray-800 rounded-xl shadow p-6">
-        <h5 class="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Item Performance Report</h5>
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead class="bg-gray-50 dark:bg-gray-900">
-                    <tr>
-                        <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase">Item</th>
-                        <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase">Total Quantity</th>
-                        <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase">Average Price</th>
-                        <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase">Average Rating</th>
-                        <th class="px-4 py-2 text-left text-xs font-semibold text-gray-700 dark:text-gray-200 uppercase">Total Revenue</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                    @forelse($itemReport as $report)
-                    <tr>
-                        <td class="px-4 py-2">
-                            <strong>{{ $report->item->name }}</strong>
-                            <br>
-                            <span class="text-xs text-gray-500">{{ $report->item->description }}</span>
-                        </td>
-                        <td class="px-4 py-2">{{ number_format($report->total_quantity) }}</td>
-                        <td class="px-4 py-2">${{ number_format($report->avg_price, 2) }}</td>
-                        <td class="px-4 py-2">
-                            <div class="flex items-center">
-                                @for($i = 1; $i <= 5; $i++)
-                                    <i class="fas fa-star {{ $i <= $report->avg_rating ? 'text-yellow-400' : 'text-gray-300' }}"></i>
-                                @endfor
-                                <span class="ml-2 text-xs">({{ number_format($report->avg_rating, 1) }})</span>
-                            </div>
-                        </td>
-                        <td class="px-4 py-2">${{ number_format($report->total_quantity * $report->avg_price, 2) }}</td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="5" class="text-center py-4 text-gray-500">No data available</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
+@section('content')
+<div class="p-6 bg-gray-100 min-h-screen">
+    <h1 class="text-2xl font-bold mb-4">Your Weekly Report</h1>
+    <p class="mb-2"><strong>Period:</strong> {{ $period_start->toDayDateTimeString() }} - {{ $period_end->toDayDateTimeString() }}</p>
+    <p class="mb-4"><strong>Total Sales:</strong> ${{ number_format($totalSales, 2) }} | <strong>Number of Orders:</strong> {{ $salesCount }}</p>
+    <form action="{{ route('supplier.reports.download') }}" method="POST" class="mb-6">
+        @csrf
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded">Download Report (HTML)</button>
+    </form>
+    <h2 class="text-lg font-semibold mt-6 mb-2">Orders</h2>
+    <table class="min-w-full bg-white border border-gray-300 mb-6">
+        <thead>
+            <tr>
+                <th class="px-4 py-2 border">Order #</th>
+                <th class="px-4 py-2 border">Total</th>
+                <th class="px-4 py-2 border">Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($orders as $order)
+                <tr>
+                    <td class="border px-4 py-2">{{ $order->id }}</td>
+                    <td class="border px-4 py-2">${{ number_format($order->total_amount, 2) }}</td>
+                    <td class="border px-4 py-2">{{ $order->created_at->toDayDateTimeString() }}</td>
+                </tr>
+            @empty
+                <tr><td colspan="3" class="text-center py-4">No orders in the last 7 days.</td></tr>
+            @endforelse
+        </tbody>
+    </table>
+    <h2 class="text-lg font-semibold mt-6 mb-2">Inventory</h2>
+    <table class="min-w-full bg-white border border-gray-300 mb-6">
+        <thead>
+            <tr>
+                <th class="px-4 py-2 border">Item Name</th>
+                <th class="px-4 py-2 border">Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($suppliedItems as $item)
+                <tr>
+                    <td class="border px-4 py-2">{{ $item->name }}</td>
+                    <td class="border px-4 py-2">{{ $item->quantity }}</td>
+                </tr>
+            @empty
+                <tr><td colspan="2" class="text-center py-4">No inventory items found.</td></tr>
+            @endforelse
+        </tbody>
+    </table>
+    <h2 class="text-lg font-semibold mt-6 mb-2">Low Stock Items (&lt; 10)</h2>
+    <table class="min-w-full bg-white border border-gray-300 mb-6">
+        <thead>
+            <tr>
+                <th class="px-4 py-2 border">Item Name</th>
+                <th class="px-4 py-2 border">Quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($lowStockItems as $item)
+                <tr>
+                    <td class="border px-4 py-2">{{ $item->name }}</td>
+                    <td class="border px-4 py-2">{{ $item->quantity }}</td>
+                </tr>
+            @empty
+                <tr><td colspan="2" class="text-center py-4">No low stock items.</td></tr>
+            @endforelse
+        </tbody>
+    </table>
 </div>
 @endsection 

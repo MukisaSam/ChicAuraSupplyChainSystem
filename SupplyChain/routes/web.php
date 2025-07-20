@@ -17,7 +17,8 @@ use App\Http\Controllers\{
     CustomerController,
     CustomerOrderController,
     CustomerRecommendationController,
-    ManufacturerAnalyticsController
+    ManufacturerAnalyticsController,
+    SupplierReportsController
 };
 
 /*
@@ -203,7 +204,17 @@ Route::middleware(['auth', 'role:supplier'])
         Route::get('/supply-requests', [\App\Http\Controllers\SupplierController::class, 'supply-requests'])->name('supply-requests.index');
         Route::get('/analytics', [\App\Http\Controllers\SupplierController::class, 'analytics'])->name('analytics.index');
         Route::get('/chat', [\App\Http\Controllers\SupplierController::class, 'chat'])->name('chat.index');
-        Route::get('/reports', [\App\Http\Controllers\SupplierController::class, 'reports'])->name('reports.index');
+        Route::get('reports', [SupplierReportsController::class, 'index'])->name('reports.index');
+        Route::post('reports/download', function(\Illuminate\Http\Request $request) {
+            $supplier = Auth::user();
+            $service = app(\App\Services\SupplierWeeklyReportService::class);
+            $data = $service->generateReportData($supplier);
+            $html = $service->renderHtmlReport($data);
+            $filename = 'weekly_report_' . now()->toDateString() . '.html';
+            return response($html)
+                ->header('Content-Type', 'text/html')
+                ->header('Content-Disposition', "attachment; filename=\"$filename\"");
+        })->name('reports.download');
 
         // Supply Requests
         Route::resource('supply-requests', \App\Http\Controllers\SupplierController::class)->only(['update']);

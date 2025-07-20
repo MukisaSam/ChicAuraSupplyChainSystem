@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('orders:automate-processing')->everyFiveMinutes();
         $schedule->command('notify:low-inventory-delayed-shipments')->everyFiveMinutes();
         $schedule->command('reports:send-weekly')->weeklyOn(1, '8:00'); // Every Monday at 8am
+        $schedule->command('reports:send-supplier-weekly')->weeklyOn(1, '8:10'); // Every Monday at 8:10am
         // $schedule->command('inspire')->hourly();
     }
 
