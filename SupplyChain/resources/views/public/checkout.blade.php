@@ -230,7 +230,7 @@
                                 @if($item['color']) • Color: {{ $item['color'] }} @endif
                             </small>
                         </div>
-                        <span>${{ number_format($item['total_price'], 2) }}</span>
+                        <span>UGX{{ number_format($item['total_price'], 2) }}</span>
                     </div>
                     @endforeach
                     
@@ -238,7 +238,7 @@
                     
                     <div class="d-flex justify-content-between mb-2">
                         <span>Subtotal:</span>
-                        <span>${{ number_format($total, 2) }}</span>
+                        <span>UGX{{ number_format($total, 2) }}</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
                         <span>Shipping:</span>
@@ -246,12 +246,12 @@
                     </div>
                     <div class="d-flex justify-content-between mb-2">
                         <span>Tax (10%):</span>
-                        <span>${{ number_format($total * 0.1, 2) }}</span>
+                        <span>UGX{{ number_format($total * 0.1, 2) }}</span>
                     </div>
                     <hr>
                     <div class="d-flex justify-content-between fw-bold h5">
                         <span>Total:</span>
-                        <span>${{ number_format($total * 1.1, 2) }}</span>
+                        <span>UGX{{ number_format($total * 1.1, 2) }}</span>
                     </div>
                 </div>
                 <div class="card-footer">

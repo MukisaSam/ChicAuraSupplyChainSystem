@@ -164,7 +164,7 @@
                             </div>
                             
                             <div class="d-flex justify-content-between align-items-center mt-auto">
-                                <span class="h5 mb-0 text-primary">${{ number_format($product->base_price, 2) }}</span>
+                                <span class="h5 mb-0 text-primary">UGX {{ number_format($product->base_price, 2) }}</span>
                                 <a href="{{ route('public.product.detail', $product->id) }}" class="btn btn-outline-primary btn-sm" onclick="event.stopPropagation();">
                                     <i class="bi bi-eye me-1"></i>View Details
                                 </a>

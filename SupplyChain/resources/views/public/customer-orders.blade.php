@@ -35,7 +35,7 @@
                             <div class="col-md-2">
                                 <div class="text-center">
                                     <p class="text-muted small mb-1">Total</p>
-                                    <h6 class="fw-bold mb-0">${{ number_format($order->total_amount, 2) }}</h6>
+                                    <h6 class="fw-bold mb-0">UGX{{ number_format($order->total_amount, 2) }}</h6>
                                 </div>
                             </div>
                             

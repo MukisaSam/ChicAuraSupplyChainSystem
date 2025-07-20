@@ -233,7 +233,7 @@
                 <div class="space-y-2">
 
                     <div>
-                        <p class="text-center text-2xl font-bold mb-1">Online Registration</p>
+                        <p class="text-center text-2xl font-bold mb-1">Online Form Registration</p>
                         <p class="text-center text-sm text-bold mb-5">Fill out the registration details through our
                             online form and submit your information for approval and confirmation.</p>
 
@@ -249,7 +249,7 @@
                         <div class="flex-grow border-t border-black"></div>
                     </div>
                     <div>
-                        <p class="text-center text-2xl font-bold mb-1">Form Registration</p>
+                        <p class="text-center text-2xl font-bold mb-1">Offline Form Registration</p>
                         <p class="text-center text-sm text-bold mb-5">Download a form, provide the necessary
                             information and submit it for review and processing.</p>
                         <div class="grid lg:grid-cols-2 gap-4">
