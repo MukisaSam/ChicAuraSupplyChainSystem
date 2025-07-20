@@ -1,8 +1,8 @@
 @extends('layouts.admin-dashboard')
 @section('content')
                 <div class="mb-6">
-                    <h2 class="text-2xl font-bold text-white mb-1">Chat</h2>
-    <p class="text-gray-200 text-sm">Communicate with any user in the system</p>
+                    <h2 class="text-2xl font-bold text-black mb-1">Chat</h2>
+    <p class="text-black-200 text-sm">Communicate with any user in the system</p>
                 </div>
                 <div class="flex h-full gap-6">
                     <!-- Contacts Sidebar -->

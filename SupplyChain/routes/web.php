@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\{
     Auth\RegisteredUserController,
     DashboardController,
@@ -156,6 +157,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/user_roles/ajax', [\App\Http\Controllers\Admin\UserRoleController::class, 'ajaxIndex'])->name('user_roles.ajax');
     Route::put('/use_roles/{user}', [\App\Http\Controllers\Admin\UserRoleController::class, 'update'])->name('user_roles.update');
 
+    Route::get('reports', [ReportsController::class, 'index'])->name('reports.index');
+    Route::get('reports/sales', [ReportsController::class, 'sales'])->name('reports.sales');
+    Route::get('reports/users', [ReportsController::class, 'users'])->name('reports.users');
+    Route::get('reports/inventory', [ReportsController::class, 'inventory'])->name('reports.inventory');
+    Route::post('reports/export', [ReportsController::class, 'export'])->name('reports.export');
+    Route::post('reports/send-to-me', [ReportsController::class, 'sendToMe'])->name('reports.sendToMe');
+    
     // Analytics
     Route::get('/analytics', [\App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('analytics.index');
     Route::get('/analytics/chart-data', [\App\Http\Controllers\Admin\AnalyticsController::class, 'getChartData'])->name('analytics.chart-data');
@@ -172,11 +180,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     });
 
     
-        Route::get('reports', [ReportsController::class, 'index'])->name('reports.index');
-        Route::get('reports/sales', [ReportsController::class, 'sales'])->name('reports.sales');
-        Route::get('reports/users', [ReportsController::class, 'users'])->name('reports.users');
-        Route::get('reports/inventory', [ReportsController::class, 'inventory'])->name('reports.inventory');
-        Route::post('reports/export', [ReportsController::class, 'export'])->name('reports.export');
+       
   
         // Notifications
     Route::get('/notifications', [\App\Http\Controllers\AdminNotificationsController::class, 'index'])->name('notifications.index');

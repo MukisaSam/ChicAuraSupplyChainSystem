@@ -10,24 +10,28 @@ class WeeklyReportMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $user;
-    public $csv;
-    public $type;
+    public $htmlContent;
+    public $subjectLine;
 
-    public function __construct($user, $csv, $type)
+    /**
+     * Create a new message instance.
+     *
+     * @return void
+     */
+    public function __construct($htmlContent, $subjectLine = 'Weekly Admin Report')
     {
-        $this->user = $user;
-        $this->csv = $csv;
-        $this->type = $type;
+        $this->htmlContent = $htmlContent;
+        $this->subjectLine = $subjectLine;
     }
 
+    /**
+     * Build the message.
+     *
+     * @return $this
+     */
     public function build()
     {
-        $filename = $this->type . '_weekly_report.csv';
-        return $this->subject('Your Weekly ' . ucfirst($this->type) . ' Report')
-            ->view('emails.weekly_report')
-            ->attachData($this->csv, $filename, [
-                'mime' => 'text/csv',
-            ]);
+        return $this->subject($this->subjectLine)
+            ->html($this->htmlContent);
     }
 } 
