@@ -30,6 +30,15 @@ class AuthenticatedSessionController extends Controller
         if (Auth::guard('customer')->attempt($request->only('email', 'password'), $request->boolean('remember'))) {
             $request->session()->regenerate();
 
+            // Audit log for customer login
+            if (Auth::guard('customer')->check()) {
+                \App\Models\AuditLog::create([
+                    'user_id' => Auth::guard('customer')->id(),
+                    'action' => 'login',
+                    'details' => 'Customer logged in from IP: ' . $request->ip(),
+                ]);
+            }
+
             $intendedUrl = $request->session()->get('url.intended', route('customer.dashboard'));
             
             return redirect()->to($intendedUrl)->with('success', 'Login successful!');
@@ -41,6 +50,13 @@ class AuthenticatedSessionController extends Controller
 
             $user = Auth::user();
             $role = $user->role;
+
+            // Audit log for user login
+            \App\Models\AuditLog::create([
+                'user_id' => $user->id,
+                'action' => 'login',
+                'details' => 'User logged in from IP: ' . $request->ip(),
+            ]);
 
             $route = match ($role) {
                 'admin' => '/admin/dashboard',
@@ -59,10 +75,17 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        $user = Auth::user();
+        if ($user) {
+            \App\Models\AuditLog::create([
+                'user_id' => $user->id,
+                'action' => 'logout',
+                'details' => 'User logged out from IP: ' . $request->ip(),
+            ]);
+        }
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/login');

@@ -42,6 +42,13 @@ class Controller extends BaseController
         $user = User::create($incomingFields);
         Auth::login($user);
 
+        // Audit log for user registration
+        \App\Models\AuditLog::create([
+            'user_id' => $user->id,
+            'action' => 'register',
+            'details' => 'User registered with email: ' . $user->email,
+        ]);
+
         return redirect('/');
     }
 }
