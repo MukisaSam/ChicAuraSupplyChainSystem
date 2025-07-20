@@ -53,11 +53,10 @@ class MLDemandModel:
         
         # Product features
         if 'product_name' in df.columns:
-            df['product_length'] = df['product_name'].str.len()
             df['is_basic'] = df['product_name'].str.contains('Basic', case=False, na=False).astype(int)
             df['is_premium'] = df['product_name'].str.contains('Premium|Silk|Leather', case=False, na=False).astype(int)
-            df['is_mens'] = df['product_name'].str.contains("Men's|Male", case=False, na=False).astype(int)
-            df['is_womens'] = df['product_name'].str.contains("Women's|Female", case=False, na=False).astype(int)
+            df['is_mens'] = df['product_name'].str.contains("Men's|Male|Boy|Men|Man|Man's", case=False, na=False).astype(int)
+            df['is_womens'] = df['product_name'].str.contains("Women's|Female|Ladies|Girls|Babies|Baby", case=False, na=False).astype(int)
             df['is_tshirt'] = df['product_name'].str.contains('T-Shirt|Shirt', case=False, na=False).astype(int)
             df['is_dress'] = df['product_name'].str.contains('Dress', case=False, na=False).astype(int)
             df['is_jeans'] = df['product_name'].str.contains('Jeans|Denim', case=False, na=False).astype(int)
@@ -75,15 +74,35 @@ class MLDemandModel:
         
         # Location features
         if 'location' in df.columns:
-            df['location_length'] = df['location'].str.len()
+            #df['location_length'] = df['location'].str.len()
             df['is_kampala'] = (df['location'] == 'Kampala').astype(int)
             df['is_entebbe'] = (df['location'] == 'Entebbe').astype(int)
             df['is_jinja'] = (df['location'] == 'Jinja').astype(int)
             df['is_gulu'] = (df['location'] == 'Gulu').astype(int)
             df['is_wakiso'] = (df['location'] == 'Wakiso').astype(int)
+            df['is_mukono'] = (df['location'] == 'Mukono').astype(int)
+            df['is_mbarara'] = (df['location'] == 'Mbarara').astype(int)
+            df['is_hoima'] = (df['location'] == 'Hoima').astype(int)
+            df['is_arua'] = (df['location'] == 'Arua').astype(int)
+            df['is_mbale'] = (df['location'] == 'Mbale').astype(int)
+            df['is_masaka'] = (df['location'] == 'Masaka').astype(int)
+            df['is_moroto'] = (df['location'] == 'Moroto').astype(int)
+            df['is_kabale'] = (df['location'] == 'Kabale').astype(int)
+            df['is_lira'] = (df['location'] == 'Lira').astype(int)
+            df['is_moyo'] = (df['location'] == 'Moyo').astype(int)
+            df['is_kasese'] = (df['location'] == 'Kasese').astype(int)
+            df['is_kiryandongo'] = (df['location'] == 'Kiryandongo').astype(int)
+            df['is_kiboga'] = (df['location'] == 'Kiboga').astype(int)
+            df['is_kisoro'] = (df['location'] == 'Kisoro').astype(int)
+            df['is_mityana'] = (df['location'] == 'Mityana').astype(int)
+            df['is_kamuli'] = (df['location'] == 'Kamuli').astype(int)
+            df['is_kaliro'] = (df['location'] == 'Kaliro').astype(int)
+            df['is_kibale'] = (df['location'] == 'Kibale').astype(int)
+            df['is_kabarole'] = (df['location'] == 'Kabarole').astype(int)
+
             
             # Urban classification
-            urban_locations = ['Kampala', 'Entebbe', 'Jinja']
+            urban_locations = ['Kampala', 'Entebbe', 'Wakiso']
             df['is_urban'] = df['location'].isin(urban_locations).astype(int)
             
             # Encode locations
@@ -110,8 +129,8 @@ class MLDemandModel:
             df['is_high_price'] = (df['unit_price'] >= 35000).astype(int)
             
             # Price per character (value perception)
-            if 'product_length' in df.columns:
-                df['price_per_char'] = df['unit_price'] / (df['product_length'] + 1)
+            # if 'product_length' in df.columns:
+            #     df['price_per_char'] = df['unit_price'] / (df['product_length'] + 1)
         
         # Interaction features
         if 'unit_price' in df.columns and 'location' in df.columns:
@@ -153,11 +172,15 @@ class MLDemandModel:
             'month_sin', 'month_cos', 'day_sin', 'day_cos',
             'product_length', 'is_basic', 'is_premium', 'is_mens', 'is_womens',
             'is_tshirt', 'is_dress', 'is_jeans', 'product_encoded',
-            'location_length', 'is_kampala', 'is_entebbe', 'is_jinja', 'is_gulu', 'is_wakiso',
+            'location_length', 'is_kampala', 'is_entebbe', 'is_jinja', 'is_gulu', 'is_wakiso', 'is_mukono',
+            'is_mbarara', 'is_hoima', 'is_arua', 'is_mbale', 'is_masaka', 'is_moroto',
+            'is_kabale', 'is_lira', 'is_moyo', 'is_kiryandongo', 'is_kiboga',
+            'is_kisoro', 'is_mityana', 'is_kamuli', 'is_kaliro', 'is_kibale',
+            'is_kasese', 'is_kabarole',
             'is_urban', 'location_encoded',
             'price_kampala_interaction', 'price_urban_interaction',
             'price_premium_interaction', 'price_mens_interaction', 'price_tshirt_interaction',
-            'price_per_char'
+            'price_dress_interaction', 'price_jeans_interaction'
         ]
         
         # Keep only available features

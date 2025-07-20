@@ -88,109 +88,23 @@ class AdvancedFeatureEngineer:
             return customer_df
     
     def create_rfm_features(self, interaction_df: pd.DataFrame, customer_df: pd.DataFrame) -> pd.DataFrame:
-        """
-        Create RFM (Recency, Frequency, Monetary) features for customer segmentation.
-        
-        Args:
-            interaction_df: DataFrame with customer order interactions
-            customer_df: DataFrame with customer information
-            
-        Returns:
-            DataFrame with RFM features
-        """
-        if interaction_df.empty or customer_df.empty:
-            return customer_df
-        
-        try:
-            # Ensure date column is datetime
-            interaction_df = interaction_df.copy()
-            interaction_df['order_date'] = pd.to_datetime(interaction_df['order_date'])
-            
-            # Debug: Check available columns
-            logger.info(f"Available columns in interaction_df: {list(interaction_df.columns)}")
-            
-            # Check if customer_id exists, if not, return customer_df as is
-            if 'customer_id' not in interaction_df.columns:
-                logger.warning("customer_id column not found in interaction_df")
-                return customer_df
-            
-            # Convert numeric columns to handle Decimal types
-            numeric_cols = ['total_amount', 'quantity']
-            for col in numeric_cols:
-                if col in interaction_df.columns:
-                    interaction_df[col] = pd.to_numeric(interaction_df[col], errors='coerce')
-            
-            # Calculate RFM metrics
-            rfm_df = interaction_df.groupby('customer_id').agg({
-                'order_date': ['max', 'count'],  # Recency and Frequency
-                'total_amount': ['sum', 'mean'],  # Monetary
-                'quantity': ['sum', 'mean']
-            }).reset_index()
-            
-            # Flatten column names
-            rfm_df.columns = [
-                'customer_id', 'last_order_date', 'order_frequency',
-                'total_spent', 'avg_order_value', 'total_quantity', 'avg_quantity'
-            ]
-            
-            # Calculate recency (days since last order)
-            rfm_df['recency'] = (self.reference_date - rfm_df['last_order_date']).dt.days
-            
-            # Create RFM scores (1-5 scale) - handle small datasets
-            try:
-                rfm_df['recency_score'] = pd.qcut(
-                    rfm_df['recency'].rank(method='first', ascending=False), 
-                    q=min(5, len(rfm_df)), labels=list(range(min(5, len(rfm_df)), 0, -1))
-                ).astype(int)
-                
-                rfm_df['frequency_score'] = pd.qcut(
-                    rfm_df['order_frequency'].rank(method='first'), 
-                    q=min(5, len(rfm_df)), labels=list(range(1, min(5, len(rfm_df)) + 1))
-                ).astype(int)
-                
-                rfm_df['monetary_score'] = pd.qcut(
-                    rfm_df['total_spent'].rank(method='first'), 
-                    q=min(5, len(rfm_df)), labels=list(range(1, min(5, len(rfm_df)) + 1))
-                ).astype(int)
-            except ValueError as e:
-                # Handle case where qcut fails (all values are the same)
-                logger.warning(f"RFM scoring failed with qcut, using simple scoring: {e}")
-                rfm_df['recency_score'] = 3
-                rfm_df['frequency_score'] = 3
-                rfm_df['monetary_score'] = 3
-            
-            # Create RFM segment
-            rfm_df['rfm_score'] = (
-                rfm_df['recency_score'].astype(str) +
-                rfm_df['frequency_score'].astype(str) +
-                rfm_df['monetary_score'].astype(str)
-            )
-            
-            # Create customer segments
-            rfm_df['customer_segment'] = rfm_df['rfm_score'].apply(self._categorize_rfm)
-            
-            # Merge with customer data
-            result_df = customer_df.merge(
-                rfm_df[['customer_id', 'recency', 'order_frequency', 'total_spent', 
-                       'avg_order_value', 'recency_score', 'frequency_score', 
-                       'monetary_score', 'rfm_score', 'customer_segment']], 
-                on='customer_id', 
-                how='left'
-            )
-            
-            # Fill NaN values for customers with no orders
-            result_df['recency'] = result_df['recency'].fillna(9999)
-            result_df['order_frequency'] = result_df['order_frequency'].fillna(0)
-            result_df['total_spent'] = result_df['total_spent'].fillna(0)
-            result_df['avg_order_value'] = result_df['avg_order_value'].fillna(0)
-            result_df['customer_segment'] = result_df['customer_segment'].fillna('New')
-            
-            logger.info(f"Created RFM features for {len(result_df)} customers")
-            return result_df
-            
-        except Exception as e:
-            logger.error(f"Error creating RFM features: {e}")
-            return customer_df
+        """Create RFM features for customers"""
+        if interaction_df.empty:
+            return pd.DataFrame()
+
+        # Calculate Recency, Frequency, Monetary for each customer
+        rfm = interaction_df.groupby('customer_id').agg({
+            'order_date': lambda x: (datetime.now() - pd.to_datetime(x).max()).days,
+            'order_id': 'nunique',
+            'total_amount': 'sum'
+        }).reset_index()
+
+        rfm.columns = ['customer_id', 'recency', 'frequency', 'monetary']
+
+        # Optionally, merge with customer_df for additional info
+        # rfm = rfm.merge(customer_df[['id']], left_on='customer_id', right_on='id', how='left')
+
+        return rfm
     
     def _extract_region(self, location: str) -> str:
         """Extract region from Ugandan district location."""

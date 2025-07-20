@@ -37,7 +37,7 @@
                         </div>
                         <div>
                             <p class="text-muted mb-1 small">Total Spent</p>
-                            <h3 class="fw-bold mb-0">${{ number_format($totalSpent, 2) }}</h3>
+                            <h3 class="fw-bold mb-0">Ugx{{ number_format($totalSpent, 2) }}</h3>
                         </div>
                     </div>
                 </div>
@@ -93,7 +93,7 @@
                                     </span>
                                 </div>
                                 <p class="text-muted small mb-2">
-                                    {{ $order->customerOrderItems->count() }} item(s) • ${{ number_format($order->total_amount, 2) }}
+                                    {{ $order->customerOrderItems->count() }} item(s) • Ugx{{ number_format($order->total_amount, 2) }}
                                 </p>
                                 <a href="{{ route('customer.order.detail', $order->id) }}" 
                                    class="text-primary text-decoration-none small fw-medium">
