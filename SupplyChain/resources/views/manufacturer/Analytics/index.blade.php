@@ -281,7 +281,7 @@
                             <div class="ml-3">
                                 <p class="text-xs font-medium text-gray-600">Raw Materials</p>
                                 <p class="text-2xl font-bold text-gray-800">{{ $analytics['stats']['raw_materials'] }}</p>
-                                <p class="text-xs text-indigo-600 mt-1">↗ +8% this month</p>
+                                <!-- <p class="text-xs text-indigo-600 mt-1">↗ +8% this month</p> -->
                             </div>
                         </div>
                     </div>
@@ -293,7 +293,7 @@
                             <div class="ml-3">
                                 <p class="text-xs font-medium text-gray-600">Products</p>
                                 <p class="text-2xl font-bold text-gray-800">{{ $analytics['stats']['products'] }}</p>
-                                <p class="text-xs text-green-600 mt-1">↗ +12% this month</p>
+                                <!-- <p class="text-xs text-green-600 mt-1">↗ +12% this month</p> -->
                             </div>
                         </div>
                     </div>
@@ -305,7 +305,7 @@
                             <div class="ml-3">
                                 <p class="text-xs font-medium text-gray-600">Suppliers</p>
                                 <p class="text-2xl font-bold text-gray-800">{{ $analytics['stats']['suppliers'] }}</p>
-                                <p class="text-xs text-yellow-600 mt-1">↗ +5% this month</p>
+                                <!-- <p class="text-xs text-yellow-600 mt-1">↗ +5% this month</p> -->
                             </div>
                         </div>
                     </div>
@@ -317,14 +317,14 @@
                             <div class="ml-3">
                                 <p class="text-xs font-medium text-gray-600">Revenue</p>
                                 <p class="text-2xl font-bold text-gray-800">UGX {{ $analytics['stats']['revenue'] }}</p>
-                                <p class="text-xs text-purple-600 mt-1">↗ +15% this month</p>
+                                <!-- <p class="text-xs text-purple-600 mt-1">↗ +15% this month</p> -->
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Additional Stats -->
-                <div class="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-3">
+                <div class="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-3 mb-3">
                     <div class="stat-card p-4 rounded-xl">
                         <div class="flex items-center">
                             <div class="p-3 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl shadow-lg">
@@ -333,7 +333,7 @@
                             <div class="ml-3">
                                 <p class="text-xs font-medium text-gray-600">Wholesalers</p>
                                 <p class="text-2xl font-bold text-gray-800">{{ $analytics['stats']['wholesalers'] }}</p>
-                                <p class="text-xs text-blue-600 mt-1">↗ +3% this month</p>
+                                <!-- <p class="text-xs text-blue-600 mt-1">↗ +3% this month</p> -->
                             </div>
                         </div>
                     </div>
@@ -345,7 +345,7 @@
                             <div class="ml-3">
                                 <p class="text-xs font-medium text-gray-600">Pending Orders</p>
                                 <p class="text-2xl font-bold text-gray-800">{{ $analytics['stats']['pending_orders'] }}</p>
-                                <p class="text-xs text-red-600 mt-1">↘ -2% this month</p>
+                                <!-- <p class="text-xs text-red-600 mt-1">↘ -2% this month</p> -->
                             </div>
                         </div>
                     </div>
@@ -357,40 +357,27 @@
                             <div class="ml-3">
                                 <p class="text-xs font-medium text-gray-600">Supply Requests</p>
                                 <p class="text-2xl font-bold text-gray-800">{{ $analytics['stats']['active_supply_requests'] }}</p>
-                                <p class="text-xs text-teal-600 mt-1">↗ +7% this month</p>
+                                <!-- <p class="text-xs text-teal-600 mt-1">↗ +7% this month</p> -->
                             </div>
                         </div>
                     </div>
                 </div>
                 
                 <!-- Charts Section -->
-                <div class="grid grid-cols-1 gap-4 mt-4 lg:grid-cols-3">
-                    <div class="card-gradient p-4 rounded-xl lg:col-span-2">
-                        <h3 class="text-lg font-bold text-black mb-3">Production & Revenue Trends</h3>
-                        <div class="relative" style="height: 300px;">
-                            <canvas id="productionChart"></canvas>
-                        </div>
+                <div class="card-gradient p-4 rounded-xl lg:col-span-2">
+                    <div class="flex items-center justify-between mb-3">
+                        <h3 class="text-lg font-bold text-black">Product Quantity Trends</h3>
+                        <div id="product-name" class="text-sm font-medium text-gray-600">Loading product data...</div>
                     </div>
-                    <div class="card-gradient p-4 rounded-xl">
-                        <h3 class="text-lg font-bold text-black mb-3">Recent Activities</h3>
-                        <div class="space-y-2 max-h-64 overflow-y-auto">
-                            @forelse ($analytics['recentActivities'] as $activity)
-                                <div class="flex items-start p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                                    <div class="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full {{ $activity['color'] ?? 'bg-blue-100' }} bg-opacity-10">
-                                        <i class="fas {{ $activity['icon'] ?? 'fa-info' }} {{ $activity['color'] ?? 'text-blue-600' }} text-sm"></i>
-                                    </div>
-                                    <div class="ml-3 flex-1">
-                                        <p class="text-xs font-medium text-gray-800">{{ $activity['description'] ?? 'No activity' }}</p>
-                                        <p class="text-xs text-gray-500 mt-1">{{ $activity['time'] ?? 'N/A' }}</p>
-                                    </div>
-                                </div>
-                            @empty 
-                                <div class="text-center py-6">
-                                    <i class="fas fa-inbox text-gray-400 text-2xl mb-2"></i>
-                                    <p class="text-black text-sm">No recent activities found.</p>
-                                </div>
-                            @endforelse
-                        </div>
+                    <div class="relative" style="height: 300px;">
+                        <!-- Navigation arrows -->
+                        <button id="prev-product" class="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white dark:bg-gray-700 rounded-full p-2 shadow-md z-10 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                            <i class="fas fa-chevron-left text-gray-700 dark:text-gray-200"></i>
+                        </button>
+                        <button id="next-product" class="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white dark:bg-gray-700 rounded-full p-2 shadow-md z-10 hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors">
+                            <i class="fas fa-chevron-right text-gray-700 dark:text-gray-200"></i>
+                        </button>
+                        <canvas id="productionChart"></canvas>
                     </div>
                 </div>
 
@@ -677,8 +664,8 @@
                             <th class="py-2 px-3 text-left">Segment</th>
                             <th class="py-2 px-3 text-left">Business Type</th>
                             <th class="py-2 px-3 text-left">Total Orders</th>
-                            <th class="py-2 px-3 text-left">Total Spent</th>
-                            <th class="py-2 px-3 text-left">Avg Order Value</th>
+                            <th class="py-2 px-3 text-left">Total Spent (Ugx)</th>
+                            <th class="py-2 px-3 text-left">Avg Order Value (Ugx)</th>
                             <th class="py-2 px-3 text-left">Recency (Days)</th>
                         </tr>
                     </thead>
@@ -700,8 +687,8 @@
                                         </td>
                                         <td class="py-2 px-3 text-gray-700">{{ $wholesaler['business_type'] ?? 'N/A' }}</td>
                                         <td class="py-2 px-3 text-black">{{ number_format($wholesaler['total_orders']) }}</td>
-                                        <td class="py-2 px-3 text-black">${{ number_format($wholesaler['total_spent'], 0) }}</td>
-                                        <td class="py-2 px-3 text-black">${{ number_format($wholesaler['avg_order_value'], 0) }}</td>
+                                        <td class="py-2 px-3 text-black">{{ number_format($wholesaler['total_spent'], 0) }}</td>
+                                        <td class="py-2 px-3 text-black">{{ number_format($wholesaler['avg_order_value'], 0) }}</td>
                                         <td class="py-2 px-3">
                                             <span class="
                                                 @if($wholesaler['recency'] <= 30) text-green-600
@@ -755,38 +742,7 @@
         </div>
         
 
-                        <!-- Customer Segmentation Table (Keep existing) -->
-                        <!-- <div class="card-gradient rounded-xl p-4">
-                            <h3 class="text-lg font-bold text-black mb-3">Wholesaler Segmentation</h3>
-                            <div class="overflow-x-auto">
-                                <table class="min-w-full text-sm">
-                                    <thead>
-                                        <tr class="bg-gray-100">
-                                            <th class="py-2 px-3 text-left">Name</th>
-                                            <th class="py-2 px-3 text-left">Segment</th>
-                                            <th class="py-2 px-3 text-left">Orders</th>
-                                            <th class="py-2 px-3 text-left">Value</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if(isset($analytics['customers']['segments']))
-                                            @foreach($analytics['customers']['segments'] as $wholesaler)
-                                                <tr class="border-b">
-                                                    <td class="py-2 px-3">{{ $wholesaler['name'] }}</td>
-                                                    <td class="py-2 px-3"><span class="px-2 py-1 rounded text-xs {{ $wholesaler['color'] }}">{{ $wholesaler['segment'] }}</span></td>
-                                                    <td class="py-2 px-3">{{ $wholesaler['total_orders'] }}</td>
-                                                    <td class="py-2 px-3">${{ number_format($wholesaler['total_spent'], 0) }}</td>
-                                                </tr>
-                                            @endforeach
-                                        @else
-                                            <tr class="border-b">
-                                                <td colspan="4" class="py-2 px-3 text-gray-500 text-center">No customer segmentation data available</td>
-                                            </tr>
-                                        @endif
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div> -->
+                    <!-- Customer Segmentation Table (Keep existing) -->
                     </div>
                 </div>
 
@@ -902,128 +858,283 @@
         });
 
         // Fetch and render charts with real data
-        function renderAnalyticsCharts() {
-            fetch("{{ route('manufacturer.analytics.chart-data') }}")
-                .then(response => response.json())
-                .then(data => {
-                    // Production Chart
-                    new Chart(document.getElementById('productionChart'), {
-                        type: 'line',
-                        data: {
-                            labels: data.timeData.labels,
-                            datasets: [{
-                                label: 'Production Volume',
-                                data: data.timeData.production_data,
-                                borderColor: '#6366f1',
-                                backgroundColor: 'rgba(99,102,241,0.1)',
-                                fill: true,
-                                tension: 0.4,
-                            }, {
-                                label: 'Revenue',
-                                data: data.timeData.revenue_data.map(val => val / 1000), // Scale down for better visualization
-                                borderColor: '#10b981',
-                                backgroundColor: 'rgba(16,185,129,0.1)',
-                                fill: true,
-                                tension: 0.4,
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    display: true,
-                                    position: 'top'
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    grid: {
-                                        color: 'rgba(0,0,0,0.1)'
-                                    }
-                                },
-                                x: {
-                                    grid: {
-                                        color: 'rgba(0,0,0,0.1)'
-                                    }
-                                }
-                            }
-                        }
-                    });
+function renderAnalyticsCharts() {
+    // Product navigation state
+    let productData = [];
+    let currentProductIndex = 0;
+    let productionChart = null;
 
-                    // Revenue Chart
-                    new Chart(document.getElementById('revenueChart'), {
-                        type: 'bar',
-                        data: {
-                            labels: data.timeData.labels,
-                            datasets: [{
-                                label: 'Revenue',
-                                data: data.timeData.revenue_data,
-                                backgroundColor: '#10b981',
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    display: false
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    grid: {
-                                        color: 'rgba(0,0,0,0.1)'
-                                    }
-                                },
-                                x: {
-                                    grid: {
-                                        color: 'rgba(0,0,0,0.1)'
-                                    }
-                                }
-                            }
-                        }
-                    });
+    // Fetch product data specifically
+    fetch("{{ route('manufacturer.analytics.chart-data') }}?type=products")
+        .then(response => response.json())
+        .then(data => {
+            // Store product data
+            productData = data.products || [];
+            
+            if (productData.length > 0) {
+                // Display first product
+                updateProductChart(currentProductIndex);
+                document.getElementById('product-name').textContent = productData[currentProductIndex].name;
+            } else {
+                document.getElementById('product-name').textContent = "No product data available";
+            }
+        })
+        .catch(error => {
+            console.error("Error fetching product data:", error);
+            document.getElementById('product-name').textContent = "Error loading product data";
+        });
 
-                    // Orders Chart
-                    new Chart(document.getElementById('ordersChart'), {
-                        type: 'bar',
-                        data: {
-                            labels: data.timeData.labels,
-                            datasets: [{
-                                label: 'Orders',
-                                data: data.timeData.orders_data,
-                                backgroundColor: '#f59e42',
-                            }]
+    // Fetch time series data for revenue and orders charts
+    fetch("{{ route('manufacturer.analytics.chart-data') }}")
+        .then(response => response.json())
+        .then(data => {
+            // Revenue Chart
+            new Chart(document.getElementById('revenueChart'), {
+                // Existing revenue chart configuration
+                type: 'bar',
+                data: {
+                    labels: data.timeData.labels,
+                    datasets: [{
+                        label: 'Revenue',
+                        data: data.timeData.revenue_data,
+                        backgroundColor: '#10b981',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            }
                         },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    display: false
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    grid: {
-                                        color: 'rgba(0,0,0,0.1)'
-                                    }
-                                },
-                                x: {
-                                    grid: {
-                                        color: 'rgba(0,0,0,0.1)'
-                                    }
-                                }
+                        x: {
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
                             }
                         }
-                    });
-                });
+                    }
+                }
+            });
+
+            // Orders Chart
+            new Chart(document.getElementById('ordersChart'), {
+                // Existing orders chart configuration
+                type: 'bar',
+                data: {
+                    labels: data.timeData.labels,
+                    datasets: [{
+                        label: 'Orders',
+                        data: data.timeData.orders_data,
+                        backgroundColor: '#f59e42',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(0,0,0,0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => {
+            console.error("Error fetching time series data:", error);
+        });
+
+    // Function to update the product chart
+    // function updateProductChart(index) {
+    //     if (productData.length === 0) return;
+        
+    //     // Ensure index is within bounds
+    //     if (index < 0) index = productData.length - 1;
+    //     if (index >= productData.length) index = 0;
+        
+    //     currentProductIndex = index;
+    //     const product = productData[currentProductIndex];
+        
+    //     // Update product name display
+    //     document.getElementById('product-name').textContent = product.name;
+        
+    //     // Create or update chart
+    //     const ctx = document.getElementById('productionChart').getContext('2d');
+        
+    //     const chartConfig = {
+    //         type: 'line',
+    //         data: {
+    //             labels: product.dates,
+    //             datasets: [{
+    //                 label: 'Quantity',
+    //                 data: product.quantities,
+    //                 borderColor: '#6366f1',
+    //                 backgroundColor: 'rgba(99,102,241,0.1)',
+    //                 fill: true,
+    //                 tension: 0.4,
+    //             }]
+    //         },
+    //         options: {
+    //             responsive: true,
+    //             maintainAspectRatio: false,
+    //             animation: {
+    //                 duration: 800
+    //             },
+    //             plugins: {
+    //                 legend: {
+    //                     display: false
+    //                 },
+    //                 tooltip: {
+    //                     callbacks: {
+    //                         title: function(tooltipItems) {
+    //                             return `${product.name} - ${tooltipItems[0].label}`;
+    //                         }
+    //                     }
+    //                 }
+    //             },
+    //             scales: {
+    //                 y: {
+    //                     beginAtZero: true,
+    //                     title: {
+    //                         display: true,
+    //                         text: 'Quantity'
+    //                     },
+    //                     grid: {
+    //                         color: 'rgba(0,0,0,0.1)'
+    //                     }
+    //                 },
+    //                 x: {
+    //                     title: {
+    //                         display: true,
+    //                         text: 'Date'
+    //                     },
+    //                     grid: {
+    //                         color: 'rgba(0,0,0,0.1)'
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     };
+        
+    //     if (productionChart) {
+    //         productionChart.data = chartConfig.data;
+    //         productionChart.update();
+    //     } else {
+    //         productionChart = new Chart(ctx, chartConfig);
+    //     }
+    // }
+    function updateProductChart(index) {
+    if (productData.length === 0) return;
+    
+    // Ensure index is within bounds
+    if (index < 0) index = productData.length - 1;
+    if (index >= productData.length) index = 0;
+    
+    currentProductIndex = index;
+    const product = productData[currentProductIndex];
+    
+    // Update product name display
+    document.getElementById('product-name').textContent = product.name;
+    
+    // Create or update chart
+    const ctx = document.getElementById('productionChart').getContext('2d');
+    
+    const chartConfig = {
+        type: 'line',
+        data: {
+            labels: product.dates,
+            datasets: [{
+                label: 'Quantity Ordered',
+                data: product.quantities,
+                borderColor: '#6366f1',
+                backgroundColor: 'rgba(99,102,241,0.1)',
+                fill: true,
+                tension: 0.4,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: {
+                duration: 800
+            },
+            plugins: {
+                legend: {
+                    display: false
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            return `${product.name} - ${tooltipItems[0].label}`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Quantity Ordered'
+                    },
+                    grid: {
+                        color: 'rgba(0,0,0,0.1)'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    },
+                    grid: {
+                        color: 'rgba(0,0,0,0.1)'
+                    }
+                }
+            }
         }
-        document.addEventListener('DOMContentLoaded', renderAnalyticsCharts);
+    };
+    
+    if (productionChart) {
+        productionChart.data = chartConfig.data;
+        productionChart.options = chartConfig.options;
+        productionChart.update();
+    } else {
+        productionChart = new Chart(ctx, chartConfig);
+    }
+}
+
+    // Set up navigation button event listeners
+    document.getElementById('prev-product').addEventListener('click', function() {
+        updateProductChart(currentProductIndex - 1);
+    });
+    
+    document.getElementById('next-product').addEventListener('click', function() {
+        updateProductChart(currentProductIndex + 1);
+    });
+}
+
+// Make sure to execute when DOM is loaded
+document.addEventListener('DOMContentLoaded', renderAnalyticsCharts);
 
         // Forecast functionality
         document.addEventListener('DOMContentLoaded', function() {
@@ -1079,6 +1190,9 @@
                             const option = document.createElement('option');
                             option.value = location;
                             option.textContent = location;
+                            if (location === 'Countrywide') {
+                               option.selected = true; // Set Countrywide as selected by default
+                            }
                             locationSelect.appendChild(option);
                         });
                     })
@@ -1460,12 +1574,23 @@
             console.log('API URL:', apiUrl);
         });
         // Add to your existing JavaScript section
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set up event listener for the refresh segmentation button
+            const refreshSegmentationBtn = document.getElementById('refreshSegmentationBtn');
+            if (refreshSegmentationBtn) {
+                refreshSegmentationBtn.addEventListener('click', function() {
+                    refreshWholesalerSegmentation();
+                });
+            }
+        });
+
+        // Function to refresh wholesaler segmentation
         function refreshWholesalerSegmentation() {
-            const btn = event.target;
+            const btn = document.getElementById('refreshSegmentationBtn');
             const originalContent = btn.innerHTML;
             
             // Show loading state
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Generating...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Processing...';
             btn.disabled = true;
             
             fetch('/manufacturer/analytics/refresh-wholesaler-segmentation', {
@@ -1478,23 +1603,48 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    showNotification('Wholesaler segmentation generated successfully!', 'success');
+                    // Show success message
+                    showNotification('Wholesaler segmentation refreshed successfully!', 'success');
+                    
+                    // Reload the page after a short delay to show updated segments
                     setTimeout(() => {
                         window.location.reload();
                     }, 2000);
                 } else {
-                    showNotification(data.message || 'Failed to generate wholesaler segmentation', 'error');
+                    showNotification(data.message || 'Failed to refresh wholesaler segmentation', 'error');
                 }
             })
             .catch(error => {
-                console.error('Error generating wholesaler segmentation:', error);
-                showNotification('An error occurred while generating wholesaler segmentation', 'error');
+                console.error('Error refreshing wholesaler segmentation:', error);
+                showNotification('An error occurred while refreshing wholesaler segmentation', 'error');
             })
             .finally(() => {
                 // Reset button state
                 btn.innerHTML = originalContent;
                 btn.disabled = false;
             });
+        }
+
+        // Helper function to show notifications
+        function showNotification(message, type) {
+            const alertClass = type === 'success' ? 'bg-green-100 border-green-400 text-green-700' : 'bg-red-100 border-red-400 text-red-700';
+            const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
+            
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 ${alertClass} px-4 py-3 rounded border max-w-md shadow-lg`;
+            notification.innerHTML = `
+                <div class="flex items-center">
+                    <i class="fas ${icon} mr-2"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove notification after 5 seconds
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
         }
     </script>
 </body>

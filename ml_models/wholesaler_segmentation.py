@@ -127,7 +127,12 @@ class WholesalerSegmentation:
         segment_names = {}
         segment_descriptions = {}
         
-        for cluster in range(4):
+        # Pre-calculate overall metrics for comparison
+        overall_avg_spent = df['total_spent'].mean()
+        overall_avg_orders = df['total_orders'].mean()
+        overall_avg_order_value = df['avg_order_value'].mean()
+        
+        for cluster in range(len(df['cluster'].unique())):
             cluster_data = df[df['cluster'] == cluster]
             
             avg_recency = cluster_data['recency'].mean()
@@ -135,19 +140,27 @@ class WholesalerSegmentation:
             avg_frequency = cluster_data['total_orders'].mean()
             avg_order_value = cluster_data['avg_order_value'].mean()
             
-            # Determine segment type based on characteristics
+            # More granular segment identification
             if avg_total_spent > df['total_spent'].quantile(0.75) and avg_frequency > df['total_orders'].quantile(0.75):
                 name = "Premium Wholesalers"
                 description = "High-value, frequent buyers with large order volumes"
-            elif avg_recency <= 30 and avg_frequency > df['total_orders'].median():
-                name = "Active Regular Buyers"
-                description = "Recently active with consistent ordering patterns"
-            elif avg_recency > 90 or avg_frequency < df['total_orders'].quantile(0.25):
+            elif avg_recency <= 30:
+                if avg_total_spent > overall_avg_spent:
+                    name = "High-Value Active Buyers"
+                    description = "Recently active customers with above-average spending"
+                else:
+                    name = "Regular Active Buyers"
+                    description = "Recently active customers with moderate spending"
+            elif avg_recency > 90:
                 name = "At-Risk/Dormant"
-                description = "Low activity or haven't ordered recently, need re-engagement"
+                description = "Haven't ordered recently, need re-engagement"
             else:
                 name = "Occasional Buyers"
                 description = "Moderate activity, potential for growth"
+            
+            # Further refine based on order value
+            if 'High-Value' not in name and avg_order_value > overall_avg_order_value * 1.5:
+                name = name.replace("Buyers", "Big-Ticket Buyers")
             
             segment_names[cluster] = name
             segment_descriptions[cluster] = description
@@ -202,11 +215,53 @@ class WholesalerSegmentation:
         plt.tight_layout()
         plt.show()
     
-    def export_results(self, df, filename='wholesaler_segments.csv'):
-        """Export results to CSV"""
+    def export_results(self, df, segment_names=None, segment_descriptions=None):
+        """Export results to CSV and JSON in Laravel public folder"""
         try:
-            df.to_csv(filename, index=False)
-            logger.info(f"Results exported to {filename}")
+            # Define the path to Laravel's public folder
+            public_folder = '../SupplyChain/public/'
+            
+            # Ensure the directory exists
+            import os
+            os.makedirs(public_folder, exist_ok=True)
+            
+            # Export the main CSV file with all wholesaler data
+            csv_path = f"{public_folder}wholesaler_segments.csv"
+            df.to_csv(csv_path, index=False)
+            
+            # Export segment metadata as JSON for easier web integration
+            if segment_names and segment_descriptions:
+                import json
+                
+                # Prepare segment summary data
+                segment_summary = {}
+                for cluster in segment_names.keys():
+                    cluster_data = df[df['cluster'] == cluster]
+                    
+                    segment_summary[str(cluster)] = {
+                        'name': segment_names[cluster],
+                        'description': segment_descriptions[cluster],
+                        'count': len(cluster_data),
+                        'percentage': round(len(cluster_data) / len(df) * 100, 1),
+                        'avg_recency': round(cluster_data['recency'].mean(), 1),
+                        'avg_total_spent': float(cluster_data['total_spent'].mean()),
+                        'avg_orders': round(cluster_data['total_orders'].mean(), 1),
+                        'avg_order_value': float(cluster_data['avg_order_value'].mean())
+                    }
+                
+                # Save segment metadata for easy access by web app
+                json_path = f"{public_folder}wholesaler_segments_meta.json"
+                with open(json_path, 'w') as f:
+                    json.dump({
+                        'segments': segment_summary,
+                        'last_updated': str(pd.Timestamp.now()),
+                        'total_wholesalers': len(df)
+                    }, f, indent=2)
+                
+                logger.info(f"Results exported to {csv_path} and {json_path}")
+            else:
+                logger.info(f"Results exported to {csv_path}")
+            
             return True
         except Exception as e:
             logger.error(f"Error exporting results: {e}")
@@ -235,13 +290,16 @@ class WholesalerSegmentation:
         print("4. Analyzing segments...")
         segment_names, segment_descriptions = self.analyze_segments(df, feature_columns)
         
-        # Step 5: Visualize
-        print("5. Creating visualizations...")
-        self.visualize_segments(df)
+        # Step 5: Visualize (optional in web environment)
+        # try:
+        #     print("5. Creating visualizations...")
+        #     self.visualize_segments(df)
+        # except Exception as e:
+        #     logger.warning(f"Visualization failed: {e}. Continuing with export.")
         
-        # Step 6: Export results
+        # Step 6: Export results to Laravel public folder
         print("6. Exporting results...")
-        self.export_results(df)
+        self.export_results(df, segment_names, segment_descriptions)
         
         print("\nSegmentation analysis completed!")
         return df, segment_names, segment_descriptions

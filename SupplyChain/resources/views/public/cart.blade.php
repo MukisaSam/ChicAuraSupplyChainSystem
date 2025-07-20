@@ -33,7 +33,7 @@
                             @endif
                         </div>
                         <div class="col-md-2">
-                            <span class="fw-bold">${{ number_format($item['unit_price'], 2) }}</span>
+                            <span class="fw-bold">Ugx{{ number_format($item['unit_price'], 2) }}</span>
                         </div>
                         <div class="col-md-2">
                             <div class="input-group input-group-sm">
@@ -48,7 +48,7 @@
                             <small class="text-muted d-block mt-1">{{ $item['product']->stock_quantity }} in stock</small>
                         </div>
                         <div class="col-md-1">
-                            <span class="fw-bold item-total">${{ number_format($item['total_price'], 2) }}</span>
+                            <span class="fw-bold item-total">Ugx{{ number_format($item['total_price'], 2) }}</span>
                         </div>
                         <div class="col-md-1">
                             <button class="btn btn-sm btn-outline-danger" onclick="removeFromCart('{{ $item['id'] }}')">
@@ -78,7 +78,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-2">
                         <span>Subtotal:</span>
-                        <span id="cart-subtotal">${{ number_format($total, 2) }}</span>
+                        <span id="cart-subtotal">Ugx{{ number_format($total, 2) }}</span>
                     </div>
                     <div class="d-flex justify-content-between mb-2">
                         <span>Shipping:</span>
@@ -86,12 +86,12 @@
                     </div>
                     <div class="d-flex justify-content-between mb-2">
                         <span>Tax:</span>
-                        <span id="cart-tax">${{ number_format($total * 0.1, 2) }}</span>
+                        <span id="cart-tax">Ugx{{ number_format($total * 0.1, 2) }}</span>
                     </div>
                     <hr>
                     <div class="d-flex justify-content-between fw-bold">
                         <span>Total:</span>
-                        <span id="cart-total">${{ number_format($total * 1.1, 2) }}</span>
+                        <span id="cart-total">{{ number_format($total * 1.1, 2) }}</span>
                     </div>
                 </div>
                 <div class="card-footer">

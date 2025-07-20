@@ -403,7 +403,7 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li>
-                                <a class="dropdown-item d-flex align-items-center" href="{{ route('login') }}">
+                                <a class="dropdown-item d-flex align-items-center" href="{{ route('customer.login') }}">
                                     <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
                                 </a>
                             </li>
@@ -423,7 +423,7 @@
 
                     <!-- Desktop Guest Navigation -->
                     <div class="d-none d-lg-flex align-items-center gap-2">
-                        <a class="btn btn-outline-primary d-flex align-items-center" href="{{ route('login') }}">
+                        <a class="btn btn-outline-primary d-flex align-items-center" href="{{ route('customer.login') }}">
                             <i class="bi bi-box-arrow-in-right me-1"></i>
                             <span class="d-none d-xl-inline">Sign In</span>
                         </a>
@@ -452,7 +452,7 @@
                         <ul class="dropdown-menu dropdown-menu-end shadow">
                             <li>
                                 <a class="dropdown-item d-flex align-items-center" href="{{ route('customer.dashboard') }}">
-                                    <i class="bi bi-house me-2"></i>Dashboard
+                                    <i class="bi bi-house me-2"></i>Home
                                 </a>
                             </li>
                             <li>
@@ -461,7 +461,7 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item d-flex align-items-center" href="#">
+                                <a class="dropdown-item d-flex align-items-center" href="{{ route('customer.profile') }}">
                                     <i class="bi bi-person me-2"></i>Profile Settings
                                 </a>
                             </li>
@@ -538,8 +538,8 @@
                 <div class="col-lg-2 mb-4">
                     <h6>Business</h6>
                     <ul class="list-unstyled">
-                        <li><a href="{{ route('register') }}" class="text-muted text-decoration-none">Become a Supplier</a></li>
-                        <li><a href="{{ route('register') }}" class="text-muted text-decoration-none">Become a Wholesaler</a></li>
+                        <li><a href="{{ route('register') }}" class="text-muted text-decoration-none">Be our Supplier</a></li>
+                        <li><a href="{{ route('register') }}" class="text-muted text-decoration-none">Be our Wholesaler</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-2 mb-4">

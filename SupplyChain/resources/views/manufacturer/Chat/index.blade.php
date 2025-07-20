@@ -198,6 +198,16 @@
             text-align: center;
             box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
         }
+
+         .online-indicator {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        }
         
         .dark .message-bubble.other {
             background: linear-gradient(135deg, #374151 0%, #4b5563 100%);

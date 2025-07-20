@@ -12,6 +12,7 @@ import logging
 import pickle
 import json
 import warnings
+import random
 warnings.filterwarnings('ignore')
 
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -369,7 +370,17 @@ class HybridRecommendationSystem:
         
         # Start with demographic features
         features_df = self.feature_engineer.create_customer_features(customer_df.copy())
-        
+
+        # --- Ensure demographic encoding ---
+        if 'age_group' in features_df.columns:
+            features_df['age_group_encoded'] = features_df['age_group'].astype('category').cat.codes
+        if 'gender' in features_df.columns:
+            features_df['gender_encoded'] = features_df['gender'].astype('category').cat.codes
+        if 'income_bracket' in features_df.columns:
+            features_df['income_bracket_encoded'] = features_df['income_bracket'].astype('category').cat.codes
+        if 'purchase_frequency' in features_df.columns:
+            features_df['purchase_frequency_encoded'] = features_df['purchase_frequency'].astype('category').cat.codes
+
         # Add behavioral features from interaction data
         if not interaction_df.empty:
             # Calculate customer behavior metrics
@@ -874,7 +885,10 @@ class HybridRecommendationSystem:
             
             # Sort final recommendations by score
             recommendations.sort(key=lambda x: x['recommendation_score'], reverse=True)
-            
+
+            # Shuffle recommendations for diversity
+            random.shuffle(recommendations)
+
             return recommendations[:n_recommendations]
             
         except Exception as e:

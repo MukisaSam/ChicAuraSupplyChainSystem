@@ -69,8 +69,36 @@ class SupplierChatController extends Controller
             ->where('receiver_id', $user->id)
             ->where('is_read', false)
             ->update(['is_read' => true, 'read_at' => now()]);
+        
+        $admins = User::where('role', 'admin')->get();
+        $manufacturers = User::where('role', 'manufacturer')->get();
 
-        return view('supplier.chat.show', compact('user', 'contact', 'messages'));
+        // Get recent conversations
+        $recentConversations = ChatMessage::where('sender_id', $user->id)
+            ->orWhere('receiver_id', $user->id)
+            ->with(['sender', 'receiver'])
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->groupBy(function ($message) use ($user) {
+                return $message->sender_id === $user->id ? $message->receiver_id : $message->sender_id;
+            })
+            ->take(10);
+
+        // Get unread message counts
+        $unreadCounts = ChatMessage::unread($user->id)
+            ->selectRaw('sender_id, COUNT(*) as count')
+            ->groupBy('sender_id')
+            ->pluck('count', 'sender_id');    
+
+        return view('supplier.chat.show', compact(
+            'user',
+            'contact', 
+            'messages',
+            'admins',
+            'manufacturers',
+            'recentConversations',
+            'unreadCounts'
+        ));
     }
 
     /**

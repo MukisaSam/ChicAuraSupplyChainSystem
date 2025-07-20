@@ -120,6 +120,26 @@
         .dark .text-gray-200 {
             color: #cbd5e1;
         }
+        .unread-badge {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border-radius: 50%;
+            padding: 2px 6px;
+            font-size: 0.75rem;
+            min-width: 18px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3);
+        }
+
+        .online-indicator {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        }
 
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
@@ -133,7 +153,7 @@
         <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
-                    <div class="logo-container">
+                    <div class="">
                         <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="h-12 w-auto">
                     </div>
                 </div>
@@ -231,7 +251,7 @@
                                 <a href="{{ route('supplier.chat.show', ['contactId' => $manufacturer->id]) }}" class="contact-item flex items-center p-4 rounded-xl hover:bg-green-100 dark:hover:bg-green-900/20 transition">
                                     <div class="relative">
                                         <img src="{{ $manufacturer->profile_picture ? Storage::disk('public')->url($manufacturer->profile_picture) : asset('images/manufacturer.png') }}" alt="{{ $manufacturer->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
-                                        <span class="online-indicator absolute -bottom-1 -right-1"></span>
+                                        <span class="online-indicator absolute -bottom-1 -right-1 {{ $manufacturer->isOnline() ? 'bg-green-500' : 'bg-gray-400' }}"></span>
                                     </div>
                                     <div class="ml-4 flex-1">
                                         <h5 class="text-sm font-medium text-gray-900 dark:text-white">{{ $manufacturer->name }}</h5>
@@ -253,7 +273,7 @@
                                 <a href="{{ route('supplier.chat.show', ['contactId' => $admin->id]) }}" class="contact-item flex items-center p-4 rounded-xl hover:bg-green-100 dark:hover:bg-green-900/20 transition">
                                     <div class="relative">
                                         <img src="{{ asset('images/default-avatar.svg') }}" alt="{{ $admin->name }}" class="w-12 h-12 rounded-full border-2 border-purple-200">
-                                        <span class="online-indicator absolute -bottom-1 -right-1"></span>
+                                        <span class="online-indicator absolute -bottom-1 -right-1 {{ $admin->isOnline() ? 'bg-green-500' : 'bg-gray-400' }}"></span>
                                     </div>
                                     <div class="ml-4 flex-1">
                                         <h5 class="text-sm font-medium text-gray-900 dark:text-white">{{ $admin->name }}</h5>
@@ -284,8 +304,8 @@
                     <div class="flex-1 card-gradient rounded-xl flex flex-col min-h-0" id="chat-conversation">
                         <div id="chat-welcome" class="flex-1 flex items-center justify-center">
                             <div class="text-center">
-                                <div class="w-24 h-24 bg-gradient-to-br from-purple-100 to-purple-200 dark:from-purple-900 dark:to-purple-800 rounded-full flex items-center justify-center mx-auto mb-6">
-                                    <i class="fas fa-comments text-4xl text-purple-600 dark:text-purple-300"></i>
+                                <div class="w-24 h-24 bg-gradient-to-br from-green-100 to-green-200 dark:from-green-900 dark:to-green-800 rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <i class="fas fa-comments text-4xl text-green-600 dark:text-green-300"></i>
                                 </div>
                                 <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">Welcome to Chat</h3>
                                 <p class="text-gray-600 dark:text-gray-400">Select a contact from the sidebar to start a conversation</p>

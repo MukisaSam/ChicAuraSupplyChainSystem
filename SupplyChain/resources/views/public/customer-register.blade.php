@@ -480,7 +480,7 @@
                     <div class="text-center">
                         <p class="text-muted mb-0">
                             Already have an account? 
-                            <a href="{{ route('customer.login') }}" class="login-link">Login here</a>
+                            <a href="{{ route('login') }}" class="login-link">Login here</a>
                         </p>
                     </div>
                 </form>

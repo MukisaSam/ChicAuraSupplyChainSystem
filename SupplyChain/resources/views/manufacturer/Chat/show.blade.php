@@ -743,8 +743,9 @@
             function appendMessage(message) {
                 const isOwnMessage = message.sender_id == {{ $user->id }};
                 const avatar = isOwnMessage
-                    ? '{{ asset('images/manufacturer.png') }}'
-                    : ('{{ $contact->role === 'supplier' ? asset('images/supplier.jpg') : asset('images/wholesaler.jpg') }}');
+                    ? '{{ ($user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('images/default-avatar.svg')) }}'
+                    : '{{ ($message->sender->profile_picture ? asset('storage/' . $message->sender->profile_picture) : asset('images/default-avatar.svg')) }}';
+                   
                 const messageHtml = `
                     <div class="flex ${isOwnMessage ? 'justify-end' : 'justify-start'}">
                         <div class="flex ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'} items-end max-w-xs lg:max-w-md">
