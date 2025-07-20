@@ -21,12 +21,14 @@ class userRegistered extends Mailable
 
     public $name;
     public $visitDate;
+    public $visitTime;
     public $role;
 
-    public function __construct($name, $visitDate, $role)
+    public function __construct($name, $role, $visitDate, $visitTime)
     {
         $this->name = $name;
         $this->visitDate = $visitDate;
+        $this->visitTime = $visitTime;
         $this->role = $role;
     }
 

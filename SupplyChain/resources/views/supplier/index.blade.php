@@ -67,7 +67,7 @@
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Total Revenue</h5>
-                            <p class="card-text display-6">${{ number_format($suppliedItems->sum(function($item) { return $item->price * $item->delivered_quantity; }), 2) }}</p>
+                            <p class="card-text display-6">UGX{{ number_format($suppliedItems->sum(function($item) { return $item->price * $item->delivered_quantity; }), 2) }}</p>
                         </div>
                     </div>
                 </div>

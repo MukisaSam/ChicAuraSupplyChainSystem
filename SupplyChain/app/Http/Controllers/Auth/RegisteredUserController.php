@@ -16,6 +16,7 @@ use Illuminate\View\View;
 use App\Mail\userRegistered;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
+use Exception;
 
 class RegisteredUserController extends Controller
 {
@@ -105,9 +106,8 @@ class RegisteredUserController extends Controller
         $filePath = $request->file('license_document')->getPathname();
         $fileName = $request->file('license_document')->getClientOriginalName();
 
-        $response = Http::timeout(60)->attach('file', fopen($filePath, 'r'), $fileName)->post('http://localhost:8080/application/validate');
-
-        if ($response->successful()) {
+        try{
+            $response = Http::timeout(60)->attach('file', fopen($filePath, 'r'), $fileName)->post('http://localhost:8080/application/validate');
             $data = $response->json();
             if (isset($data['status']) && $data['status'] === 'success') {
                 //redirect with success
@@ -142,8 +142,9 @@ class RegisteredUserController extends Controller
                 }
                 
 
-                $formattedDate = Carbon::parse($data['visitDate'])->format('l, F j, Y \a\t g:i A');
-                Mail::to($data['email'])->queue(new userRegistered($data['name'], $formattedDate, 'supplier'));
+                $formattedDate = Carbon::parse($data['visitDate'])->format('l, F j, Y');
+                $formatedTime = Carbon::parse($data['visitDate'])->format('g:i A');
+                Mail::to($data['email'])->queue(new userRegistered($data['name'], $data['role'], $formattedDate, $formatedTime));
 
                 return redirect()->route('register.validation')->with([
                     'success' => $data['visitDate'], 
@@ -160,9 +161,9 @@ class RegisteredUserController extends Controller
                 return redirect()->route('register.validation')->with('error', $msg);
                 
             }
-        } else {
+        } catch(Exception $e) {
             // HTTP-level error
-            return redirect()->route('register.validation')->with('error', 'Failed to contact validation server: ' . $response->status());
+            return redirect()->route('register.validation')->with('server', 'Failed to contact validation server: ' . $e->getMessage());
         }    
     }
 

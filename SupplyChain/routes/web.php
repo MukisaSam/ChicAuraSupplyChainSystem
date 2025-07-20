@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\{
     Auth\RegisteredUserController,
     DashboardController,
@@ -16,7 +17,8 @@ use App\Http\Controllers\{
     CustomerController,
     CustomerOrderController,
     CustomerRecommendationController,
-    ManufacturerAnalyticsController
+    ManufacturerAnalyticsController,
+    SupplierReportsController
 };
 
 /*
@@ -156,6 +158,13 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/user_roles/ajax', [\App\Http\Controllers\Admin\UserRoleController::class, 'ajaxIndex'])->name('user_roles.ajax');
     Route::put('/use_roles/{user}', [\App\Http\Controllers\Admin\UserRoleController::class, 'update'])->name('user_roles.update');
 
+    Route::get('reports', [ReportsController::class, 'index'])->name('reports.index');
+    Route::get('reports/sales', [ReportsController::class, 'sales'])->name('reports.sales');
+    Route::get('reports/users', [ReportsController::class, 'users'])->name('reports.users');
+    Route::get('reports/inventory', [ReportsController::class, 'inventory'])->name('reports.inventory');
+    Route::post('reports/export', [ReportsController::class, 'export'])->name('reports.export');
+    Route::post('reports/send-to-me', [ReportsController::class, 'sendToMe'])->name('reports.sendToMe');
+    
     // Analytics
     Route::get('/analytics', [\App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('analytics.index');
     Route::get('/analytics/chart-data', [\App\Http\Controllers\Admin\AnalyticsController::class, 'getChartData'])->name('analytics.chart-data');
@@ -172,11 +181,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     });
 
     
-        Route::get('reports', [ReportsController::class, 'index'])->name('reports.index');
-        Route::get('reports/sales', [ReportsController::class, 'sales'])->name('reports.sales');
-        Route::get('reports/users', [ReportsController::class, 'users'])->name('reports.users');
-        Route::get('reports/inventory', [ReportsController::class, 'inventory'])->name('reports.inventory');
-        Route::post('reports/export', [ReportsController::class, 'export'])->name('reports.export');
+       
   
         // Notifications
     Route::get('/notifications', [\App\Http\Controllers\AdminNotificationsController::class, 'index'])->name('notifications.index');
@@ -199,7 +204,17 @@ Route::middleware(['auth', 'role:supplier'])
         Route::get('/supply-requests', [\App\Http\Controllers\SupplierController::class, 'supply-requests'])->name('supply-requests.index');
         Route::get('/analytics', [\App\Http\Controllers\SupplierController::class, 'analytics'])->name('analytics.index');
         Route::get('/chat', [\App\Http\Controllers\SupplierController::class, 'chat'])->name('chat.index');
-        Route::get('/reports', [\App\Http\Controllers\SupplierController::class, 'reports'])->name('reports.index');
+        Route::get('reports', [SupplierReportsController::class, 'index'])->name('reports.index');
+        Route::post('reports/download', function(\Illuminate\Http\Request $request) {
+            $supplier = Auth::user();
+            $service = app(\App\Services\SupplierWeeklyReportService::class);
+            $data = $service->generateReportData($supplier);
+            $html = $service->renderHtmlReport($data);
+            $filename = 'weekly_report_' . now()->toDateString() . '.html';
+            return response($html)
+                ->header('Content-Type', 'text/html')
+                ->header('Content-Disposition', "attachment; filename=\"$filename\"");
+        })->name('reports.download');
 
         // Supply Requests
         Route::resource('supply-requests', \App\Http\Controllers\SupplierController::class)->only(['update']);

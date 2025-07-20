@@ -419,7 +419,7 @@
                                 </div>
                                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 w-full">
                                     <h5 class="font-semibold">Total Revenue</h5>
-                                    <p class="text-2xl font-bold">${{ number_format($stats['total_revenue'], 2) }}</p>
+                                    <p class="text-2xl font-bold">UGX{{ number_format($stats['total_revenue'], 2) }}</p>
                                 </div>
                             </div>
                             
@@ -512,7 +512,7 @@
                                         <tr>
                                             <td class="px-4 py-2">{{ date('F', mktime(0, 0, 0, $report->month, 1)) }}</td>
                                             <td class="px-4 py-2">{{ number_format($report->quantity) }}</td>
-                                            <td class="px-4 py-2">${{ number_format($report->revenue, 2) }}</td>
+                                            <td class="px-4 py-2">UGX{{ number_format($report->revenue, 2) }}</td>
                                             <td class="px-4 py-2">
                                                 <div class="flex items-center">
                                                     @for($i = 1; $i <= 5; $i++)
@@ -560,7 +560,7 @@
                                                 <span class="text-xs text-gray-500">{{ $report->item->description }}</span>
                                             </td>
                                             <td class="px-4 py-2">{{ number_format($report->total_quantity) }}</td>
-                                            <td class="px-4 py-2">${{ number_format($report->avg_price, 2) }}</td>
+                                            <td class="px-4 py-2">UGX{{ number_format($report->avg_price, 2) }}</td>
                                             <td class="px-4 py-2">
                                                 <div class="flex items-center">
                                                     @for($i = 1; $i <= 5; $i++)
@@ -569,7 +569,7 @@
                                                     <span class="ml-2 text-xs">({{ number_format($report->avg_rating, 1) }})</span>
                                                 </div>
                                             </td>
-                                            <td class="px-4 py-2">${{ number_format($report->total_quantity * $report->avg_price, 2) }}</td>
+                                            <td class="px-4 py-2">UGX{{ number_format($report->total_quantity * $report->avg_price, 2) }}</td>
                                         </tr>
                                         @empty
                                         <tr>
@@ -585,7 +585,7 @@
                                     <p class="text-gray-600 dark:text-gray-300">Total Items Supplied</p>
                                 </div>
                                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 text-center">
-                                    <h3 class="text-success text-2xl font-bold">${{ number_format($monthlyReport->sum('revenue'), 2) }}</h3>
+                                    <h3 class="text-success text-2xl font-bold">UGX{{ number_format($monthlyReport->sum('revenue'), 2) }}</h3>
                                     <p class="text-gray-600 dark:text-gray-300">Total Revenue</p>
                                 </div>
                                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 text-center">
