@@ -18,7 +18,7 @@ class ManufacturerRevenueController extends Controller
         
         // Revenue stats
         $stats = [
-            'revenue' => number_format((float)\App\Models\Order::where('status', 'delivered')->sum('total_amount'), 2),
+            'revenue' => (float)\App\Models\Order::where('status', 'delivered')->sum('total_amount'),
             'products' => \App\Models\Item::count(),
             'raw_materials' => \App\Models\Item::where('type', 'raw_material')->sum('stock_quantity'),
             'suppliers' => \App\Models\Supplier::count(),
