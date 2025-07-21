@@ -842,17 +842,17 @@
         });
 
         // Theme toggle
-        document.querySelector('[data-theme-toggle]').addEventListener('click', function() {
-            document.documentElement.classList.toggle('dark');
-            const icon = this.querySelector('i');
-            if (document.documentElement.classList.contains('dark')) {
-                icon.classList.remove('fa-moon');
-                icon.classList.add('fa-sun');
-            } else {
-                icon.classList.remove('fa-sun');
-                icon.classList.add('fa-moon');
-            }
-        });
+        // document.querySelector('[data-theme-toggle]').addEventListener('click', function() {
+        //     document.documentElement.classList.toggle('dark');
+        //     const icon = this.querySelector('i');
+        //     if (document.documentElement.classList.contains('dark')) {
+        //         icon.classList.remove('fa-moon');
+        //         icon.classList.add('fa-sun');
+        //     } else {
+        //         icon.classList.remove('fa-sun');
+        //         icon.classList.add('fa-moon');
+        //     }
+        // });
 
         // Fetch and render charts with real data
 function renderAnalyticsCharts() {
