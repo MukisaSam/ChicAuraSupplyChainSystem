@@ -225,7 +225,7 @@ class ManufacturerInventoryController extends Controller
             'total_items' => $totalItems,
             'total_stock' => $totalStock,
             'low_stock_items' => $lowStockItems,
-            'total_value' => number_format($totalValue, 2)
+            'total_value' => $totalValue
         ];
     }
 
