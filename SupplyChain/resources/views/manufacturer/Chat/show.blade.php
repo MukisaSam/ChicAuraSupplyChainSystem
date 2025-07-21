@@ -744,7 +744,7 @@
                 const isOwnMessage = message.sender_id == {{ $user->id }};
                 const avatar = isOwnMessage
                     ? '{{ ($user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('images/default-avatar.svg')) }}'
-                    : '{{ ($message->sender->profile_picture ? asset('storage/' . $message->sender->profile_picture) : asset('images/default-avatar.svg')) }}';
+                    : (message.sender && message.sender.profile_picture ? message.sender.profile_picture : '{{ asset('images/default-avatar.svg') }}');
                    
                 const messageHtml = `
                     <div class="flex ${isOwnMessage ? 'justify-end' : 'justify-start'}">

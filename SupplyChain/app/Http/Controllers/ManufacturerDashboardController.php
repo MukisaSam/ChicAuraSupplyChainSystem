@@ -41,7 +41,7 @@ class ManufacturerDashboardController extends Controller
         $totalRawMaterials = \App\Models\Item::where('type', 'raw_material')->count();
         $totalProducts = \App\Models\Item::where('type', 'finished_product')->count();
         $totalSuppliers = Supplier::count();
-        $revenue = '$' . number_format(\App\Models\Order::where('status', 'delivered')->sum('total_amount'), 2);
+        $revenue = \App\Models\Order::where('status', 'delivered')->sum('total_amount');
         $recentActivities = $this->getRecentActivities();
         return view('manufacturer.dashboard', compact('activeWorkOrders', 'inProgress', 'completedThisMonth', 'workOrders', 'totalRawMaterials', 'totalProducts', 'totalSuppliers', 'revenue', 'recentActivities'));
     }
