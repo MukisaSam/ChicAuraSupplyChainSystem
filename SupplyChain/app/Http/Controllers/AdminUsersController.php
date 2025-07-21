@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\userWelcome;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class AdminUsersController extends Controller
 {
@@ -46,7 +48,7 @@ class AdminUsersController extends Controller
         ]);
     }
 
-    public function addUserView(Request $request)
+    public function addView(Request $request)
     {
         $id = $request->id;
 
@@ -72,7 +74,7 @@ class AdminUsersController extends Controller
         ]);
     }
 
-    public function editUserView(Request $request)
+    public function editView(Request $request)
     {
         $id = $request->id;
 
@@ -96,11 +98,14 @@ class AdminUsersController extends Controller
                 's.business_address', 's.phone', 's.license_document', 's.materials_supplied'
             )->where('u.id', $id)->first();
 
-            //First pass
-            $raw3 = json_decode($record->materials_supplied, true);
-        
-            //Second pass
-            $materials_supplied = json_decode($raw3, true);
+            // First pass
+            $materials_supplied = json_decode($record->materials_supplied, true);
+
+            // Check if decoding was successful
+            if (is_string($materials_supplied)) {
+                // Second pass
+                $materials_supplied = json_decode($materials_supplied, true);
+            }
         
             // Pass the record to the view
             return view('admin.usersmanagement.edituser', [
@@ -112,14 +117,17 @@ class AdminUsersController extends Controller
             $record = DB::table('users as u')->join('manufacturers as m', 'u.id', '=', 'm.user_id')
             ->select(
                 'u.id', 'u.name', 'u.email', 'u.profile_picture', 'u.password', 'u.role',
-                'm.business_address', 'm.phone', 'm.license_document', 'm.production_capacity', 'm.specialization'
+                'm.business_address', 'm.phone', 'm.license_document', 'm.document_path', 'm.production_capacity', 'm.specialization'
             )->where('u.id', $id)->first();
 
             //First pass
-            $raw2 = json_decode($record->specialization, true);
+            $specialization = json_decode($record->specialization, true);
         
+            // Check if decoding was successful
+            if (is_string($specialization)) {
             //Second pass
-            $specialization = json_decode($raw2, true);
+            $specialization = json_decode($specialization, true);
+            }
         
             // Pass the record to the view
             return view('admin.usersmanagement.edituser', [
@@ -130,14 +138,18 @@ class AdminUsersController extends Controller
             $record = DB::table('users as u')->join('wholesalers as w', 'u.id', '=', 'w.user_id')
             ->select(
                 'u.id', 'u.name', 'u.email', 'u.profile_picture', 'u.password', 'u.role',
-                'w.business_address', 'w.phone', 'w.license_document', 'w.business_type' , 'w.preferred_categories', 'w.monthly_order_volume'
+                'w.business_address', 'w.phone', 'w.license_document', 'w.document_path', 'w.business_type' , 'w.preferred_categories', 'w.monthly_order_volume'
             )->where('u.id', $id)->first();
 
-            //First pass
-            $raw1 = json_decode($record->preferred_categories, true);
+            // First pass
+            $preferred_categories = json_decode($record->preferred_categories, true);
+
+            // Check if decoding was successful
+            if (is_string($preferred_categories)) {
+                // Second pass
+                $preferred_categories = json_decode($preferred_categories, true);
+            }
         
-            //Second pass
-            $preferred_categories = json_decode($raw1, true);
         
             // Pass the record to the view
             return view('admin.usersmanagement.edituser', [
@@ -177,7 +189,7 @@ class AdminUsersController extends Controller
         //Check password
 
         if($request->password == null){
-            $password = $details->password;
+            $password = 'password123';
         }else{
             $request->validate(['password' => ['required', 'confirmed', Rules\Password::defaults()],]);
             $password = Hash::make($request->password);
@@ -234,6 +246,9 @@ class AdminUsersController extends Controller
 
         //Remove record from pending_users
         DB::delete('DELETE FROM pending_users WHERE id = ?', [$id]);
+
+        //Send Welcome Email
+        Mail::to($user->email)->queue(new userWelcome($user->name, $user->email, $password));
         
         
         return redirect()->route('admin.users');
