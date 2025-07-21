@@ -944,8 +944,8 @@ private function getProductQuantityData()
                     $results = $this->refreshSupplierPerformance($baseDir);
                     break;
                     
-                case 'segmentation':
-                    $results = $this->refreshWholesalerSegmentation($baseDir);
+                case 'recommendations':
+                    $results = $this->refreshRecommendationSystem($baseDir);
                     break;
                     
                 default:
@@ -1237,152 +1237,58 @@ private function getProductQuantityData()
         return null;
     }
 
-    // public function refreshWholesalerSegmentation($baseDir)
-    // {
-    //     try {
-    //         // Trigger ML model to generate new segmentation
-    //         $baseDir = base_path('../ml_models');
-    //         $pythonExe = $this->findPythonExecutable();
+    public function refreshWholesalerSegmentation(Request $request)
+    {
+        try {
+            // Trigger ML model to generate new segmentation
+            $baseDir = base_path('../ml_models');
+            $pythonExe = $this->findPythonExecutable();
             
-    //         if (!$pythonExe) {
-    //             return response()->json([
-    //                 'success' => false,
-    //                 'message' => 'Python executable not found. Please ensure Python is installed and accessible.'
-    //             ]);
-    //         }
+            if (!$pythonExe) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Python executable not found. Please ensure Python is installed and accessible.'
+                ]);
+            }
             
-    //         $command = "cd /d \"{$baseDir}\" && \"{$pythonExe}\" wholesaler_segmentation.py 2>&1";
-    //         putenv('PYTHONIOENCODING=utf-8');
+            $command = "cd /d \"{$baseDir}\" && \"{$pythonExe}\" wholesaler_segmentation.py 2>&1";
+            putenv('PYTHONIOENCODING=utf-8');
             
-    //         $output = shell_exec($command);
+            $output = shell_exec($command);
             
-    //         // Clean the output
-    //         if ($output) {
-    //             $output = mb_convert_encoding($output, 'UTF-8', 'UTF-8');
-    //             $output = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $output);
-    //         }
+            // Clean the output
+            if ($output) {
+                $output = mb_convert_encoding($output, 'UTF-8', 'UTF-8');
+                $output = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $output);
+            }
             
-    //         \Log::info("Wholesaler segmentation output: " . substr($output ?? '', 0, 1000));
+            \Log::info("Wholesaler segmentation output: " . substr($output ?? '', 0, 1000));
             
-    //         // Check if segmentation completed successfully
-    //         $segmentationFile = public_path('wholesaler_segments.csv');
-    //         $fileUpdated = file_exists($segmentationFile) && (time() - filemtime($segmentationFile)) < 300;
+            // Check if segmentation completed successfully
+            $segmentationFile = public_path('wholesaler_segments.csv');
+            $fileUpdated = file_exists($segmentationFile) && (time() - filemtime($segmentationFile)) < 300;
             
-    //         if ($fileUpdated) {
-    //             return response()->json([
-    //                 'success' => true,
-    //                 'message' => 'Wholesaler segmentation completed successfully',
-    //                 'file_updated_at' => date('Y-m-d H:i:s', filemtime($segmentationFile))
-    //             ]);
-    //         } else {
-    //             return response()->json([
-    //                 'success' => false,
-    //                 'message' => 'Segmentation may have failed - no output file found or file not updated',
-    //                 'output_preview' => substr($output ?? '', 0, 500)
-    //             ]);
-    //         }
-    //     } catch (\Exception $e) {
-    //         \Log::error('Wholesaler segmentation error: ' . $e->getMessage());
-    //         return response()->json([
-    //             'success' => false,
-    //             'message' => 'Error running wholesaler segmentation: ' . $e->getMessage()
-    //         ]);
-    //     }
-    // }
-
-// ...existing code...
-
-// Change this method to accept a baseDir parameter
-private function refreshWholesalerSegmentation($baseDir)
-{
-    try {
-        // Trigger ML model to generate new segmentation
-        $pythonExe = $this->findPythonExecutable();
-        
-        if (!$pythonExe) {
-            return [
-                'success' => false,
-                'message' => 'Python executable not found. Please ensure Python is installed and accessible.'
-            ];
-        }
-        
-        $command = "cd /d \"{$baseDir}\" && \"{$pythonExe}\" wholesaler_segmentation.py 2>&1";
-        putenv('PYTHONIOENCODING=utf-8');
-        
-        $output = shell_exec($command);
-        
-        // Clean the output
-        if ($output) {
-            $output = mb_convert_encoding($output, 'UTF-8', 'UTF-8');
-            $output = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $output);
-        }
-        
-        \Log::info("Wholesaler segmentation output: " . substr($output ?? '', 0, 1000));
-        
-        // Check if segmentation completed successfully
-        $segmentationFile = public_path('wholesaler_segments.csv');
-        $fileUpdated = file_exists($segmentationFile) && (time() - filemtime($segmentationFile)) < 300;
-        
-        if ($fileUpdated) {
-            return [
-                'success' => true,
-                'message' => 'Wholesaler segmentation completed successfully',
-                'details' => [
-                    'file_updated_at' => date('Y-m-d H:i:s', filemtime($segmentationFile)),
+            if ($fileUpdated) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Wholesaler segmentation completed successfully',
+                    'file_updated_at' => date('Y-m-d H:i:s', filemtime($segmentationFile))
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Segmentation may have failed - no output file found or file not updated',
                     'output_preview' => substr($output ?? '', 0, 500)
-                ]
-            ];
-        } else {
-            return [
-                'success' => false,
-                'message' => 'Segmentation may have failed - no output file found or file not updated',
-                'error_details' => [
-                    'output_preview' => substr($output ?? '', 0, 1000),
-                    'file_exists' => file_exists($segmentationFile),
-                    'command' => $command
-                ]
-            ];
-        }
-    } catch (\Exception $e) {
-        \Log::error('Wholesaler segmentation error: ' . $e->getMessage());
-        return [
-            'success' => false,
-            'message' => 'Error running wholesaler segmentation: ' . $e->getMessage(),
-            'error_details' => $e->getTraceAsString()
-        ];
-    }
-}
-
-// Then create a new public method that handles the API request
-public function refreshWholesalerSegmentationApi(Request $request)
-{
-    try {
-        $baseDir = base_path('../ml_models');
-        $results = $this->refreshWholesalerSegmentation($baseDir);
-        
-        if ($results['success']) {
-            return response()->json([
-                'success' => true,
-                'message' => $results['message'],
-                'file_updated_at' => $results['details']['file_updated_at'] ?? null
-            ]);
-        } else {
+                ]);
+            }
+        } catch (\Exception $e) {
+            \Log::error('Wholesaler segmentation error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
-                'message' => $results['message'],
-                'output_preview' => $results['error_details']['output_preview'] ?? null
+                'message' => 'Error running wholesaler segmentation: ' . $e->getMessage()
             ]);
         }
-    } catch (\Exception $e) {
-        \Log::error('Wholesaler segmentation API error: ' . $e->getMessage());
-        return response()->json([
-            'success' => false,
-            'message' => 'Error running wholesaler segmentation: ' . $e->getMessage()
-        ]);
     }
-}
-
-// ...existing code...
 
 // private function getWholesalerSegmentation()
 // {
