@@ -29,6 +29,12 @@ class ManufacturerOrdersController extends Controller
             ->orderBy('created_at', 'desc')
             ->paginate(10);
         
+        // Get orders from customers
+        $customerOrders = $this->getCustomerOrders();
+        // Add this debug line in your index method
+        \Illuminate\Support\Facades\Log::info('Customer Orders Count: ' . $customerOrders->count());
+        \Illuminate\Support\Facades\Log::info('First Customer Order: ' . json_encode($customerOrders->first()));
+
         // Get supply requests to suppliers
         $supplyRequests = SupplyRequest::with(['supplier.user', 'item'])
             ->orderBy('created_at', 'desc')
@@ -45,7 +51,7 @@ class ManufacturerOrdersController extends Controller
             'total_revenue' => Order::where('status', 'delivered')->sum('total_amount'),
         ];
         
-        return view('manufacturer.Orders.index', compact('orders', 'supplyRequests', 'stats'));
+        return view('manufacturer.Orders.index', compact('orders', 'customerOrders', 'supplyRequests', 'stats'));
     }
 
     public function show(Order $order)
@@ -284,5 +290,78 @@ class ManufacturerOrdersController extends Controller
                 }
             }
         }
+    }
+
+    public function showCustomerOrder($orderId)
+    {
+        $user = Auth::user();
+        
+        if ($user->role !== 'manufacturer') {
+            abort(403, 'Access denied. Manufacturer privileges required.');
+        }
+        
+        // Load the customer order with its relationships
+        $order = \App\Models\CustomerOrder::with(['customer.user', 'customerOrderItems.item'])
+            ->findOrFail($orderId);
+        
+        return view('manufacturer.Orders.show-customer', compact('order'));
+    }
+
+    public function getCustomerOrders()
+    {
+        $user = Auth::user();
+        
+        if ($user->role !== 'manufacturer') {
+            abort(403, 'Access denied. Manufacturer privileges required.');
+        }
+        
+        // Get orders from customers - adjust the relationship loading
+        try {
+            $customerOrders = \App\Models\CustomerOrder::with(['customer.user', 'customerOrderItems.item'])
+                ->orderBy('created_at', 'desc')
+                ->paginate(10);
+            
+            return $customerOrders;
+        } catch (\Exception $e) {
+            // Log the error
+            \Illuminate\Support\Facades\Log::error('Error loading customer orders: ' . $e->getMessage());
+            
+            // Return empty collection with pagination
+            return new \Illuminate\Pagination\LengthAwarePaginator(
+                [], 0, 10, 1, ['path' => request()->url()]
+            );
+        }
+    }
+
+    public function updateCustomerOrderStatus(Request $request, $orderId)
+    {
+        $user = Auth::user();
+        
+        if ($user->role !== 'manufacturer') {
+            abort(403, 'Access denied. Manufacturer privileges required.');
+        }
+        
+        $order = \App\Models\CustomerOrder::findOrFail($orderId);
+        
+        $request->validate([
+            'status' => 'required|in:pending,processing,shipped,delivered,cancelled',
+            'notes' => 'nullable|string|max:500',
+        ]);
+        
+        $oldStatus = $order->status;
+        $order->update([
+            'status' => $request->status,
+            'notes' => $request->notes ?? $order->notes,
+        ]);
+        
+        // Audit log for customer order status update
+        \App\Models\AuditLog::create([
+            'user_id' => $user->id,
+            'action' => 'customer_order_update_status',
+            'details' => 'Customer Order #' . $order->order_number . ' status changed from ' . $oldStatus . ' to ' . $request->status,
+        ]);
+
+        // Update the index method to include customer orders
+        return redirect()->back()->with('success', 'Customer order status updated successfully.');
     }
 }

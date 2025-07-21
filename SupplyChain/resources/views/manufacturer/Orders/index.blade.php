@@ -404,6 +404,10 @@
                                 <i class="fas fa-shopping-cart mr-2"></i>
                                 Wholesaler Orders
                             </button>
+                            <button onclick="showTab('customer')" id="customer-tab" class="tab-button py-2 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300">
+                                <i class="fas fa-users mr-2"></i>
+                                Customer Orders
+                            </button>
                             <button onclick="showTab('supply')" id="supply-tab" class="tab-button py-2 px-1 border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-300">
                                 <i class="fas fa-truck mr-2"></i>
                                 Supply Requests
@@ -510,6 +514,106 @@
                         @endif
                     </div>
                 </div>
+
+                
+                <!-- Customer Orders Tab Content -->
+                <div id="customer-content" class="tab-content hidden">
+                    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                        <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                            <div class="flex justify-between items-center">
+                                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Customer Orders</h3>
+                                <div class="flex space-x-2">
+                                    <select class="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-1 text-sm bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
+                                        <option>All Status</option>
+                                        <option>Pending</option>
+                                        <option>Processing</option>
+                                        <option>Shipped</option>
+                                        <option>Delivered</option>
+                                        <option>Cancelled</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead class="bg-gray-50 dark:bg-gray-700">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Order</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Customer</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Items</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"><i class="fas fa-coins mr-1"></i>Amount (UGX)</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                                    @forelse($customerOrders ?? [] as $order)
+                                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-gray-900 dark:text-white">#{{ $order->order_number }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900 dark:text-white">{{ $order->customer->name ?? 'N/A' }}</div>
+                                            <div class="text-sm text-gray-500 dark:text-gray-400">{{ $order->customer->email ?? 'N/A' }}</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900 dark:text-white">{{ $order->customerOrderItems->count() }} items</div>
+                                            <div class="text-sm text-gray-500 dark:text-gray-400">
+                                                @foreach($order->customerOrderItems->take(2) as $item)
+                                                    {{ $item->item->name ?? 'N/A' }}{{ !$loop->last ? ', ' : '' }}
+                                                @endforeach
+                                                @if($order->customerOrderItems->count() > 2)
+                                                    +{{ $order->customerOrderItems->count() - 2 }} more
+                                                @endif
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white">UGX {{ number_format((float) $order->total_amount) }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
+                                                @if($order->status === 'pending') bg-yellow-100 text-yellow-800
+                                                @elseif($order->status === 'processing') bg-blue-100 text-blue-800
+                                                @elseif($order->status === 'shipped') bg-indigo-100 text-indigo-800
+                                                @elseif($order->status === 'delivered') bg-green-100 text-green-800
+                                                @else bg-red-100 text-red-800
+                                                @endif">
+                                                {{ ucfirst(str_replace('_', ' ', $order->status)) }}
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                                            {{ $order->created_at->format('M d, Y') }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <a href="{{ route('manufacturer.orders.show-customer', $order) }}" 
+                                            class="text-indigo-600 hover:text-indigo-900 dark:text-indigo-400 dark:hover:text-indigo-300 mr-3">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    @empty
+                                    <tr>
+                                        <td colspan="7" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                                            <div class="flex flex-col items-center py-8">
+                                                <i class="fas fa-users text-4xl mb-4 text-gray-300"></i>
+                                                <p class="text-lg font-medium">No customer orders found</p>
+                                                <p class="text-sm">Direct customer orders will appear here</p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        @if(isset($customerOrders) && $customerOrders->hasPages())
+                        <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+                            {{ $customerOrders->links() }}
+                        </div>
+                        @endif
+                    </div>
+                </div>
+                
 
                 <!-- Supply Requests Tab Content -->
                 <div id="supply-content" class="tab-content hidden">

@@ -39,7 +39,7 @@ class CustomerOrder extends Model
 
     public function customerOrderItems()
     {
-        return $this->hasMany(CustomerOrderItem::class);
+        return $this->hasMany(\App\Models\CustomerOrderItem::class);
     }
 
     public function getStatusColorAttribute()
