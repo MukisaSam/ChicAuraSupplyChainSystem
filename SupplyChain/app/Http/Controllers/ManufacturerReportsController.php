@@ -139,6 +139,14 @@ class ManufacturerReportsController extends Controller
             ->orderBy('date')
             ->get();
 
+        // Fallback: if no data in range, fetch all-time data
+        if ($salesData->isEmpty()) {
+            $salesData = Order::selectRaw('DATE(created_at) as date, SUM(total_amount) as total_sales, COUNT(*) as order_count')
+                ->groupBy('date')
+                ->orderBy('date')
+                ->get();
+        }
+
         return response()->json([
             'labels' => $salesData->pluck('date'),
             'sales' => $salesData->pluck('total_sales'),
@@ -187,6 +195,21 @@ class ManufacturerReportsController extends Controller
         })
         ->sortByDesc('total_supplied')
         ->take(10);
+
+        // Fallback: if no data in range, fetch all-time data
+        if ($supplierData->sum('total_supplied') == 0 && $supplierData->sum('total_value') == 0) {
+            $supplierData = Supplier::with(['suppliedItems' => function($query) {}, 'user'])
+                ->get()
+                ->map(function($supplier) {
+                    return [
+                        'name' => $supplier->user->full_name ?? 'Unknown',
+                        'total_supplied' => $supplier->suppliedItems->sum('delivered_quantity'),
+                        'total_value' => $supplier->suppliedItems->sum(DB::raw('delivered_quantity * price'))
+                    ];
+                })
+                ->sortByDesc('total_supplied')
+                ->take(10);
+        }
 
         return response()->json([
             'labels' => $supplierData->pluck('name'),
