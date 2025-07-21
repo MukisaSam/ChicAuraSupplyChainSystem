@@ -493,10 +493,9 @@
                                         Last updated: {{ date('M j, Y g:i A', $analytics['mlSupplierInsights']['last_updated']) }}
                                     </span>
                                 @endif
-                                <button class="refresh-individual-btn bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-sm" data-model="supplier">
+                                <!-- <button id="refreshInsightsBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-sm">
                                     <i class="fas fa-sync-alt mr-1"></i> Refresh
-                                </button>
-                                
+                                </button> -->
                             </div>
                         </div>
 
@@ -650,10 +649,9 @@
                     <i class="fas fa-users text-indigo-600"></i>
                     <h3 class="text-lg font-bold text-black">AI-Powered Wholesaler Segmentation</h3>
                 </div>
-                <button class="refresh-individual-btn bg-indigo-600 text-white px-3 py-1 rounded-lg hover:bg-indigo-700 transition-colors text-xs"data-model="segmentation">
+                <button id="refreshSegmentationBtn" class="bg-indigo-600 text-white px-3 py-1 rounded-lg hover:bg-indigo-700 transition-colors text-xs">
                     <i class="fas fa-sync-alt mr-1"></i> Refresh
                 </button>
-                
             </div>
             <div class="overflow-x-auto">
                 <table class="min-w-full text-sm">
@@ -706,10 +704,9 @@
                                     <div class="flex flex-col items-center">
                                         <i class="fas fa-chart-pie text-gray-400 text-2xl mb-2"></i>
                                         <p class="text-sm">No wholesaler segmentation data available</p>
-                                        <button class="refresh-individual-btn mt-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-xs"data-model="segmentation">
+                                        <button onclick="refreshWholesalerSegmentation()" class="mt-2 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-xs">
                                             <i class="fas fa-magic mr-1"></i> Generate Segmentation
                                         </button>
-                                        
                                     </div>
                                 </td>
                             </tr>
@@ -811,9 +808,9 @@
                             <i class="fas fa-chart-line mr-2"></i>
                             Refresh Supplier Analysis
                         </button>
-                        <button class="refresh-individual-btn bg-yellow-600 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 transition-colors text-sm" data-model="segmentation">
-                            <i class="fas fa-users-cog mr-2"></i>
-                            Update Wholesaler Segments
+                        <button class="refresh-individual-btn bg-yellow-600 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 transition-colors text-sm" data-model="recommendations">
+                            <i class="fas fa-lightbulb mr-2"></i>
+                            Generate Recommendations
                         </button>
                                                             </div>
                     
@@ -1210,7 +1207,7 @@ document.addEventListener('DOMContentLoaded', renderAnalyticsCharts);
                 // Hide previous results/errors and reset layout
                 forecastResults.classList.add('hidden');
                 forecastError.classList.add('hidden');
-                //forecastContainer.className = 'grid grid-cols-1 lg:grid-cols-2 gap-8';
+                forecastContainer.className = 'grid grid-cols-1 lg:grid-cols-2 gap-8';
 
                 const formData = new FormData(forecastForm);
                 
@@ -1235,7 +1232,7 @@ document.addEventListener('DOMContentLoaded', renderAnalyticsCharts);
                         `;
                         
                         // Change layout to full width for results
-                        //forecastContainer.className = 'grid grid-cols-1 gap-4';
+                        forecastContainer.className = 'grid grid-cols-1 gap-4';
                         forecastResults.classList.remove('hidden');
                     } else {
                         // Show error
@@ -1411,7 +1408,7 @@ document.addEventListener('DOMContentLoaded', renderAnalyticsCharts);
                 const steps = [
                     { name: 'Retraining Demand Model', model: 'demand', progress: 33 },
                     { name: 'Analyzing Supplier Performance', model: 'supplier', progress: 66 },
-                    { name: 'Updating Wholesaler Segmentation', model: 'segmentation', progress: 100 }
+                    { name: 'Generating Recommendations', model: 'recommendations', progress: 100 }
                 ];
                 
                 let currentStep = 0;
@@ -1470,7 +1467,7 @@ document.addEventListener('DOMContentLoaded', renderAnalyticsCharts);
                 const modelNames = {
                     'demand': 'Demand Model',
                     'supplier': 'Supplier Analysis',
-                    'recommendations': 'Segmentation'
+                    'recommendations': 'Recommendations'
                 };
                 
                 // Show loading state
