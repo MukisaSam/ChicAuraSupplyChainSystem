@@ -254,6 +254,10 @@ Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('
     Route::get('/orders/{order}', [App\Http\Controllers\ManufacturerOrdersController::class, 'show'])->name('orders.show');
     Route::put('/orders/{order}/status', [App\Http\Controllers\ManufacturerOrdersController::class, 'updateStatus'])->name('orders.update-status');
 
+    Route::get('/orders/customers', [App\Http\Controllers\ManufacturerOrdersController::class, 'getCustomerOrders'])->name('orders.customers');
+    Route::get('/orders/customer/{orderId}', [App\Http\Controllers\ManufacturerOrdersController::class, 'showCustomerOrder'])->name('orders.show-customer');
+    Route::put('/orders/customer/{orderId}/status', [App\Http\Controllers\ManufacturerOrdersController::class, 'updateCustomerOrderStatus'])->name('orders.update-customer-status');
+
     // Supply Request routes
     Route::get('/orders/supply-requests/create', [App\Http\Controllers\ManufacturerOrdersController::class, 'createSupplyRequest'])->name('orders.create-supply-request');
     Route::post('/orders/supply-requests', [App\Http\Controllers\ManufacturerOrdersController::class, 'storeSupplyRequest'])->name('orders.store-supply-request');

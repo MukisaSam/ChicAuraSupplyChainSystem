@@ -12,12 +12,16 @@ class Customer extends Authenticatable
     use HasFactory, Notifiable;
 
     protected $fillable = [
+        'user_id',
         'name',
         'email',
         'password',
         'phone',
-        'city',
         'address',
+        'city',
+        'state',
+        'postal_code',
+        'country',
         'age_group',
         'gender',
         'income_bracket',
@@ -39,6 +43,17 @@ class Customer extends Authenticatable
         'is_active' => 'boolean',
     ];
 
+    /**
+     * Get the user that owns the customer.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the orders for the customer.
+     */
     public function customerOrders()
     {
         return $this->hasMany(CustomerOrder::class);
