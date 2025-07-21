@@ -344,7 +344,7 @@
                         </div>
                         <div class="p-6">
 
-                            <div class="flex-1 overflow-y-auto p-2 space-y-4 h-[300px]">
+                            <div id="messages-container" class="flex-1 overflow-y-auto p-2 space-y-4 h-[300px]">
                                 @foreach($messages as $message)
                                 @php
                                 $isOwnMessage = $message->sender_id == $user->id;

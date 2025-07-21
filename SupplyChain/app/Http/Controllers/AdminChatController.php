@@ -59,7 +59,29 @@ class AdminChatController extends Controller
             ->where('receiver_id', $user->id)
             ->where('is_read', false)
             ->update(['is_read' => true, 'read_at' => now()]);
-        return view('admin.Chat.show', compact('user', 'contact', 'messages'));
+
+        $admins = User::where('role', 'admin')->where('id', '!=', $user->id)->get();
+        $suppliers = User::where('role', 'supplier')->get();
+        $manufacturers = User::where('role', 'manufacturer')->get();
+        $wholesalers = User::where('role', 'wholesaler')->get();
+
+        // Get unread message counts
+        $unreadCounts = ChatMessage::unread($user->id)
+            ->selectRaw('sender_id, COUNT(*) as count')
+            ->groupBy('sender_id')
+            ->pluck('count', 'sender_id');
+            
+            
+        return view('admin.Chat.show', compact(
+            'user', 
+            'contact', 
+            'messages',
+            'admins',
+            'suppliers',
+            'manufacturers',
+            'wholesalers',
+            'unreadCounts',
+        ));
     }
 
     /**
