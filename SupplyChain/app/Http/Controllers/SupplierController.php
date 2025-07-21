@@ -90,11 +90,27 @@ class SupplierController extends Controller
         $this->authorize('update', $supplyRequest);
 
         $validated = $request->validate([
-            'status' => 'required|in:accepted,declined',
+            'status' => 'required|in:pending,approved,rejected,in_progress,completed,accepted,declined',
             'notes' => 'nullable|string',
         ]);
 
         $supplyRequest->update($validated);
+
+        // Create SuppliedItem if status is completed and not already created
+        if ($supplyRequest->status === 'completed') {
+            $existing = \App\Models\SuppliedItem::where('supply_request_id', $supplyRequest->id)->first();
+            if (!$existing) {
+                \App\Models\SuppliedItem::create([
+                    'supplier_id' => $supplyRequest->supplier_id,
+                    'supply_request_id' => $supplyRequest->id,
+                    'item_id' => $supplyRequest->item_id,
+                    'delivered_quantity' => $supplyRequest->quantity,
+                    'delivery_date' => now(),
+                    'status' => 'delivered',
+                    'price' => $supplyRequest->item->base_price ?? 0,
+                ]);
+            }
+        }
 
         if ($validated['status'] === 'accepted') {
             // Create price negotiation
@@ -322,7 +338,7 @@ class SupplierController extends Controller
         if (!$supplier) {
             abort(403, 'You are not a supplier.');
         }
-        $query = $supplier->suppliedItems()->with(['item' => function($query) { $query->where('type', 'raw_material'); }])->where('status', 'delivered')->latest();
+        $query = $supplier->suppliedItems()->with('item')->latest();
         if ($request->filled('delivery_date')) {
             $query->whereDate('delivery_date', $request->delivery_date);
         }
@@ -338,19 +354,41 @@ class SupplierController extends Controller
         $user = Auth::user();
         $supplier = $user->supplier;
         if (!$supplier) {
-            return response()->json(['success' => false, 'message' => 'Not a supplier'], 403);
+            return back()->withErrors(['Not a supplier']);
         }
         $supplyRequest = SupplyRequest::where('id', $supplyRequestId)
             ->where('supplier_id', $supplier->id)
             ->first();
         if (!$supplyRequest) {
-            return response()->json(['success' => false, 'message' => 'Supply request not found'], 404);
+            return back()->withErrors(['Supply request not found']);
         }
         $validated = $request->validate([
             'status' => 'required|string|in:pending,approved,rejected,in_progress,completed',
         ]);
         $supplyRequest->status = $validated['status'];
         $supplyRequest->save();
-        return response()->json(['success' => true, 'status' => $supplyRequest->status]);
+
+        // Create SuppliedItem if status is completed and not already created
+        if ($supplyRequest->status === 'completed') {
+            $existing = \App\Models\SuppliedItem::where('supply_request_id', $supplyRequest->id)->first();
+            if (!$existing) {
+                \App\Models\SuppliedItem::create([
+                    'supplier_id' => $supplyRequest->supplier_id,
+                    'supply_request_id' => $supplyRequest->id,
+                    'item_id' => $supplyRequest->item_id,
+                    'delivered_quantity' => $supplyRequest->quantity,
+                    'delivery_date' => now(),
+                    'status' => 'delivered',
+                    'price' => $supplyRequest->item->base_price ?? 0,
+                ]);
+            }
+        }
+
+        // If AJAX, return JSON. If not, redirect back.
+        if ($request->ajax()) {
+            return response()->json(['success' => true, 'status' => $supplyRequest->status]);
+        } else {
+            return redirect()->back()->with('success', 'Status updated successfully!');
+        }
     }
 }

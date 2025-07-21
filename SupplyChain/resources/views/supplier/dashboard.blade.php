@@ -273,15 +273,34 @@
                                 @forelse ($supplyRequests as $request)
                                     <div class="flex items-center p-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow">
                                         <div class="flex-shrink-0">
-                                            <div class="w-10 h-10 flex items-center justify-center rounded-full {{ $request['status_color'] }} bg-opacity-10">
-                                                <i class="fas {{ $request['icon'] }} {{ $request['status_color'] }} text-sm"></i>
+                                            <div class="w-10 h-10 flex items-center justify-center rounded-full
+                                                @if($request->status === 'pending') bg-yellow-500
+                                                @elseif($request->status === 'approved') bg-green-500
+                                                @elseif($request->status === 'in_progress') bg-blue-500
+                                                @else bg-gray-500 @endif bg-opacity-10">
+                                                <i class="fas
+                                                    @if($request->status === 'pending') fa-clock
+                                                    @elseif($request->status === 'approved') fa-check
+                                                    @elseif($request->status === 'in_progress') fa-cogs
+                                                    @else fa-question @endif
+                                                    @if($request->status === 'pending') text-yellow-500
+                                                    @elseif($request->status === 'approved') text-green-500
+                                                    @elseif($request->status === 'in_progress') text-blue-500
+                                                    @else text-gray-500 @endif
+                                                    text-sm"></i>
                                             </div>
                                         </div>
                                         <div class="ml-3 flex-1">
                                             <p class="text-xs font-medium text-gray-900">{{ $request->item->name }}</p>
-                                            <p class="text-xs text-gray-500">Request #{{ $request['id'] }}</p>
+                                            <p class="text-xs text-gray-500">Request #{{ $request->id }}</p>
                                         </div>
-                                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {{ $request['status_color'] }} text-white">{{ $request['status'] }}</span>
+                                        <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full
+                                            @if($request->status === 'pending') bg-yellow-500
+                                            @elseif($request->status === 'approved') bg-green-500
+                                            @elseif($request->status === 'in_progress') bg-blue-500
+                                            @else bg-gray-500 @endif text-white">
+                                            {{ ucfirst($request->status) }}
+                                        </span>
                                     </div>
                                 @empty
                                     <div class="text-center py-6">
@@ -792,10 +811,10 @@
         new Chart(supplyCtx, {
             type: 'line',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                labels: {!! json_encode($supplyTrends->pluck('month')->map(function($m) { return date('F', mktime(0,0,0,$m,1)); })) !!},
                 datasets: [{
                     label: 'Supply Volume',
-                    data: [1200, 1900, 3000, 5000, 2000, 3000],
+                    data: {!! json_encode($supplyTrends->pluck('total')) !!},
                     borderColor: '#10B981',
                     backgroundColor: 'rgba(16, 185, 129, 0.1)',
                     borderWidth: 3,

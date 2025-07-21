@@ -10,24 +10,52 @@ class SupplierDashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
+        $supplier = $user->supplier;
+
+        // Total supplied (sum of delivered_quantity)
+        $totalSupplied = $supplier->suppliedItems()->sum('delivered_quantity');
+
+        // Quality rating (average)
+        $qualityRating = $supplier->suppliedItems()->avg('quality_rating') ?? 0;
+
+        // Active requests (not completed)
+        $activeRequests = $supplier->supplyRequests()
+            ->whereIn('status', ['pending', 'approved', 'in_progress'])
+            ->count();
+
+        // Last supply (latest delivery_date)
+        $lastSupply = $supplier->suppliedItems()->orderByDesc('delivery_date')->first();
+        $lastSupplyText = $lastSupply && $lastSupply->delivery_date
+            ? $lastSupply->delivery_date->diffForHumans()
+            : 'N/A';
+
+        // Supply volume trends (for chart)
+        $supplyTrends = $supplier->suppliedItems()
+            ->selectRaw('MONTH(delivery_date) as month, SUM(delivered_quantity) as total')
+            ->groupBy('month')
+            ->orderBy('month')
+            ->get();
+
+        // Active supply requests (for the card)
+        $activeSupplyRequests = $supplier->supplyRequests()
+            ->with('item')
+            ->whereIn('status', ['pending', 'approved', 'in_progress'])
+            ->latest()
+            ->take(10)
+            ->get();
 
         $stats = [
-            'total_supplied' => '1.2M Units',
-            'rating' => '4.8 / 5.0',
-            'active_requests' => 3,
-            'last_supply' => '3 days ago',
-        ];
-
-        $supplyRequests = [
-            ['id' => 'REQ-305', 'item' => 'Organic Cotton (200kg)', 'status' => 'Accepted', 'status_color' => 'bg-green-500', 'icon' => 'fa-check'],
-            ['id' => 'REQ-304', 'item' => 'Brass Zippers (5,000 units)', 'status' => 'Pending', 'status_color' => 'bg-yellow-500', 'icon' => 'fa-clock'],
-            ['id' => 'REQ-302', 'item' => 'Indigo Dye (50L)', 'status' => 'Delivered', 'status_color' => 'bg-blue-500', 'icon' => 'fa-truck'],
+            'total_supplied' => $totalSupplied,
+            'rating' => number_format($qualityRating, 1),
+            'active_requests' => $activeRequests,
+            'last_supply' => $lastSupplyText,
         ];
 
         return view('supplier.dashboard', [
             'user' => $user,
             'stats' => $stats,
-            'supplyRequests' => $supplyRequests,
+            'supplyTrends' => $supplyTrends,
+            'supplyRequests' => $activeSupplyRequests,
         ]);
-    }//
+    }
 }

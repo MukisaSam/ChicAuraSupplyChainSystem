@@ -27,23 +27,13 @@
                                     <p class="text-sm text-gray-500">{{ $item->item->description }}</p>
                                     <ul class="text-sm mt-2 space-y-1">
                                         <li><strong>Quantity:</strong> {{ number_format($item->delivered_quantity) }}</li>
-                                        <li><strong>Price:</strong> UGX{{ number_format($item->price, 2) }}</li>
-                                        <li><strong>Total:</strong> UGX{{ number_format($item->price * $item->delivered_quantity, 2) }}</li>
-                                        <li><strong>Delivery Date:</strong> {{ $item->delivery_date->format('M d, Y') }}</li>
-                                        <li><strong>Status:</strong> <span class="badge ...">{{ ucfirst($item->status) }}</span></li>
-                                        <li>
-                                            <strong>Quality:</strong>
-                                            @for($i = 1; $i <= 5; $i++)
-                                                <i class="fas fa-star {{ $i <= $item->quality_rating ? 'text-yellow-400' : 'text-gray-300' }}"></i>
-                                            @endfor
-                                            ({{ $item->quality_rating }}/5)
-                                        </li>
+                                        <li><strong>Delivered Date:</strong> {{ $item->delivery_date ? $item->delivery_date->format('M d, Y') : '-' }}</li>
+                                        <li><strong>Status:</strong> <span class="inline-block px-2 py-1 rounded text-xs font-semibold bg-blue-200 text-blue-800">{{ ucfirst($item->status) }}</span></li>
+                                        <li><strong>Notes:</strong> {{ $item->notes ?? '-' }}</li>
                                     </ul>
                                 </div>
                                 <div class="mt-4 flex justify-end">
-                                    <a href="{{ route('supplier.supplied-items.show', $item) }}" class="btn btn-primary btn-sm">
-                                        <i class="fas fa-eye"></i> View
-                                    </a>
+                                    
                                 </div>
                             </div>
                         @empty

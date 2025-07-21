@@ -35,7 +35,17 @@
     </div>
 
     @if(in_array($supplyRequest->status, ['pending', 'in_progress', 'approved', 'rejected']))
-    <form id="status-update-form" class="space-y-4 mt-4">
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    <form method="POST" action="{{ route('supplier.supply-requests.ajax-update-status', $supplyRequest) }}" class="space-y-4 mt-4">
+        @csrf
         <div>
             <label for="status" class="block text-sm font-medium mb-1">Update Status</label>
             <select name="status" id="status" class="form-select w-full rounded border-gray-300">

@@ -217,7 +217,7 @@ Route::middleware(['auth', 'role:supplier'])
         })->name('reports.download');
 
         // Supply Requests
-        Route::resource('supply-requests', \App\Http\Controllers\SupplierController::class)->only(['update']);
+        Route::resource('supply-requests', \App\Http\Controllers\SupplierController::class)->only(['updateSupplyRequest']);
         Route::post('supply-requests', [\App\Http\Controllers\SupplierController::class, 'store'])->name('supply-requests.store');
         Route::delete('supply-requests/{supplyRequest}', [\App\Http\Controllers\SupplierController::class, 'destroy'])->name('supply-requests.destroy');
         Route::post('supply-requests/{supplyRequest}/negotiate', [\App\Http\Controllers\SupplierController::class, 'submitPriceNegotiation'])->name('supply-requests.negotiate');
@@ -227,7 +227,7 @@ Route::middleware(['auth', 'role:supplier'])
 
         // Supplied Items
         Route::get('supplied-items/{suppliedItem}', [\App\Http\Controllers\SupplierController::class, 'showSuppliedItem'])->name('supplied-items.show');
-        Route::put('supplied-items/{suppliedItem}', [\App\Http\Controllers\SupplierController::class, 'updateSuppliedItem'])->name('supplied-items.update');
+        Route::post('supplied-items/{suppliedItem}', [\App\Http\Controllers\SupplierController::class, 'updateSuppliedItem'])->name('supplied-items.update');
         Route::get('supplied-items', [\App\Http\Controllers\SupplierController::class, 'suppliedItems'])->name('supplied-items.index');
 
         // Supplier Chat Routes

@@ -95,7 +95,7 @@
         data: {
             labels: ['Admins', 'Suppliers', 'Manufacturers', 'Wholesalers'],
             datasets: [{
-                data: [{{ $stats['admin_count'] ?? 5 }}, {{ $stats['supplier_count'] ?? 25 }}, {{ $stats['manufacturer_count'] ?? 15 }}, {{ $stats['wholesaler_count'] ?? 20 }}],
+                data: [{{ $stats['admin_count'] ?? 0 }}, {{ $stats['supplier_count'] ?? 0 }}, {{ $stats['manufacturer_count'] ?? 0 }}, {{ $stats['wholesaler_count'] ?? 0 }}],
                 backgroundColor: [
                     '#3B82F6',
                     '#10B981',

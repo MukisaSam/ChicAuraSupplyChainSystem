@@ -25,20 +25,55 @@ class AdminDashboardController extends Controller
         $unreadCount = $user->unreadNotifications()->count();
 
         // Stats focused on system administration
+        $totalUsers = \App\Models\User::count();
+        $activeSessions = \App\Models\User::where('last_seen', '>=', now()->subMinutes(30))->count();
+        //$pendingIssues = \App\Models\Issue::where('status', 'pending')->count();
+        $adminCount = \App\Models\User::where('role', 'admin')->count();
+        $supplierCount = \App\Models\User::where('role', 'supplier')->count();
+        $manufacturerCount = \App\Models\User::where('role', 'manufacturer')->count();
+        $wholesalerCount = \App\Models\User::where('role', 'wholesaler')->count();
+
         $stats = [
-            'total_users' => 68, // Manufacturers, Suppliers, Wholesalers
-            'active_sessions' => 15,
+            'total_users' => $totalUsers,
+            'active_sessions' => $activeSessions,
             'system_status' => 'Operational',
-            'pending_issues' => 2,
+            //'pending_issues' => $pendingIssues,
+            'admin_count' => $adminCount,
+            'supplier_count' => $supplierCount,
+            'manufacturer_count' => $manufacturerCount,
+            'wholesaler_count' => $wholesalerCount,
         ];
 
-        // A log of recent administrative or system-wide activities
-        $recentActivities = [
-            ['icon' => 'fa-user-plus', 'color' => 'text-green-500', 'description' => 'New supplier "Global Textiles" registered.', 'time' => '15 mins ago'],
-            ['icon' => 'fa-file-invoice', 'color' => 'text-blue-500', 'description' => 'Monthly sales report was generated.', 'time' => '1 hour ago'],
-            ['icon' => 'fa-shield-alt', 'color' => 'text-yellow-500', 'description' => 'User "wholesaler_test" had 3 failed login attempts.', 'time' => '3 hours ago'],
-            ['icon' => 'fa-cogs', 'color' => 'text-gray-500', 'description' => 'System backup completed successfully.', 'time' => '8 hours ago'],
-        ];
+        // Recent activities: fetch from AuditLog
+        $recentActivities = \App\Models\AuditLog::with('user')
+            ->latest()
+            ->take(10)
+            ->get()
+            ->map(function($log) {
+                $icon = match($log->action) {
+                    'login' => 'fa-sign-in-alt',
+                    'logout' => 'fa-sign-out-alt',
+                    'create' => 'fa-plus-circle',
+                    'update' => 'fa-edit',
+                    'delete' => 'fa-trash',
+                    default => 'fa-info-circle',
+                };
+                $color = match($log->action) {
+                    'login' => 'text-green-500',
+                    'logout' => 'text-gray-500',
+                    'create' => 'text-blue-500',
+                    'update' => 'text-yellow-500',
+                    'delete' => 'text-red-500',
+                    default => 'text-gray-500',
+                };
+                return [
+                    'icon' => $icon,
+                    'color' => $color,
+                    'description' => $log->details,
+                    'time' => $log->created_at ? $log->created_at->diffForHumans() : '',
+                    'user' => $log->user->name ?? 'System',
+                ];
+            });
 
         return view('admin.dashboard', [
             'user' => $user,
