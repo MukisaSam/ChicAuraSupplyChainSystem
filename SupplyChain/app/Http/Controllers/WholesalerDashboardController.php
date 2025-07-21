@@ -50,7 +50,7 @@ class WholesalerDashboardController extends Controller
 
         $stats = [
             'total_orders' => $totalOrders,
-            'revenue' => $totalRevenue,
+            'total_revenue' => $totalRevenue,
             'avg_order_value' => $avgOrderValue,
             'pending_orders' => $pendingOrders,
             'pending_orders_change' => $pendingOrdersChange,

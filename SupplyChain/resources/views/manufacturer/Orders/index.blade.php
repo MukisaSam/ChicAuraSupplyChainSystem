@@ -465,7 +465,7 @@
                                                 @endif
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white">UGX {{ number_format((float) $order->total_amount) }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-900 dark:text-white">UGX {{ number_format((float) $order->amount) }}</td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
                                                 @if($order->status === 'pending') bg-yellow-100 text-yellow-800

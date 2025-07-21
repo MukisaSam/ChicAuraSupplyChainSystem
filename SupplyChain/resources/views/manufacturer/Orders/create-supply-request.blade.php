@@ -9,42 +9,51 @@
     <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <style>
         body { 
-            background: #f4f6fa;
+            background: linear-gradient(135deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.5) 100%), url('{{ asset('images/manufacturer.png') }}');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             min-height: 100vh;
-            margin: 0;
-            padding: 0;
         }
+        
         .dark body {
             background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.7) 100%), url('{{ asset('images/manufacturer.png') }}');
         }
+        
         .sidebar { 
             transition: transform 0.3s ease-in-out;
             background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
             box-shadow: 4px 0 15px rgba(0,0,0,0.1);
         }
+        
         .dark .sidebar {
             background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
         }
+        
         .logo-container {
             background: rgba(255, 255, 255, 0.95);
             border-radius: 12px;
             padding: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
+        
         .dark .logo-container {
             background: rgba(255, 255, 255, 0.9);
         }
+        
         .card-gradient {
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
             border: 1px solid rgba(255,255,255,0.2);
             box-shadow: 0 8px 32px rgba(0,0,0,0.1);
             backdrop-filter: blur(10px);
         }
+        
         .dark .card-gradient {
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
             border: 1px solid rgba(255,255,255,0.1);
             color: #f1f5f9;
         }
+        
         .nav-link {
             transition: all 0.3s ease;
             border-radius: 12px;
@@ -57,16 +66,20 @@
             background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
             box-shadow: 0 2px 20px rgba(0,0,0,0.1);
         }
+        
         .dark .header-gradient {
             background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
             border-color: #475569;
         }
+        
         .dark .text-white {
             color: #f1f5f9;
         }
+        
         .dark .text-gray-200 {
             color: #cbd5e1;
         }
+        
         @media (max-width: 768px) {
             .sidebar { transform: translateX(-100%); }
             .sidebar.open { transform: translateX(0); }
@@ -74,14 +87,14 @@
     </style>
 </head>
 <body class="font-sans antialiased">
-    <div>
+    <div class="flex h-full">
         <!-- Sidebar -->
-        <aside id="sidebar" class="sidebar" style="position: fixed; top: 0; left: 0; height: 100vh; width: 16rem; z-index: 30; overflow-y: auto; overflow-x: hidden; background: linear-gradient(180deg, #1a237e 0%, #283593 100%); box-shadow: 4px 0 15px rgba(0,0,0,0.12);">
+        <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
             <div class="flex flex-col h-full">
                 <!-- Sidebar Header -->
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
-                    <div class="sidebar-logo-blend w-full h-16 flex items-center justify-center p-0 m-0" style="background:#fff;">
-                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
+                    <div class="logo-container">
+                        <img src="{{ asset('images/CA-WORD2.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
                 <div class="px-4 py-4">
@@ -170,21 +183,21 @@
                 </div>
             </div>
         </aside>
-        <div class="main-content-wrapper" style="margin-left: 16rem; min-height: 100vh; display: flex; flex-direction: column;">
+
+        <div class="flex flex-col flex-1 w-full">
             <!-- Top Navigation Bar -->
-            <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b" style="position: fixed; left: 16rem; right: 0; top: 0; height: 4rem; background: #fff; box-shadow: 0 2px 20px rgba(0,0,0,0.04); display: flex; align-items: center;">
+            <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b">
                 <div class="flex items-center">
                     <!-- Mobile Menu Toggle -->
                     <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700">
                         <i class="fas fa-bars text-lg"></i>
                     </button>
-                    <!-- Breadcrumb -->
-                    <div class="ml-3 flex items-center space-x-2">
-                        <a href="{{ route('manufacturer.orders') }}" class="text-gray-500 hover:text-gray-700">
-                            <i class="fas fa-box"></i>
-                        </a>
-                        <span class="text-gray-400">/</span>
-                        <span class="text-black font-medium">Create Supply Request</span>
+                    <!-- Search Bar -->
+                    <div class="relative ml-3 hidden md:block">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
+                            <i class="fas fa-search text-gray-400"></i>
+                        </span>
+                        <input type="text" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm" placeholder="Search orders, inventory, suppliers...">
                     </div>
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
@@ -202,6 +215,9 @@
                         </button>
                     </div>
                     <div class="flex items-center space-x-2">
+                        <a href="{{ route('user.profile.edit') }}" class="p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-full transition-colors" title="Edit Profile">
+                            <i class="fas fa-user-edit text-lg"></i>
+                        </a>
                         <form method="POST" action="{{ route('logout') }}" class="inline">
                             @csrf
                             <button type="submit" class="p-2 text-gray-500 hover:text-red-600 hover:bg-red-50 rounded-full transition-colors" title="Logout">
@@ -211,23 +227,39 @@
                     </div>
                 </div>
             </header>
+
             <!-- Main Content -->
-            <main class="main-content-scrollable" style="flex: 1 1 0%; overflow-y: auto; padding: 2rem 1.5rem; margin-top: 4rem; background: transparent;">
-                <div class="bg-white rounded-xl shadow-lg p-8 max-w-2xl mx-auto">
-                    <div class="mb-4">
-                        <h2 class="text-2xl font-bold text-black mb-1">Create Supply Request</h2>
-                        <p class="text-black text-sm">Request raw materials from suppliers.</p>
+            <main class="flex-1 p-4 overflow-y-auto">
+                <!-- Header Section -->
+                <div class="mb-8">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <h1 class="text-3xl font-bold text-black mb-2">Create Supply Request</h1>
+                            <p class="text-black text-sm">Request raw materials from suppliers</p>
+                        </div>
+                        <div class="flex space-x-3">
+                            <a href="{{ route('manufacturer.orders') }}" 
+                               class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors">
+                                <i class="fas fa-arrow-left"></i>
+                                <span>Back to Orders</span>
+                            </a>
+                        </div>
                     </div>
-                    <form action="{{ route('supply-requests.store') }}" method="POST">
-                        @csrf
-                        <div class="grid grid-cols-1 gap-6">
+                </div>
+
+                <!-- Form -->
+                <div class="max-w-2xl mx-auto">
+                    <div class="card-gradient p-6 rounded-xl">
+                        <form action="{{ route('supply-requests.store') }}" method="POST">
+                            @csrf
+                            
                             <!-- Supplier Selection -->
-                            <div>
+                            <div class="mb-6">
                                 <label for="supplier_id" class="block text-sm font-medium text-black mb-2">
                                     Supplier <span class="text-red-500">*</span>
                                 </label>
                                 <select name="supplier_id" id="supplier_id" required
-                                        class="w-full border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                        class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
                                     <option value="">Select a supplier</option>
                                     @foreach($suppliers as $supplier)
                                         <option value="{{ $supplier->id }}" {{ old('supplier_id') == $supplier->id ? 'selected' : '' }}>
@@ -239,13 +271,14 @@
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
+
                             <!-- Item Selection -->
-                            <div>
+                            <div class="mb-6">
                                 <label for="item_id" class="block text-sm font-medium text-black mb-2">
                                     Raw Material <span class="text-red-500">*</span>
                                 </label>
                                 <select name="item_id" id="item_id" required 
-                                        class="w-full border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                        class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
                                     <option value="">Select a raw material</option>
                                     @foreach($rawMaterials as $item)
                                         <option value="{{ $item->id }}" {{ old('item_id') == $item->id ? 'selected' : '' }}>
@@ -257,61 +290,66 @@
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
+
                             <!-- Quantity -->
-                            <div>
+                            <div class="mb-6">
                                 <label for="quantity" class="block text-sm font-medium text-black mb-2">
                                     Quantity <span class="text-red-500">*</span>
                                 </label>
                                 <input type="number" name="quantity" id="quantity" min="1" required 
                                        value="{{ old('quantity') }}"
-                                       class="w-full border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                       class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                        placeholder="Enter quantity">
                                 @error('quantity')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
+
                             <!-- Due Date -->
-                            <div>
+                            <div class="mb-6">
                                 <label for="due_date" class="block text-sm font-medium text-black mb-2">
                                     Due Date <span class="text-red-500">*</span>
                                 </label>
                                 <input type="date" name="due_date" id="due_date" required 
                                        value="{{ old('due_date') }}"
                                        min="{{ date('Y-m-d', strtotime('+1 day')) }}"
-                                       class="w-full border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
+                                       class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent">
                                 @error('due_date')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
+
                             <!-- Notes -->
-                            <div>
+                            <div class="mb-6">
                                 <label for="notes" class="block text-sm font-medium text-black mb-2">
                                     Notes
                                 </label>
                                 <textarea name="notes" id="notes" rows="4" 
-                                          class="w-full border border-gray-300 rounded-md px-3 py-2 bg-white text-gray-900 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                                          class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                                           placeholder="Add any additional notes or special requirements...">{{ old('notes') }}</textarea>
                                 @error('notes')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
-                        </div>
-                        <!-- Form Actions -->
-                        <div class="mt-8 flex justify-end space-x-3">
-                            <a href="{{ route('manufacturer.orders') }}" 
-                               class="px-6 py-2 border border-gray-300 text-black rounded-md hover:bg-gray-50 transition-colors">
-                                Cancel
-                            </a>
-                            <button type="submit" 
-                                    class="px-6 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">
-                                <i class="fas fa-plus mr-2"></i>Create Supply Request
-                            </button>
-                        </div>
-                    </form>
+
+                            <!-- Submit Button -->
+                            <div class="flex justify-end space-x-3">
+                                <a href="{{ route('manufacturer.orders') }}" 
+                                   class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-2 rounded-lg transition-colors">
+                                    Cancel
+                                </a>
+                                <button type="submit" 
+                                        class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg transition-colors">
+                                    Create Supply Request
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </main>
         </div>
     </div>
+
     <script>
         // Mobile menu toggle
         document.getElementById('menu-toggle').addEventListener('click', function() {
