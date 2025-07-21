@@ -729,16 +729,16 @@
             document.getElementById('sidebar').classList.toggle('open');
         });
 
-        // Theme toggle
-        document.querySelector('[data-theme-toggle]').addEventListener('click', function () {
-            document.documentElement.classList.toggle('dark');
-            const icon = this.querySelector('i');
-            if (document.documentElement.classList.contains('dark')) {
-                icon.classList.replace('fa-moon', 'fa-sun');
-            } else {
-                icon.classList.replace('fa-sun', 'fa-moon');
-            }
-        });
+        // // Theme toggle
+        // document.querySelector('[data-theme-toggle]').addEventListener('click', function () {
+        //     document.documentElement.classList.toggle('dark');
+        //     const icon = this.querySelector('i');
+        //     if (document.documentElement.classList.contains('dark')) {
+        //         icon.classList.replace('fa-moon', 'fa-sun');
+        //     } else {
+        //         icon.classList.replace('fa-sun', 'fa-moon');
+        //     }
+        // });
 
         // User Roles Chart
         const userRolesCtx = document.getElementById('userRolesChart').getContext('2d');
@@ -871,14 +871,14 @@
                     <td class="px-4 py-3 text-sm">${user.created_at}</td>
                     <td class="px-4 py-3 ${isLastRow ? 'rounded-br-xl' : ''}">
                         <div class="flex space-x-2">
-                            <form id="addUserForm" action="{{ route('admin.users.ajax-store') }}" method="POST">
+                            <form action="{{ route('admin.users.addview') }}" method="POST">
                                 @csrf
                                 <button type="submit" class="action-btn text-blue-600">
                                     <input type="text" name="id" class="hidden" value="${user.id}">
                                     <i class="fas fa-user-plus"></i>
                                 </button>
                             </form>
-                            <form class="removeUserForm" data-user-id="${user.id}" method="POST">
+                            <form action="{{ route('admin.users.remove') }}" method="POST">
                                 @csrf
                                 <button type="submit" class="action-btn text-red-600 hover:bg-red-50">
                                     <input type="text" name="id" class="hidden" value="${user.id}">

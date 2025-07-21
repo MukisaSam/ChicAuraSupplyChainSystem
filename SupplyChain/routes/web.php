@@ -148,10 +148,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Add missing admin.users
     Route::post('/users/editview', [\App\Http\Controllers\AdminUsersController::class, 'editView'])->name('users.editview');
-    Route::post('/users/remove', [\App\Http\Controllers\AdminUsersController::class, 'remove'])->name('users.remove');
+    Route::post('/users/remove', [\App\Http\Controllers\AdminUsersController::class, 'removeUser'])->name('users.remove');
     Route::post('/users/addview', [\App\Http\Controllers\AdminUsersController::class, 'addView'])->name('users.addview');
     Route::post('/users/update', [\App\Http\Controllers\AdminUsersController::class, 'update'])->name('users.update');
-    Route::post('/users/add', [\App\Http\Controllers\AdminUsersController::class, 'add'])->name('users.add');
+    Route::post('/users/add', [\App\Http\Controllers\AdminUsersController::class, 'addUser'])->name('users.add');
 
     // User Roles
     Route::get('/user_roles', [\App\Http\Controllers\Admin\UserRoleController::class, 'index'])->name('user_roles.index');
