@@ -18,7 +18,8 @@ use App\Http\Controllers\{
     CustomerOrderController,
     CustomerRecommendationController,
     ManufacturerAnalyticsController,
-    SupplierReportsController
+    SupplierReportsController,
+    WorkOrderController
 };
 
 /*
@@ -328,7 +329,6 @@ Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('
     // Manage partners (suppliers & wholesalers)
     Route::get('/partners', [App\Http\Controllers\ManufacturerDashboardController::class, 'managePartners'])->name('partners.manage');
     //Production routes
-    Route::resource('production', App\Http\Controllers\WorkOrderController::class);
     Route::resource('bom', App\Http\Controllers\BillOfMaterialController::class)
         ->parameters(['bom' => 'billOfMaterial']);
     Route::resource('quality',App\Http\Controllers\QualityCheckController::class);
@@ -477,6 +477,17 @@ Route::middleware(['auth', 'role:manufacturer'])->group(function () {
 Route::prefix('manufacturer')->middleware(['auth', 'role:manufacturer'])->group(function () {
     Route::get('/analytics', [ManufacturerAnalyticsController::class, 'index'])->name('manufacturer.analytics');
     Route::post('/analytics/refresh-wholesaler-segmentation', [ManufacturerAnalyticsController::class, 'refreshWholesalerSegmentation'])->name('manufacturer.analytics.refresh-wholesaler-segmentation');
+    
+    // Production Work Orders
+    Route::resource('production', WorkOrderController::class)->names([
+        'index' => 'manufacturer.production.index',
+        'create' => 'manufacturer.production.create',
+        'store' => 'manufacturer.production.store',
+        'show' => 'manufacturer.production.show',
+        'edit' => 'manufacturer.production.edit',
+        'update' => 'manufacturer.production.update',
+        'destroy' => 'manufacturer.production.destroy'
+    ]);
 });
 
 

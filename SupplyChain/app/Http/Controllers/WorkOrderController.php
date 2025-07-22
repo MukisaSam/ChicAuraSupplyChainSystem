@@ -65,5 +65,15 @@ class WorkOrderController extends Controller
         $production->update($validated);
         return redirect()->route('manufacturer.production.index')->with('success', 'Work order updated successfully!');
     }
-    public function destroy(WorkOrder $workOrder) { /* ... */ }
+    public function destroy($id) {
+        try {
+            $workOrder = WorkOrder::findOrFail($id);
+            $workOrder->delete();
+            return redirect()->route('manufacturer.production.index')
+                ->with('success', 'Work order deleted successfully!');
+        } catch (\Exception $e) {
+            return redirect()->route('manufacturer.production.index')
+                ->with('error', 'Unable to delete work order. It may have associated records.');
+        }
+    }
 } 
