@@ -223,26 +223,63 @@ class ManufacturerReportsController extends Controller
             abort(403, 'Access denied. Manufacturer privileges required.');
         }
 
-        if ($type === 'sales') {
-            $orders = Order::with('orderItems')->orderBy('created_at', 'desc')->get();
-            $response = new StreamedResponse(function () use ($orders) {
-                $handle = fopen('php://output', 'w');
-                fputcsv($handle, ['Order ID', 'Date', 'Total Amount', 'Status']);
-                foreach ($orders as $order) {
-                    fputcsv($handle, [
-                        $order->id,
-                        $order->created_at,
-                        $order->total_amount,
-                        $order->status
-                    ]);
-                }
-                fclose($handle);
-            });
-            $response->headers->set('Content-Type', 'text/csv');
-            $response->headers->set('Content-Disposition', 'attachment; filename="sales_report.csv"');
-            return $response;
-        }
+        $response = new StreamedResponse(function () use ($type) {
+            $handle = fopen('php://output', 'w');
 
-        abort(404);
+            switch ($type) {
+                case 'sales':
+                    $orders = Order::with('orderItems')->orderBy('created_at', 'desc')->get();
+                    fputcsv($handle, ['Order ID', 'Date', 'Customer', 'Items', 'Total Amount', 'Status']);
+                    foreach ($orders as $order) {
+                        fputcsv($handle, [
+                            $order->id,
+                            $order->created_at->format('Y-m-d H:i:s'),
+                            $order->customer ? $order->customer->name : 'N/A',
+                            $order->orderItems->count(),
+                            number_format($order->total_amount, 2),
+                            $order->status
+                        ]);
+                    }
+                    break;
+
+                case 'inventory':
+                    $items = Item::with('warehouse')->get();
+                    fputcsv($handle, ['Item ID', 'Name', 'Type', 'Warehouse', 'Stock Quantity', 'Last Updated']);
+                    foreach ($items as $item) {
+                        fputcsv($handle, [
+                            $item->id,
+                            $item->name,
+                            $item->type,
+                            $item->warehouse ? $item->warehouse->name : 'N/A',
+                            $item->stock_quantity,
+                            $item->updated_at->format('Y-m-d H:i:s')
+                        ]);
+                    }
+                    break;
+
+                case 'suppliers':
+                    $suppliers = Supplier::with('suppliedItems')->get();
+                    fputcsv($handle, ['Supplier ID', 'Name', 'Total Items Supplied', 'Total Value', 'Average Rating']);
+                    foreach ($suppliers as $supplier) {
+                        fputcsv($handle, [
+                            $supplier->id,
+                            $supplier->user ? $supplier->user->name : 'N/A',
+                            $supplier->suppliedItems->sum('delivered_quantity'),
+                            number_format($supplier->suppliedItems->sum(DB::raw('delivered_quantity * price')), 2),
+                            number_format($supplier->suppliedItems->avg('quality_rating'), 1)
+                        ]);
+                    }
+                    break;
+
+                default:
+                    fputcsv($handle, ['Error', 'Invalid report type requested']);
+            }
+            fclose($handle);
+        });
+
+        $filename = $type . '_report_' . now()->format('Y-m-d') . '.csv';
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
+        return $response;
     }
 }

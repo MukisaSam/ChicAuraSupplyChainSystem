@@ -9,6 +9,11 @@ class Order extends Model
 {
     use HasFactory;
 
+    public function supplier()
+    {
+        return $this->belongsTo(Supplier::class);
+    }
+
     protected $fillable = [
         'wholesaler_id',
         'order_number',
