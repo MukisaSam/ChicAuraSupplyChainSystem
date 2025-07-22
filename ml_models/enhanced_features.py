@@ -175,6 +175,21 @@ class AdvancedFeatureEngineer:
         # Lost: Lowest recency, frequency, and monetary
         else:
             return 'Lost'
+    
+    def create_time_features(self, df: pd.DataFrame, date_col: str) -> pd.DataFrame:
+        """
+        Adds basic time-based features to the DataFrame based on the specified date column.
+        """
+        df = df.copy()
+        if date_col not in df.columns:
+            logger.warning(f"Column '{date_col}' not found in DataFrame")
+            return df
+            
+        df[date_col] = pd.to_datetime(df[date_col], errors='coerce')
+        df['month'] = df[date_col].dt.month
+        df['dayofweek'] = df[date_col].dt.dayofweek
+        df['is_weekend'] = (df['dayofweek'] >= 5).astype(int)
+        return df
 
 
 class SeasonalityDetector:

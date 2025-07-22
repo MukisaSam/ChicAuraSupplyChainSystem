@@ -168,7 +168,8 @@ class SupplierPerformanceAnalyzer:
         # Calculate price competitiveness for each supplier-item combination
         df_with_market['price_vs_market'] = np.where(
             df_with_market['market_avg_price'] > 0,
-            (df_with_market['delivered_price'] / df_with_market['market_avg_price'] - 1) * 100,
+            # Convert decimal to float before division
+            df_with_market['delivered_price'].astype(float) / df_with_market['market_avg_price'] - 1 * 100,
             0
         )
         
@@ -257,9 +258,13 @@ class SupplierPerformanceAnalyzer:
                 
                 chat_df = chat_df.merge(mapping_df, on='supplier_user_id', how='inner')
                 
+                # Convert decimal columns to float before calculations
+                chat_df['messages_read'] = chat_df['messages_read'].astype(float)
+                chat_df['total_sent'] = chat_df['total_sent'].astype(float)
+                
                 # Calculate communication metrics
                 chat_df['response_rate'] = (chat_df['messages_read'] / chat_df['total_sent']) * 100
-                chat_df['avg_response_time_hours'] = chat_df['avg_response_time_hours'].fillna(24)
+                chat_df['avg_response_time_hours'] = chat_df['avg_response_time_hours'].fillna(24).astype(float)
                 
                 # Communication score (faster response and higher rate is better)
                 chat_df['communication_score'] = np.clip(
@@ -579,7 +584,21 @@ class SupplierPerformanceAnalyzer:
             'alerts': []
         }
         
-        # Summary statistics
+        # Helper function to format supplier names list
+        def format_supplier_names(suppliers_df, max_to_show=5):
+            """Format supplier names with optional limiting"""
+            if 'supplier_name' not in suppliers_df.columns:
+                return "unnamed suppliers"
+            
+            names = suppliers_df['supplier_name'].tolist()
+            total = len(names)
+            
+            if total <= max_to_show:
+                return ", ".join(names)
+            else:
+                return f"{', '.join(names[:max_to_show])} and {total - max_to_show} others"
+        
+        # Summary statistics (unchanged)
         insights['summary'] = {
             'total_suppliers': len(df),
             'avg_performance_score': df['overall_performance_score'].mean().round(1),
@@ -612,84 +631,76 @@ class SupplierPerformanceAnalyzer:
             'avg_score': underperformers['overall_performance_score'].mean().round(1) if len(underperformers) > 0 else 0
         }
         
-        # Generate recommendations
+        # Generate recommendations WITH SUPPLIER NAMES
         recommendations = []
         
         if 'delivery_performance_score' in df.columns:
             poor_delivery = df[df['delivery_performance_score'] < 60]
             if len(poor_delivery) > 0:
+                suppliers_text = format_supplier_names(poor_delivery)
                 recommendations.append(
-                    f"Consider delivery training for {len(poor_delivery)} suppliers with poor delivery performance"
+                    f"Consider delivery training for {len(poor_delivery)} suppliers with poor delivery performance: {suppliers_text}"
                 )
         
         if 'quality_score' in df.columns:
             poor_quality = df[df['quality_score'] < 60]
             if len(poor_quality) > 0:
+                suppliers_text = format_supplier_names(poor_quality)
                 recommendations.append(
-                    f"Implement quality improvement programs for {len(poor_quality)} suppliers"
+                    f"Implement quality improvement programs for {len(poor_quality)} suppliers: {suppliers_text}"
                 )
         
         if 'price_competitiveness_score' in df.columns:
             expensive_suppliers = df[df['price_competitiveness_score'] < 50]
             if len(expensive_suppliers) > 0:
+                suppliers_text = format_supplier_names(expensive_suppliers)
                 recommendations.append(
-                    f"Review pricing negotiations with {len(expensive_suppliers)} suppliers for better rates"
+                    f"Review pricing negotiations with {len(expensive_suppliers)} suppliers for better rates: {suppliers_text}"
                 )
         
         if 'communication_score' in df.columns:
             poor_communication = df[df['communication_score'] < 50]
             if len(poor_communication) > 0:
+                suppliers_text = format_supplier_names(poor_communication)
                 recommendations.append(
-                    f"Improve communication channels with {len(poor_communication)} suppliers"
+                    f"Improve communication channels with {len(poor_communication)} suppliers: {suppliers_text}"
                 )
         
-        # Overall performance recommendations
+        # Overall performance recommendation (unchanged)
         if df['overall_performance_score'].mean() < 70:
             recommendations.append("Overall supplier performance is below target. Consider comprehensive supplier development program")
         
         insights['recommendations'] = recommendations
         
-        # Generate alerts
+        # Generate alerts WITH SUPPLIER NAMES
         alerts = []
         
         # Critical performance alerts
         critical_suppliers = df[df['overall_performance_score'] < 40]
         if len(critical_suppliers) > 0:
-            alerts.append(f"CRITICAL: {len(critical_suppliers)} suppliers have performance scores below 40%")
+            suppliers_text = format_supplier_names(critical_suppliers)
+            alerts.append(f"CRITICAL: {len(critical_suppliers)} suppliers have performance scores below 40%: {suppliers_text}")
         
         # Delivery alerts
         if 'delivery_performance_score' in df.columns:
             very_poor_delivery = df[df['delivery_performance_score'] < 30]
             if len(very_poor_delivery) > 0:
-                alerts.append(f"URGENT: {len(very_poor_delivery)} suppliers have critically poor delivery performance")
+                suppliers_text = format_supplier_names(very_poor_delivery)
+                alerts.append(f"URGENT: {len(very_poor_delivery)} suppliers have critically poor delivery performance: {suppliers_text}")
         
         # Quality alerts
         if 'quality_score' in df.columns:
             quality_issues = df[df['quality_score'] < 40]
             if len(quality_issues) > 0:
-                alerts.append(f"QUALITY ALERT: {len(quality_issues)} suppliers have severe quality issues")
-        
-        # Anomaly alerts
-        if 'is_anomaly' in df.columns:
-            anomalous = df[df['is_anomaly'] == True]
-            score_cols = [col for col in df.columns if 'score' in col or 'rate' in col]
-            medians = df[score_cols].median()
-            for _, supplier in anomalous.iterrows():
-                abnormal_metrics = []
-                for col in score_cols:
-                    if col in supplier and abs(supplier[col] - medians[col]) > 20:  # threshold for "abnormal"
-                        abnormal_metrics.append(f"{col}: {supplier[col]:.2f}")
-                reason = ", ".join(abnormal_metrics) if abnormal_metrics else "Multiple metrics deviate from normal"
-                alerts.append(
-                    f"Anomalous performance detected for supplier {supplier.get('supplier_name', supplier.name)} "
-                    f"(Anomaly Score: {supplier.get('anomaly_score', 'N/A'):.2f}). Reason: {reason}"
-                )
+                suppliers_text = format_supplier_names(quality_issues)
+                alerts.append(f"QUALITY ALERT: {len(quality_issues)} suppliers have severe quality issues: {suppliers_text}")
         
         # Predicted performance alerts
         if 'predicted_performance' in df.columns:
             declining = df[df['predicted_performance'] < df['overall_performance_score'] - 10]
-            for _, supplier in declining.iterrows():
-                alerts.append(f"Performance decline predicted for supplier {supplier.get('supplier_name', supplier.name)}")
+            if len(declining) > 0:
+                suppliers_text = format_supplier_names(declining)
+                alerts.append(f"Performance decline predicted for suppliers: {suppliers_text}")
         
         insights['alerts'] = alerts
         
@@ -825,7 +836,7 @@ def main():
             print(f"Total Suppliers Analyzed: {insights['summary']['total_suppliers']}")
             print(f"Average Performance Score: {insights['summary']['avg_performance_score']}")
             print(f"Excellent Performers: {insights['summary']['excellent_suppliers']}")
-            print(f"Poor Performers: {insights['summary']['poor_performers']}")
+            print(f"Poor Performers: {insights['summary']['poor_suppliers']}")  # Changed from 'poor_performers' to 'poor_suppliers'
             
             if insights['recommendations']:
                 print("\n=== RECOMMENDATIONS ===")

@@ -808,9 +808,13 @@
                             <i class="fas fa-chart-line mr-2"></i>
                             Refresh Supplier Analysis
                         </button>
-                        <button class="refresh-individual-btn bg-yellow-600 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 transition-colors text-sm" data-model="recommendations">
+                        <!-- <button class="refresh-individual-btn bg-yellow-600 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 transition-colors text-sm" data-model="recommendations">
                             <i class="fas fa-lightbulb mr-2"></i>
                             Generate Recommendations
+                        </button> -->
+                        <button class="refresh-individual-btn bg-yellow-600 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 transition-colors text-sm" data-model="wholesaler">
+                            <i class="fas fa-users mr-2"></i>
+                             Wholesaler Segmentation
                         </button>
                                                             </div>
                     
@@ -1207,7 +1211,8 @@ document.addEventListener('DOMContentLoaded', renderAnalyticsCharts);
                 // Hide previous results/errors and reset layout
                 forecastResults.classList.add('hidden');
                 forecastError.classList.add('hidden');
-                forecastContainer.className = 'grid grid-cols-1 lg:grid-cols-2 gap-8';
+                forecastContainer.className = 'flex flex-col gap-8 w-full';
+                // forecastContainer.className = 'grid grid-cols-1 lg:grid-cols-2 gap-8';
 
                 const formData = new FormData(forecastForm);
                 
@@ -1408,7 +1413,7 @@ document.addEventListener('DOMContentLoaded', renderAnalyticsCharts);
                 const steps = [
                     { name: 'Retraining Demand Model', model: 'demand', progress: 33 },
                     { name: 'Analyzing Supplier Performance', model: 'supplier', progress: 66 },
-                    { name: 'Generating Recommendations', model: 'recommendations', progress: 100 }
+                    { name: 'Updating Wholesaler Segmentation', model: 'wholesaler', progress: 100 }
                 ];
                 
                 let currentStep = 0;
@@ -1467,7 +1472,8 @@ document.addEventListener('DOMContentLoaded', renderAnalyticsCharts);
                 const modelNames = {
                     'demand': 'Demand Model',
                     'supplier': 'Supplier Analysis',
-                    'recommendations': 'Recommendations'
+                    'wholesaler': 'Wholesaler Segmentation',
+                    // 'recommendations': 'Recommendations'
                 };
                 
                 // Show loading state

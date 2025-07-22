@@ -235,65 +235,72 @@ class ManufacturerAnalyticsController extends Controller
 
     private function getSupplierPerformance()
     {
-        $suppliers = Supplier::with(['user', 'suppliedItems' => function ($query) {
-            $query->where('delivery_date', '>=', Carbon::now()->subMonths(6));
-        }])->get();
-
-        $supplierMetrics = $suppliers->map(function ($supplier) {
-            $totalDeliveries = $supplier->suppliedItems->count();
-            $onTimeDeliveries = $supplier->suppliedItems->filter(function ($item) {
-                return $item->delivery_date <= $item->supplyRequest->due_date;
-            })->count();
+        try {
+            \Log::info('Getting supplier performance data');
             
-            $avgDeliveryTime = $supplier->suppliedItems->avg(function ($item) {
-                return Carbon::parse($item->delivery_date)->diffInDays($item->supplyRequest->created_at);
-            });
-
-            // Calculate additional metrics
-            $totalValue = $supplier->suppliedItems->sum(function ($item) {
-                return $item->quantity * $item->unit_price;
-            });
-
-            $avgOrderValue = $totalDeliveries > 0 ? $totalValue / $totalDeliveries : 0;
+            // Check if required tables exist
+            $suppliedItemsExists = \Schema::hasTable('supplied_items');
+            $suppliersExists = \Schema::hasTable('suppliers');
             
-            // Calculate reliability score
-            $reliabilityScore = 0;
-            if ($totalDeliveries > 0) {
-                $onTimeRate = ($onTimeDeliveries / $totalDeliveries) * 100;
-                $deliverySpeed = max(0, 100 - ($avgDeliveryTime ?? 0) * 2); // Penalty for slow delivery
-                $reliabilityScore = ($onTimeRate * 0.7) + ($deliverySpeed * 0.3);
+            \Log::info('Tables exist check: supplied_items=' . ($suppliedItemsExists ? 'Yes' : 'No') . 
+                      ', suppliers=' . ($suppliersExists ? 'Yes' : 'No'));
+            
+            if (!$suppliersExists) {
+                return ['error' => 'Suppliers table does not exist'];
             }
-
+            
+            $query = DB::table('suppliers')
+                ->select(
+                    'suppliers.id',
+                    'suppliers.name',
+                    'suppliers.email',
+                    'suppliers.phone',
+                    DB::raw('COUNT(DISTINCT CASE WHEN supply_requests.status = "delivered" THEN supply_requests.id ELSE NULL END) as completed_requests'),
+                    DB::raw('AVG(CASE WHEN supply_requests.status = "delivered" THEN DATEDIFF(supply_requests.delivered_at, supply_requests.created_at) ELSE NULL END) as avg_delivery_days')
+                )
+                ->leftJoin('supply_requests', 'suppliers.id', '=', 'supply_requests.supplier_id');
+                
+            // Only join supplied_items if the table exists
+            if ($suppliedItemsExists) {
+                \Log::info('Including supplied_items in supplier performance query');
+                try {
+                    $query->leftJoin('supplied_items', 'supply_requests.id', '=', 'supplied_items.supply_request_id');
+                } catch (\Exception $e) {
+                    \Log::error('Error joining supplied_items: ' . $e->getMessage());
+                    // Continue without the join
+                }
+            } else {
+                \Log::info('Skipping supplied_items join in supplier performance query');
+            }
+                
+            $suppliers = $query->groupBy('suppliers.id', 'suppliers.name', 'suppliers.email', 'suppliers.phone')
+                ->orderBy('completed_requests', 'desc')
+                ->limit(10)
+                ->get();
+            
+            \Log::info('Found ' . count($suppliers) . ' suppliers for performance data');
+            
             return [
-                'id' => $supplier->id,
-                'name' => $supplier->user ? $supplier->user->name : 'Unknown',
-                'company_name' => $supplier->company_name ?? 'N/A',
-                'on_time_delivery_rate' => $totalDeliveries > 0 ? round(($onTimeDeliveries / $totalDeliveries) * 100, 1) : 0,
-                'avg_delivery_time' => round($avgDeliveryTime ?? 0, 1),
-                'total_deliveries' => $totalDeliveries,
-                'total_value' => $totalValue,
-                'avg_order_value' => round($avgOrderValue, 2),
-                'reliability_score' => round($reliabilityScore, 1),
-                'quality_rating' => rand(70, 100), // Replace with actual quality metrics
-                'last_delivery' => $supplier->suppliedItems->max('delivery_date'),
-                'status' => $totalDeliveries > 0 ? 'Active' : 'Inactive',
+                'suppliers' => $suppliers,
+                'total' => DB::table('suppliers')->count(),
+                'with_completed_deliveries' => DB::table('suppliers')
+                    ->whereExists(function ($query) {
+                        $query->select(DB::raw(1))
+                            ->from('supply_requests')
+                            ->whereColumn('supply_requests.supplier_id', 'suppliers.id')
+                            ->where('supply_requests.status', 'delivered');
+                    })
+                    ->count()
             ];
-        });
-
-        // Calculate overall metrics
-        $avgOnTimeDelivery = $supplierMetrics->count() > 0 ? $supplierMetrics->avg('on_time_delivery_rate') : 0;
-        $avgDeliveryTime = $supplierMetrics->count() > 0 ? $supplierMetrics->avg('avg_delivery_time') : 0;
-        $avgReliabilityScore = $supplierMetrics->count() > 0 ? $supplierMetrics->avg('reliability_score') : 0;
-
-        return [
-            'suppliers' => $supplierMetrics,
-            'avg_on_time_delivery' => round($avgOnTimeDelivery, 1),
-            'avg_delivery_time' => round($avgDeliveryTime, 1),
-            'avg_reliability_score' => round($avgReliabilityScore, 1),
-            'top_performers' => $supplierMetrics->sortByDesc('reliability_score')->take(5),
-            'total_suppliers' => $supplierMetrics->count(),
-            'active_suppliers' => $supplierMetrics->where('status', 'Active')->count(),
-        ];
+        } catch (\Exception $e) {
+            \Log::error('Error in getSupplierPerformance: ' . $e->getMessage());
+            return [
+                'suppliers' => [],
+                'total' => 0,
+                'with_completed_deliveries' => 0,
+                'error' => $e->getMessage()
+            ];
+        }
     }
 
     private function getRevenueAnalytics()
@@ -944,8 +951,11 @@ private function getProductQuantityData()
                     $results = $this->refreshSupplierPerformance($baseDir);
                     break;
                     
-                case 'recommendations':
-                    $results = $this->refreshRecommendationSystem($baseDir);
+                // case 'recommendations':
+                //     $results = $this->refreshRecommendationSystem($baseDir);
+                //     break;
+                case 'wholesaler':
+                    $results = $this->processWholesalerSegmentation($baseDir);
                     break;
                     
                 default:
@@ -1237,58 +1247,151 @@ private function getProductQuantityData()
         return null;
     }
 
-    public function refreshWholesalerSegmentation(Request $request)
-    {
-        try {
-            // Trigger ML model to generate new segmentation
-            $baseDir = base_path('../ml_models');
-            $pythonExe = $this->findPythonExecutable();
+    // public function refreshWholesalerSegmentation(Request $request)
+    // {
+    //     try {
+    //         // Trigger ML model to generate new segmentation
+    //         $baseDir = base_path('../ml_models');
+    //         $pythonExe = $this->findPythonExecutable();
             
-            if (!$pythonExe) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Python executable not found. Please ensure Python is installed and accessible.'
-                ]);
-            }
+    //         if (!$pythonExe) {
+    //             return response()->json([
+    //                 'success' => false,
+    //                 'message' => 'Python executable not found. Please ensure Python is installed and accessible.'
+    //             ]);
+    //         }
             
-            $command = "cd /d \"{$baseDir}\" && \"{$pythonExe}\" wholesaler_segmentation.py 2>&1";
-            putenv('PYTHONIOENCODING=utf-8');
+    //         $command = "cd /d \"{$baseDir}\" && \"{$pythonExe}\" wholesaler_segmentation.py 2>&1";
+    //         putenv('PYTHONIOENCODING=utf-8');
             
-            $output = shell_exec($command);
+    //         $output = shell_exec($command);
             
-            // Clean the output
-            if ($output) {
-                $output = mb_convert_encoding($output, 'UTF-8', 'UTF-8');
-                $output = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $output);
-            }
+    //         // Clean the output
+    //         if ($output) {
+    //             $output = mb_convert_encoding($output, 'UTF-8', 'UTF-8');
+    //             $output = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $output);
+    //         }
             
-            \Log::info("Wholesaler segmentation output: " . substr($output ?? '', 0, 1000));
+    //         \Log::info("Wholesaler segmentation output: " . substr($output ?? '', 0, 1000));
             
-            // Check if segmentation completed successfully
-            $segmentationFile = public_path('wholesaler_segments.csv');
-            $fileUpdated = file_exists($segmentationFile) && (time() - filemtime($segmentationFile)) < 300;
+    //         // Check if segmentation completed successfully
+    //         $segmentationFile = public_path('wholesaler_segments.csv');
+    //         $fileUpdated = file_exists($segmentationFile) && (time() - filemtime($segmentationFile)) < 300;
             
-            if ($fileUpdated) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Wholesaler segmentation completed successfully',
-                    'file_updated_at' => date('Y-m-d H:i:s', filemtime($segmentationFile))
-                ]);
-            } else {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Segmentation may have failed - no output file found or file not updated',
-                    'output_preview' => substr($output ?? '', 0, 500)
-                ]);
-            }
-        } catch (\Exception $e) {
-            \Log::error('Wholesaler segmentation error: ' . $e->getMessage());
-            return response()->json([
+    //         if ($fileUpdated) {
+    //             return response()->json([
+    //                 'success' => true,
+    //                 'message' => 'Wholesaler segmentation completed successfully',
+    //                 'file_updated_at' => date('Y-m-d H:i:s', filemtime($segmentationFile))
+    //             ]);
+    //         } else {
+    //             return response()->json([
+    //                 'success' => false,
+    //                 'message' => 'Segmentation may have failed - no output file found or file not updated',
+    //                 'output_preview' => substr($output ?? '', 0, 500)
+    //             ]);
+    //         }
+    //     } catch (\Exception $e) {
+    //         \Log::error('Wholesaler segmentation error: ' . $e->getMessage());
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Error running wholesaler segmentation: ' . $e->getMessage()
+    //         ]);
+    //     }
+    // }
+
+ 
+
+/**
+ * Process wholesaler segmentation - helper method for both API endpoint and ML system refresh
+ */
+private function processWholesalerSegmentation($baseDir)
+{
+    try {
+        $pythonExe = $this->findPythonExecutable();
+        
+        if (!$pythonExe) {
+            return [
                 'success' => false,
-                'message' => 'Error running wholesaler segmentation: ' . $e->getMessage()
-            ]);
+                'message' => 'Python executable not found. Please ensure Python is installed and accessible.'
+            ];
         }
+        
+        $command = "cd /d \"{$baseDir}\" && \"{$pythonExe}\" wholesaler_segmentation.py 2>&1";
+        putenv('PYTHONIOENCODING=utf-8');
+        
+        $output = shell_exec($command);
+        
+        // Clean the output
+        if ($output) {
+            $output = mb_convert_encoding($output, 'UTF-8', 'UTF-8');
+            $output = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $output);
+        }
+        
+        \Log::info("Wholesaler segmentation output: " . substr($output ?? '', 0, 1000));
+        
+        // Check if segmentation completed successfully
+        $segmentationFile = public_path('wholesaler_segments.csv');
+        $jsonFile = public_path('wholesaler_segments_meta.json');
+        $fileUpdated = (file_exists($segmentationFile) && (time() - filemtime($segmentationFile)) < 300) || 
+                       (file_exists($jsonFile) && (time() - filemtime($jsonFile)) < 300);
+        $hasSuccess = $output && (strpos($output, 'SUCCESS') !== false || strpos($output, 'completed') !== false);
+        
+        if ($fileUpdated || $hasSuccess) {
+            return [
+                'success' => true,
+                'message' => 'Wholesaler segmentation completed successfully',
+                'details' => [
+                    'csv_file_updated' => file_exists($segmentationFile) ? date('Y-m-d H:i:s', filemtime($segmentationFile)) : 'Not updated',
+                    'json_file_updated' => file_exists($jsonFile) ? date('Y-m-d H:i:s', filemtime($jsonFile)) : 'Not updated',
+                    'output_preview' => substr($output ?? '', 0, 500)
+                ]
+            ];
+        } else {
+            return [
+                'success' => false,
+                'message' => 'Segmentation may have failed - no output file found or file not updated',
+                'error_details' => [
+                    'output_preview' => substr($output ?? '', 0, 1000),
+                    'csv_file_exists' => file_exists($segmentationFile),
+                    'json_file_exists' => file_exists($jsonFile),
+                    'file_age' => file_exists($segmentationFile) ? (time() - filemtime($segmentationFile)) : 'N/A',
+                    'command' => $command
+                ]
+            ];
+        }
+    } catch (\Exception $e) {
+        return [
+            'success' => false,
+            'message' => 'Failed to process wholesaler segmentation: ' . $e->getMessage(),
+            'error_details' => $e->getTraceAsString()
+        ];
     }
+}
+
+/**
+ * Update the existing refreshWholesalerSegmentation method to use our helper
+ */
+public function refreshWholesalerSegmentation(Request $request)
+{
+    try {
+        $baseDir = base_path('../ml_models');
+        $results = $this->processWholesalerSegmentation($baseDir);
+        
+        return response()->json([
+            'success' => $results['success'],
+            'message' => $results['message'],
+            'file_updated_at' => $results['details']['csv_file_updated'] ?? null,
+            'output_preview' => $results['details']['output_preview'] ?? $results['error_details']['output_preview'] ?? null
+        ]);
+    } catch (\Exception $e) {
+        \Log::error('Wholesaler segmentation error: ' . $e->getMessage());
+        return response()->json([
+            'success' => false,
+            'message' => 'Error running wholesaler segmentation: ' . $e->getMessage()
+        ]);
+    }
+}
 
 // private function getWholesalerSegmentation()
 // {
