@@ -141,8 +141,6 @@ The system integrates Python-based machine learning models for demand forecastin
 - `demand_model.py`: Main Prophet-based demand forecasting model
 - `db_config.py`: Database connection configuration
 - `forecast_and_plot_*.py`: Forecast generation and visualization scripts
-- `actual_vs_predicted_plot_*.py`: Model evaluation and comparison scripts
-
 ## Development Workflow
 
 ### Setting Up Development Environment
@@ -166,7 +164,9 @@ The system integrates Python-based machine learning models for demand forecastin
    ```bash
    cd ml_models
    pip install -r requirements.txt
+   python api_server.py
    python demand_model.py
+   python monitoring.py
    ```
 
 ### Role-Based Development
