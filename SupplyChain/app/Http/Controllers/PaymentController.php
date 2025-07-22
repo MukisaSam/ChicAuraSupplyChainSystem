@@ -63,7 +63,7 @@ class PaymentController extends Controller
                 
                 $lineItems[] = [
                     'price_data' => [
-                        'currency' => 'usd',
+                        'currency' => 'UGX',
                         'product_data' => [
                             'name' => $product->name,
                             'metadata' => [
@@ -82,7 +82,7 @@ class PaymentController extends Controller
         $tax = $subtotal * 0.1;
         $lineItems[] = [
             'price_data' => [
-                'currency' => 'usd',
+                'currency' => 'UGX',
                 'product_data' => ['name' => 'Tax (10%)'],
                 'unit_amount' => $tax * 100,
             ],
