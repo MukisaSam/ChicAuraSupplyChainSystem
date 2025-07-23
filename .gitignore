@@ -11,3 +11,7 @@
 /SupplyChain/public/forecast_plots
 /SupplyChain/public/wholesaler_segments_meta.json
 /SupplyChain/public/wholesaler_segments_meta.csv
+/SupplyChain/public/wholesaler_segmentations.csv
+/SupplyChain/public/wholesaler_segmentations.json
+/SupplyChain/public/wholesaler_segments.json
+/SupplyChain/public/wholesaler_segments.csv
