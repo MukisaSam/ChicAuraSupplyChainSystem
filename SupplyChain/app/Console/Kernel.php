@@ -14,6 +14,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\SendWeeklyReports::class,
+        Commands\SendAdminWeeklyReports::class,
+        Commands\SendSupplierWeeklyReports::class,
     ];
 
     /**
@@ -27,6 +29,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('orders:automate-processing')->everyFiveMinutes();
         $schedule->command('notify:low-inventory-delayed-shipments')->everyFiveMinutes();
         $schedule->command('reports:send-weekly')->weekly();
+        $schedule->command('reports:send-admin-weekly')->weekly();
+        $schedule->command('reports:send-supplier-weekly')->weekly();
         // $schedule->command('inspire')->hourly();
     }
 

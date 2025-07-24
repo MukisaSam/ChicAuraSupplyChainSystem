@@ -543,12 +543,7 @@
                             <div class="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center">
                                 <i class="fas fa-users text-indigo-600"></i>
                             </div>
-                        </div>
-                        <div class="mt-3">
-                            <span class="text-green-600 text-sm font-medium"><i class="fas fa-arrow-up mr-1"></i>
-                                12.5%</span>
-                            <span class="text-gray-500 text-sm ml-2">from last month</span>
-                        </div>
+                        </div>                        
                     </div>
 
                     <div class="stat-card rounded-2xl p-4">
@@ -560,12 +555,7 @@
                             <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
                                 <i class="fa-solid fa-user-tie text-blue-600"></i>
                             </div>
-                        </div>
-                        <div class="mt-3">
-                            <span class="text-green-600 text-sm font-medium"><i class="fas fa-arrow-up mr-1"></i>
-                                5%</span>
-                            <span class="text-gray-500 text-sm ml-2">from last month</span>
-                        </div>
+                        </div>                        
                     </div>
 
                     <div class="stat-card rounded-2xl p-4">
@@ -577,12 +567,7 @@
                             <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center">
                                 <i class="fas fa-truck-loading text-green-600"></i>
                             </div>
-                        </div>
-                        <div class="mt-3">
-                            <span class="text-green-600 text-sm font-medium"><i class="fas fa-arrow-up mr-1"></i>
-                                8.2%</span>
-                            <span class="text-gray-500 text-sm ml-2">from last month</span>
-                        </div>
+                        </div>        
                     </div>
 
                     <div class="stat-card rounded-2xl p-4">
@@ -594,12 +579,7 @@
                             <div class="w-12 h-12 rounded-full bg-yellow-100 flex items-center justify-center">
                                 <i class="fas fa-industry text-yellow-600"></i>
                             </div>
-                        </div>
-                        <div class="mt-3">
-                            <span class="text-green-600 text-sm font-medium"><i class="fas fa-arrow-up mr-1"></i>
-                                3.7%</span>
-                            <span class="text-gray-500 text-sm ml-2">from last month</span>
-                        </div>
+                        </div>                        
                     </div>
 
                     <div class="stat-card rounded-2xl p-4">
@@ -611,12 +591,7 @@
                             <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
                                 <i class="fas fa-boxes text-purple-600"></i>
                             </div>
-                        </div>
-                        <div class="mt-3">
-                            <span class="text-red-600 text-sm font-medium"><i class="fas fa-arrow-down mr-1"></i>
-                                1.2%</span>
-                            <span class="text-gray-500 text-sm ml-2">from last month</span>
-                        </div>
+                        </div>                        
                     </div>
                 </div>
 

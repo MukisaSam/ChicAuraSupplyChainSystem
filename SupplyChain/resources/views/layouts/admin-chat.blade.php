@@ -73,8 +73,9 @@
         <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-center h-16 border-b border-blue-900">
-                    <div class="logo-container">
-                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
+                   <div>
+                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo"
+                            class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
                 <div class="px-4 py-4">
@@ -128,8 +129,7 @@
                     </div>
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
-                    <button data-theme-toggle class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors" title="Switch Theme">
-                        <i class="fas fa-moon text-lg"></i>
+                     @include('admin.partials.index')  
                     </button>
                     <div class="relative">
                         <button class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">

@@ -20,7 +20,7 @@
             background-attachmecnt: fixed;
             min-height: 100vh;
             overflow: hidden;
-           
+
         }
 
         /* Dark mode styles */
@@ -136,8 +136,9 @@
         <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
-                    <div class="logo-container">
-                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="h-12 w-auto">
+                    <div>
+                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo"
+                            class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
                 <div class="px-4 py-4">
@@ -162,6 +163,9 @@
                     <a href="{{ route('supplier.reports.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('supplier.reports.index') ? 'text-white bg-gradient-to-r from-green-600 to-green-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
                         <i class="fas fa-file-alt w-5"></i><span class="ml-2 text-sm">Reports</span>
                     </a>
+                    <a href="{{ route('supplier.notifications.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('supplier.notifications.index') ? 'text-white bg-gradient-to-r from-green-600 to-green-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-bell w-5"></i><span class="ml-2 text-sm">Notifications</span>
+                    </a>
                 </nav>
                 <div class="p-3 border-t border-gray-600">
                     <div class="text-center text-gray-400 text-xs">
@@ -177,14 +181,10 @@
             <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b">
                 <div class="flex items-center">
                     <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700"><i class="fas fa-bars text-lg"></i></button>
-                    <div class="relative ml-3 hidden md:block">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3"><i class="fas fa-search text-gray-400"></i></span>
-                        <input type="text" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm" placeholder="Search supply requests, items...">
-                    </div>
+                   
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
-                    <i class="fas fa-bell"></i>
-
+                    @include('supplier.partials.notifications')
                     <div class="relative">
                         <button class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
                             <span class="mr-2 text-gray-700 font-medium text-sm">{{ Auth::user()->name ?? 'Supplier User' }}</span>
@@ -221,7 +221,6 @@
                                 <div class="ml-3">
                                     <p class="text-xs font-medium text-gray-600">Total Supplied</p>
                                     <p class="text-2xl font-bold text-gray-800">{{ $stats['total_supplied'] ?? '0' }}</p>
-                                    <p class="text-xs text-green-600 mt-1">↗ +15% this month</p>
                                 </div>
                             </div>
                         </div>
@@ -229,12 +228,7 @@
                             <div class="flex items-center">
                                 <div class="p-3 bg-gradient-to-br from-green-500 to-green-600 rounded-xl shadow-lg">
                                     <i class="fas fa-star text-white text-xl"></i>
-                                </div>
-                                <div class="ml-3">
-                                    <p class="text-xs font-medium text-gray-600">Quality Rating</p>
-                                    <p class="text-2xl font-bold text-gray-800">{{ $stats['rating'] ?? '0' }}</p>
-                                    <p class="text-xs text-green-600 mt-1">⭐ Excellent</p>
-                                </div>
+                                </div>                                
                             </div>
                         </div>
                         <div class="stat-card p-4 rounded-xl">
@@ -245,7 +239,6 @@
                                 <div class="ml-3">
                                     <p class="text-xs font-medium text-gray-600">Active Requests</p>
                                     <p class="text-2xl font-bold text-gray-800">{{ $stats['active_requests'] ?? '0' }}</p>
-                                    <p class="text-xs text-yellow-600 mt-1">⏳ Processing</p>
                                 </div>
                             </div>
                         </div>
@@ -257,7 +250,6 @@
                                 <div class="ml-3">
                                     <p class="text-xs font-medium text-gray-600">Last Supply</p>
                                     <p class="text-2xl font-bold text-gray-800">{{ $stats['last_supply'] ?? 'N/A' }}</p>
-                                    <p class="text-xs text-purple-600 mt-1">📅 Recent</p>
                                 </div>
                             </div>
                         </div>
@@ -439,7 +431,7 @@
                                     <p class="text-2xl font-bold">UGX{{ number_format($stats['total_revenue'], 2) }}</p>
                                 </div>
                             </div>
-                            
+
                             <!-- Charts Section -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 w-full">
                                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 w-full">
@@ -451,7 +443,7 @@
                                     <canvas id="ratingChart" width="400" height="200"></canvas>
                                 </div>
                             </div>
-                            
+
                             <!-- Supply Trends Table -->
                             <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 overflow-y-auto w-full">
                                 <h5 class="mb-0 font-semibold">Supply Trends (Monthly)</h5>
@@ -540,9 +532,9 @@
                                             </td>
                                             <td class="px-4 py-2">
                                                 @php
-                                                    $performance = ($report->quantity > 1000) ? 'Excellent' : 
+                                                    $performance = ($report->quantity > 1000) ? 'Excellent' :
                                                                 (($report->quantity > 500) ? 'Good' : 'Average');
-                                                    $badgeClass = ($performance == 'Excellent') ? 'bg-green-200 text-green-800' : 
+                                                    $badgeClass = ($performance == 'Excellent') ? 'bg-green-200 text-green-800' :
                                                                 (($performance == 'Good') ? 'bg-blue-200 text-blue-800' : 'bg-yellow-200 text-yellow-800');
                                                 @endphp
                                                 <span class="inline-block px-2 py-1 rounded text-xs font-semibold {{ $badgeClass }}">{{ $performance }}</span>
@@ -595,7 +587,7 @@
                                         @endforelse
                                     </tbody>
                                 </table>
-                            </div>                        
+                            </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                                 <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-4 text-center">
                                     <h3 class="text-primary text-2xl font-bold">{{ number_format($monthlyReport->sum('quantity')) }}</h3>
@@ -687,14 +679,14 @@
                         </div>
 
                         <div class="flex-1 overflow-y-auto p-4 contacts-scroll" style="height: calc(100vh - 300px); max-height: 420px;">
-                          
+
                             <!-- Admins -->
                             @if($admins->count() > 0)
                             <div class="mb-6">
                                 <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3 px-2">Support Team</h4>
                                 @foreach($admins as $admin)
-                                <div class="contact-item flex items-center p-4 rounded-xl" 
-                                     data-contact-id="{{ $admin->id }}" 
+                                <div class="contact-item flex items-center p-4 rounded-xl"
+                                     data-contact-id="{{ $admin->id }}"
                                      data-contact-name="{{ $admin->name }}"
                                      data-chat-url="{{ route('supplier.chat.show', ['contactId' => $admin->id]) }}">
                                     <div class="relative">
@@ -718,8 +710,8 @@
                             <div class="mb-6">
                                 <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-3 px-2">Manufacturers</h4>
                                 @foreach($manufacturers as $manufacturer)
-                                <div class="contact-item flex items-center p-4 rounded-xl" 
-                                     data-contact-id="{{ $manufacturer->id }}" 
+                                <div class="contact-item flex items-center p-4 rounded-xl"
+                                     data-contact-id="{{ $manufacturer->id }}"
                                      data-contact-name="{{ $manufacturer->name }}"
                                      data-chat-url="{{ route('supplier.chat.show', ['contactId' => $manufacturer->id]) }}">
                                     <div class="relative">
@@ -781,8 +773,8 @@
                                 <form id="message-form" class="flex items-center space-x-4">
                                     <input type="hidden" id="receiver-id" name="receiver_id">
                                     <div class="flex-1 relative">
-                                        <input type="text" id="message-input" name="content" 
-                                               placeholder="Type your message..." 
+                                        <input type="text" id="message-input" name="content"
+                                               placeholder="Type your message..."
                                                class="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent dark:bg-gray-700 dark:text-white">
                                     </div>
                                     <button type="submit" class="bg-gradient-to-r from-purple-600 to-purple-700 text-white px-6 py-3 rounded-xl hover:from-purple-700 hover:to-purple-800 transition-all duration-300 shadow-lg">
@@ -862,10 +854,10 @@
                 }
             });
         });
-        
+
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Chat page loaded');
-            
+
             const contactItems = document.querySelectorAll('.contact-item');
             const chatWelcome = document.getElementById('chat-welcome');
             const chatConversation = document.getElementById('chat-conversation');
@@ -901,7 +893,7 @@
             messageForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 console.log('Message form submitted');
-                
+
                 const content = messageInput.value.trim();
                 const receiverId = receiverIdInput.value;
 
@@ -930,7 +922,7 @@
             // Load messages for a conversation
             function loadMessages(contactId) {
                 console.log('Loading messages for contact:', contactId);
-                
+
                 fetch(`/supplier/chat/${contactId}/messages`, {
                     headers: {
                         'X-Requested-With': 'XMLHttpRequest'
@@ -961,7 +953,7 @@
             // Send a message
             function sendMessage(receiverId, content) {
                 console.log('Sending message to:', receiverId, 'Content:', content);
-                
+
                 fetch('/supplier/chat/send', {
                     method: 'POST',
                     headers: {
@@ -996,7 +988,7 @@
             // Mark messages as read
             function markMessagesAsRead(senderId) {
                 console.log('Marking messages as read from:', senderId);
-                
+
                 fetch('/supplier/chat/mark-read', {
                     method: 'POST',
                     headers: {
@@ -1027,12 +1019,12 @@
             // Append a message to the conversation
             function appendMessage(message) {
                 console.log('Appending message:', message);
-                
+
                 const isOwnMessage = message.sender_id == {{ $user->id }};
                 const messageHtml = `
                     <div class="flex ${isOwnMessage ? 'justify-end' : 'justify-start'}">
                         <div class="flex ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'} items-end space-x-3 max-w-xs lg:max-w-md">
-                            <img src="${isOwnMessage ? '{{ asset('images/default-avatar.svg') }}' : message.sender.role === 'manufacturer' ? '{{ asset('images/manufacturer.png') }}' : '{{ asset('images/default-avatar.svg') }}'}" 
+                            <img src="${isOwnMessage ? '{{ asset('images/default-avatar.svg') }}' : message.sender.role === 'manufacturer' ? '{{ asset('images/manufacturer.png') }}' : '{{ asset('images/default-avatar.svg') }}'}"
                                  alt="${message.sender.name}" class="w-8 h-8 rounded-full flex-shrink-0 border-2 border-purple-200">
                             <div class="message-bubble ${isOwnMessage ? 'own' : 'other'}">
                                 <p class="text-sm">${message.content}</p>

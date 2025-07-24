@@ -167,7 +167,7 @@
             transform: translateY(-5px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.15);
         }
-    </style>
+    </style>    
 </head>
 <body class="font-sans antialiased">
     <div class="flex h-screen">
@@ -175,8 +175,9 @@
         <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
-                    <div class="logo-container">
-                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="h-12 w-auto">
+                    <div>
+                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo"
+                            class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
                 <div class="px-4 py-4">
@@ -224,34 +225,16 @@
             <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b">
                 <div class="flex items-center">
                     <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700"><i class="fas fa-bars text-lg"></i></button>
-                    <div class="relative ml-3 hidden md:block">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3"><i class="fas fa-search text-gray-400"></i></span>
-                        <input type="text" class="w-80 py-2 pl-10 pr-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm" placeholder="Search users, logs, or settings...">
-                    </div>
+                    
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
-                    <div class="relative">
-                        <a href="{{ route('admin.notifications.index') }}">
-                            <i class="fas fa-bell"></i>
-                            @php
-                                $unreadCount = isset($unreadCount) ? $unreadCount : (Auth::check() ? Auth::user()->unreadNotifications()->count() : 0);
-                            @endphp
-                            @if($unreadCount > 0)
-                                <span class="absolute -top-1 -right-1 bg-red-600 text-white text-xs rounded-full px-1.5 py-0.5">
-                                    {{ $unreadCount }}
-                                </span>
-                            @endif
-                        </a>
-                    </div>
-                    {{-- <button data-theme-toggle class="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors" title="Switch Theme">
-                        <i class="fas fa-moon text-lg"></i>
-                    </button> --}}
+                     @include('admin.partials.index')                                         
                     <div class="relative">
                         <button class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
                             <span class="mr-2 text-gray-700 font-medium text-sm">{{ Auth::user()->name ?? 'Admin User' }}</span>
-                            <img class="w-7 h-7 rounded-full border-2 border-purple-200 object-cover" 
-                                 src="{{ Auth::user()->profile_picture ? asset('storage/profile-pictures/' . basename(Auth::user()->profile_picture)) : asset('images/default-avatar.svg') }}" 
-                                 alt="User Avatar">  
+                            <img class="w-7 h-7 rounded-full border-2 border-purple-200 object-cover"
+                                 src="{{ Auth::user()->profile_picture ? asset('storage/profile-pictures/' . basename(Auth::user()->profile_picture)) : asset('images/default-avatar.svg') }}"
+                                 alt="User Avatar">
                         </button>
                     </div>
                     <div class="flex items-center space-x-2">
@@ -296,7 +279,7 @@
                     link.classList.remove('text-gray-300', 'hover:bg-gray-700', 'hover:text-white');
                 }
             });
-        });
+        });      
     </script>
 </body>
-</html> 
+</html>

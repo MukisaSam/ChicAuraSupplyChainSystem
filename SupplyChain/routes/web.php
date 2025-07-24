@@ -54,7 +54,7 @@ Route::prefix('customer')->name('customer.')->group(function () {
         Route::get('/login', [CustomerController::class, 'showLoginForm'])->name('login');
         Route::post('/login', [CustomerController::class, 'login'])->name('login.store');
     });
-    
+
     // Authenticated customer routes
     Route::middleware('auth:customer')->group(function () {
         Route::post('/logout', [CustomerController::class, 'logout'])->name('logout');
@@ -64,14 +64,14 @@ Route::prefix('customer')->name('customer.')->group(function () {
         Route::put('/password', [CustomerController::class, 'updatePassword'])->name('password.update');
         Route::get('/orders', [CustomerController::class, 'orders'])->name('orders');
         Route::get('/orders/{id}', [CustomerController::class, 'orderDetail'])->name('order.detail');
-        
+
         // Order management
         Route::post('/order', [CustomerOrderController::class, 'store'])->name('order.store');
         Route::get('/order/{id}/confirmation', [CustomerOrderController::class, 'confirmation'])->name('order.confirmation');
         Route::post('/order/{id}/cancel', [CustomerOrderController::class, 'cancel'])->name('order.cancel');
         Route::post('/order/{id}/reorder', [CustomerOrderController::class, 'reorder'])->name('order.reorder');
         Route::get('/order/{id}/track', [CustomerOrderController::class, 'track'])->name('order.track');
-        
+
         // Recommendations
         Route::get('/recommendations', [CustomerRecommendationController::class, 'getRecommendations'])->name('recommendations');
         Route::post('/recommendations/refresh', [CustomerRecommendationController::class, 'refreshRecommendations'])->name('recommendations.refresh');
@@ -165,7 +165,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('reports/inventory', [ReportsController::class, 'inventory'])->name('reports.inventory');
     Route::post('reports/export', [ReportsController::class, 'export'])->name('reports.export');
     Route::post('reports/send-to-me', [ReportsController::class, 'sendToMe'])->name('reports.sendToMe');
-    
+
     // Analytics
     Route::get('/analytics', [\App\Http\Controllers\Admin\AnalyticsController::class, 'index'])->name('analytics.index');
     Route::get('/analytics/chart-data', [\App\Http\Controllers\Admin\AnalyticsController::class, 'getChartData'])->name('analytics.chart-data');
@@ -180,12 +180,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
         Route::get('/unread-count', [\App\Http\Controllers\AdminChatController::class, 'getUnreadCount'])->name('unread-count');
         Route::get('/{contactId}/messages', [\App\Http\Controllers\AdminChatController::class, 'getRecentMessages'])->name('messages');
     });
-
-    
-       
-  
         // Notifications
-    Route::get('/notifications', [\App\Http\Controllers\AdminNotificationsController::class, 'index'])->name('notifications.index');
+    Route::get('notifications', [\App\Http\Controllers\Admin\NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('notifications/{notification}/mark-read', [\App\Http\Controllers\Admin\NotificationController::class, 'markRead'])->name('notifications.markRead');
+    Route::post('notifications/mark-all-read', [\App\Http\Controllers\Admin\NotificationController::class, 'markAllRead'])->name('notifications.markAllRead');
+    Route::get('notifications/unread', [\App\Http\Controllers\Admin\NotificationController::class, 'unread'])->name('notifications.unread');
 
     // Settings
     Route::get('/settings', [\App\Http\Controllers\AdminSettingsController::class, 'index'])->name('settings.index');
@@ -225,6 +224,10 @@ Route::middleware(['auth', 'role:supplier'])
         Route::post('supply-requests/{supplyRequest}/status', [\App\Http\Controllers\SupplierController::class, 'ajaxUpdateSupplyRequestStatus'])->name('supply-requests.ajax-update-status');
         Route::get('supply-requests', [\App\Http\Controllers\SupplierController::class, 'supplyRequestsIndex'])->name('supply-requests.index');
         Route::get('supply-requests/{supplyRequest}', [\App\Http\Controllers\SupplierController::class, 'showSupplyRequest'])->name('supply-requests.show');
+
+        // Supplier notifications
+        Route::get('/notifications', [\App\Http\Controllers\SupplierNotificationsController::class, 'index'])->name('notifications.index');
+        Route::post('/notifications/{notification}/mark-read', [\App\Http\Controllers\SupplierNotificationsController::class, 'markRead'])->name('notifications.markRead');
 
         // Supplied Items
         Route::get('supplied-items/{suppliedItem}', [\App\Http\Controllers\SupplierController::class, 'showSuppliedItem'])->name('supplied-items.show');
@@ -270,7 +273,7 @@ Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('
     Route::get('/analytics/chart-data', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'getChartData'])->name('analytics.chart-data');
     Route::get('/analytics/supplier-report', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'getSupplierReport'])->name('analytics.supplier-report');
     Route::get('/analytics/wholesaler-report', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'getCustomerReport'])->name('analytics.wholesaler-report');
-    
+
     // Forecast API routes
     Route::get('/analytics/forecast/options', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'getForecastOptions'])->name('analytics.forecast.options');
     Route::post('/analytics/forecast/generate', [App\Http\Controllers\ManufacturerAnalyticsController::class, 'generateForecast'])->name('analytics.forecast.generate');
@@ -305,7 +308,7 @@ Route::middleware(['auth', 'role:manufacturer'])->prefix('manufacturer')->name('
     Route::get('/reports/suppliers', [App\Http\Controllers\ManufacturerReportsController::class, 'suppliers'])->name('reports.suppliers');
     Route::get('/reports/fulfillment', [App\Http\Controllers\ManufacturerReportsController::class, 'fulfillment'])->name('reports.fulfillment');
     Route::get('/reports/export/{type}', [App\Http\Controllers\ManufacturerReportsController::class, 'export'])->name('reports.export');
-    
+
     // Chart data routes
     Route::get('/reports/chart/sales', [App\Http\Controllers\ManufacturerReportsController::class, 'getSalesChartData'])->name('reports.chart.sales');
     Route::get('/reports/chart/inventory', [App\Http\Controllers\ManufacturerReportsController::class, 'getInventoryChartData'])->name('reports.chart.inventory');
@@ -355,7 +358,7 @@ Route::get('manufacturer/production-schedules/{productionSchedule}/edit', [App\H
 Route::put('manufacturer/production-schedules/{productionSchedule}', [App\Http\Controllers\ProductionScheduleController::class, 'update'])->name('manufacturer.production-schedules.update');
 Route::delete('manufacturer/production-schedules/{productionSchedule}', [App\Http\Controllers\ProductionScheduleController::class, 'destroy'])->name('manufacturer.production-schedules.destroy');
 
-// Downtime Logs 
+// Downtime Logs
 Route::get('manufacturer/downtime-logs/create', [App\Http\Controllers\DowntimeLogController::class, 'create'])->name('manufacturer.downtime-logs.create');
 Route::post('manufacturer/downtime-logs', [App\Http\Controllers\DowntimeLogController::class, 'store'])->name('manufacturer.downtime-logs.store');
 Route::get('manufacturer/downtime-logs/{downtimeLog}', [App\Http\Controllers\DowntimeLogController::class, 'show'])->name('manufacturer.downtime-logs.show');
@@ -363,7 +366,7 @@ Route::get('manufacturer/downtime-logs/{downtimeLog}/edit', [App\Http\Controller
 Route::put('manufacturer/downtime-logs/{downtimeLog}', [App\Http\Controllers\DowntimeLogController::class, 'update'])->name('manufacturer.downtime-logs.update');
 Route::delete('manufacturer/downtime-logs/{downtimeLog}', [App\Http\Controllers\DowntimeLogController::class, 'destroy'])->name('manufacturer.downtime-logs.destroy');
 
-// Production Costs 
+// Production Costs
 Route::get('manufacturer/production-costs/create', [App\Http\Controllers\ProductionCostController::class, 'create'])->name('manufacturer.production-costs.create');
 Route::post('manufacturer/production-costs', [App\Http\Controllers\ProductionCostController::class, 'store'])->name('manufacturer.production-costs.store');
 Route::get('manufacturer/production-costs/{productionCost}', [App\Http\Controllers\ProductionCostController::class, 'show'])->name('manufacturer.production-costs.show');
@@ -466,10 +469,10 @@ Route::get('/payment/cancel', [PaymentController::class, 'cancel'])->name('payme
 Route::middleware(['auth', 'role:manufacturer'])->group(function () {
     Route::post('/manufacturer/analytics/refresh-supplier-insights', [ManufacturerAnalyticsController::class, 'refreshSupplierInsights'])
         ->name('manufacturer.analytics.refresh-supplier-insights');
-    
+
     Route::get('/manufacturer/analytics/supplier-insights-details', [ManufacturerAnalyticsController::class, 'getSupplierInsightsDetails'])
         ->name('manufacturer.analytics.supplier-insights-details');
-    
+
     Route::get('/manufacturer/analytics/download-supplier-insights', [ManufacturerAnalyticsController::class, 'downloadSupplierInsights'])
         ->name('manufacturer.analytics.download-supplier-insights');
 });
@@ -477,7 +480,7 @@ Route::middleware(['auth', 'role:manufacturer'])->group(function () {
 Route::prefix('manufacturer')->middleware(['auth', 'role:manufacturer'])->group(function () {
     Route::get('/analytics', [ManufacturerAnalyticsController::class, 'index'])->name('manufacturer.analytics');
     Route::post('/analytics/refresh-wholesaler-segmentation', [ManufacturerAnalyticsController::class, 'refreshWholesalerSegmentation'])->name('manufacturer.analytics.refresh-wholesaler-segmentation');
-    
+
     // Production Work Orders
     Route::resource('production', WorkOrderController::class)->names([
         'index' => 'manufacturer.production.index',

@@ -183,6 +183,9 @@
                         <i class="fas fa-file-alt w-5"></i>
                         <span class="ml-2 text-sm">Reports</span>
                     </a>
+                    <a href="{{ route('supplier.notifications.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('supplier.notifications.index') ? 'text-white bg-gradient-to-r from-green-600 to-green-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-bell w-5"></i><span class="ml-2 text-sm">Notifications</span>
+                    </a>
                 </nav>
                 <div class="p-3 border-t border-green-900">
                     <div class="text-center text-gray-400 text-xs">
@@ -195,7 +198,7 @@
         <div class="flex flex-col flex-1 w-full">
             <!-- Top Navigation Bar -->
             <header class="header-gradient relative z-10 flex items-center justify-between h-16 border-b">
-                 <div class="flex items-center">
+                <div class="flex items-center">
                     <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
                         <i class="fas fa-bars text-lg"></i>
                     </button>
@@ -203,17 +206,12 @@
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3">
                             <i class="fas fa-search text-gray-400"></i>
                         </span>
-                        <input type="text" id="search-contacts" placeholder="Search contacts..." 
-                               class="w-80 py-2 pl-10 pr-4 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm dark:bg-gray-700 dark:text-white">
+                        <input type="text" id="search-contacts" placeholder="Search contacts..."
+                            class="w-80 py-2 pl-10 pr-4 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm dark:bg-gray-700 dark:text-white">
                     </div>
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
-                    <x-wholesaler-notification-bell />
-                    <button data-theme-toggle
-                        class="p-2 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded-full transition-colors"
-                        title="Switch Theme">
-                        <i class="fas fa-moon text-lg"></i>
-                    </button>
+                    @include('supplier.partials.notifications')
                     <div class="relative">
                         <button
                             class="flex items-center focus:outline-none bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
@@ -329,7 +327,7 @@
                             <div class="flex items-center">
                                 <img src="{{ $contact->profile_picture ? Storage::disk('public')->url($contact->profile_picture) : asset('images/default-avatar.svg') }}"
                                     alt="{{ $contact->name }}" class="w-12 h-12 rounded-full border-2 border-green-200">
-                               
+
                                 <div class="ml-4">
                                     <h3 class="text-lg font-semibold text-white dark:text-white">{{ $contact->name }}
                                     </h3>
@@ -402,7 +400,7 @@
             });
         }
         document.addEventListener('DOMContentLoaded', function() {
-            
+
             const contactItems = document.querySelectorAll('.contact-item');
             const messageForm = document.getElementById('message-form');
             const messageInput = document.getElementById('message-input');
@@ -430,7 +428,7 @@
                 messageInput.value = '';
             });
 
-            
+
             // Search contacts
             searchInput.addEventListener('input', function () {
                 const searchTerm = this.value.toLowerCase();
@@ -491,7 +489,7 @@
                 const avatar = isOwnMessage
                     ? '{{ ($user->profile_picture ? asset('storage/' . $user->profile_picture) : asset('images/supplier.jpg')) }}'
                     : '{{ ($contact->profile_picture ? asset('storage/' . $contact->profile_picture) : asset('images/manufacturer.png')) }}';
-                    
+
                 const messageHtml = `
                     <div class="flex ${isOwnMessage ? 'justify-end' : 'justify-start'}">
                         <div class="flex ${isOwnMessage ? 'flex-row-reverse' : 'flex-row'} items-end space-x-3 max-w-xs lg:max-w-md">

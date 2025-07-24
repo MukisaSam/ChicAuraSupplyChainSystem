@@ -8,7 +8,6 @@
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="{{ asset('js/theme-switcher.js') }}"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         body {
@@ -91,8 +90,9 @@
         <aside id="sidebar" class="sidebar absolute md:relative z-20 flex-shrink-0 w-64 md:block">
             <div class="flex flex-col h-full">
                 <div class="flex items-center justify-center h-16 border-b border-gray-600">
-                    <div class="logo-container">
-                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo" class="h-12 w-auto">
+                    <div>
+                        <img src="{{ asset('images/logo.png') }}" alt="ChicAura Logo"
+                            class="w-full h-auto object-contain max-w-[160px] max-h-[48px]">
                     </div>
                 </div>
                 <div class="px-4 py-4">
@@ -117,6 +117,9 @@
                     <a href="{{ route('supplier.reports.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('supplier.reports.index') ? 'text-white bg-gradient-to-r from-green-600 to-green-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
                         <i class="fas fa-file-alt w-5"></i><span class="ml-2 text-sm">Reports</span>
                     </a>
+                    <a href="{{ route('supplier.notifications.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('supplier.notifications.index') ? 'text-white bg-gradient-to-r from-green-600 to-green-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-bell w-5"></i><span class="ml-2 text-sm">Notifications</span>
+                    </a>
                 </nav>
                 <div class="p-3 border-t border-gray-600">
                     <div class="text-center text-gray-400 text-xs">
@@ -132,26 +135,16 @@
                 <div class="flex items-center">
                     <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
                         <i class="fas fa-bars text-lg"></i>
-                    </button>
-                    <div class="relative ml-3 hidden md:block">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                            <i class="fas fa-search text-gray-400"></i>
-                        </span>
-                        <input type="text" id="search-contacts" placeholder="Search contacts..." 
-                               class="w-80 py-2 pl-10 pr-4 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm dark:bg-gray-700 dark:text-white">
-                    </div>
+                    </button>                    
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
-                <i class="fas fa-bell"></i>
-                    {{-- <button data-theme-toggle class="p-2 text-gray-500 hover:text-purple-600 hover:bg-purple-50 dark:text-gray-400 dark:hover:text-purple-400 dark:hover:bg-purple-900/20 rounded-full transition-colors" title="Switch Theme">
-                        <i class="fas fa-moon text-lg"></i>
-                    </button> --}}
+                @include('supplier.partials.notifications')
                     <div class="relative">
                         <button class="flex items-center focus:outline-none bg-white dark:bg-gray-700 rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
                             <span class="mr-2 text-gray-700 dark:text-gray-200 font-medium text-sm">{{ Auth::user()->name ?? 'Supplier User' }}</span>
-                            <img class="w-7 h-7 rounded-full border-2 border-purple-200 object-cover" 
-                                 src="{{ Auth::user()->profile_picture ? asset('storage/profile-pictures/' . basename(Auth::user()->profile_picture)) : asset('images/default-avatar.svg') }}" 
-                                 alt="User Avatar">                           
+                            <img class="w-7 h-7 rounded-full border-2 border-purple-200 object-cover"
+                                 src="{{ Auth::user()->profile_picture ? asset('storage/profile-pictures/' . basename(Auth::user()->profile_picture)) : asset('images/default-avatar.svg') }}"
+                                 alt="User Avatar">
                         </button>
                     </div>
                     <div class="flex items-center space-x-2">
@@ -195,4 +188,4 @@
         });
     </script>
 </body>
-</html> 
+</html>

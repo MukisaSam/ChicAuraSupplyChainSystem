@@ -179,6 +179,9 @@
                     <a href="{{ route('supplier.reports.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('supplier.reports.index') ? 'text-white bg-gradient-to-r from-green-600 to-green-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
                         <i class="fas fa-file-alt w-5"></i><span class="ml-2 text-sm">Reports</span>
                     </a>
+                    <a href="{{ route('supplier.notifications.index') }}" class="nav-link flex items-center px-3 py-2 {{ request()->routeIs('supplier.notifications.index') ? 'text-white bg-gradient-to-r from-green-600 to-green-700 shadow-lg' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }} rounded-xl">
+                        <i class="fas fa-bell w-5"></i><span class="ml-2 text-sm">Notifications</span>
+                    </a>
                 </nav>
                 <div class="p-3 border-t border-gray-600">
                     <div class="text-center text-gray-400 text-xs">
@@ -196,21 +199,15 @@
                     <button id="menu-toggle" class="md:hidden p-3 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
                         <i class="fas fa-bars text-lg"></i>
                     </button>
-                    <div class="relative ml-3 hidden md:block">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3">
-                            <i class="fas fa-search text-gray-400"></i>
-                        </span>
-                        <input type="text" id="search-contacts" placeholder="Search contacts..." 
-                               class="w-80 py-2 pl-10 pr-4 border border-gray-300 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent text-sm dark:bg-gray-700 dark:text-white">
-                    </div>
+                    
                 </div>
                 <div class="flex items-center pr-4 space-x-3">
-                <i class="fas fa-bell"></i>
-                                     <div class="relative">
+                @include('supplier.partials.notifications')
+                <div class="relative">
                         <button class="flex items-center focus:outline-none bg-white dark:bg-gray-700 rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
                             <span class="mr-2 text-gray-700 dark:text-gray-200 font-medium text-sm">{{ $user->name ?? 'Wholesaler User' }}</span>
-                            <img class="w-7 h-7 rounded-full border-2 border-purple-200 object-cover" 
-                                 src="{{ $user->profile_picture ? Storage::disk('public')->url($user->profile_picture) : asset('images/default-avatar.svg') }}" 
+                            <img class="w-7 h-7 rounded-full border-2 border-purple-200 object-cover"
+                                 src="{{ $user->profile_picture ? Storage::disk('public')->url($user->profile_picture) : asset('images/default-avatar.svg') }}"
                                  alt="User Avatar">
                         </button>
                     </div>
@@ -339,4 +336,4 @@
         });
     </script>
 </body>
-</html> 
+</html>

@@ -17,10 +17,6 @@
             <div class="text-3xl font-bold">{{ $totalOrders ?? 0 }}</div>
         </div>
         <div class="stat-card p-6 rounded-xl shadow text-center">
-            <div class="text-gray-500 text-sm mb-2">Revenue</div>
-            <div class="text-3xl font-bold">UGX{{ number_format($totalRevenue ?? 0, 2) }}</div>
-        </div>
-        <div class="stat-card p-6 rounded-xl shadow text-center">
             <div class="text-gray-500 text-sm mb-2">Active Suppliers</div>
             <div class="text-3xl font-bold">{{ $activeSuppliers ?? 0 }}</div>
         </div>
@@ -44,8 +40,7 @@
         <table class="w-full text-sm">
             <thead>
                 <tr class="bg-gray-100">
-                    <th class="p-2">Order #</th>
-                    <th class="p-2">Customer</th>
+                    <th class="p-2">Order #</th>                    
                     <th class="p-2">Amount</th>
                     <th class="p-2">Status</th>
                     <th class="p-2">Date</th>
@@ -54,8 +49,7 @@
             <tbody>
                 @forelse($recentOrders ?? [] as $order)
                 <tr>
-                    <td class="p-2">{{ $order->id }}</td>
-                    <td class="p-2">{{ $order->customer->name ?? 'N/A' }}</td>
+                    <td class="p-2">{{ $order->id }}</td>                   
                     <td class="p-2">UGX{{ number_format($order->total, 2) }}</td>
                     <td class="p-2">{{ ucfirst($order->status) }}</td>
                     <td class="p-2">{{ $order->created_at->format('Y-m-d') }}</td>
