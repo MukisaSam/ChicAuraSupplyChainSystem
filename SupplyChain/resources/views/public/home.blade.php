@@ -10,13 +10,15 @@
             <div class="col-lg-6 text-lg-start text-center">
                 <span class="badge bg-gradient-primary text-white mb-3 px-3 py-2 fs-6 shadow-sm" style="background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%)">Premium Fashion Platform</span>
                 <h1 class="display-4 fw-bold mb-3" style="font-family: 'Montserrat', sans-serif; letter-spacing: -1px;">Welcome to ChicAura</h1>
-                <p class="lead mb-4 text-muted">Discover the latest fashion trends and timeless classics. From casual wear to luxury items, find everything you need to express your unique style.</p>
+                <p class="lead mb-4 text-muted">Discover the latest fashion trends and timeless classics. From casual wear to luxury items, find everything you need to express your unique style.
+                    <br>Are you interested in becoming our Wholesaler or Supplier?, click on the business button to start your journey
+                </p>
                 <div class="d-flex gap-3 mb-4 justify-content-lg-start justify-content-center">
                     <a href="{{ route('public.products') }}" class="btn btn-primary btn-lg rounded-pill shadow-sm px-4">
                         <i class="bi bi-bag"></i> Shop Now
                     </a>
-                    <a href="#featured" class="btn btn-outline-primary btn-lg rounded-pill px-4">
-                        <i class="bi bi-arrow-down"></i> Explore
+                    <a href="{{ route('welcome') }}" class="btn btn-outline-primary btn-lg rounded-pill px-4">
+                        <i class="bi bi-briefcase"></i> Business
                     </a>
                 </div>
             </div>

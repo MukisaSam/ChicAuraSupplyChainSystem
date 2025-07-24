@@ -363,7 +363,7 @@
                 <!-- Charts Section -->
                 <div class="card-gradient p-4 rounded-xl lg:col-span-2">
                     <div class="flex items-center justify-between mb-3">
-                        <h3 class="text-lg font-bold text-black">Product Quantity Trends</h3>
+                        <h3 class="text-lg font-bold text-black">Purchase Quantity Trends</h3>
                         <div id="product-name" class="text-sm font-medium text-gray-600">Loading product data...</div>
                     </div>
                     <div class="relative" style="height: 300px;">
@@ -387,7 +387,7 @@
                         </div>
                     </div>
                     <div class="card-gradient p-4 rounded-xl">
-                        <h3 class="text-lg font-bold text-black mb-3">Order Volume</h3>
+                        <h3 class="text-lg font-bold text-black mb-3">Orders per Month (wholesaler count)</h3>
                         <div class="relative" style="height: 300px;">
                             <canvas id="ordersChart"></canvas>
                         </div>
@@ -493,9 +493,10 @@
                                         Last updated: {{ date('M j, Y g:i A', $analytics['mlSupplierInsights']['last_updated']) }}
                                     </span>
                                 @endif
-                                <!-- <button id="refreshInsightsBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-sm">
+                                <button class="refresh-individual-btn bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-sm" data-model="supplier">
                                     <i class="fas fa-sync-alt mr-1"></i> Refresh
-                                </button> -->
+                                </button>
+                                
                             </div>
                         </div>
 
