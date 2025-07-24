@@ -9,10 +9,10 @@ use App\Models\User;
 
 class SendAdminWeeklyReports extends Command
 {
-    protected $signature = 'report:weekly';
+    protected $signature = 'reports:send-admin-weekly';
     protected $description = 'Send weekly report to admin';
 
-    public function handle()
+    public function handle(AdminWeeklyReportService $reportService)
     {
 
 $reportData = [
