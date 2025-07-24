@@ -7,7 +7,7 @@ use App\Mail\WeeklyReportMail;
 use App\Models\Order;
 use App\Models\User;
 
-class SendAdminWeeklyReport extends Command
+class SendAdminWeeklyReports extends Command
 {
     protected $signature = 'report:weekly';
     protected $description = 'Send weekly report to admin';
